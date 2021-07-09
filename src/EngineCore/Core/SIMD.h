@@ -1,11 +1,11 @@
 #pragma once
 
 
-#define ENGINE_CORE_SIMD_CHECK() EngineCore::Intrinsic::CheckISAFeature();
+#define ENGINE_CORE_SIMD_CHECK() EngineCore::SIMD::CheckISAFeature();
 
-namespace EngineCore::Intrinsic {
+namespace EngineCore::SIMD {
 	void CheckISAFeature();
-}
+} // namespace EngineCore::SIMD
 
 // From Microsoft Docs : https://docs.microsoft.com/en-us/cpp/intrinsics/cpuid-cpuidex?view=msvc-160&viewFallbackFrom=vs-2019
 
@@ -18,68 +18,68 @@ namespace EngineCore::SIMD::Core {
 
 	public:
 		// getters
-		inline static std::string Vendor(void)		{ return CPU_Rep.vendor_; }
-		inline static std::string Brand(void)		{ return CPU_Rep.brand_; }
+		inline static auto Vendor() -> std::string		{ return CPU_Rep.vendor_; }
+		inline static auto Brand() -> std::string		{ return CPU_Rep.brand_; }
 
-		inline static bool SSE(void)				{ return CPU_Rep.f_1_EDX_[25]; }
-		inline static bool SSE2(void)				{ return CPU_Rep.f_1_EDX_[26]; }
-		inline static bool SSE3(void)				{ return CPU_Rep.f_1_ECX_[0]; }
-		inline static bool SSSE3(void)				{ return CPU_Rep.f_1_ECX_[9]; }
-		inline static bool SSE41(void)				{ return CPU_Rep.f_1_ECX_[19]; }
-		inline static bool SSE42(void)				{ return CPU_Rep.f_1_ECX_[20]; }
-		inline static bool AVX(void)				{ return CPU_Rep.f_1_ECX_[28]; }
-		inline static bool AVX2(void)				{ return CPU_Rep.f_7_EBX_[5]; }
-		inline static bool AVX512F(void)			{ return CPU_Rep.f_7_EBX_[16]; }
-		inline static bool AVX512PF(void)			{ return CPU_Rep.f_7_EBX_[26]; }
-		inline static bool AVX512ER(void)			{ return CPU_Rep.f_7_EBX_[27]; }
-		inline static bool AVX512CD(void)			{ return CPU_Rep.f_7_EBX_[28]; }
+		inline static auto SSE() -> bool				{ return CPU_Rep.f_1_EDX_[25]; }
+		inline static auto SSE2() -> bool				{ return CPU_Rep.f_1_EDX_[26]; }
+		inline static auto SSE3() -> bool				{ return CPU_Rep.f_1_ECX_[0]; }
+		inline static auto SSSE3() -> bool				{ return CPU_Rep.f_1_ECX_[9]; }
+		inline static auto SSE41() -> bool				{ return CPU_Rep.f_1_ECX_[19]; }
+		inline static auto SSE42() -> bool				{ return CPU_Rep.f_1_ECX_[20]; }
+		inline static auto AVX() -> bool				{ return CPU_Rep.f_1_ECX_[28]; }
+		inline static auto AVX2() -> bool				{ return CPU_Rep.f_7_EBX_[5]; }
+		inline static auto AVX512F() -> bool			{ return CPU_Rep.f_7_EBX_[16]; }
+		inline static auto AVX512PF() -> bool			{ return CPU_Rep.f_7_EBX_[26]; }
+		inline static auto AVX512ER() -> bool			{ return CPU_Rep.f_7_EBX_[27]; }
+		inline static auto AVX512CD() -> bool			{ return CPU_Rep.f_7_EBX_[28]; }
 
-		inline static bool FMA(void)				{ return CPU_Rep.f_1_ECX_[12]; }
+		inline static auto FMA() -> bool				{ return CPU_Rep.f_1_ECX_[12]; }
 
-		inline static bool PCLMULQDQ(void)			{ return CPU_Rep.f_1_ECX_[1]; }
-		inline static bool MONITOR(void)			{ return CPU_Rep.f_1_ECX_[3]; }
-		inline static bool CMPXCHG16B(void)			{ return CPU_Rep.f_1_ECX_[13]; }
-		inline static bool MOVBE(void)				{ return CPU_Rep.f_1_ECX_[22]; }
-		inline static bool POPCNT(void)				{ return CPU_Rep.f_1_ECX_[23]; }
-		inline static bool AES(void)				{ return CPU_Rep.f_1_ECX_[25]; }
-		inline static bool XSAVE(void)				{ return CPU_Rep.f_1_ECX_[26]; }
-		inline static bool OSXSAVE(void)			{ return CPU_Rep.f_1_ECX_[27]; }
-		inline static bool F16C(void)				{ return CPU_Rep.f_1_ECX_[29]; }
-		inline static bool RDRAND(void)				{ return CPU_Rep.f_1_ECX_[30]; }
+		inline static auto PCLMULQDQ() -> bool			{ return CPU_Rep.f_1_ECX_[1]; }
+		inline static auto MONITOR() -> bool			{ return CPU_Rep.f_1_ECX_[3]; }
+		inline static auto CMPXCHG16B() -> bool			{ return CPU_Rep.f_1_ECX_[13]; }
+		inline static auto MOVBE() -> bool				{ return CPU_Rep.f_1_ECX_[22]; }
+		inline static auto POPCNT() -> bool				{ return CPU_Rep.f_1_ECX_[23]; }
+		inline static auto AES() -> bool				{ return CPU_Rep.f_1_ECX_[25]; }
+		inline static auto XSAVE() -> bool				{ return CPU_Rep.f_1_ECX_[26]; }
+		inline static auto OSXSAVE() -> bool			{ return CPU_Rep.f_1_ECX_[27]; }
+		inline static auto F16C() -> bool				{ return CPU_Rep.f_1_ECX_[29]; }
+		inline static auto RDRAND() -> bool				{ return CPU_Rep.f_1_ECX_[30]; }
 
-		inline static bool MSR(void)				{ return CPU_Rep.f_1_EDX_[5]; }
-		inline static bool CX8(void)				{ return CPU_Rep.f_1_EDX_[8]; }
-		inline static bool SEP(void)				{ return CPU_Rep.f_1_EDX_[11]; }
-		inline static bool CMOV(void)				{ return CPU_Rep.f_1_EDX_[15]; }
-		inline static bool CLFSH(void)				{ return CPU_Rep.f_1_EDX_[19]; }
-		inline static bool MMX(void)				{ return CPU_Rep.f_1_EDX_[23]; }
-		inline static bool FXSR(void)				{ return CPU_Rep.f_1_EDX_[24]; }
+		inline static auto MSR() -> bool				{ return CPU_Rep.f_1_EDX_[5]; }
+		inline static auto CX8() -> bool				{ return CPU_Rep.f_1_EDX_[8]; }
+		inline static auto SEP() -> bool				{ return CPU_Rep.f_1_EDX_[11]; }
+		inline static auto CMOV() -> bool				{ return CPU_Rep.f_1_EDX_[15]; }
+		inline static auto CLFSH() -> bool				{ return CPU_Rep.f_1_EDX_[19]; }
+		inline static auto MMX() -> bool				{ return CPU_Rep.f_1_EDX_[23]; }
+		inline static auto FXSR() -> bool				{ return CPU_Rep.f_1_EDX_[24]; }
 
-		inline static bool FSGSBASE(void)			{ return CPU_Rep.f_7_EBX_[0]; }
-		inline static bool BMI1(void)				{ return CPU_Rep.f_7_EBX_[3]; }
-		inline static bool HLE(void)				{ return CPU_Rep.isIntel_ && CPU_Rep.f_7_EBX_[4]; }
-		inline static bool BMI2(void)				{ return CPU_Rep.f_7_EBX_[8]; }
-		inline static bool ERMS(void)				{ return CPU_Rep.f_7_EBX_[9]; }
-		inline static bool INVPCID(void)			{ return CPU_Rep.f_7_EBX_[10]; }
-		inline static bool RTM(void)				{ return CPU_Rep.isIntel_ && CPU_Rep.f_7_EBX_[11]; }
-		inline static bool RDSEED(void)				{ return CPU_Rep.f_7_EBX_[18]; }
-		inline static bool ADX(void)				{ return CPU_Rep.f_7_EBX_[19]; }
-		inline static bool SHA(void)				{ return CPU_Rep.f_7_EBX_[29]; }
+		inline static auto FSGSBASE() -> bool			{ return CPU_Rep.f_7_EBX_[0]; }
+		inline static auto BMI1() -> bool				{ return CPU_Rep.f_7_EBX_[3]; }
+		inline static auto HLE() -> bool				{ return CPU_Rep.isIntel_ && CPU_Rep.f_7_EBX_[4]; }
+		inline static auto BMI2() -> bool				{ return CPU_Rep.f_7_EBX_[8]; }
+		inline static auto ERMS() -> bool				{ return CPU_Rep.f_7_EBX_[9]; }
+		inline static auto INVPCID() -> bool			{ return CPU_Rep.f_7_EBX_[10]; }
+		inline static auto RTM() -> bool				{ return CPU_Rep.isIntel_ && CPU_Rep.f_7_EBX_[11]; }
+		inline static auto RDSEED() -> bool				{ return CPU_Rep.f_7_EBX_[18]; }
+		inline static auto ADX() -> bool				{ return CPU_Rep.f_7_EBX_[19]; }
+		inline static auto SHA() -> bool				{ return CPU_Rep.f_7_EBX_[29]; }
 
-		inline static bool PREFETCHWT1(void)		{ return CPU_Rep.f_7_ECX_[0]; }
+		inline static auto PREFETCHWT1() -> bool		{ return CPU_Rep.f_7_ECX_[0]; }
 
-		inline static bool LAHF(void)				{ return CPU_Rep.f_81_ECX_[0]; }
-		inline static bool LZCNT(void)				{ return CPU_Rep.isIntel_ && CPU_Rep.f_81_ECX_[5]; }
-		inline static bool ABM(void)				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[5]; }
-		inline static bool SSE4a(void)				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[6]; }
-		inline static bool XOP(void)				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[11]; }
-		inline static bool TBM(void)				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[21]; }
+		inline static auto LAHF() -> bool				{ return CPU_Rep.f_81_ECX_[0]; }
+		inline static auto LZCNT() -> bool				{ return CPU_Rep.isIntel_ && CPU_Rep.f_81_ECX_[5]; }
+		inline static auto ABM() -> bool				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[5]; }
+		inline static auto SSE4a() -> bool				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[6]; }
+		inline static auto XOP() -> bool				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[11]; }
+		inline static auto TBM() -> bool				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_ECX_[21]; }
 		
-		inline static bool SYSCALL(void)			{ return CPU_Rep.isIntel_ && CPU_Rep.f_81_EDX_[11]; }
-		inline static bool MMXEXT(void)				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[22]; }
-		inline static bool RDTSCP(void)				{ return CPU_Rep.isIntel_ && CPU_Rep.f_81_EDX_[27]; }
-		inline static bool _3DNOWEXT(void)			{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[30]; }
-		inline static bool _3DNOW(void)				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[31]; }
+		inline static auto SYSCALL() -> bool			{ return CPU_Rep.isIntel_ && CPU_Rep.f_81_EDX_[11]; }
+		inline static auto MMXEXT() -> bool				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[22]; }
+		inline static auto RDTSCP() -> bool				{ return CPU_Rep.isIntel_ && CPU_Rep.f_81_EDX_[27]; }
+		inline static auto _3DNOWEXT() -> bool			{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[30]; }
+		inline static auto _3DNOW() -> bool				{ return CPU_Rep.isAMD_ && CPU_Rep.f_81_EDX_[31]; }
 
 	private:
 		static const InstructionSet_Internal CPU_Rep;
@@ -88,21 +88,17 @@ namespace EngineCore::SIMD::Core {
 		{
 		public:
 			InstructionSet_Internal()
-				: nIds_{ 0 },
-				nExIds_{ 0 },
-				isIntel_{ false },
-				isAMD_{ false },
+				: 
 				f_1_ECX_{ 0 },
 				f_1_EDX_{ 0 },
 				f_7_EBX_{ 0 },
 				f_7_ECX_{ 0 },
 				f_81_ECX_{ 0 },
-				f_81_EDX_{ 0 },
-				data_{},
-				extdata_{}
+				f_81_EDX_{ 0 }
+				
 			{
 				//int cpuInfo[4] = {-1};
-				std::array<int, 4> cpui;
+				std::array<int, 4> cpui{};
 
 				// Calling __cpuid with 0x0 as the function_id argument
 				// gets the number of the highest valid function ID.
@@ -176,12 +172,12 @@ namespace EngineCore::SIMD::Core {
 				}
 			};
 
-			int nIds_;
-			int nExIds_;
+			int nIds_{ 0 };
+			int nExIds_{ 0 };
 			std::string vendor_;
 			std::string brand_;
-			bool isIntel_;
-			bool isAMD_;
+			bool isIntel_{ false };
+			bool isAMD_{ false };
 			std::bitset<32> f_1_ECX_;
 			std::bitset<32> f_1_EDX_;
 			std::bitset<32> f_7_EBX_;

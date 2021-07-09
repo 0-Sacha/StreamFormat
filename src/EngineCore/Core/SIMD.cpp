@@ -74,6 +74,6 @@ namespace EngineCore::SIMD {
 
 
 
-namespace EngineCore::Intrinsic::Core {
+namespace EngineCore::SIMD::Core {
 	const InstructionSet::InstructionSet_Internal InstructionSet::CPU_Rep;
 }

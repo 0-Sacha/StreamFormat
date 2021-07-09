@@ -1,7 +1,8 @@
 #pragma once
 
-#include "EngineCorepch.h"
+#include "CPPTools/Core/Core.h"
 #include "CPPTools/LogSystem/LogSystem.h"
+#include "EngineCorepch.h"
 
 #ifdef ENGINE_CORE_DEBUG
 
@@ -10,6 +11,7 @@
 
 #endif
 
+#define ENGINE_CORE_USE_CPPTOOLS_LOGGER
 
 #ifdef ENGINE_CORE_USE_CPPTOOLS_LOGGER
 	#define ENGINE_CORE_TRACE(...)	CPPTools::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
@@ -37,8 +39,3 @@
 #else
 	#define ENGINE_CORE_ASSERT(x)
 #endif
-
-namespace EngineCore {
-	namespace Experimental {
-	}
-}

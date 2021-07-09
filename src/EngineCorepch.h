@@ -30,7 +30,7 @@
 #endif
 
 #ifdef BASE_PLATFORM_LINUX
-#error EngineCore doesn't support Linux yet
+#error EngineCore does not support Linux yet
 #endif
 
 
@@ -39,12 +39,14 @@
 #endif
 
 #ifdef BASE_COMPILER_GCC
-#error EngineCore doesn't support GCC yet
 #endif
 
 
-// Include 
+// Include
+#include <cstring>
+
 #include <utility>
+#include <memory>
 #include <limits>
 #include <array>
 #include <bitset>
@@ -53,12 +55,12 @@
 #include <chrono>
 #include <algorithm>
 #include <functional>
+#include <type_traits>
+
+#include <fstream>
+
 
 
 
 // Intrinsic
-
 #include <intrin.h>
-#include <xmmintrin.h>
-
-
