@@ -9,7 +9,7 @@ namespace EngineCore {
 	//----------------------------------//
 
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::Data(const uint8_t idx) -> T& {
+	inline constexpr T& BasicVector<3, T>::Data(const uint8_t idx) {
 		ENGINE_CORE_ASSERT(idx < Count());
 
 		switch (idx) {
@@ -20,7 +20,7 @@ namespace EngineCore {
 	}
 
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::Data(const uint8_t idx) const -> const T& {
+	inline constexpr const T& BasicVector<3, T>::Data(const uint8_t idx) const {
 		ENGINE_CORE_ASSERT(idx < Count());
 
 		switch (idx) {
@@ -31,7 +31,7 @@ namespace EngineCore {
 	}
 
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator[](const uint8_t idx) -> T& {
+	inline constexpr T& BasicVector<3, T>::operator[](const uint8_t idx) {
 		ENGINE_CORE_ASSERT(idx < Count());
 
 		switch (idx) {
@@ -42,7 +42,7 @@ namespace EngineCore {
 	}
 
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator[](const uint8_t idx) const -> const T& {
+	inline constexpr const T& BasicVector<3, T>::operator[](const uint8_t idx) const {
 		ENGINE_CORE_ASSERT(idx < Count());
 
 		switch (idx) {
@@ -86,13 +86,13 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator==(const BasicVector<3, K>& rhs) -> bool {
+	inline constexpr bool BasicVector<3, T>::operator==(const BasicVector<3, K>& rhs) {
 		return this->x == rhs.x && this->y == rhs.y && this->z && rhs.z;
 	}
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator!=(const BasicVector<3, K>& rhs) -> bool {
+	inline constexpr bool BasicVector<3, T>::operator!=(const BasicVector<3, K>& rhs) {
 		return !(*this == rhs);
 	}
 
@@ -104,19 +104,19 @@ namespace EngineCore {
 
 	// operator +I
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator+() -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator+() {
 		return *this;
 	}
 
 	// operator -I
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator-() -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator-() {
 		return BasicVector<3, T>(-this->x, -this->y, -this->z);
 	}
 
 	// operator ++I
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator++() -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator++() {
 		++this->x;
 		++this->y;
 		++this->z;
@@ -125,7 +125,7 @@ namespace EngineCore {
 	
 	// operator --I
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator--() -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator--() {
 		--this->x;
 		--this->y;
 		--this->z;
@@ -134,7 +134,7 @@ namespace EngineCore {
 
 	// operator I++
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator++(int) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator++(int) {
 		BasicVector<3, T> res(*this);
 		++* this;
 		return res;
@@ -142,7 +142,7 @@ namespace EngineCore {
 
 	// operator I--
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator--(int) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator--(int) {
 		BasicVector<3, T> res(*this);
 		--* this;
 		return res;
@@ -151,7 +151,7 @@ namespace EngineCore {
 	// operator =
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator=(const K scalar) {
 		this->x = static_cast<T>(scalar);
 		this->y = static_cast<T>(scalar);
 		this->z = static_cast<T>(scalar);
@@ -160,7 +160,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator=(const BasicVector<3, K>& vec) {
 		this->x = static_cast<T>(vec.x);
 		this->y = static_cast<T>(vec.y);
 		this->z = static_cast<T>(vec.z);
@@ -170,7 +170,7 @@ namespace EngineCore {
 	// operator +=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator+=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator+=(const K scalar) {
 		this->x += static_cast<T>(scalar);
 		this->y += static_cast<T>(scalar);
 		this->z += static_cast<T>(scalar);
@@ -179,7 +179,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator+=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator+=(const BasicVector<3, K>& vec) {
 		this->x += static_cast<T>(vec.x);
 		this->y += static_cast<T>(vec.y);
 		this->z += static_cast<T>(vec.z);
@@ -189,7 +189,7 @@ namespace EngineCore {
 	// operator -=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator-=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator-=(const K scalar) {
 		this->x -= static_cast<T>(scalar);
 		this->y -= static_cast<T>(scalar);
 		this->z -= static_cast<T>(scalar);
@@ -198,7 +198,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator-=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator-=(const BasicVector<3, K>& vec) {
 		this->x -= static_cast<T>(vec.x);
 		this->y -= static_cast<T>(vec.y);
 		this->z -= static_cast<T>(vec.z);
@@ -208,7 +208,7 @@ namespace EngineCore {
 	// operator *=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator*=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator*=(const K scalar) {
 		this->x *= static_cast<T>(scalar);
 		this->y *= static_cast<T>(scalar);
 		this->z *= static_cast<T>(scalar);
@@ -217,7 +217,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator*=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator*=(const BasicVector<3, K>& vec) {
 		this->x *= static_cast<T>(vec.x);
 		this->y *= static_cast<T>(vec.y);
 		this->z *= static_cast<T>(vec.z);
@@ -227,7 +227,7 @@ namespace EngineCore {
 	// operator /=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator/=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator/=(const K scalar) {
 		this->x /= static_cast<T>(scalar);
 		this->y /= static_cast<T>(scalar);
 		this->z /= static_cast<T>(scalar);
@@ -236,7 +236,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator/=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator/=(const BasicVector<3, K>& vec) {
 		this->x /= static_cast<T>(vec.x);
 		this->y /= static_cast<T>(vec.y);
 		this->z /= static_cast<T>(vec.z);
@@ -252,26 +252,26 @@ namespace EngineCore {
 	// binary condition
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator&&(const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator&&(const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(this->x && rhs.x, this->y && rhs.y, this->z && rhs.z);
 	}
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator||(const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator||(const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(this->x || rhs.x, this->y || rhs.y, this->z || rhs.z);
 	}
 
 	// operator ~I
 	template<typename T>
-	inline constexpr auto BasicVector<3, T>::operator~() -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> BasicVector<3, T>::operator~() {
 		return BasicVector<3, T>(~this->x, ~this->y, ~this->z);
 	}
 
 	// operator %=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator%=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator%=(const K scalar) {
 		this->x %= static_cast<T>(scalar);
 		this->y %= static_cast<T>(scalar);
 		this->z %= static_cast<T>(scalar);
@@ -280,7 +280,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator%=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator%=(const BasicVector<3, K>& vec) {
 		this->x %= static_cast<T>(vec.x);
 		this->y %= static_cast<T>(vec.y);
 		this->z %= static_cast<T>(vec.z);
@@ -290,7 +290,7 @@ namespace EngineCore {
 	// operator &=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator&=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator&=(const K scalar) {
 		this->x &= static_cast<T>(scalar);
 		this->y &= static_cast<T>(scalar);
 		this->z &= static_cast<T>(scalar);
@@ -299,7 +299,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator&=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator&=(const BasicVector<3, K>& vec) {
 		this->x &= static_cast<T>(vec.x);
 		this->y &= static_cast<T>(vec.y);
 		this->z &= static_cast<T>(vec.z);
@@ -309,7 +309,7 @@ namespace EngineCore {
 	// operator |=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator|=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator|=(const K scalar) {
 		this->x |= static_cast<T>(scalar);
 		this->y |= static_cast<T>(scalar);
 		this->z |= static_cast<T>(scalar);
@@ -318,7 +318,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator|=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator|=(const BasicVector<3, K>& vec) {
 		this->x |= static_cast<T>(vec.x);
 		this->y |= static_cast<T>(vec.y);
 		this->z |= static_cast<T>(vec.z);
@@ -328,7 +328,7 @@ namespace EngineCore {
 	// operator ^=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator^=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator^=(const K scalar) {
 		this->x ^= static_cast<T>(scalar);
 		this->y ^= static_cast<T>(scalar);
 		this->z ^= static_cast<T>(scalar);
@@ -337,7 +337,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator^=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator^=(const BasicVector<3, K>& vec) {
 		this->x ^= static_cast<T>(vec.x);
 		this->y ^= static_cast<T>(vec.y);
 		this->z ^= static_cast<T>(vec.z);
@@ -347,7 +347,7 @@ namespace EngineCore {
 	// operator <<=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator<<=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator<<=(const K scalar) {
 		this->x <<= static_cast<T>(scalar);
 		this->y <<= static_cast<T>(scalar);
 		this->z <<= static_cast<T>(scalar);
@@ -356,7 +356,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator<<=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator<<=(const BasicVector<3, K>& vec) {
 		this->x <<= static_cast<T>(vec.x);
 		this->y <<= static_cast<T>(vec.y);
 		this->z <<= static_cast<T>(vec.z);
@@ -366,7 +366,7 @@ namespace EngineCore {
 	// operator >>=
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator>>=(const K scalar) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator>>=(const K scalar) {
 		this->x >>= static_cast<T>(scalar);
 		this->y >>= static_cast<T>(scalar);
 		this->z >>= static_cast<T>(scalar);
@@ -375,7 +375,7 @@ namespace EngineCore {
 
 	template<typename T>
 	template<typename K>
-	inline constexpr auto BasicVector<3, T>::operator>>=(const BasicVector<3, K>& vec) -> BasicVector<3, T>& {
+	inline constexpr BasicVector<3, T>& BasicVector<3, T>::operator>>=(const BasicVector<3, K>& vec) {
 		this->x >>= static_cast<T>(vec.x);
 		this->y >>= static_cast<T>(vec.y);
 		this->z >>= static_cast<T>(vec.z);
@@ -390,65 +390,65 @@ namespace EngineCore {
 
 	// operator +
 	template<typename T, typename K>
-	inline constexpr auto operator+(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator+(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator+(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator+(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs + rhs.x, lhs + rhs.y, lhs + rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator+(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator+(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
 	}
 
 	// operator -
 	template<typename T, typename K>
-	inline constexpr auto operator-(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator-(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x - rhs, lhs.y - rhs, lhs.z - rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator-(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator-(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs - rhs.x, lhs - rhs.y, lhs - rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator-(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator-(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
 	}
 
 	// operator *
 	template<typename T, typename K>
-	inline constexpr auto operator*(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator*(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator*(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator*(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator*(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator*(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
 	}
 
 	// operator /
 	template<typename T, typename K>
-	inline constexpr auto operator/(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator/(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator/(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator/(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator/(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator/(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
 	}
 
@@ -460,97 +460,97 @@ namespace EngineCore {
 
 	// operator %
 	template<typename T, typename K>
-	inline constexpr auto operator%(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator%(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x % rhs, lhs.y % rhs, lhs.z % rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator%(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator%(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs % rhs.x, lhs % rhs.y, lhs % rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator%(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator%(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x % rhs.x, lhs.y % rhs.y, lhs.z % rhs.z);
 	}
 
 	// operator &
 	template<typename T, typename K>
-	inline constexpr auto operator&(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator&(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x & rhs, lhs.y & rhs, lhs.z & rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator&(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator&(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs & rhs.x, lhs & rhs.y, lhs & rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator&(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator&(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x & rhs.x, lhs.y & rhs.y, lhs.z & rhs.z);
 	}
 
 	// operator |
 	template<typename T, typename K>
-	inline constexpr auto operator|(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator|(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x | rhs, lhs.y | rhs, lhs.z | rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator|(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator|(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs | rhs.x, lhs | rhs.y, lhs | rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator|(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator|(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x | rhs.x, lhs.y | rhs.y, lhs.z | rhs.z);
 	}
 
 	// operator ^
 	template<typename T, typename K>
-	inline constexpr auto operator^(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator^(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x ^ rhs, lhs.y ^ rhs, lhs.z ^ rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator^(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator^(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs ^ rhs.x, lhs ^ rhs.y, lhs ^ rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator^(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator^(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x ^ rhs.x, lhs.y ^ rhs.y, lhs.z ^ rhs.z);
 	}
 
 	// operator <<
 	template<typename T, typename K>
-	inline constexpr auto operator<<(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator<<(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x << rhs, lhs.y << rhs, lhs.z << rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator<<(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator<<(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs << rhs.x, rhs << rhs.y, rhs << rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator<<(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator<<(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x << rhs.x, lhs.y << rhs.y, lhs.z << rhs.z);
 	}
 
 	// operator >>
 	template<typename T, typename K>
-	inline constexpr auto operator>>(const BasicVector<3, T>& lhs, const K rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator>>(const BasicVector<3, T>& lhs, const K rhs) {
 		return BasicVector<3, T>(lhs.x >> rhs, lhs.y >> rhs, lhs.z >> rhs);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator>>(const K lhs, const BasicVector<3, T>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator>>(const K lhs, const BasicVector<3, T>& rhs) {
 		return BasicVector<3, T>(lhs >> rhs.x, lhs >> rhs.y, lhs >> rhs.z);
 	}
 
 	template<typename T, typename K>
-	inline constexpr auto operator>>(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) -> BasicVector<3, T> {
+	inline constexpr BasicVector<3, T> operator>>(const BasicVector<3, T>& lhs, const BasicVector<3, K>& rhs) {
 		return BasicVector<3, T>(lhs.x >> rhs.x, lhs.y >> rhs.y, lhs.z >> rhs.z);
 	}
 }

@@ -17,15 +17,15 @@ namespace EngineCore {
 			T x;
 		};
 
-		inline constexpr static auto Length() -> size_t { return 1; }
-		inline constexpr static auto Count() -> size_t	{ return 1; }
-		inline constexpr static auto Size() -> size_t	{ return 1; }
+		inline constexpr static size_t Length()	{ return 1; }
+		inline constexpr static size_t Count()	{ return 1; }
+		inline constexpr static size_t Size()		{ return 1; }
 
-		inline constexpr		auto Data() -> T&							{ return x; };
-		inline constexpr auto Data() const -> const	T&						{ return x; };
+		inline constexpr		T& Data()							{ return x; };
+		inline constexpr const	T& Data() const						{ return x; };
 
-		inline constexpr		auto operator[](std::uint8_t /*unused*/) -> T&			{ return x; };
-		inline constexpr auto operator[](std::uint8_t /*unused*/) const -> const	T&	{ return x; };
+		inline constexpr		T& operator[](std::uint8_t /*unused*/) 			{ return x; };
+		inline constexpr const	T& operator[](std::uint8_t /*unused*/) const	{ return x; };
 
 		//--------------------------------------------//
 		//------------- Base Constructor -------------//
@@ -46,8 +46,8 @@ namespace EngineCore {
 		//------------- Condition Operator -------------//
 		//----------------------------------------------//
 
-		template<typename K> constexpr auto operator==(const BasicVector<1, K>& rhs) -> bool;
-		template<typename K> constexpr auto operator!=(const BasicVector<1, K>& rhs) -> bool;
+		template<typename K> constexpr bool operator==(const BasicVector<1, K>& rhs);
+		template<typename K> constexpr bool operator!=(const BasicVector<1, K>& rhs);
 
 
 
@@ -56,37 +56,37 @@ namespace EngineCore {
 		//------------------------------------//
 
 		// operator +I
-		constexpr auto  operator+() -> BasicVector<1, T>;
+		constexpr BasicVector<1, T>  operator+();
 		// operator -I
-		constexpr auto  operator-() -> BasicVector<1, T>;
+		constexpr BasicVector<1, T>  operator-();
 		// operator ++I
-		constexpr auto operator++() -> BasicVector<1, T>&;
+		constexpr BasicVector<1, T>& operator++();
 		// operator --I
-		constexpr auto operator--() -> BasicVector<1, T>&;
+		constexpr BasicVector<1, T>& operator--();
 		// operator I++
-		constexpr auto  operator++(int) -> BasicVector<1, T>;
+		constexpr BasicVector<1, T>  operator++(int);
 		// operator I--
-		constexpr auto  operator--(int) -> BasicVector<1, T>;
+		constexpr BasicVector<1, T>  operator--(int);
 
 		// operator =
-		template<typename K>	constexpr auto operator=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator=(const BasicVector<1, K>& vec);
 
 		// operator +=
-		template<typename K>	constexpr auto operator+=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator+=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator+=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator+=(const BasicVector<1, K>& vec);
 
 		// operator -=
-		template<typename K>	constexpr auto operator-=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator-=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator-=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator-=(const BasicVector<1, K>& vec);
 
 		// operator *=
-		template<typename K>	constexpr auto operator*=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator*=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator*=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator*=(const BasicVector<1, K>& vec);
 
 		// operator /=
-		template<typename K>	constexpr auto operator/=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator/=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator/=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator/=(const BasicVector<1, K>& vec);
 
 
 		//-------------------------------------------//
@@ -94,35 +94,35 @@ namespace EngineCore {
 		//-------------------------------------------//
 
 		// binary condition
-		template<typename K>	constexpr auto operator&&(const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
-		template<typename K>	constexpr auto operator||(const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+		template<typename K>	constexpr BasicVector<1, T> operator&&(const BasicVector<1, K>& rhs);
+		template<typename K>	constexpr BasicVector<1, T> operator||(const BasicVector<1, K>& rhs);
 
 		// operator ~I
-		constexpr auto operator~() -> BasicVector<1, T>;
+		constexpr BasicVector<1, T> operator~();
 
 		// operator %=
-		template<typename K>	constexpr auto operator%=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator%=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator%=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator%=(const BasicVector<1, K>& vec);
 
 		// operator &=
-		template<typename K>	constexpr auto operator&=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator&=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator&=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator&=(const BasicVector<1, K>& vec);
 
 		// operator |=
-		template<typename K>	constexpr auto operator|=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator|=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator|=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator|=(const BasicVector<1, K>& vec);
 
 		// operator ^=
-		template<typename K>	constexpr auto operator^=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator^=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator^=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator^=(const BasicVector<1, K>& vec);
 
 		// operator <<=
-		template<typename K>	constexpr auto operator<<=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator<<=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator<<=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator<<=(const BasicVector<1, K>& vec);
 
 		// operator >>=
-		template<typename K>	constexpr auto operator>>=(K scalar) -> BasicVector<1, T>&;
-		template<typename K>	constexpr auto operator>>=(const BasicVector<1, K>& vec) -> BasicVector<1, T>&;
+		template<typename K>	constexpr BasicVector<1, T>& operator>>=(K scalar);
+		template<typename K>	constexpr BasicVector<1, T>& operator>>=(const BasicVector<1, K>& vec);
 	};
 
 	// ------------------------------------//
@@ -130,24 +130,24 @@ namespace EngineCore {
 	//------------------------------------//
 	
 	// operator +
-	template<typename T, typename K>	constexpr auto operator+(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator+(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator+(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator+(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator+(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator+(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator -
-	template<typename T, typename K>	constexpr auto operator-(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator-(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator-(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator-(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator-(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator-(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator *
-	template<typename T, typename K>	constexpr auto operator*(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator*(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator*(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator*(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator*(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator*(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator /
-	template<typename T, typename K>	constexpr auto operator/(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator/(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator/(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator/(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator/(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator/(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 
 
@@ -156,34 +156,34 @@ namespace EngineCore {
 	//-------------------------------------------//
 
 	// operator %
-	template<typename T, typename K>	constexpr auto operator%(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator%(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator%(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator%(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator%(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator%(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator &
-	template<typename T, typename K>	constexpr auto operator&(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator&(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator&(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator&(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator&(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator&(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator |
-	template<typename T, typename K>	constexpr auto operator|(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator|(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator|(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator|(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator|(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator|(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator ^
-	template<typename T, typename K>	constexpr auto operator^(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator^(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator^(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator^(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator^(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator^(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator <<
-	template<typename T, typename K>	constexpr auto operator<<(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator<<(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator<<(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator<<(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator<<(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator<<(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 	// operator >>
-	template<typename T, typename K>	constexpr auto operator>>(const BasicVector<1, T>& lhs, K rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator>>(K lhs, const BasicVector<1, T>& rhs) -> BasicVector<1, T>;
-	template<typename T, typename K>	constexpr auto operator>>(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs) -> BasicVector<1, T>;
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator>>(const BasicVector<1, T>& lhs, K rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator>>(K lhs, const BasicVector<1, T>& rhs);
+	template<typename T, typename K>	constexpr BasicVector<1, T> operator>>(const BasicVector<1, T>& lhs, const BasicVector<1, K>& rhs);
 
 
 	//----------------------------------------------//
