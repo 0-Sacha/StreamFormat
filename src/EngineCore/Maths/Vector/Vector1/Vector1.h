@@ -1,28 +1,9 @@
 #pragma once
 
-#include "BasicVector1.h"
-#include "BasicVector1.inl"
+#include "Vector1BasicImpl.h"
+#include "Vector1BasicImpl.inl"
 
 namespace EngineCore {
-
-	template <typename Type>
-	using BasicVector1 = BasicVector<1, Type>;
-
-	using BasicVector1f = BasicVector1<float>;
-	using BasicVector1d = BasicVector1<double>;
-	using BasicVector1i = BasicVector1<int>;
-	using BasicVector1u = BasicVector1<unsigned int>;
-
-	using BasicVector1i8	= BasicVector1<int8_t>;
-	using BasicVector1u8	= BasicVector1<uint8_t>;
-	using BasicVector1i16	= BasicVector1<int16_t>;
-	using BasicVector1u16	= BasicVector1<uint16_t>;
-	using BasicVector1i32	= BasicVector1<int32_t>;
-	using BasicVector1u32	= BasicVector1<uint32_t>;
-	using BasicVector1i64	= BasicVector1<int64_t>;
-	using BasicVector1u64	= BasicVector1<uint64_t>;
-
-
 
     template <typename Type, typename ComputeAlgorithm = EngineCompute::EngineComputeDefault>
     using Vector1 = Vector<1, Type, ComputeAlgorithm>;

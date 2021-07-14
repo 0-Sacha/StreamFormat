@@ -35,7 +35,7 @@
 
 
 #ifdef ENGINE_CORE_USE_ASSERT
-	#define ENGINE_CORE_ASSERT(x)	if(!(x)) ENGINE_CORE_FATAL("ASSERT FAILED!! : {}", #x)
+	#define ENGINE_CORE_ASSERT(x)	if(!(x)) ENGINE_CORE_FATAL("ASSERT FAILED! : {}", #x)
 #else
 	#define ENGINE_CORE_ASSERT(x)
 #endif
