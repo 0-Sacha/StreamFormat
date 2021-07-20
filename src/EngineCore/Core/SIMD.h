@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef ENGINE_CORE_COMPILER_MSVC
 
 #define ENGINE_CORE_SIMD_CHECK() EngineCore::SIMD::CheckISAFeature();
 
@@ -190,3 +191,5 @@ namespace EngineCore::SIMD::Core {
 	};
 
 }
+
+#endif

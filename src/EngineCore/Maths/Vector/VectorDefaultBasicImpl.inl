@@ -8,31 +8,24 @@ namespace EngineCore {
 	//------------- Base Constructor -------------//
 	//--------------------------------------------//
 
-	template <std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>::Vector()
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector()
 		: data{} {}
 
-	template <std::size_t COUNT, typename T>
-	template <typename ...K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>::Vector(const K ...values)
-		: data{static_cast<T>(values)...} {}
-
-	template <std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>::Vector(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& vec) = default;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& vec) = default;
 
 	//--------------------------------------------------//
 	//------------- Conversion Constructor -------------//
 	//--------------------------------------------------//
 
-	template <std::size_t COUNT, typename T>
-	template <typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>::Vector(const K scalar) {
-		std::fill(data.begin(), data.end(), static_cast<T>(scalar));
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto scalar) {
+		std::fill(data.begin(), data.end(), static_cast<ValueType>(scalar));
 	}
 
-	template <std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>::Vector(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<COUNT, ValueType> auto& vec) {
 		data = vec.data;
 	}
 
@@ -41,31 +34,27 @@ namespace EngineCore {
 	//------------- Condition Operator -------------//
 	//----------------------------------------------//
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr bool Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator==(const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr bool Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertible<COUNT, ValueType> auto& rhs) {
 		return data == rhs.data;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr bool Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator!=(const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr bool Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertible<COUNT, ValueType> auto& rhs) {
 		return !(*this == rhs);
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator&&(const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> newVec;
-		std::generate(newVec.data.begin(), newVec.data.end(), [i = 0, this, &rhs]() { auto res = this->data[i] && rhs.data[i]; ++i; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator&&(const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> newVec;
+		std::generate(newVec.data.begin(), newVec.data.end(), [i = 0, this, &rhs]() mutable { auto res = this->data[i] && rhs.data[i]; ++i; return res; });
 		return newVec;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator||(const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> newVec;
-		std::generate(newVec.data.begin(), newVec.data.end(), [i = 0, this, &rhs]() { auto res = this->data[i] || rhs.data[i]; ++i; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator||(const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> newVec;
+		std::generate(newVec.data.begin(), newVec.data.end(), [i = 0, this, &rhs]() mutable { auto res = this->data[i] || rhs.data[i]; ++i; return res; });
 		return newVec;
 	}
 
@@ -74,137 +63,127 @@ namespace EngineCore {
 	//------------------------------------//
 
 	// operator +I
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator+() {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator+() {
 		return *this;
 	}
 
 	// operator -I
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator-() {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> newVec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator-() {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> newVec;
 		std::generate(newVec.data.begin(), newVec.data.end(), [i = 0, this]() mutable { auto res = -this->data[i]; ++i; return res; });
 		return newVec;
 	}
 
 	// operator ~I
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator~() {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> newVec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator~() {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> newVec;
 		std::generate(newVec.data.begin(), newVec.data.end(), [i = 0, this]() mutable { auto res = ~this->data[i]; ++i; return res; });
 		return newVec;
 	}
 
 
 	// operator ++I
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator++() {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator++() {
 		for (ValueType& value : data)
 			++value;
 		return *this;
 	}
 
 	// operator --I
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator--() {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator--() {
 		for (ValueType& value : data)
 			--value;
 		return *this;
 	}
 
 	// operator I++
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator++(int) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> res(*this);
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator++(int) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> res(*this);
 		++* this;
 		return res;
 	}
 
 	// operator I--
-	template<std::size_t COUNT, typename T>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator--(int) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> res(*this);
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator--(int) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> res(*this);
 		--* this;
 		return res;
 	}
 
 
 	// operator =
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator=(const K scalar) {
-		std::fill(data.begin(), data.end(), static_cast<T>(scalar));
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator=(const std::convertible_to<ValueType> auto scalar) {
+		std::fill(data.begin(), data.end(), static_cast<ValueType>(scalar));
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<COUNT, ValueType> auto& vec) {
 		data = vec.data;
 		return *this;
 	}
 
 	// operator +=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator+=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value += scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator+=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value + vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value + vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator -=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator-=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value -= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator-=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value - vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value - vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator *=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator*=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value *= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator*=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value * vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value * vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator /=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator/=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value /= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator/=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value / vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value / vec.data[i]; i++; return res; });
 		return *this;
 	}
 
@@ -215,101 +194,88 @@ namespace EngineCore {
 	//-------------------------------------------//
 
 	// operator %=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator%=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value %= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator%=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value % vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value % vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator &=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator&=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value &= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator&=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value & vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value & vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator |=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator|=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value |= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator|=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value | vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value | vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator ^=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator^=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value ^= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator^=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value ^ vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value ^ vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator <<=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator<<=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value <<= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator<<=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value << vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value << vec.data[i]; i++; return res; });
 		return *this;
 	}
 
 	// operator >>=
-	template<std::size_t COUNT, typename T>
-	template<typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator>>=(const K scalar) {
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const std::convertible_to<ValueType> auto scalar) {
 		for (ValueType& value : data)
 			value >>= scalar;
 		return *this;
 	}
 
-	template<std::size_t COUNT, typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic>& Vector<COUNT, T, EngineCompute::EngineComputeBasic>::operator>>=(const Vector<COUNT, K, ComputeAlgoritmClient>& vec) {
-		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](T value) mutable { auto res = value >> vec.data[i]; i++; return res; });
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const VectorConvertible<COUNT, ValueType> auto& vec) {
+		std::transform(data.cbegin(), data.cend(), data.begin(), [i = 0, &vec](ValueType value) mutable { auto res = value >> vec.data[i]; i++; return res; });
 		return *this;
 	}
-
 
 
 	//------------------------------------//
@@ -317,89 +283,89 @@ namespace EngineCore {
 	//------------------------------------//
 
 	// operator +
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] + rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator+(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs + rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] + rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator -
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] - rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator-(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs - rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] - rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator *
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] * rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator*(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs * rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] * rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator /
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] / rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator/(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs / rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] / rhs.data[i]; ++i; return res; });
 		return vec;
 	}
@@ -411,133 +377,133 @@ namespace EngineCore {
 	//-------------------------------------------//
 
 	// operator %
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] % rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator%(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs % rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] % rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator &
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] & rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator&(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs & rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] & rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator |
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] | rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator|(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs | rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] | rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator ^
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] ^ rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator^(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs ^ rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] ^ rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator <<
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] << rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator<<(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs << rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] << rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
 	// operator >>
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, rhs]() mutable { auto res = lhs.data[i] >> rhs; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator>>(const K lhs, const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, lhs, &rhs]() mutable { auto res = lhs >> rhs.data[i]; ++i; return res; });
 		return vec;
 	}
 
-	template<std::size_t COUNT, typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<COUNT, T, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<COUNT, K, ComputeAlgoritmClient>& rhs) {
-		Vector<COUNT, T, EngineCompute::EngineComputeBasic> vec;
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs) {
+		Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> vec;
 		std::generate(vec.begin(), vec.end(), [i = 0, &lhs, &rhs]() mutable { auto res = lhs.data[i] >> rhs.data[i]; ++i; return res; });
 		return vec;
 	}

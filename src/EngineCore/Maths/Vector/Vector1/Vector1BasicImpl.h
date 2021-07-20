@@ -5,41 +5,49 @@
 namespace EngineCore {
 
 	//------------- Vector1 -------------//
-	template<typename T>
-	struct Vector<1, T, EngineCompute::EngineComputeBasic>
+	template <typename Type>
+	struct Vector<1, Type, EngineCompute::EngineComputeBasic>
 	{
 		//----------------------------------//
 		//------------- Values -------------//
 		//----------------------------------//
 
-		using ValueType = T;
+		using ValueType = Type;
 
 		union {
 			std::array<ValueType, 1> data;
 			ValueType x;
 		};
 
-		inline constexpr static size_t Length() { return 1; }
-		inline constexpr static size_t Count()	{ return 1; }
-		inline constexpr static size_t Size()	{ return 1; }
+		inline constexpr static std::size_t Length() { return 1; }
+		inline constexpr static std::size_t Count() { return 1; }
+		inline constexpr static std::size_t Size() { return 1; }
 
-		inline constexpr		T& Data()		{ return x; };
-		inline constexpr const	T& Data() const { return x; };
+		inline constexpr ValueType& operator[](const std::size_t idx) { ENGINE_CORE_ASSERT(idx < 1); return data[0]; }
+		inline constexpr const ValueType& operator[](const std::size_t idx) const { ENGINE_CORE_ASSERT(idx < 1); return data[0]; }
+
+		inline constexpr		std::array<ValueType, 1>& GetArray() { return data; }
+		inline constexpr const	std::array<ValueType, 1>& GetArray() const { return data; }
 
 		//--------------------------------------------//
 		//------------- Basic Constructor -------------//
 		//--------------------------------------------//
 
 		constexpr Vector();
-		constexpr Vector(const T scalar);
-		constexpr Vector(const Vector<1, T, EngineCompute::EngineComputeBasic>& vec);
+		constexpr Vector(const std::convertible_to<ValueType> auto scalar); // S
+		constexpr Vector(const VectorConvertible<1, ValueType> auto& vec);	// V1
 
-		//--------------------------------------------------//
-		//------------- Conversion Constructor -------------//
-		//--------------------------------------------------//
+		//--------------------------------------------------------------------//
+		//------------- Conversion From Other Vector Constructor -------------//
+		//--------------------------------------------------------------------//
 
-		template<typename K> constexpr Vector(const K scalar);
-		template<typename K, typename ComputeAlgoritmClient> constexpr Vector(const Vector<1, K, ComputeAlgoritmClient>& vec);
+		// From Vector<2, T, C>
+		constexpr Vector(const VectorConvertible<2, ValueType> auto& vec);	// V2
+		// From Vector<3, T, C>
+		constexpr Vector(const VectorConvertible<3, ValueType> auto& vec);	// V3
+		// From Vector<4, T, C>
+		constexpr Vector(const VectorConvertible<4, ValueType> auto& vec);	// V4
+
 
 
 		//-----------------------------------------------//
@@ -47,17 +55,15 @@ namespace EngineCore {
 		//-----------------------------------------------//
 
 
-
-
 		//----------------------------------------------//
 		//------------- Condition Operator -------------//
 		//----------------------------------------------//
 
-		template<typename K, typename ComputeAlgoritmClient> constexpr bool operator==(const Vector<1, K, ComputeAlgoritmClient>& rhs);
-		template<typename K, typename ComputeAlgoritmClient> constexpr bool operator!=(const Vector<1, K, ComputeAlgoritmClient>& rhs);
+		constexpr bool operator==(const VectorConvertible<1, ValueType> auto& rhs);
+		constexpr bool operator!=(const VectorConvertible<1, ValueType> auto& rhs);
 
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator&&(const Vector<1, K, ComputeAlgorithmClient>& rhs);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator||(const Vector<1, K, ComputeAlgorithmClient>& rhs);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator&&(const VectorConvertible<1, ValueType> auto& rhs);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator||(const VectorConvertible<1, ValueType> auto& rhs);
 
 
 		//------------------------------------//
@@ -65,94 +71,96 @@ namespace EngineCore {
 		//------------------------------------//
 
 		// operator +I
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic>  operator+();
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>  operator+();
 		// operator -I
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic>  operator-();
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>  operator-();
 		// operator ~I
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator~();
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>  operator~();
 
 		// operator ++I
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator++();
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator++();
 		// operator --I
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator--();
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator--();
 		// operator I++
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic>  operator++(int);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>  operator++(int);
 		// operator I--
-		constexpr Vector<1, T, EngineCompute::EngineComputeBasic>  operator--(int);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>  operator--(int);
 
 		// operator =
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertible<1, ValueType> auto& vec);
+
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertible<2, ValueType> auto& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertible<3, ValueType> auto& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertible<4, ValueType> auto& vec);
 
 		// operator +=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator+=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator+=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator -=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator-=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator-=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator *=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator*=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator*=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator /=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator/=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator/=(const Vector<1, K, ComputeAlgorithmClient>& vec);
-
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const VectorConvertible<1, ValueType> auto& vec);
 
 		//-------------------------------------------//
 		//------------- binary operator -------------//
 		//-------------------------------------------//
-
+		// 
 		// operator %=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator%=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator%=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator &=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator&=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator&=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator |=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator|=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator|=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator ^=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator^=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator^=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator <<=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator<<=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator<<=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const VectorConvertible<1, ValueType> auto& vec);
 
 		// operator >>=
-		template<typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator>>=(K scalar);
-		template<typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic>& operator>>=(const Vector<1, K, ComputeAlgorithmClient>& vec);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const std::convertible_to<ValueType> auto scalar);
+		constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const VectorConvertible<1, ValueType> auto& vec);
 	};
-
 	// ------------------------------------//
 	//------------- Operator -------------//
 	//------------------------------------//
-	
+
 	// operator +
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator+(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator+(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator+(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator+(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator -
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator-(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator-(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator-(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator-(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator *
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator*(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator*(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator*(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator*(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator /
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator/(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator/(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator/(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 
 
@@ -161,34 +169,34 @@ namespace EngineCore {
 	//-------------------------------------------//
 
 	// operator %
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator%(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator%(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator%(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator%(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator &
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator&(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator&(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator&(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator&(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator |
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator|(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator|(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator|(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator|(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator ^
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator^(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator^(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator^(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator^(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator <<
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator<<(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator<<(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator<<(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator<<(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 
 	// operator >>
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator>>(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, K rhs);
-	template<typename T, typename K> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator>>(K lhs, const Vector<1, T, EngineCompute::EngineComputeBasic>& rhs);
-	template<typename T, typename K, typename ComputeAlgorithmClient> constexpr Vector<1, T, EngineCompute::EngineComputeBasic> operator>>(const Vector<1, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<1, K, ComputeAlgorithmClient>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator>>(const std::convertible_to<ValueType> auto lhs, const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& rhs);
+	template <typename ValueType> constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs);
 }
 
 

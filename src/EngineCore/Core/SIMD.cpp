@@ -9,6 +9,7 @@
 #define ENGINE_CORE_ISA_FEATURE_TEST(feature, isSupported)
 #endif
 
+#ifdef ENGINE_CORE_COMPILER_MSVC
 namespace EngineCore::SIMD {
 	void CheckISAFeature()
 	{
@@ -71,9 +72,7 @@ namespace EngineCore::SIMD {
 	}
 }
 
-
-
-
 namespace EngineCore::SIMD::Core {
 	const InstructionSet::InstructionSet_Internal InstructionSet::CPU_Rep;
 }
+#endif

@@ -10,19 +10,7 @@
 #include "Vector/Vector4/Vector4.h"
 #include "Vector/VectorDefaultBasicImpl.inl"
 
+
 #include "Matrix/Matrix.h"
 #include "Matrix/Matrix2x2/Matrix2x2.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "Matrix/MatrixDefaultBasicImpl.inl"

@@ -8,67 +8,122 @@ namespace EngineCore {
 	//------------- Base Constructor -------------//
 	//--------------------------------------------//
 
-    template <typename T>
-    inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector()
+    template <typename ValueType>
+    inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector()
 		: x{}, y{}, z{} {}
 
-	template <typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector(const T scalar)
-		: x{ scalar }, y{ scalar }, z{ scalar } {}
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto scalar)
+		: x{ static_cast<ValueType>(scalar) }, y{ static_cast<ValueType>(scalar) }, z{ static_cast<ValueType>(scalar) } {}
 
-	template <typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector(const T valueX, const T valueY, const T valueZ)
-		: x{ valueX }, y{ valueY }, z{ valueZ } {}
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z)
+		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) } {}
 
-	template <typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector(const Vector<3, T, EngineCompute::EngineComputeBasic>& vec) = default;
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<3, ValueType> auto& vec)
+		: x{ static_cast<ValueType>(vec.x) }, y{ static_cast<ValueType>(vec.y) }, z{ static_cast<ValueType>(vec.z) } {}
+
+	//--------------------------------------------------------------------//
+	//------------- Conversion From Other Vector Constructor -------------//
+	//--------------------------------------------------------------------//
+
+	// From Vector<1, T, C>
+	// V1 as S
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& scalar)
+		: x{ static_cast<ValueType>(scalar) }, y{ static_cast<ValueType>(scalar) }, z{ static_cast<ValueType>(scalar) } {}
+
+	// V1 - S  - S
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z)
+		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) } {}
+	
+	// S  - V1 - S
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z)
+		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z) } {}
+	
+	// V1 - V1 - S 
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z)
+		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z) } {}
+	
+	// S  - S  - V1
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z)
+		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z.z) } {}
+	
+	// V1 - S  - V1
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z)
+		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z.z) } {}
+	
+	// S  - V1 - V1
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z)
+		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z.z) } {}
+	
+	// V1 - V1 - V1
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z)
+		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z.z) } {}
 
 
-	//--------------------------------------------------//
-	//------------- Conversion Constructor -------------//
-	//--------------------------------------------------//
+	// From Vector<2, T, C>
+	// V2 - S
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z)
+		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(z) } {}
+	
+	// V2 - V1
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<1, ValueType> auto z)
+		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(z.z) } {}
+	
+	// S  - V2
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz)
+		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(yz.y) }, z{ static_cast<ValueType>(yz.z) } {}
+	
+	// V1 - V2
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz)
+		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(yz.y) }, z{ static_cast<ValueType>(yz.z) } {}
 
-	template <typename T>
-	template <typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector(const K scalar)
-		: x{ static_cast<T>(scalar) }, y{ static_cast<T>(scalar) }, z{ static_cast<T>(scalar) } {}
+	// From Vector<4, T, C>
+	// V4
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<4, ValueType> auto& vec)
+		: x{ static_cast<ValueType>(vec.x) }, y{ static_cast<ValueType>(vec.y) }, z{ static_cast<ValueType>(vec.z) } {}
 
-	template <typename T>
-	template <typename K1, typename K2, typename K3>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector(const K1 valueX, const K2 valueY, const K3 valueZ)
-		: x{ static_cast<T>(valueX) }, y{ static_cast<T>(valueY) }, z{ static_cast<T>(valueZ) } {}
-
-	template <typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>::Vector(const Vector<3, K, ComputeAlgoritmClient>& vec)
-		: x{ static_cast<T>(vec.x) }, y{ static_cast<T>(vec.y) }, z{ static_cast<T>(vec.z) } {}
+	//-----------------------------------------------//
+	//------------- Conversion Operator -------------//
+	//-----------------------------------------------//
+	
 
 	//----------------------------------------------//
 	//------------- Condition Operator -------------//
 	//----------------------------------------------//
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr bool Vector<3, T, EngineCompute::EngineComputeBasic>::operator==(const Vector<3, K, ComputeAlgoritmClient>& rhs) {
+	template <typename ValueType>
+	inline constexpr bool Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertible<3, ValueType> auto& rhs) {
 		return this->x == rhs.x && this->y == rhs.y && this->z && rhs.z;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr bool Vector<3, T, EngineCompute::EngineComputeBasic>::operator!=(const Vector<3, K, ComputeAlgoritmClient>& rhs) {
+	template <typename ValueType>
+	inline constexpr bool Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertible<3, ValueType> auto& rhs) {
 		return !(*this == rhs);
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator&&(const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(this->x && rhs.x, this->y && rhs.y, this->z && rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator&&(const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(this->x && rhs.x, this->y && rhs.y, this->z && rhs.z);
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator||(const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(this->x || rhs.x, this->y || rhs.y, this->z || rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator||(const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(this->x || rhs.x, this->y || rhs.y, this->z || rhs.z);
 	}
 
 	//------------------------------------//
@@ -76,27 +131,27 @@ namespace EngineCore {
 	//------------------------------------//
 
 	// operator +I
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator+() {
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator+() {
 		return *this;
 	}
 
 	// operator -I
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator-() {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(-this->x, -this->y, -this->z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator-() {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(-this->x, -this->y, -this->z);
 	}
 
 	// operator ~I
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator~() {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(~this->x, ~this->y, ~this->z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator~() {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(~this->x, ~this->y, ~this->z);
 	}
 
 
 	// operator ++I
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator++() {
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator++() {
 		++this->x;
 		++this->y;
 		++this->z;
@@ -104,8 +159,8 @@ namespace EngineCore {
 	}
 	
 	// operator --I
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator--() {
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator--() {
 		--this->x;
 		--this->y;
 		--this->z;
@@ -113,113 +168,103 @@ namespace EngineCore {
 	}
 
 	// operator I++
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator++(int) {
-		Vector<3, T, EngineCompute::EngineComputeBasic> res(*this);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator++(int) {
+		Vector<3, ValueType, EngineCompute::EngineComputeBasic> res(*this);
 		++* this;
 		return res;
 	}
 
 	// operator I--
-	template<typename T>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> Vector<3, T, EngineCompute::EngineComputeBasic>::operator--(int) {
-		Vector<3, T, EngineCompute::EngineComputeBasic> res(*this);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator--(int) {
+		Vector<3, ValueType, EngineCompute::EngineComputeBasic> res(*this);
 		--* this;
 		return res;
 	}
 
 	// operator =
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator=(const K scalar) {
-		this->x = static_cast<T>(scalar);
-		this->y = static_cast<T>(scalar);
-		this->z = static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator=(const std::convertible_to<ValueType> auto scalar) {
+		this->x = static_cast<ValueType>(scalar);
+		this->y = static_cast<ValueType>(scalar);
+		this->z = static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x = static_cast<T>(vec.x);
-		this->y = static_cast<T>(vec.y);
-		this->z = static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x = static_cast<ValueType>(vec.x);
+		this->y = static_cast<ValueType>(vec.y);
+		this->z = static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator +=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator+=(const K scalar) {
-		this->x += static_cast<T>(scalar);
-		this->y += static_cast<T>(scalar);
-		this->z += static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const std::convertible_to<ValueType> auto scalar) {
+		this->x += static_cast<ValueType>(scalar);
+		this->y += static_cast<ValueType>(scalar);
+		this->z += static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator+=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x += static_cast<T>(vec.x);
-		this->y += static_cast<T>(vec.y);
-		this->z += static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x += static_cast<ValueType>(vec.x);
+		this->y += static_cast<ValueType>(vec.y);
+		this->z += static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator -=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator-=(const K scalar) {
-		this->x -= static_cast<T>(scalar);
-		this->y -= static_cast<T>(scalar);
-		this->z -= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const std::convertible_to<ValueType> auto scalar) {
+		this->x -= static_cast<ValueType>(scalar);
+		this->y -= static_cast<ValueType>(scalar);
+		this->z -= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator-=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x -= static_cast<T>(vec.x);
-		this->y -= static_cast<T>(vec.y);
-		this->z -= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x -= static_cast<ValueType>(vec.x);
+		this->y -= static_cast<ValueType>(vec.y);
+		this->z -= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator *=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator*=(const K scalar) {
-		this->x *= static_cast<T>(scalar);
-		this->y *= static_cast<T>(scalar);
-		this->z *= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const std::convertible_to<ValueType> auto scalar) {
+		this->x *= static_cast<ValueType>(scalar);
+		this->y *= static_cast<ValueType>(scalar);
+		this->z *= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator*=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x *= static_cast<T>(vec.x);
-		this->y *= static_cast<T>(vec.y);
-		this->z *= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x *= static_cast<ValueType>(vec.x);
+		this->y *= static_cast<ValueType>(vec.y);
+		this->z *= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator /=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator/=(const K scalar) {
-		this->x /= static_cast<T>(scalar);
-		this->y /= static_cast<T>(scalar);
-		this->z /= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const std::convertible_to<ValueType> auto scalar) {
+		this->x /= static_cast<ValueType>(scalar);
+		this->y /= static_cast<ValueType>(scalar);
+		this->z /= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator/=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x /= static_cast<T>(vec.x);
-		this->y /= static_cast<T>(vec.y);
-		this->z /= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x /= static_cast<ValueType>(vec.x);
+		this->y /= static_cast<ValueType>(vec.y);
+		this->z /= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
@@ -230,116 +275,104 @@ namespace EngineCore {
 	//-------------------------------------------//
 	// 
 	// operator %=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator%=(const K scalar) {
-		this->x %= static_cast<T>(scalar);
-		this->y %= static_cast<T>(scalar);
-		this->z %= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const std::convertible_to<ValueType> auto scalar) {
+		this->x %= static_cast<ValueType>(scalar);
+		this->y %= static_cast<ValueType>(scalar);
+		this->z %= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator%=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x %= static_cast<T>(vec.x);
-		this->y %= static_cast<T>(vec.y);
-		this->z %= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x %= static_cast<ValueType>(vec.x);
+		this->y %= static_cast<ValueType>(vec.y);
+		this->z %= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator &=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator&=(const K scalar) {
-		this->x &= static_cast<T>(scalar);
-		this->y &= static_cast<T>(scalar);
-		this->z &= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const std::convertible_to<ValueType> auto scalar) {
+		this->x &= static_cast<ValueType>(scalar);
+		this->y &= static_cast<ValueType>(scalar);
+		this->z &= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator&=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x &= static_cast<T>(vec.x);
-		this->y &= static_cast<T>(vec.y);
-		this->z &= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x &= static_cast<ValueType>(vec.x);
+		this->y &= static_cast<ValueType>(vec.y);
+		this->z &= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator |=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator|=(const K scalar) {
-		this->x |= static_cast<T>(scalar);
-		this->y |= static_cast<T>(scalar);
-		this->z |= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const std::convertible_to<ValueType> auto scalar) {
+		this->x |= static_cast<ValueType>(scalar);
+		this->y |= static_cast<ValueType>(scalar);
+		this->z |= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator|=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x |= static_cast<T>(vec.x);
-		this->y |= static_cast<T>(vec.y);
-		this->z |= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x |= static_cast<ValueType>(vec.x);
+		this->y |= static_cast<ValueType>(vec.y);
+		this->z |= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator ^=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator^=(const K scalar) {
-		this->x ^= static_cast<T>(scalar);
-		this->y ^= static_cast<T>(scalar);
-		this->z ^= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const std::convertible_to<ValueType> auto scalar) {
+		this->x ^= static_cast<ValueType>(scalar);
+		this->y ^= static_cast<ValueType>(scalar);
+		this->z ^= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator^=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x ^= static_cast<T>(vec.x);
-		this->y ^= static_cast<T>(vec.y);
-		this->z ^= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x ^= static_cast<ValueType>(vec.x);
+		this->y ^= static_cast<ValueType>(vec.y);
+		this->z ^= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator <<=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator<<=(const K scalar) {
-		this->x <<= static_cast<T>(scalar);
-		this->y <<= static_cast<T>(scalar);
-		this->z <<= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const std::convertible_to<ValueType> auto scalar) {
+		this->x <<= static_cast<ValueType>(scalar);
+		this->y <<= static_cast<ValueType>(scalar);
+		this->z <<= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator<<=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x <<= static_cast<T>(vec.x);
-		this->y <<= static_cast<T>(vec.y);
-		this->z <<= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x <<= static_cast<ValueType>(vec.x);
+		this->y <<= static_cast<ValueType>(vec.y);
+		this->z <<= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
 	// operator >>=
-	template<typename T>
-	template<typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator>>=(const K scalar) {
-		this->x >>= static_cast<T>(scalar);
-		this->y >>= static_cast<T>(scalar);
-		this->z >>= static_cast<T>(scalar);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const std::convertible_to<ValueType> auto scalar) {
+		this->x >>= static_cast<ValueType>(scalar);
+		this->y >>= static_cast<ValueType>(scalar);
+		this->z >>= static_cast<ValueType>(scalar);
 		return *this;
 	}
 
-	template<typename T>
-	template<typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic>& Vector<3, T, EngineCompute::EngineComputeBasic>::operator>>=(const Vector<3, K, ComputeAlgoritmClient>& vec) {
-		this->x >>= static_cast<T>(vec.x);
-		this->y >>= static_cast<T>(vec.y);
-		this->z >>= static_cast<T>(vec.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic>& Vector<3, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const VectorConvertible<3, ValueType> auto& vec) {
+		this->x >>= static_cast<ValueType>(vec.x);
+		this->y >>= static_cast<ValueType>(vec.y);
+		this->z >>= static_cast<ValueType>(vec.z);
 		return *this;
 	}
 
@@ -350,67 +383,67 @@ namespace EngineCore {
 	//------------------------------------//
 
 	// operator +
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator+(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator+(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs + rhs.x, lhs + rhs.y, lhs + rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator+(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs + rhs.x, lhs + rhs.y, lhs + rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator+(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
 	}
 
 	// operator -
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator-(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x - rhs, lhs.y - rhs, lhs.z - rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x - rhs, lhs.y - rhs, lhs.z - rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator-(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs - rhs.x, lhs - rhs.y, lhs - rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator-(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs - rhs.x, lhs - rhs.y, lhs - rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator-(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
 	}
 
 	// operator *
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator*(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator*(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator*(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator*(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
 	}
 
 	// operator /
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator/(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator/(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator/(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
 	}
 
 
@@ -420,98 +453,98 @@ namespace EngineCore {
 	//-------------------------------------------//
 
 	// operator %
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator%(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x % rhs, lhs.y % rhs, lhs.z % rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x % rhs, lhs.y % rhs, lhs.z % rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator%(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs % rhs.x, lhs % rhs.y, lhs % rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator%(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs % rhs.x, lhs % rhs.y, lhs % rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator%(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x % rhs.x, lhs.y % rhs.y, lhs.z % rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x % rhs.x, lhs.y % rhs.y, lhs.z % rhs.z);
 	}
 
 	// operator &
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator&(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x & rhs, lhs.y & rhs, lhs.z & rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x & rhs, lhs.y & rhs, lhs.z & rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator&(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs & rhs.x, lhs & rhs.y, lhs & rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator&(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs & rhs.x, lhs & rhs.y, lhs & rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator&(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x & rhs.x, lhs.y & rhs.y, lhs.z & rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x & rhs.x, lhs.y & rhs.y, lhs.z & rhs.z);
 	}
 
 	// operator |
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator|(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x | rhs, lhs.y | rhs, lhs.z | rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x | rhs, lhs.y | rhs, lhs.z | rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator|(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs | rhs.x, lhs | rhs.y, lhs | rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator|(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs | rhs.x, lhs | rhs.y, lhs | rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator|(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x | rhs.x, lhs.y | rhs.y, lhs.z | rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x | rhs.x, lhs.y | rhs.y, lhs.z | rhs.z);
 	}
 
 	// operator ^
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator^(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x ^ rhs, lhs.y ^ rhs, lhs.z ^ rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x ^ rhs, lhs.y ^ rhs, lhs.z ^ rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator^(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs ^ rhs.x, lhs ^ rhs.y, lhs ^ rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator^(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs ^ rhs.x, lhs ^ rhs.y, lhs ^ rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator^(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x ^ rhs.x, lhs.y ^ rhs.y, lhs.z ^ rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x ^ rhs.x, lhs.y ^ rhs.y, lhs.z ^ rhs.z);
 	}
 
 	// operator <<
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator<<(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x << rhs, lhs.y << rhs, lhs.z << rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x << rhs, lhs.y << rhs, lhs.z << rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator<<(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs << rhs.x, rhs << rhs.y, rhs << rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator<<(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs << rhs.x, rhs << rhs.y, rhs << rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator<<(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x << rhs.x, lhs.y << rhs.y, lhs.z << rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x << rhs.x, lhs.y << rhs.y, lhs.z << rhs.z);
 	}
 
 	// operator >>
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator>>(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const K rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x >> rhs, lhs.y >> rhs, lhs.z >> rhs);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x >> rhs, lhs.y >> rhs, lhs.z >> rhs);
 	}
 
-	template<typename T, typename K>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator>>(const K lhs, const Vector<3, T, EngineCompute::EngineComputeBasic>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs >> rhs.x, lhs >> rhs.y, lhs >> rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator>>(const std::convertible_to<ValueType> auto lhs, const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs >> rhs.x, lhs >> rhs.y, lhs >> rhs.z);
 	}
 
-	template<typename T, typename K, typename ComputeAlgoritmClient>
-	inline constexpr Vector<3, T, EngineCompute::EngineComputeBasic> operator>>(const Vector<3, T, EngineCompute::EngineComputeBasic>& lhs, const Vector<3, K, ComputeAlgoritmClient>& rhs) {
-		return Vector<3, T, EngineCompute::EngineComputeBasic>(lhs.x >> rhs.x, lhs.y >> rhs.y, lhs.z >> rhs.z);
+	template <typename ValueType>
+	inline constexpr Vector<3, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<3, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<3, ValueType> auto& rhs) {
+		return Vector<3, ValueType, EngineCompute::EngineComputeBasic>(lhs.x >> rhs.x, lhs.y >> rhs.y, lhs.z >> rhs.z);
 	}
 }

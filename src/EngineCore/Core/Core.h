@@ -1,5 +1,10 @@
 #pragma once
 
+/*
+* Mainly from GLM (This code is only for learning)
+*
+*/
+
 #include "CPPTools/Core/Core.h"
 #include "CPPTools/LogSystem/LogSystem.h"
 #include "EngineCorepch.h"
