@@ -6,7 +6,7 @@ ProjectPublicIncludes["EngineCore"] = {
 project "EngineCore"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	pchheader "EngineCorepch.h"
