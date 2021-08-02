@@ -27,6 +27,8 @@
 
 	#define ENGINE_CORE_OK(...)		CPPTools::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
 	#define ENGINE_CORE_FAIL(...)	CPPTools::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
+
+	#define ENGINE_CORE_BASIC(...)	CPPTools::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
 #else
 	#define ENGINE_CORE_TRACE(...)
 	#define ENGINE_CORE_INFO(...)
@@ -36,6 +38,8 @@
 
 	#define ENGINE_CORE_OK(...)
 	#define ENGINE_CORE_FAIL(...)
+
+	#define ENGINE_CORE_BASIC(...)
 #endif
 
 

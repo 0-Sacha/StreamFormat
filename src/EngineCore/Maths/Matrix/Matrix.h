@@ -1,9 +1,6 @@
 #pragma once
 
-#include "EngineCore/Maths/Core/Core.h"
 #include "EngineCore/Maths/Vector/Vector.h"
-
-// Matrices doesn't impl binary operator
 
 namespace EngineCore {
 
@@ -11,6 +8,12 @@ namespace EngineCore {
 	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename Type, typename ComputeAlgorithm = EngineCompute::EngineComputeDefault>
 	struct Matrix;
 
+	template <typename From, std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
+	concept MatrixConvertibleTo = requires(From to) {
+		requires From::GetNumberOfColumns() == COLUMNS_COUNT;
+		requires From::GetNumberOfRows() == ROWS_COUNT;
+		requires std::is_convertible_v<typename From::ValueType, T>;
+	};
 }
 
 

@@ -39,7 +39,7 @@ namespace EngineCore {
 		//--------------------------------------------------//
 
 		constexpr Vector(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 
 		//-----------------------------------------------//
@@ -53,22 +53,22 @@ namespace EngineCore {
 		//------------- Condition Operator -------------//
 		//----------------------------------------------//
 
-		constexpr bool operator==(const VectorConvertible<COUNT, ValueType> auto& rhs);
-		constexpr bool operator!=(const VectorConvertible<COUNT, ValueType> auto& rhs);
+		constexpr bool operator==(const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
+		constexpr bool operator!=(const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&&(const VectorConvertible<COUNT, ValueType> auto& rhs);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator||(const VectorConvertible<COUNT, ValueType> auto& rhs);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&&(const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator||(const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 		//------------------------------------//
 		//------------- Operator -------------//
 		//------------------------------------//
 
 		// operator +I
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>  operator+();
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>  operator+() const;
 		// operator -I
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>  operator-();
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>  operator-() const;
 		// operator ~I
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>  operator~();
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>  operator~() const;
 
 		// operator ++I
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator++();
@@ -81,23 +81,23 @@ namespace EngineCore {
 
 		// operator =
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator +=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator -=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator *=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator /=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 
 		//-------------------------------------------//
@@ -106,27 +106,27 @@ namespace EngineCore {
 
 		// operator %=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator &=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator |=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator ^=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator <<=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 
 		// operator >>=
 		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const VectorConvertible<COUNT, ValueType> auto& vec);
+		constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const VectorConvertibleTo<COUNT, ValueType> auto& vec);
 	};
 
 	// ------------------------------------//
@@ -136,22 +136,22 @@ namespace EngineCore {
 	// operator +
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator -
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator *
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator /
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 
 
@@ -162,32 +162,32 @@ namespace EngineCore {
 	// operator %
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator &
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator |
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator ^
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator <<
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 	// operator >>
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const std::convertible_to<ValueType> auto lhs, const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<COUNT, ValueType> auto& rhs);
+	template <std::size_t COUNT, typename ValueType> constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<COUNT, ValueType> auto& rhs);
 
 }
 

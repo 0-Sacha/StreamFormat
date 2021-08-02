@@ -19,7 +19,7 @@ namespace EngineCore {
 
 	// V1
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& vec)
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& vec)
 		: x{ static_cast<ValueType>(vec.x) } {}
 
 	//--------------------------------------------------------------------//
@@ -29,19 +29,19 @@ namespace EngineCore {
 	// From Vector<2, T, C>
 	// V2
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& vec)
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<2, ValueType> auto& vec)
 		: x{ static_cast<ValueType>(vec.x) } {}
 	
 	// From Vector<3, T, C>
 	// V3
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<3, ValueType> auto& vec)
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<3, ValueType> auto& vec)
 		: x{ static_cast<ValueType>(vec.x) } {}
 	
 	// From Vector<4, T, C>
 	// V4
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<4, ValueType> auto& vec)
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<4, ValueType> auto& vec)
 		: x{ static_cast<ValueType>(vec.x) } {}
 
 
@@ -55,23 +55,23 @@ namespace EngineCore {
 	//----------------------------------------------//
 
 	template <typename ValueType>
-	inline constexpr bool Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr bool Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return this->x == rhs.x;
 	}
 
 
 	template <typename ValueType>
-	inline constexpr bool Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr bool Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return !(*this == rhs);
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator&&(const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator&&(const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(this->x && rhs.x);
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator||(const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator||(const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(this->x || rhs.x);
 	}
 
@@ -82,19 +82,19 @@ namespace EngineCore {
 
 	// operator +I
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator+() {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator+() const {
 		return *this;
 	}
 
 	// operator -I
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator-() {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator-() const {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(-this->x);
 	}
 
 	// operator ~I
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator~() {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator~() const {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(~this->x);
 	}
 
@@ -137,26 +137,26 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x = static_cast<ValueType>(vec.x);
 		return *this;
 	}
 
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<2, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertibleTo<2, ValueType> auto& vec) {
 		this->x = static_cast<ValueType>(vec.x);
 		return *this;
 	}
 	
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<3, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertibleTo<3, ValueType> auto& vec) {
 		this->x = static_cast<ValueType>(vec.x);
 		return *this;
 	}
 	
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x = static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -169,7 +169,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x += static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -182,7 +182,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x -= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -195,7 +195,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x *= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -208,7 +208,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x /= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -225,7 +225,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x %= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -238,7 +238,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x &= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -251,7 +251,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x |= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -264,7 +264,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x ^= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -277,7 +277,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x <<= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -290,7 +290,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const VectorConvertible<1, ValueType> auto& vec) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic>& Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const VectorConvertibleTo<1, ValueType> auto& vec) {
 		this->x >>= static_cast<ValueType>(vec.x);
 		return *this;
 	}
@@ -313,7 +313,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x + rhs.x);
 	}
 
@@ -329,7 +329,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x - rhs.x);
 	}
 
@@ -345,7 +345,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x * rhs.x);
 	}
 
@@ -361,7 +361,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x / rhs.x);
 	}
 
@@ -383,7 +383,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x % rhs.x);
 	}
 
@@ -399,7 +399,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x & rhs.x);
 	}
 
@@ -415,7 +415,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x | rhs.x);
 	}
 
@@ -431,7 +431,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x ^ rhs.x);
 	}
 
@@ -447,7 +447,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x << rhs.x);
 	}
 
@@ -463,7 +463,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<1, ValueType> auto& rhs) {
+	inline constexpr Vector<1, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<1, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<1, ValueType> auto& rhs) {
 		return Vector<1, ValueType, EngineCompute::EngineComputeBasic>(lhs.x >> rhs.x);
 	}
 }

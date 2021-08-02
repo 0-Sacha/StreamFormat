@@ -21,7 +21,7 @@ namespace EngineCore {
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w) } {}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<4, ValueType> auto& vec)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<4, ValueType> auto& vec)
 		: x{ static_cast<ValueType>(vec.x) }, y{ static_cast<ValueType>(vec.y) }, z{ static_cast<ValueType>(vec.z) }, w{ static_cast<ValueType>(vec.w) } {}
 
 
@@ -32,173 +32,173 @@ namespace EngineCore {
 	// From Vector<1, T, C>
 	// V1 as S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& scalar)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& scalar)
 		: x{ static_cast<ValueType>(scalar) }, y{ static_cast<ValueType>(scalar) }, z{ static_cast<ValueType>(scalar) }, w{ static_cast<ValueType>(scalar) } {}
 
 
 	// V1 - S  - S  - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w) } {}
 
 	// S  - V1 - S  - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// V1 - V1 - S  - S 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// S  - S  - V1 - S  -- 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// V1 - S  - V1 - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// S  - V1 - V1 - S 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// V1 - V1 - V1 - S 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// S  - S  - S  - V1 -- --
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// V1 - S  - S  - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// S  - V1 - S  - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// V1 - V1 - S  - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// S  - S  - V1 - V1 --
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// V1 - S  - V1 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// S  - V1 - V1 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// V1 - V1 - V1 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w) } {}
 
 	// From Vector<2, T, C>
 	// V2 - V2
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<2, ValueType> auto zw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const VectorConvertibleTo<2, ValueType> auto zw)
 		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(zw.z) }, w{ static_cast<ValueType>(zw.w) } {}
 
 	
 	// V2 - S  - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// V2 - V1 - S 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// S  - V2 - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(yz.y) }, z{ static_cast<ValueType>(yz.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// V1 - V2 - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(yz.y) }, z{ static_cast<ValueType>(yz.z) }, w{ static_cast<ValueType>(w) } {}
 		
 	// V2 - S  - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// V2 - V1 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(xy.x) }, y{ static_cast<ValueType>(xy.y) }, z{ static_cast<ValueType>(z.z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// S  - V2 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(yz.y) }, z{ static_cast<ValueType>(yz.z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// V1 - V2 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(yz.y) }, z{ static_cast<ValueType>(yz.z) }, w{ static_cast<ValueType>(w.w) } {}
 
 
 	// V1 - V1 - V2
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<2, ValueType> auto zw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(zw.z) }, w{ static_cast<ValueType>(zw.w) } {}
 	
 	// S  - S  - V2
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<2, ValueType> auto zw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(zw.z) }, w{ static_cast<ValueType>(zw.w) } {}
 	
 	// V1 - S  - V2
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<2, ValueType> auto zw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(y) }, z{ static_cast<ValueType>(zw.z) }, w{ static_cast<ValueType>(zw.w) } {}
 	
 	// S  - V1 - V2
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<2, ValueType> auto zw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(y.y) }, z{ static_cast<ValueType>(zw.z) }, w{ static_cast<ValueType>(zw.w) } {}
 
 
 	// From Vector<3, T, C>
 	// V3 - S
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<3, ValueType> auto& xyz, const std::convertible_to<ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<3, ValueType> auto& xyz, const std::convertible_to<ValueType> auto w)
 		: x{ static_cast<ValueType>(xyz.x) }, y{ static_cast<ValueType>(xyz.y) }, z{ static_cast<ValueType>(xyz.z) }, w{ static_cast<ValueType>(w) } {}
 	
 	// V3 - V1
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<3, ValueType> auto& xyz, const VectorConvertible<1, ValueType> auto w)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<3, ValueType> auto& xyz, const VectorConvertibleTo<1, ValueType> auto w)
 		: x{ static_cast<ValueType>(xyz.x) }, y{ static_cast<ValueType>(xyz.y) }, z{ static_cast<ValueType>(xyz.z) }, w{ static_cast<ValueType>(w.w) } {}
 	
 	// S  - V3
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<3, ValueType> auto yzw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<3, ValueType> auto yzw)
 		: x{ static_cast<ValueType>(x) }, y{ static_cast<ValueType>(yzw.y) }, z{ static_cast<ValueType>(yzw.z) }, w{ static_cast<ValueType>(yzw.w) } {}
 	
 	// V1 - V3
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<3, ValueType> auto yzw)
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>::Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<3, ValueType> auto yzw)
 		: x{ static_cast<ValueType>(x.x) }, y{ static_cast<ValueType>(yzw.y) }, z{ static_cast<ValueType>(yzw.z) }, w{ static_cast<ValueType>(yzw.w) } {}
 
 
@@ -207,22 +207,22 @@ namespace EngineCore {
 	//----------------------------------------------//
 
 	template <typename ValueType>
-	inline constexpr bool Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr bool Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return this->x == rhs.x && this->y == rhs.y && this->z && rhs.z && this->w && rhs.w;
 	}
 
 	template <typename ValueType>
-	inline constexpr bool Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr bool Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return !(*this == rhs);
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator&&(const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator&&(const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(this->x && rhs.x, this->y && rhs.y, this->z && rhs.z, this->w && rhs.w);
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator||(const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator||(const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(this->x || rhs.x, this->y || rhs.y, this->z || rhs.z, this->w || rhs.w);
 	}
 
@@ -232,19 +232,19 @@ namespace EngineCore {
 
 	// operator +I
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator+() {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator+() const {
 		return *this;
 	}
 
 	// operator -I
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator-() {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator-() const {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(-this->x, -this->y, -this->z, -this->w);
 	}
 
 	// operator ~I
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator~() {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator~() const {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(~this->x, ~this->y, ~this->z, ~this->w);
 	}
 
@@ -296,7 +296,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x = static_cast<ValueType>(vec.x);
 		this->y = static_cast<ValueType>(vec.y);
 		this->z = static_cast<ValueType>(vec.z);
@@ -315,7 +315,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator+=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x += static_cast<ValueType>(vec.x);
 		this->y += static_cast<ValueType>(vec.y);
 		this->z += static_cast<ValueType>(vec.z);
@@ -334,7 +334,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator-=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x -= static_cast<ValueType>(vec.x);
 		this->y -= static_cast<ValueType>(vec.y);
 		this->z -= static_cast<ValueType>(vec.z);
@@ -353,7 +353,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x *= static_cast<ValueType>(vec.x);
 		this->y *= static_cast<ValueType>(vec.y);
 		this->z *= static_cast<ValueType>(vec.z);
@@ -372,7 +372,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator/=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x /= static_cast<ValueType>(vec.x);
 		this->y /= static_cast<ValueType>(vec.y);
 		this->z /= static_cast<ValueType>(vec.z);
@@ -397,7 +397,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator%=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x %= static_cast<ValueType>(vec.x);
 		this->y %= static_cast<ValueType>(vec.y);
 		this->z %= static_cast<ValueType>(vec.z);
@@ -416,7 +416,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator&=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x &= static_cast<ValueType>(vec.x);
 		this->y &= static_cast<ValueType>(vec.y);
 		this->z &= static_cast<ValueType>(vec.z);
@@ -435,7 +435,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator|=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x |= static_cast<ValueType>(vec.x);
 		this->y |= static_cast<ValueType>(vec.y);
 		this->z |= static_cast<ValueType>(vec.z);
@@ -454,7 +454,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator^=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x ^= static_cast<ValueType>(vec.x);
 		this->y ^= static_cast<ValueType>(vec.y);
 		this->z ^= static_cast<ValueType>(vec.z);
@@ -473,7 +473,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator<<=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x <<= static_cast<ValueType>(vec.x);
 		this->y <<= static_cast<ValueType>(vec.y);
 		this->z <<= static_cast<ValueType>(vec.z);
@@ -492,7 +492,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const VectorConvertible<4, ValueType> auto& vec) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator>>=(const VectorConvertibleTo<4, ValueType> auto& vec) {
 		this->x >>= static_cast<ValueType>(vec.x);
 		this->y >>= static_cast<ValueType>(vec.y);
 		this->z >>= static_cast<ValueType>(vec.z);
@@ -518,7 +518,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z, lhs.w + rhs.w);
 	}
 
@@ -534,7 +534,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z, lhs.w - rhs.w);
 	}
 
@@ -550,7 +550,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z, lhs.w * rhs.w);
 	}
 
@@ -566,7 +566,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z, lhs.w / rhs.w);
 	}
 
@@ -588,7 +588,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x % rhs.x, lhs.y % rhs.y, lhs.z % rhs.z, lhs.w % rhs.w);
 	}
 
@@ -604,7 +604,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x & rhs.x, lhs.y & rhs.y, lhs.z & rhs.z, lhs.w & rhs.w);
 	}
 
@@ -620,7 +620,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x | rhs.x, lhs.y | rhs.y, lhs.z | rhs.z, lhs.w | rhs.w);
 	}
 
@@ -636,7 +636,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x ^ rhs.x, lhs.y ^ rhs.y, lhs.z ^ rhs.z, lhs.w ^ rhs.w);
 	}
 
@@ -652,7 +652,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x << rhs.x, lhs.y << rhs.y, lhs.z << rhs.z, lhs.w << rhs.w);
 	}
 
@@ -668,7 +668,7 @@ namespace EngineCore {
 	}
 
 	template <typename ValueType>
-	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs) {
+	inline constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs) {
 		return Vector<4, ValueType, EngineCompute::EngineComputeBasic>(lhs.x >> rhs.x, lhs.y >> rhs.y, lhs.z >> rhs.z, lhs.w >> rhs.w);
 	}
 }

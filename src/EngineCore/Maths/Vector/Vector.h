@@ -9,10 +9,10 @@ namespace EngineCore {
 	template <std::size_t COUNT, typename Type, typename ComputeAlgorithm = EngineCompute::EngineComputeDefault>
 	struct Vector;
 
-	template <typename To, std::size_t COUNT, typename T>
-	concept VectorConvertible = requires(To to) {
-		requires To::Count() == COUNT;
-		requires std::is_convertible_v<typename To::ValueType, T>;
+	template <typename From, std::size_t COUNT, typename T>
+	concept VectorConvertibleTo = requires(From to) {
+		requires From::Count() == COUNT;
+		requires std::is_convertible_v<typename From::ValueType, T>;
 	};
 } // namespace EngineCore
 

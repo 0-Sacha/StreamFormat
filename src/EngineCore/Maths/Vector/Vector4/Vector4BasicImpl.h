@@ -37,7 +37,7 @@ namespace EngineCore {
 		constexpr Vector();
 		constexpr Vector(const std::convertible_to<ValueType> auto scalar);
 		constexpr Vector(const std::convertible_to<ValueType> auto x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);
-		constexpr Vector(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		//--------------------------------------------------------------------//
 		//------------- Conversion From Other Vector Constructor -------------//
@@ -45,47 +45,47 @@ namespace EngineCore {
 
 
 		// From Vector<1, T, C>
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& scalar);	// V1 as S
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& scalar);	// V1 as S
 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);		// V1 - S  - S  - S 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);		// S  - V1 - S  - S 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V1 - V1 - S  - S 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);		// S  - S  - V1 - S  -- 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V1 - S  - V1 - S 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// S  - V1 - V1 - S 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V1 - V1 - V1 - S 
-		constexpr Vector(const std::convertible_to<ValueType> auto x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w);		// S  - S  - S  - V1 -- -- 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// V1 - S  - S  - V1
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// S  - V1 - S  - V1
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// V1 - V1 - S  - V1
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// S  - S  - V1 - V1 -- 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// V1 - S  - V1 - V1
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// S  - V1 - V1 - V1
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// V1 - V1 - V1 - V1
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);		// V1 - S  - S  - S 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);		// S  - V1 - S  - S 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V1 - V1 - S  - S 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);		// S  - S  - V1 - S  -- 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V1 - S  - V1 - S 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// S  - V1 - V1 - S 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V1 - V1 - V1 - S 
+		constexpr Vector(const std::convertible_to<ValueType> auto x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);		// S  - S  - S  - V1 -- -- 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// V1 - S  - S  - V1
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// S  - V1 - S  - V1
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// V1 - V1 - S  - V1
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// S  - S  - V1 - V1 -- 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// V1 - S  - V1 - V1
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// S  - V1 - V1 - V1
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// V1 - V1 - V1 - V1
 
 		// From Vector<2, T, C>
-		constexpr Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<2, ValueType> auto zw);	// V2 - V2
+		constexpr Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const VectorConvertibleTo<2, ValueType> auto zw);	// V2 - V2
 
-		constexpr Vector(const VectorConvertible<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);		// V2 - S  - S
-		constexpr Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V2 - V1 - S 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w);		// S  - V2 - S
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w);	// V1 - V2 - S
-		constexpr Vector(const VectorConvertible<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// V2 - S  - V1
-		constexpr Vector(const VectorConvertible<2, ValueType> auto& xy, const VectorConvertible<1, ValueType> auto z, const VectorConvertible<1, ValueType> auto w);	// V2 - V1 - V1 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const VectorConvertible<1, ValueType> auto w);	// S  - V2 - V1
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<2, ValueType> auto yz, const VectorConvertible<1, ValueType> auto w);	// V1 - V2 - V1
+		constexpr Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const std::convertible_to<ValueType> auto w);		// V2 - S  - S
+		constexpr Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const VectorConvertibleTo<1, ValueType> auto z, const std::convertible_to<ValueType> auto w);	// V2 - V1 - S 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w);		// S  - V2 - S
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const std::convertible_to<ValueType> auto w);	// V1 - V2 - S
+		constexpr Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const std::convertible_to<ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// V2 - S  - V1
+		constexpr Vector(const VectorConvertibleTo<2, ValueType> auto& xy, const VectorConvertibleTo<1, ValueType> auto z, const VectorConvertibleTo<1, ValueType> auto w);	// V2 - V1 - V1 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const VectorConvertibleTo<1, ValueType> auto w);	// S  - V2 - V1
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<2, ValueType> auto yz, const VectorConvertibleTo<1, ValueType> auto w);	// V1 - V2 - V1
 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<2, ValueType> auto zw);	// V1 - V1 - V2 -- -- 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<2, ValueType> auto zw);		// S  - S  - V2	-- -- 
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertible<2, ValueType> auto zw);	// V1 - S  - V2 -- -- 
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<1, ValueType> auto y, const VectorConvertible<2, ValueType> auto zw);	// S  - V1 - V2	-- -- 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw);	// V1 - V1 - V2 -- -- 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw);		// S  - S  - V2	-- -- 
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const std::convertible_to<ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw);	// V1 - S  - V2 -- -- 
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<1, ValueType> auto y, const VectorConvertibleTo<2, ValueType> auto zw);	// S  - V1 - V2	-- -- 
 
 
 		// From Vector<3, T, C>
-		constexpr Vector(const VectorConvertible<3, ValueType> auto& xyz, const std::convertible_to<ValueType> auto w);		// V3 - S
-		constexpr Vector(const VectorConvertible<3, ValueType> auto& xyz, const VectorConvertible<1, ValueType> auto w);	// V3 - V1
-		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertible<3, ValueType> auto yzw);		// S  - V3
-		constexpr Vector(const VectorConvertible<1, ValueType> auto& x, const VectorConvertible<3, ValueType> auto yzw);	// V1 - V3
+		constexpr Vector(const VectorConvertibleTo<3, ValueType> auto& xyz, const std::convertible_to<ValueType> auto w);		// V3 - S
+		constexpr Vector(const VectorConvertibleTo<3, ValueType> auto& xyz, const VectorConvertibleTo<1, ValueType> auto w);	// V3 - V1
+		constexpr Vector(const std::convertible_to<ValueType> auto& x, const VectorConvertibleTo<3, ValueType> auto yzw);		// S  - V3
+		constexpr Vector(const VectorConvertibleTo<1, ValueType> auto& x, const VectorConvertibleTo<3, ValueType> auto yzw);	// V1 - V3
 
 
 		//-----------------------------------------------//
@@ -97,22 +97,22 @@ namespace EngineCore {
 		//------------- Condition Operator -------------//
 		//----------------------------------------------//
 
-		constexpr bool operator==(const VectorConvertible<4, ValueType> auto& rhs);
-		constexpr bool operator!=(const VectorConvertible<4, ValueType> auto& rhs);
+		constexpr bool operator==(const VectorConvertibleTo<4, ValueType> auto& rhs);
+		constexpr bool operator!=(const VectorConvertibleTo<4, ValueType> auto& rhs);
 
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&&(const VectorConvertible<4, ValueType> auto& rhs);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator||(const VectorConvertible<4, ValueType> auto& rhs);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&&(const VectorConvertibleTo<4, ValueType> auto& rhs);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator||(const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 		//------------------------------------//
 		//------------- Operator -------------//
 		//------------------------------------//
 
 		// operator +I
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>  operator+();
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>  operator+() const;
 		// operator -I
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>  operator-();
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>  operator-() const;
 		// operator ~I
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator~();
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>  operator~() const;
 
 		// operator ++I
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator++();
@@ -125,23 +125,23 @@ namespace EngineCore {
 
 		// operator =
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator +=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator+=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator -=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator-=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator *=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator*=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator /=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator/=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 
 		//-------------------------------------------//
@@ -150,27 +150,27 @@ namespace EngineCore {
 
 		// operator %=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator%=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator &=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator&=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator |=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator|=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator ^=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator^=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator <<=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator<<=(const VectorConvertibleTo<4, ValueType> auto& vec);
 
 		// operator >>=
 		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const std::convertible_to<ValueType> auto scalar);
-		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const VectorConvertible<4, ValueType> auto& vec);
+		constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic>& operator>>=(const VectorConvertibleTo<4, ValueType> auto& vec);
 	};
 
 	// ------------------------------------//
@@ -180,22 +180,22 @@ namespace EngineCore {
 	// operator +
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator+(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator+(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator -
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator-(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator-(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator *
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator*(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator*(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator /
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator/(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 
 
@@ -206,32 +206,32 @@ namespace EngineCore {
 	// operator %
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator%(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator%(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator &
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator&(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator |
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator|(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator|(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator ^
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator^(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator^(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator <<
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator<<(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator<<(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 
 	// operator >>
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator>>(const std::convertible_to<ValueType> auto lhs, const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertible<4, ValueType> auto& rhs);
+	template <typename ValueType> constexpr Vector<4, ValueType, EngineCompute::EngineComputeBasic> operator>>(const Vector<4, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<4, ValueType> auto& rhs);
 }
 
 
