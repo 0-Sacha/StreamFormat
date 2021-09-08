@@ -9,6 +9,30 @@ namespace EngineCore {
 	//----------------------------------//
 
 	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
+	inline constexpr Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::Matrix() {
+
+	}
+
+	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
+	inline constexpr Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::Matrix(const MatrixConvertibleTo<COLUMN_COUNT, ROW_COUNT, ValueType> auto& mat) {
+		for
+	}
+
+	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
+	inline constexpr Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::Matrix(const std::convertible_to<ValueType> auto scalar) {
+
+	}
+
+	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
+	inline constexpr Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::Matrix(const AllValuesArrayType&& allValuesArr)
+		: data{ allValuesArr } {}
+
+	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
+	inline constexpr Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::Matrix(const RowType&& rowsArr)
+		: rows{ rowsArr } {}
+
+
+	template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename T>
 	inline constexpr typename Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::ColumnType Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::GetColumn(const std::size_t idx) const {
 		typename Matrix<COLUMNS_COUNT, ROWS_COUNT, T, EngineCompute::EngineComputeBasic>::RowType res;
 		std::generate(res.GetArray().begin(), res.GetArray().end(), [i = 0, idx, this]() mutable { auto res = this->data[idx + i * ROWS_COUNT]; ++i; return res; });

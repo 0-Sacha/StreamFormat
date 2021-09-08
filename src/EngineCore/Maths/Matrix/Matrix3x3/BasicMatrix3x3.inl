@@ -35,7 +35,7 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const RowType&& rowsArr)
-		: rows{ rowsArr } {}
+		: rows{ rowsArr } {} 
 
 	//--------------------------------------------------//
 	//------------- Conversion Constructor -------------//

@@ -13,22 +13,26 @@ namespace EngineCore {
 		//----------------------------------//
 
 		using ValueType = Type;
+
+		static constexpr const std::size_t COUNT = 4;
+
+		using ValueArrayType = std::array<ValueType, COUNT>;
 		
 		union {
-			std::array<ValueType, 4> data;
+			ValueArrayType data;
 			struct { ValueType x, y, z, w; };
 		};
 
-		inline constexpr static std::size_t Length()	{ return 4; }
-		inline constexpr static std::size_t Count()		{ return 4; }
-		inline constexpr static std::size_t Size()		{ return 4; }
+		inline constexpr static std::size_t Length()	{ return COUNT; }
+		inline constexpr static std::size_t Count()		{ return COUNT; }
+		inline constexpr static std::size_t Size()		{ return COUNT; }
 
 
 		inline constexpr ValueType& operator[](const std::size_t idx)				{ ENGINE_CORE_ASSERT(idx < Count()); return data[idx]; }
 		inline constexpr const ValueType& operator[](const std::size_t idx) const	{ ENGINE_CORE_ASSERT(idx < Count()); return data[idx]; }
 
-		inline constexpr		std::array<ValueType, 4>& GetArray()		{ return data; }
-		inline constexpr const	std::array<ValueType, 4>& GetArray() const	{ return data; }
+		inline constexpr		ValueArrayType& GetArray()		{ return data; }
+		inline constexpr const	ValueArrayType& GetArray() const	{ return data; }
 
 		//--------------------------------------------//
 		//------------- Base Constructor -------------//

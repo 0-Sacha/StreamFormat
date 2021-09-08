@@ -14,24 +14,31 @@ namespace EngineCore {
 		//----------------------------------//
 
 		using ValueType		= Type;
-		using ColumnType	= Vector<2, ValueType, EngineCompute::EngineComputeBasic>;
-		using RowType		= Vector<2, ValueType, EngineCompute::EngineComputeBasic>;
+
+		static constexpr const std::size_t COLUMN_COUNT = 2;
+		static constexpr const std::size_t ROW_COUNT	= 2;
+
+		using ColumnType	= Vector<ROW_COUNT, ValueType, EngineCompute::EngineComputeBasic>;
+		using RowType		= Vector<COLUMN_COUNT, ValueType, EngineCompute::EngineComputeBasic>;
+
+		using AllValuesArrayType	= std::array<ValueType, ROW_COUNT * COLUMN_COUNT>;
+		using RowArrayType			= std::array<RowType, COLUMN_COUNT>;
 
 		union {
-			std::array<ValueType, 4>	data;
-			std::array<RowType, 2>		rows;
+			AllValuesArrayType	data;
+			RowArrayType		rows;
 		};
 
-		static inline constexpr std::size_t GetNumberOfColumns()			{ return 2; }
-		static inline constexpr std::size_t GetNumberOfRows()				{ return 2; }
+		static inline constexpr std::size_t GetNumberOfColumns()			{ return COLUMN_COUNT; }
+		static inline constexpr std::size_t GetNumberOfRows()				{ return ROW_COUNT; }
 		static inline constexpr std::size_t GetNumberOfElementsInAColumn()	{ return GetNumberOfRows(); }
 		static inline constexpr std::size_t GetNumberOfElementsInARow()		{ return GetNumberOfColumns(); }
 		static inline constexpr std::size_t GetMaxNumberOfElements()		{ return GetNumberOfColumns() * GetNumberOfRows(); }
 
-		inline constexpr std::array<ValueType, 4>&			GetArray()				{ return data; }
-		inline constexpr const std::array<ValueType, 4>&	GetArray() const		{ return data; }
-		inline constexpr std::array<RowType, 2>&			GetRowsArray()			{ return rows; }
-		inline constexpr const std::array<RowType, 2>&		GetRowsArray() const	{ return rows; }
+		inline constexpr AllValuesArrayType&		GetArray()				{ return data; }
+		inline constexpr const AllValuesArrayType&	GetArray() const		{ return data; }
+		inline constexpr RowArrayType&				GetRowsArray()			{ return rows; }
+		inline constexpr const RowArrayType&		GetRowsArray() const	{ return rows; }
 
 		inline constexpr RowType& operator[](const std::size_t idx)				{ ENGINE_CORE_ASSERT(idx < GetMaxNumberOfElements()); return rows[idx]; }
 		inline constexpr const RowType& operator[](const std::size_t idx) const { ENGINE_CORE_ASSERT(idx < GetMaxNumberOfElements()); return rows[idx]; }
@@ -59,8 +66,14 @@ namespace EngineCore {
 		constexpr Matrix(	const std::convertible_to<ValueType> auto x0, const std::convertible_to<ValueType> auto y0,
 							const std::convertible_to<ValueType> auto x1, const std::convertible_to<ValueType> auto y1);
 		
+		// Initialization with row-major order
+		constexpr Matrix(const AllValuesArrayType&& allValuesArr);
+
 		// Initialize both rows
 		constexpr Matrix(const VectorConvertibleTo<2, ValueType> auto&& row0, const VectorConvertibleTo<2, ValueType> auto&& row1);
+
+		// Initialize both rows
+		constexpr Matrix(const RowType&& rowsArr);
 
 		//--------------------------------------------------//
 		//------------- Conversion Constructor -------------//
