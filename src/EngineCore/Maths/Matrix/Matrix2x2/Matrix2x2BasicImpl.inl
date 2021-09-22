@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasicMatrix2x2.h"
+#include "Matrix2x2BasicImpl.h"
 
 namespace EngineCore {
 
@@ -10,23 +10,27 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix()
-		: data{ 1, 0, 0, 1 } {}
+		: data{ 1, 0
+			  , 0, 1 } {}
 	
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const MatrixConvertibleTo<2, 2, ValueType> auto& mat)
-		: data{ static_cast<ValueType>(mat[0]), static_cast<ValueType>(mat[1]), static_cast<ValueType>(mat[2]), static_cast<ValueType>(mat[3]) } {}
+		: data{ static_cast<ValueType>(mat[0]), static_cast<ValueType>(mat[1])
+			  , static_cast<ValueType>(mat[2]), static_cast<ValueType>(mat[3]) } {}
 
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const std::convertible_to<ValueType> auto scalar)
-		: data{ static_cast<ValueType>(scalar), 0, 0, static_cast<ValueType>(scalar) } {}
+		: data{ static_cast<ValueType>(scalar), 0
+			  , 0, static_cast<ValueType>(scalar) } {}
 	
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const std::convertible_to<ValueType> auto x0, const std::convertible_to<ValueType> auto y0,
 																						const std::convertible_to<ValueType> auto x1, const std::convertible_to<ValueType> auto y1)
-		: data{ static_cast<ValueType>(x0), static_cast<ValueType>(y0), static_cast<ValueType>(x1), static_cast<ValueType>(y1) } {}
+		: data{ static_cast<ValueType>(x0), static_cast<ValueType>(y0)
+			  , static_cast<ValueType>(x1), static_cast<ValueType>(y1) } {}
 
 	template <typename ValueType>
-	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const AllValuesArrayType&& allValuesArr)
+	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const ValuesArrayType&& allValuesArr)
 		: data{ allValuesArr } {}
 
 	template <typename ValueType>
@@ -35,7 +39,7 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Matrix(const RowType&& rowsArr)
-		: rows{ rowsArr } {} 
+		: rows{ rowsArr } {}
 
 	//--------------------------------------------------//
 	//------------- Conversion Constructor -------------//
@@ -62,7 +66,8 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::Transpose() {
-		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>{ rows[0][0], rows[1][0], rows[0][1], rows[1][1] };
+		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>{ rows[0][0], rows[1][0]
+																		 , rows[0][1], rows[1][1] };
 	}
 
 	template <typename ValueType>
@@ -97,12 +102,12 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr bool Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::operator==(const MatrixConvertibleTo<2, 2, ValueType> auto& rhs) {
-		return data == rhs.data;
+		return rows[0] == rhs.rows[0] && rows[1] == rhs.rows[1];
 	}
 
 	template <typename ValueType>
 	inline constexpr bool Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const MatrixConvertibleTo<2, 2, ValueType> auto& rhs) {
-		return !(*this == rhs);
+		return rows[0] != rhs.rows[0] || rows[1] != rhs.rows[1];
 	}
 
 	//------------------------------------//
@@ -213,8 +218,10 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::operator*=(const MatrixConvertibleTo<2, 2, ValueType> auto& mat) {
-
-		return *this;
+		return M_Type{	rows[0][0] * mat[0][0] + rows[1][0] * mat[0][1],
+						rows[0][1] * mat[0][0] + rows[1][1] * mat[0][1],
+						rows[0][0] * mat[1][0] + rows[1][0] * mat[1][1],
+						rows[0][1] * mat[1][0] + rows[1][1] * mat[1][1] };
 	}
 
 
@@ -270,6 +277,7 @@ namespace EngineCore {
 
 
 	// operator *
+	// scalar
 	template<typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
 		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>(lhs.rows[0] * rhs, lhs.rows[1] * rhs);
@@ -281,6 +289,7 @@ namespace EngineCore {
 	}
 
 
+	// vec
 	template<typename ValueType>
 	inline constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::ColumnType operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<2, ValueType> auto& rhs) {
 		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::ColumnType(	lhs[0][0] * rhs[0] + lhs[0][1] * rhs[1],
@@ -293,6 +302,7 @@ namespace EngineCore {
 																					lhs[0] * rhs[0][1] + lhs[1] * rhs[1][1]);
 	}
 	
+	// same
 	template<typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<2, 2, ValueType> auto& rhs) {
 		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>{	lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
@@ -301,6 +311,7 @@ namespace EngineCore {
 																			lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1]};
 	}
 
+	// others
 	template<typename ValueType>
 	inline constexpr Matrix<3, 2, ValueType, EngineCompute::EngineComputeBasic> operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<3, 2, ValueType> auto& rhs) {
 		return Matrix<3, 2, ValueType, EngineCompute::EngineComputeBasic>(	lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
@@ -327,6 +338,7 @@ namespace EngineCore {
 
 
 	// operator /
+	// scalar
 	template<typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator/(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs) {
 		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>(lhs.rows[0] / rhs, lhs.rows[1] / rhs);
@@ -336,7 +348,7 @@ namespace EngineCore {
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
 		return Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>(lhs / rhs.rows[0], lhs / rhs.rows[1]);
 	}
-
+	// vec
 	template<typename ValueType>
 	inline constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::ColumnType operator/(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<2, ValueType> auto& rhs) {
 		return lhs.Inverse() * rhs;
@@ -346,7 +358,7 @@ namespace EngineCore {
 	inline constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::RowType operator/(const VectorConvertibleTo<2, ValueType> auto& lhs, const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& rhs) {
 		return lhs * rhs.Inverse();
 	}
-
+	// same
 	template<typename ValueType>
 	inline constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator/(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<2, 2, ValueType> auto& rhs) {
 		return lhs * rhs.Inverse();

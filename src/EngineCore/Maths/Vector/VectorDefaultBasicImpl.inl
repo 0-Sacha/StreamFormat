@@ -13,7 +13,12 @@ namespace EngineCore {
 		: data{} {}
 
 	template <std::size_t COUNT, typename ValueType>
-	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& vec) = default;
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector(const Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>& vec)
+		: data{ vec.data } {}
+
+	template <std::size_t COUNT, typename ValueType>
+	inline constexpr Vector<COUNT, ValueType, EngineCompute::EngineComputeBasic>::Vector(const std::convertible_to<ValueType> auto ... value)
+		: data { static_cast<ValueType>(value)... } {}
 
 	//--------------------------------------------------//
 	//------------- Conversion Constructor -------------//
@@ -29,7 +34,7 @@ namespace EngineCore {
 		data = vec.data;
 	}
 
-
+	
 	//----------------------------------------------//
 	//------------- Condition Operator -------------//
 	//----------------------------------------------//

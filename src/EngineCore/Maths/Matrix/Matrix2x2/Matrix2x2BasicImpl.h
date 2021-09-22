@@ -13,20 +13,23 @@ namespace EngineCore {
 		//------------- Values -------------//
 		//----------------------------------//
 
-		using ValueType		= Type;
+		static constexpr std::size_t COLUMN_COUNT = 2;
+		static constexpr std::size_t ROW_COUNT = 2;
+		using ValueType			= Type;
+		using ComputeAlgorithm	= EngineCompute::EngineComputeBasic;
 
-		static constexpr const std::size_t COLUMN_COUNT = 2;
-		static constexpr const std::size_t ROW_COUNT	= 2;
 
-		using ColumnType	= Vector<ROW_COUNT, ValueType, EngineCompute::EngineComputeBasic>;
-		using RowType		= Vector<COLUMN_COUNT, ValueType, EngineCompute::EngineComputeBasic>;
+		using M_Type		= Matrix<COLUMN_COUNT, ROW_COUNT, ValueType, ComputeAlgorithm>;
 
-		using AllValuesArrayType	= std::array<ValueType, ROW_COUNT * COLUMN_COUNT>;
-		using RowArrayType			= std::array<RowType, COLUMN_COUNT>;
+		using ColumnType	= Vector<ROW_COUNT, ValueType, ComputeAlgorithm>;
+		using RowType		= Vector<2, Type, EngineCompute::EngineComputeBasic>;
+
+		using ValuesArrayType	= std::array<ValueType, ROW_COUNT * COLUMN_COUNT>;
+		using RowArrayType		= std::array<RowType, COLUMN_COUNT>;
 
 		union {
-			AllValuesArrayType	data;
-			RowArrayType		rows;
+			ValuesArrayType	data;
+			RowArrayType	rows;
 		};
 
 		static inline constexpr std::size_t GetNumberOfColumns()			{ return COLUMN_COUNT; }
@@ -35,16 +38,16 @@ namespace EngineCore {
 		static inline constexpr std::size_t GetNumberOfElementsInARow()		{ return GetNumberOfColumns(); }
 		static inline constexpr std::size_t GetMaxNumberOfElements()		{ return GetNumberOfColumns() * GetNumberOfRows(); }
 
-		inline constexpr AllValuesArrayType&		GetArray()				{ return data; }
-		inline constexpr const AllValuesArrayType&	GetArray() const		{ return data; }
+		inline constexpr ValuesArrayType&			GetArray()				{ return data; }
+		inline constexpr const ValuesArrayType&		GetArray() const		{ return data; }
 		inline constexpr RowArrayType&				GetRowsArray()			{ return rows; }
 		inline constexpr const RowArrayType&		GetRowsArray() const	{ return rows; }
 
 		inline constexpr RowType& operator[](const std::size_t idx)				{ ENGINE_CORE_ASSERT(idx < GetMaxNumberOfElements()); return rows[idx]; }
-		inline constexpr const RowType& operator[](const std::size_t idx) const { ENGINE_CORE_ASSERT(idx < GetMaxNumberOfElements()); return rows[idx]; }
+		inline constexpr const RowType& operator[](const std::size_t idx) const	{ ENGINE_CORE_ASSERT(idx < GetMaxNumberOfElements()); return rows[idx]; }
 
 		inline constexpr RowType GetRow(const std::size_t idx) const			{ return rows[idx]; }
-		inline constexpr void SetRow(const std::size_t idx, const RowType& row)	{ rows[idx] = row; }
+		inline constexpr void SetRow(const std::size_t idx, const RowType& row) { rows[idx] = row; }
 
 		inline constexpr ColumnType GetColumn(const std::size_t idx) const				{ return ColumnType(data[idx], data[idx + 2]); }
 		inline constexpr void SetColumn(const std::size_t idx, const ColumnType& col)	{ data[idx] = col.x; data[idx + 2] = col.y; }
@@ -67,7 +70,7 @@ namespace EngineCore {
 							const std::convertible_to<ValueType> auto x1, const std::convertible_to<ValueType> auto y1);
 		
 		// Initialization with row-major order
-		constexpr Matrix(const AllValuesArrayType&& allValuesArr);
+		constexpr Matrix(const ValuesArrayType&& allValuesArr);
 
 		// Initialize both rows
 		constexpr Matrix(const VectorConvertibleTo<2, ValueType> auto&& row0, const VectorConvertibleTo<2, ValueType> auto&& row1);
@@ -171,8 +174,9 @@ namespace EngineCore {
 	template<typename ValueType> constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::ColumnType operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<2, ValueType> auto& rhs);
 	// column in input
 	template<typename ValueType> constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::RowType operator*(const VectorConvertibleTo<2, ValueType> auto& lhs, const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-
+	// same
 	template<typename ValueType> constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<2, 2, ValueType> auto& rhs);
+	// others
 	template<typename ValueType> constexpr Matrix<3, 2, ValueType, EngineCompute::EngineComputeBasic> operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<3, 2, ValueType> auto& rhs);
 	template<typename ValueType> constexpr Matrix<4, 2, ValueType, EngineCompute::EngineComputeBasic> operator*(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<4, 2, ValueType> auto& rhs);
 
@@ -180,11 +184,10 @@ namespace EngineCore {
 	// operator /
 	template<typename ValueType> constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator/(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const std::convertible_to<ValueType> auto rhs);
 	template<typename ValueType> constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator/(const std::convertible_to<ValueType> auto lhs, const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-
 	// row in input
 	template<typename ValueType> constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::ColumnType operator/(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const VectorConvertibleTo<2, ValueType> auto& rhs);
 	// column in input
 	template<typename ValueType> constexpr typename Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>::RowType operator/(const VectorConvertibleTo<2, ValueType> auto& lhs, const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& rhs);
-
+	// same
 	template<typename ValueType> constexpr Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic> operator/(const Matrix<2, 2, ValueType, EngineCompute::EngineComputeBasic>& lhs, const MatrixConvertibleTo<2, 2, ValueType> auto& rhs);
 }

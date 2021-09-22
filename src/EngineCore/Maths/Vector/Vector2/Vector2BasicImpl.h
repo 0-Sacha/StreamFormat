@@ -12,11 +12,12 @@ namespace EngineCore {
 		//------------- Values -------------//
 		//----------------------------------//
 
-		using ValueType = Type;
+		static constexpr std::size_t COUNT = 2;
+		using ValueType			= Type;
+		using ComputeAlgorithm	= EngineCompute::EngineComputeBasic;
 
-		static constexpr const std::size_t COUNT = 2;
-
-		using ValueArrayType = std::array<ValueType, COUNT>;
+		using M_Type			= Vector<COUNT, ValueType, ComputeAlgorithm>;
+		using ValueArrayType	= std::array<ValueType, COUNT>;
 
 		union {
 			ValueArrayType data;
@@ -29,7 +30,7 @@ namespace EngineCore {
 		inline constexpr static std::size_t Size()		{ return COUNT; }
 
 
-		inline constexpr ValueType& operator[](const std::size_t idx)				{ ENGINE_CORE_ASSERT(idx < Count()); return data[idx]; }
+		inline constexpr	   ValueType& operator[](const std::size_t idx)		{ ENGINE_CORE_ASSERT(idx < Count()); return data[idx]; }
 		inline constexpr const ValueType& operator[](const std::size_t idx) const	{ ENGINE_CORE_ASSERT(idx < Count()); return data[idx]; }
 
 		inline constexpr		ValueArrayType& GetArray()			{ return data; }

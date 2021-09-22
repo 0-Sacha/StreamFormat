@@ -30,15 +30,17 @@
 #endif
 
 #ifdef BASE_PLATFORM_LINUX
-#error EngineCore does not support Linux yet
+#define ENGINE_CORE_PLATFORM_LINUX
 #endif
 
 
 // Compiler Define
 #ifdef BASE_COMPILER_MSVC
+#define ENGINE_CORE_COMPILER_MSVC
 #endif
 
 #ifdef BASE_COMPILER_GCC
+#define ENGINE_CORE_COMPILER_GCC
 #endif
 
 
@@ -53,7 +55,10 @@
 #include <algorithm>
 #include <functional>
 #include <type_traits>
+#include <concepts>
 
 
 // Intrinsic
+#ifdef ENGINE_CORE_PLATFORM_WINDOWS
 #include <intrin.h>
+#endif

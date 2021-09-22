@@ -62,7 +62,7 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr bool Vector<1, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertibleTo<1, ValueType> auto& rhs) {
-		return !(*this == rhs);
+		return this->x != rhs.x;
 	}
 
 	template <typename ValueType>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BasicMatrix2x2.h"
-#include "BasicMatrix2x2.inl"
+#include "Matrix2x2BasicImpl.h"
+#include "Matrix2x2BasicImpl.inl"
 
 namespace EngineCore {
 

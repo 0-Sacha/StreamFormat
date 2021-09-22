@@ -1,7 +1,6 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
-#include "EngineCore/Core/SIMD.h"
 
 
 namespace EngineCore::EngineCompute {

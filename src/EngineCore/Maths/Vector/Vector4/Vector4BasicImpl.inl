@@ -208,12 +208,12 @@ namespace EngineCore {
 
 	template <typename ValueType>
 	inline constexpr bool Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator==(const VectorConvertibleTo<4, ValueType> auto& rhs) {
-		return this->x == rhs.x && this->y == rhs.y && this->z && rhs.z && this->w && rhs.w;
+		return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z && this->w == rhs.w;
 	}
 
 	template <typename ValueType>
 	inline constexpr bool Vector<4, ValueType, EngineCompute::EngineComputeBasic>::operator!=(const VectorConvertibleTo<4, ValueType> auto& rhs) {
-		return !(*this == rhs);
+		return this->x != rhs.x || this->y != rhs.y || this->z != rhs.z || this->w != rhs.w;
 	}
 
 	template <typename ValueType>

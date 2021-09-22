@@ -1,25 +1,25 @@
 #pragma once
 
-#include "BasicMatrix2x2.h"
-#include "BasicMatrix2x2.inl"
+#include "Matrix3x3BasicImpl.h"
+#include "Matrix3x3BasicImpl.inl"
 
 namespace EngineCore {
 
     template <typename Type, typename ComputeAlgorithm = EngineCompute::EngineComputeDefault>
-    using Matrix2x2 = Matrix<2, 2, Type, ComputeAlgorithm>;
+    using Matrix3x3 = Matrix<3, 3, Type, ComputeAlgorithm>;
 
-    using Matrix2x2f = Matrix2x2<float>;
-	using Matrix2x2d = Matrix2x2<double>;
-	using Matrix2x2i = Matrix2x2<int>;
-	using Matrix2x2u = Matrix2x2<unsigned int>;
+    using Matrix3x3f = Matrix3x3<float>;
+	using Matrix3x3d = Matrix3x3<double>;
+	using Matrix3x3i = Matrix3x3<int>;
+	using Matrix3x3u = Matrix3x3<unsigned int>;
 
-	using Matrix2x2i8	= Matrix2x2<int8_t>;
-	using Matrix2x2u8	= Matrix2x2<uint8_t>;
-	using Matrix2x2i16	= Matrix2x2<int16_t>;
-	using Matrix2x2u16	= Matrix2x2<uint16_t>;
-	using Matrix2x2i32	= Matrix2x2<int32_t>;
-	using Matrix2x2u32	= Matrix2x2<uint32_t>;
-	using Matrix2x2i64	= Matrix2x2<int64_t>;
-	using Matrix2x2u64	= Matrix2x2<uint64_t>;
+	using Matrix3x3i8	= Matrix3x3<int8_t>;
+	using Matrix3x3u8	= Matrix3x3<uint8_t>;
+	using Matrix3x3i16	= Matrix3x3<int16_t>;
+	using Matrix3x3u16	= Matrix3x3<uint16_t>;
+	using Matrix3x3i32	= Matrix3x3<int32_t>;
+	using Matrix3x3u32	= Matrix3x3<uint32_t>;
+	using Matrix3x3i64	= Matrix3x3<int64_t>;
+	using Matrix3x3u64	= Matrix3x3<uint64_t>;
 
 }
