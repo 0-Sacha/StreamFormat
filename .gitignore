@@ -1,0 +1,14 @@
+
+# Visual Studio
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+
+Makefile
+
+# Binary
+bin
+bin-int
+
