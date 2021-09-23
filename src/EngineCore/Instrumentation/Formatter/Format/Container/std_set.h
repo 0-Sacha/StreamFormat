@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CPPTools/Formatter/Formatter.h"
+#include "../../Formatter.h"
 #include <set>
 
 namespace EngineCore::Fmt {
@@ -8,7 +8,7 @@ namespace EngineCore::Fmt {
 	struct FormatType<std::set<T>, FormatContext>
 	{
 		static void Write(const std::set<T>& t, FormatContext& context) {
-			FormatType<ForwardAsSTDEnumerable<std::set<T>, FormatContext>::Write(t, context);
+			FormatType<ForwardAsSTDEnumerable<std::set<T>>, FormatContext>::Write(t, context);
 		}
 	};
 
@@ -16,7 +16,7 @@ namespace EngineCore::Fmt {
 	struct FormatType<std::multiset<T>, FormatContext>
 	{
 		static void Write(const std::multiset<T>& t, FormatContext& context) {
-			FormatType<ForwardAsSTDEnumerable<std::multiset<T>, FormatContext>::Write(t, context);
+			FormatType<ForwardAsSTDEnumerable<std::multiset<T>>, FormatContext>::Write(t, context);
 		}
 	};
 }

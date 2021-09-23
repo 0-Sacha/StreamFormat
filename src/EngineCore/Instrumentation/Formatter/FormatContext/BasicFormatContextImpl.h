@@ -200,126 +200,103 @@ namespace EngineCore::Fmt {
 	/////---------- Impl with as Format ----------//////
 
 	namespace Detail {
-		template<typename CharBuffer, typename CharFormat, typename ...Args>
-		Detail::FormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const std::basic_string_view<CharFormat> format, Args&& ...args) {
-			BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+		template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
+		requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+		Detail::FormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const FormatStr& format, Args&& ...args) {
+			BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 			context.MainFormat();
 			context.BufferOut().PushEndChar();
 			return context.BufferOut();
 		}
-		template<typename CharBuffer, typename CharFormat, std::size_t BUFFER_SIZE, std::size_t FORMAT_SIZE, typename ...Args>
-		Detail::FormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-			return FormatAndGetBufferOut<CharFormat, CharBuffer>(std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-		}
 	}
 
 
-	template<typename CharBuffer, typename CharFormat, std::size_t BUFFER_SIZE, typename ...Args>
-	void FormatInChar(CharBuffer(&buffer)[BUFFER_SIZE], const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(format, buffer, BUFFER_SIZE, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename CharBuffer, std::size_t BUFFER_SIZE, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void FormatInChar(CharBuffer(&buffer)[BUFFER_SIZE], const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(format, buffer, BUFFER_SIZE, std::forward<Args>(args)...);
 		context.MainFormat();
 		context.BufferOut().PushEndChar();
 	}
-	template<typename CharBuffer, typename CharFormat, std::size_t BUFFER_SIZE, std::size_t FORMAT_SIZE, typename ...Args>
-	inline void FormatInChar(CharBuffer(&buffer)[BUFFER_SIZE], const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		FormatInChar<CharFormat, CharBuffer>(buffer, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
-	
-	template<typename CharBuffer, typename CharFormat, typename ...Args>
-	void FormatInChar(CharBuffer* const buffer, const std::size_t bufferSize, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(format, buffer, bufferSize, std::forward<Args>(args)...);
+
+
+	template<typename FormatStr = std::string_view, typename CharBuffer, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void FormatInChar(CharBuffer const buffer, const std::size_t bufferSize, const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(format, buffer, bufferSize, std::forward<Args>(args)...);
 		context.MainFormat();
 		context.BufferOut().PushEndChar();
 	}
-	template<typename CharBuffer, typename CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	void FormatInChar(CharBuffer* const buffer, const std::size_t bufferSize, const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		FormatInChar<CharFormat, CharBuffer>(buffer, bufferSize, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
 	
 
-	template<typename CharBuffer = char, typename CharFormat, typename ...Args>
-	void CFilePrint(FILE* stream, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void CFilePrint(FILE* stream, const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.MainFormat();
 	
 		std::fwrite(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize(), 1, stream);
 		std::fflush(stream);
 	}
-	template<typename CharBuffer = char, typename CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	void CFilePrint(FILE* stream, const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		CFilePrint<CharFormat, CharBuffer>(stream, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
 	
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...Args>
-	void CFilePrintLn(FILE* stream, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void CFilePrintLn(FILE* stream, const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.MainFormat();
 		context.BufferOut().PushBack('\n');
 	
 		std::fwrite(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize(), 1, stream);
 		std::fflush(stream);
 	}
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	void CFilePrintLn(FILE* stream, const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		CFilePrintLn<CharFormat, CharBuffer>(stream, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
 	
 
-	template<typename CharBuffer, typename CharFormat, typename ...Args>
-	void FilePrint(std::basic_ostream<CharBuffer>& stream, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void FilePrint(std::basic_ostream<CharBuffer>& stream, const FormatStr format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.MainFormat();
 	
 		stream.write(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize());
 		stream.flush();
 	}
-	template<typename CharBuffer, typename CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	inline void FilePrint(std::basic_ostream<CharBuffer>& stream, const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		FilePrint<CharFormat, CharBuffer>(stream, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
 	
-	template<typename CharBuffer, typename CharFormat, typename ...Args>
-	void FilePrintLn(std::basic_ostream<CharBuffer>& stream, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void FilePrintLn(std::basic_ostream<CharBuffer>& stream, const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.MainFormat();
 		context.BufferOut().PushBack('\n');
 	
 		stream.write(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize());
 		stream.flush();
 	}
-	template<typename CharBuffer, typename CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	inline void FilePrintLn(std::basic_ostream<CharBuffer>& stream, const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		FilePrintLn<CharFormat, CharBuffer>(stream, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
-	
 
-	template<typename CharBuffer, typename CharFormat, typename ...Args>
-	void FormatInString(std::basic_string<CharBuffer>& str, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+
+	template<typename FormatStr = std::string_view, typename CharBuffer, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	void FormatInString(std::basic_string<CharBuffer>& str, const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.MainFormat();
 		context.BufferOut().PushEndChar();
 		str = context.BufferOut().GetBuffer();
 	}
-	template<typename CharBuffer, typename CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	inline void FormatInString(std::basic_string<CharBuffer>& str, const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		FormatInString<CharFormat, CharBuffer>(str, std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
+
 	
-	template<typename CharBuffer = char, typename CharFormat, typename ...Args>
-	inline std::basic_string<CharBuffer> FormatString(const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		BasicFormatContext<CharFormat, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
+	inline std::basic_string<CharBuffer> FormatString(const FormatStr& format, Args&& ...args) {
+		BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.MainFormat();
 		context.BufferOut().PushEndChar();
 		return context.BufferOut().GetBuffer();
 	}
-	template<typename CharBuffer = char, typename CharFormat, std::size_t FORMAT_SIZE, typename ...Args>
-	inline std::basic_string<CharBuffer> FormatString(const CharFormat(&format)[FORMAT_SIZE], Args&& ...args) {
-		return FormatString<CharFormat, CharBuffer>(std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
-	}
-	
+
+
 	/////---------- NO-FORMAT Impl except for string which are formatted for avoid {} ----------//////
 	
 	template<typename CharBuffer, size_t BUFFER_SIZE, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void FormatInChar(CharBuffer(&buffer)[BUFFER_SIZE], T&& t) {
 		BasicFormatContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), buffer, BUFFER_SIZE);
 		context.WriteType(t);
@@ -327,6 +304,7 @@ namespace EngineCore::Fmt {
 	}
 	
 	template<typename CharBuffer, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void FormatInChar(CharBuffer* const buffer, const std::size_t bufferSize, T&& t) {
 		BasicFormatContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), buffer, bufferSize);
 		context.WriteType(t);
@@ -335,6 +313,7 @@ namespace EngineCore::Fmt {
 
 	
 	template<typename CharBuffer = char, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void CFilePrint(FILE* stream, T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);
@@ -344,6 +323,7 @@ namespace EngineCore::Fmt {
 	}
 	
 	template<typename CharBuffer = char, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void CFilePrintLn(FILE* stream, T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);
@@ -354,7 +334,8 @@ namespace EngineCore::Fmt {
 	}
 	
 
-	template<typename CharBuffer, typename T>
+	template<typename CharBuffer = char, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void FilePrint(std::basic_ostream<CharBuffer>& stream, T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);
@@ -363,7 +344,8 @@ namespace EngineCore::Fmt {
 		stream.flush();
 	}
 	
-	template<typename CharBuffer, typename T>
+	template<typename CharBuffer = char, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void FilePrintLn(std::basic_ostream<CharBuffer>& stream, T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);
@@ -374,7 +356,8 @@ namespace EngineCore::Fmt {
 	}
 
 	
-	template<typename CharBuffer, typename T>
+	template<typename CharBuffer = char, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	void FormatInString(std::basic_string<CharBuffer>& str, T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);
@@ -383,6 +366,7 @@ namespace EngineCore::Fmt {
 	}
 	
 	template<typename CharBuffer = char, typename T>
+	requires Detail::IsCharType<CharBuffer>::Value
 	inline std::basic_string<CharBuffer> FormatString(T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);

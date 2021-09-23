@@ -27,6 +27,6 @@ namespace EngineCore::Fmt {
 	};
 }
 
-#define CPPTOOLS_FORMATTER_TIME_BEGIN()	EngineCore::Fmt::FormatterHandler::SetBeginTime()
+#define ENGINE_CORE_FORMATTER_TIME_BEGIN()	EngineCore::Fmt::FormatterHandler::SetBeginTime()
 
-#define CPPTOOLS_FORMATTER_SET_TIME_GTM(i) EngineCore::Fmt::FormatterHandler::SetHoursShift(std::chrono::hours(i))
+#define ENGINE_CORE_FORMATTER_SET_TIME_GTM(i) EngineCore::Fmt::FormatterHandler::SetHoursShift(std::chrono::hours(i))

@@ -4,9 +4,9 @@
 
 #include "Instrumentation/Formatter/Formatter.h"
 #include "Instrumentation/LogSystem/LogSystem.h"
-// #include "Instrumentation/Formatter/Format/Container/AllContainer.h"
-// #include "Instrumentation/Profiling/Profiling.h"
-// #include "Instrumentation/Test/Test.h"
+#include "Instrumentation/Formatter/Format/Container/AllContainer.h"
+#include "Instrumentation/Profiling/Profiling.h"
+#include "Instrumentation/Test/Test.h"
 
 // #include "Maths/Maths.h"
 

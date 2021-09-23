@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CPPTools/Formatter/Formatter.h"
+#include "../../Formatter.h"
 #include <stack>
 
 namespace EngineCore::Fmt {

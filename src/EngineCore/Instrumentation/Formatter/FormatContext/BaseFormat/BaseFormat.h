@@ -192,6 +192,12 @@ namespace EngineCore::Fmt {
 		}
 	};
 	template<typename FormatContext>
+	struct FormatType<char8_t, FormatContext> {
+		inline static void Write(const char8_t t, FormatContext& context) {
+			FormatType<Detail::ForwardAsChar<char8_t>, FormatContext>::Write(t, context);
+		}
+	};
+	template<typename FormatContext>
 	struct FormatType<char16_t, FormatContext> {
 		inline static void Write(const char16_t t, FormatContext& context) {
 			FormatType<Detail::ForwardAsChar<char16_t>, FormatContext>::Write(t, context);
@@ -217,6 +223,12 @@ namespace EngineCore::Fmt {
 		}
 	};
 	template<std::size_t SIZE, typename FormatContext>
+	struct FormatType<char8_t[SIZE], FormatContext> {
+		static void Write(const char8_t(&t)[SIZE], FormatContext& context) {
+			FormatType<Detail::ForwardAsCharArray<char8_t, SIZE>, FormatContext>::Write(t, context);
+		}
+	};
+	template<std::size_t SIZE, typename FormatContext>
 	struct FormatType<char16_t[SIZE], FormatContext> {
 		static void Write(const char16_t(&t)[SIZE], FormatContext& context) {
 			FormatType<Detail::ForwardAsCharArray<char16_t, SIZE>, FormatContext>::Write(t, context);
@@ -239,6 +251,12 @@ namespace EngineCore::Fmt {
 	struct FormatType<wchar_t*, FormatContext> {
 		static void Write(const wchar_t* const t, FormatContext& context) {
 			FormatType<Detail::ForwardAsCharPt<wchar_t>, FormatContext>::Write(t, context);
+		}
+	};
+	template<typename FormatContext>
+	struct FormatType<char8_t*, FormatContext> {
+		static void Write(const char8_t* const t, FormatContext& context) {
+			FormatType<Detail::ForwardAsCharPt<char8_t>, FormatContext>::Write(t, context);
 		}
 	};
 	template<typename FormatContext>

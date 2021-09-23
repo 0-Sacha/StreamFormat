@@ -55,7 +55,7 @@ namespace EngineCore::Fmt {
 		}
 	};
 
-#ifdef CPPTOOLS_COMPILER_MSVC
+#ifdef ENGINE_CORE_COMPILER_MSVC
 	template<typename FormatContext>
 	struct FormatType<std::chrono::time_point<std::chrono::system_clock>, FormatContext>
 	{

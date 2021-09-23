@@ -228,13 +228,10 @@ namespace EngineCore::Fmt {
 
 
 	/////---------- Function ----------/////
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...Args>
-	UnFormatContextError UnFormat(const std::basic_string_view<CharBuffer> buffer, const std::basic_string_view<CharFormat> format, Args&& ...args) {
-		Fmt::BasicUnFormatContext<CharFormat, CharBuffer, Args...> context(format, buffer, std::forward<Args>(args)...);
+	template<typename FormatStr = std::string_view, typename BufferStr = FormatStr, typename ...Args>
+	requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsFmtConvertible<BufferStr>::Value
+	UnFormatContextError UnFormat(const BufferStr& buffer, const FormatStr& format, Args&& ...args) {
+		Fmt::BasicUnFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, typename Detail::GetFmtBaseType<BufferStr>::Type, Args...> context(format, buffer, std::forward<Args>(args)...);
 		return context.MainUnFormat();
-	}
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, std::size_t BUFFER_SIZE, std::size_t FORMAT_SIZE, typename ...Args>
-	UnFormatContextError UnFormat(const CharBuffer (&buffer)[BUFFER_SIZE], const CharFormat (&format)[FORMAT_SIZE], Args&& ...args) {
-		return UnFormat(std::basic_string_view<CharBuffer>(buffer), std::basic_string_view<CharFormat>(format), std::forward<Args>(args)...);
 	}
 }

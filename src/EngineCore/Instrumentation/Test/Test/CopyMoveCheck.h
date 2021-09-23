@@ -8,38 +8,38 @@ namespace EngineCore::Test {
         TestCopy(const std::string& name) 
             : m_Name(name)
         {
-            CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
+            ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
         }
 
 		TestCopy(std::string&& name)
 			: m_Name(std::move(name))
 		{
-			CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Default (move string) Constructor", "TestCopy(std::string&& name)");
+			ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Default (move string) Constructor", "TestCopy(std::string&& name)");
 		}
 
 
 		TestCopy(TestCopy& other)
 			: m_Name("Copy of " + other.m_Name)
 		{
-			CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Copy Constructor", "TestCopy(TestCopy&)");
+			ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Copy Constructor", "TestCopy(TestCopy&)");
 		}
 
         TestCopy(const TestCopy& other)
 			: m_Name("Copy of " + other.m_Name) 
 		{
-            CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Constructor", "TestCopy(const TestCopy&)");
+            ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Constructor", "TestCopy(const TestCopy&)");
         }
 
         TestCopy(TestCopy&& other) noexcept
 			: m_Name("Move of " + other.m_Name) 
 		{
-            CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Move Constructor", "TestCopy(TestCopy&&)");
+            ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Move Constructor", "TestCopy(TestCopy&&)");
 		}
 
 		TestCopy(const TestCopy&& other) noexcept
 			: m_Name("Move of " + other.m_Name) 
 		{
-			CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Constructor", "TestCopy(const TestCopy&&)");
+			ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Constructor", "TestCopy(const TestCopy&&)");
 		}
 
 
@@ -47,7 +47,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Copy Of " + other.m_Name;
 
-            CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Copy Assignment", "TestCopy& operator=(TestCopy&)");
+            ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Copy Assignment", "TestCopy& operator=(TestCopy&)");
 			return *this;
         }
 
@@ -55,7 +55,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Copy Of " + other.m_Name;
 
-			CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Assignment", "TestCopy& operator=(const TestCopy&)");
+			ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Assignment", "TestCopy& operator=(const TestCopy&)");
 			return *this;
 		}
 
@@ -63,7 +63,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Move Of " + other.m_Name;
 
-			CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
+			ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
 			return *this;
 		}
 
@@ -71,7 +71,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Move Of " + other.m_Name;
 
-			CPPTOOLS_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");
+			ENGINE_CORE_TEST_INFO("UnwantedCopy {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");
 			return *this;
 		}
 

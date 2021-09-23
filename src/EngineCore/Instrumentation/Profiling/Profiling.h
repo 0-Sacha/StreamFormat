@@ -3,14 +3,12 @@
 #include "EngineCore/Core/Core.h"
 #include "EngineCore/Instrumentation/LogSystem/LogSystem.h"
 
-/**
- * __LINE__
- * __FUNCTION__
- * __FUNCDNAME__
- * __FUNCSIG__
- * __FILE__
- * __DATE__
- */
+// __LINE__
+// __FUNCTION__
+// __FUNCDNAME__
+// __FUNCSIG__
+// __FILE__
+// __DATE__
 
 
 namespace EngineCore::Instrumentation {

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include "EngineCore/Instrumentation/Formatter/Formatter.h"
 
-#ifndef CPPTOOLS_BASE_LOGGER_NAME
-	#define CPPTOOLS_BASE_LOGGER_NAME "APP"
+#ifndef ENGINE_CORE_BASE_LOGGER_NAME
+	#define ENGINE_CORE_BASE_LOGGER_NAME "APP"
 #endif
 
 namespace EngineCore {
@@ -31,8 +30,8 @@ namespace EngineCore {
 		~LogSystem() = default;
 
 	public:
-		static LogSystem& GetCoreInstance()				{ static LogSystem instance(CPPTOOLS_BASE_LOGGER_NAME "-Core", LogSeverity::Trace); return instance; }
-		static LogSystem& GetClientInstance()			{ static LogSystem instance(CPPTOOLS_BASE_LOGGER_NAME "-Client", LogSeverity::Trace); return instance; }
+		static LogSystem& GetCoreInstance()				{ static LogSystem instance(ENGINE_CORE_BASE_LOGGER_NAME "-Core", LogSeverity::Trace); return instance; }
+		static LogSystem& GetClientInstance()			{ static LogSystem instance(ENGINE_CORE_BASE_LOGGER_NAME "-Client", LogSeverity::Trace); return instance; }
 
 	public:
 		void SetSeverity(LogSeverity severityMin)		{ m_SeverityMin = severityMin; }
@@ -45,31 +44,24 @@ namespace EngineCore {
 
 	public:
 		/////---------- Logger Severity with array as format ----------/////
-		template<typename ...Args>
-		void Log(LogSeverity severity, const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogTrace(const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogInfo(const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogWarn(const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogError(const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogFatal(const std::string_view format, Args&& ...args) const;
-		// Same but for char[]
-		template<std::size_t SIZE, typename ...Args>
-		inline void Log(LogSeverity severity, const char (&format)[SIZE], Args&& ...args) const	{ Log(severity, std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogTrace(const char (&format)[SIZE], Args&& ...args) const					{ LogTrace(std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogInfo(const char (&format)[SIZE], Args&& ...args) const					{ LogInfo(std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogWarn(const char (&format)[SIZE], Args&& ...args) const					{ LogWarn(std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogError(const char (&format)[SIZE], Args&& ...args) const					{ LogError(std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogFatal(const char (&format)[SIZE], Args&& ...args) const					{ LogFatal(std::string_view(format), std::forward<Args>(args)...); }
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		void Log(LogSeverity severity, const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogTrace(const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogInfo(const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogWarn(const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogError(const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogFatal(const FormatStr& format, Args&& ...args) const;
 
 		/////---------- NO-FORMAT Logger Severity ----------/////
 		template<typename T>
@@ -87,19 +79,15 @@ namespace EngineCore {
 
 	public:
 		/////---------- Logger Status with array as format ----------/////
-		template<typename ...Args>
-		void Log(LogStatus status, const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogOk(const std::string_view format, Args&& ...args) const;
-		template<typename ...Args>
-		inline void LogFail(const std::string_view format, Args&& ...args) const;
-		// Same but for char[]
-		template<std::size_t SIZE, typename ...Args>
-		inline void Log(LogStatus status, const std::string_view format, Args&& ...args) const	{ Log(std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogOk(const std::string_view format, Args&& ...args) const					{ LogOk(std::string_view(format), std::forward<Args>(args)...); }
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogFail(const std::string_view format, Args&& ...args) const				{ LogFail(std::string_view(format), std::forward<Args>(args)...); }
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		void Log(LogStatus status, const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogOk(const FormatStr& format, Args&& ...args) const;
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogFail(const FormatStr& format, Args&& ...args) const;
 
 		/////---------- NO-FORMAT Logger Status ----------/////
 		template<typename T>
@@ -110,10 +98,9 @@ namespace EngineCore {
 		inline void LogFail(T&& t) const;
 
 	public:
-		template<typename ...Args>
-		inline void LogBasic(const std::string_view format, Args&& ...args) const;
-		template<std::size_t SIZE, typename ...Args>
-		inline void LogBasic(const char(&format)[SIZE], Args&& ...args) const		{ LogBasic(std::string_view(format), std::forward<Args>(args)...); }
+		template<typename FormatStr = std::string_view, typename ...Args>
+		requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+		inline void LogBasic(const FormatStr& format, Args&& ...args) const;
 
 		template<typename T>
 		inline void LogBasic(T&& t) const;
@@ -168,36 +155,42 @@ namespace EngineCore::Fmt {
 namespace EngineCore {
 
 	/////---------- Logger Severity with format ----------/////
-	template<typename ...Args>
-	void LogSystem::Log(LogSeverity severity, const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	void LogSystem::Log(LogSeverity severity, const FormatStr& format, Args&& ...args) const {
 		if (severity >= m_SeverityMin) {
-			auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
+			auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut(std::string_view(m_FmtBuffer), FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
 			Fmt::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)..., FORMAT_SV("color", severity));
 		}
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogTrace(const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogTrace(const FormatStr& format, Args&& ...args) const {
 		Log(LogSeverity::Trace, format, std::forward<Args>(args)...);
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogInfo(const std::string_view format, Args&& ...args) const  {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogInfo(const FormatStr& format, Args&& ...args) const {
 		Log(LogSeverity::Info, format, std::forward<Args>(args)...);
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogWarn(const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogWarn(const FormatStr& format, Args&& ...args) const {
 		Log(LogSeverity::Warn, format, std::forward<Args>(args)...);
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogError(const std::string_view format, Args&& ...args) const  {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogError(const FormatStr& format, Args&& ...args) const {
 		Log(LogSeverity::Error, format, std::forward<Args>(args)...);
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogFatal(const std::string_view format, Args&& ...args) const  {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogFatal(const FormatStr& format, Args&& ...args) const {
 		Log(LogSeverity::Fatal, format, std::forward<Args>(args)...);
 	}
 
@@ -238,19 +231,22 @@ namespace EngineCore {
 namespace EngineCore {
 
 	/////---------- Logger Status with format ----------/////
-	template<typename ...Args>
-	void LogSystem::Log(LogStatus status, const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	void LogSystem::Log(LogStatus status, const FormatStr& format, Args&& ...args) const {
 		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
 		Fmt::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)..., FORMAT_SV("color", status));
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogOk(const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogOk(const FormatStr& format, Args&& ...args) const {
 		Log(LogStatus::OK, format, std::forward<Args>(args)...);
 	}
 
-	template<typename ...Args>
-	inline void LogSystem::LogFail(const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogFail(const FormatStr& format, Args&& ...args) const {
 		Log(LogStatus::FAIL, format, std::forward<Args>(args)...);
 	}
 
@@ -274,8 +270,9 @@ namespace EngineCore {
 
 
 namespace EngineCore {
-	template<typename ...Args>
-	inline void LogSystem::LogBasic(const std::string_view format, Args&& ...args) const {
+	template<typename FormatStr, typename ...Args>
+	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
+	inline void LogSystem::LogBasic(const FormatStr& format, Args&& ...args) const {
 		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
 		Fmt::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)...);
 	}
