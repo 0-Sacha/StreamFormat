@@ -22,7 +22,6 @@ project "EngineCore"
 		"src/**.cpp",
 	}
 
-	IncludeAndLinkProject("CPPTools")
 	IncludeProject("EngineCore")
 
 	filter "system:windows"

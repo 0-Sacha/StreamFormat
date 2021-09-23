@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CPPTools/Formatter/Core/Detail.h"
+#include "../../Core/Detail.h"
 
 #define CPPTOOLS_FORMAT_DECLARED
 namespace CPPTools::Fmt {

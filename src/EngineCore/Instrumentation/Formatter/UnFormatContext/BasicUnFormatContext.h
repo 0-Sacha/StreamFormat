@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CPPTools/Formatter/Core/Detail.h"
+#include "../Core/Detail.h"
 #include "BaseFormat/UnFormatType.h"
 #include "../FormatContext/BasicFormatContext.h"
 

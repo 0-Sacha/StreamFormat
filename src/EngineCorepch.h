@@ -46,16 +46,24 @@
 
 // Include
 #include <cstring>
+#include <string>
 
 #include <utility>
 #include <memory>
 #include <limits>
 #include <array>
 #include <chrono>
+#include <bitset>
+
 #include <algorithm>
 #include <functional>
 #include <type_traits>
 #include <concepts>
+
+#include <cmath>
+
+#include <fstream>
+#include <iostream>
 
 
 // Intrinsic

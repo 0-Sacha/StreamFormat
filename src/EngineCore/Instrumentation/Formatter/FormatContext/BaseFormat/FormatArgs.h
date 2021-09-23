@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CPPTools/Core/Core.h"
 #include "FormatType.h"
 
 namespace CPPTools::Fmt {

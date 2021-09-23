@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CPPTools/Formatter/Core/Detail.h"
-#include "CPPTools/Formatter/Core/Buffer/Buffer.h"
+#include "../Core/Detail.h"
+#include "../Core/Buffer/Buffer.h"
 
 #include "BaseFormat/FormatType.h"
 #include "BaseFormat/NamedArgs.h"

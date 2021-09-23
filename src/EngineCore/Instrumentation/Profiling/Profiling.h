@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CPPTools/Core/Core.h"
-#include "CPPTools/LogSystem/LogSystem.h"
+#include "EngineCore/Core/Core.h"
+#include "EngineCore/Instrumentation/LogSystem/LogSystem.h"
 
 /**
  * __LINE__

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "CPPTools/Formatter/Core/Detail.h"
+#include "../Core/Detail.h"
 
 #include "BaseFormat/FormatType.h"
 #include "BaseFormat/NamedArgs.h"
