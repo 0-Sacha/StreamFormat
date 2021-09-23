@@ -2,7 +2,7 @@
 
 #include "BasicBufferIn.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 	template <typename CharFormat>
 	class FormatterMemoryFormat : public BasicFormatterMemoryBufferIn<CharFormat> {
 

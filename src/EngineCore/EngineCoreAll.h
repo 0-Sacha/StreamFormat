@@ -12,16 +12,16 @@
 
 
 #ifdef ENGINE_CORE_LOGGER
-#define ENGINE_CORE_TRACE(...)	CPPTools::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
-#define ENGINE_CORE_INFO(...)	CPPTools::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
-#define ENGINE_CORE_WARN(...)	CPPTools::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
-#define ENGINE_CORE_ERROR(...)	CPPTools::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
-#define ENGINE_CORE_FATAL(...)	CPPTools::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
+#define ENGINE_CORE_TRACE(...)	EngineCore::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
+#define ENGINE_CORE_INFO(...)	EngineCore::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
+#define ENGINE_CORE_WARN(...)	EngineCore::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
+#define ENGINE_CORE_ERROR(...)	EngineCore::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
+#define ENGINE_CORE_FATAL(...)	EngineCore::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
 
-#define ENGINE_CORE_OK(...)		CPPTools::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
-#define ENGINE_CORE_FAIL(...)	CPPTools::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
+#define ENGINE_CORE_OK(...)		EngineCore::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
+#define ENGINE_CORE_FAIL(...)	EngineCore::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
 
-#define ENGINE_CORE_BASIC(...)	CPPTools::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
+#define ENGINE_CORE_BASIC(...)	EngineCore::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
 #else
 #define ENGINE_CORE_TRACE(...)
 #define ENGINE_CORE_INFO(...)

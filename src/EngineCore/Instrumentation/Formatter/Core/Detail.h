@@ -23,7 +23,7 @@
 //
 
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 	using FormatDataType	= std::int16_t;
 	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED	= (std::numeric_limits<FormatDataType>::max)();
 	static inline constexpr FormatDataType SHIFT_NOT_SPECIFIED			= 0;
@@ -32,12 +32,12 @@ namespace CPPTools::Fmt::Detail {
 } // namespace CPPTools::Fmt::Detail
 
 //ToRemove
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 	using FormatDataType = Detail::FormatDataType;
 	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED = Detail::FORMAT_DATA_NOT_SPECIFIED;
 } // namespace CPPTools::Fmt
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	template<typename T> struct ForwardAsInt;
 	template<typename T> struct ForwardAsUInt;
@@ -78,7 +78,7 @@ namespace CPPTools::Fmt::Detail {
 
 } // CPPTools::Fmt::Detail
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	// Type for dealing with index
 	using FormatIdx = int;
@@ -123,14 +123,14 @@ namespace CPPTools::Fmt {
 
 			, TrueValue(false)
 
-			, IntPrint(::CPPTools::Fmt::Detail::ValueIntPrint::Default)
+			, IntPrint(::EngineCore::Fmt::Detail::ValueIntPrint::Default)
 			, DigitSize(Detail::DIGIT_SIZE_NOT_SPECIFIED)
 			, FloatPrecision(Detail::FLOAT_PRECISION_NOT_SPECIFIED)
 
 			, PrintStyle(Detail::PrintStyle::Default)
 
-			, ShiftPrint(::CPPTools::Fmt::Detail::ShiftPrint::Default)
-			, ShiftType(::CPPTools::Fmt::Detail::ShiftType::Default)
+			, ShiftPrint(::EngineCore::Fmt::Detail::ShiftPrint::Default)
+			, ShiftType(::EngineCore::Fmt::Detail::ShiftType::Default)
 			, ShiftValue(Detail::SHIFT_NOT_SPECIFIED)
 
 			, SpecifierCount(0)
@@ -260,7 +260,7 @@ namespace CPPTools::Fmt {
 	};
 } // CPPTools::Fmt
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 	template<typename T, typename CharFormat>	struct CopyFormatData										{ static void Copy(FormatData<CharFormat>& data, const T& t) { } };
 	template<typename CharFormat>				struct CopyFormatData<FormatData<CharFormat>, CharFormat>	{ static void Copy(FormatData<CharFormat>& data, const FormatData<CharFormat>& t) { data = t; } };
 

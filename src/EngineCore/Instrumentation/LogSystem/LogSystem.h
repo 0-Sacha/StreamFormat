@@ -7,7 +7,7 @@
 	#define CPPTOOLS_BASE_LOGGER_NAME "APP"
 #endif
 
-namespace CPPTools {
+namespace EngineCore {
 
 	class LogSystem {
 	public:
@@ -128,7 +128,7 @@ namespace CPPTools {
 }
 
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 	template<typename FormatContext>
 	struct FormatType<LogSystem::LogSeverity, FormatContext>
 	{
@@ -165,7 +165,7 @@ namespace CPPTools::Fmt {
 }
 
 
-namespace CPPTools {
+namespace EngineCore {
 
 	/////---------- Logger Severity with format ----------/////
 	template<typename ...Args>
@@ -235,7 +235,7 @@ namespace CPPTools {
 
 }
 
-namespace CPPTools {
+namespace EngineCore {
 
 	/////---------- Logger Status with format ----------/////
 	template<typename ...Args>
@@ -273,7 +273,7 @@ namespace CPPTools {
 }
 
 
-namespace CPPTools {
+namespace EngineCore {
 	template<typename ...Args>
 	inline void LogSystem::LogBasic(const std::string_view format, Args&& ...args) const {
 		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));

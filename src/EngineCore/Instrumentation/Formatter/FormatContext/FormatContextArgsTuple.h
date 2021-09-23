@@ -7,7 +7,7 @@
 #include "BaseFormat/NamedArgs.h"
 #include "BaseFormat/FormatArgs.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	template <typename... Types>
 	struct FormatContextArgsTuple;

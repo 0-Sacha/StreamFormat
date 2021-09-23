@@ -25,7 +25,7 @@ namespace EngineCore {
 
 
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename FormatContext>
-struct CPPTools::Fmt::FormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
+struct EngineCore::Fmt::FormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
 {
 	static void Write(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, FormatContext& context) {
 		context.BufferOut().PushBack('{');
@@ -40,7 +40,7 @@ struct CPPTools::Fmt::FormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorith
 };
 
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename UnFormatContext>
-struct CPPTools::Fmt::UnFormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorithm>, UnFormatContext>
+struct EngineCore::Fmt::UnFormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorithm>, UnFormatContext>
 {
 	static bool Read(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, UnFormatContext& context) {
 		if(!context.BufferOut().IsEqualForward('{')) return false;

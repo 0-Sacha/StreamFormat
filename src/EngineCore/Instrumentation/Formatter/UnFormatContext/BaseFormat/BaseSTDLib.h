@@ -5,6 +5,6 @@
 #include <string_view>
 #include <sstream>
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 }

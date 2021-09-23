@@ -4,7 +4,7 @@
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	template<typename FormatContext>
 	struct FormatType<Detail::AnsiTextFront, FormatContext>

@@ -3,7 +3,7 @@
 #include "CPPTools/Formatter/Formatter.h"
 #include <queue>
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	template<typename T, typename FormatContext>
 	struct FormatType<std::queue<T>, FormatContext>

@@ -4,7 +4,7 @@
 #include "CPPTools/Formatter/Formatter.h"
 #include <list>
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	template<typename T, typename FormatContext>
 	struct FormatType<std::list<T>, FormatContext>

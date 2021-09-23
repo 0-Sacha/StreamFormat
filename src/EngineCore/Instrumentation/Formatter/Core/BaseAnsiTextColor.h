@@ -2,7 +2,7 @@
 
 #include "EngineCore/Core/Core.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	// According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 

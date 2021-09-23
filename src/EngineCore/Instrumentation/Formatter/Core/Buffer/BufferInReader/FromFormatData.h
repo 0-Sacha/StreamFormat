@@ -4,7 +4,7 @@
 #include "Integer.h"
 #include "Float.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	//------------------ Buffer Read Int ------------------//
 	template<typename CharBuffer>

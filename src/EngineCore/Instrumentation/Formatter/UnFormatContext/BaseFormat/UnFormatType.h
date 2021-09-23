@@ -4,7 +4,7 @@
 
 #define CPPTOOLS_FORMAT_DECLARED
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	class BasicUnFormatContext;
@@ -21,7 +21,7 @@ namespace CPPTools::Fmt {
 }
 
 #define CPPTOOLS_AUTO_UNFORMAT(Type, fmt, ...)	template<typename UnFormatContext>\
-													struct CPPTools::Fmt::UnFormatType<Type, UnFormatContext> {\
+													struct EngineCore::Fmt::UnFormatType<Type, UnFormatContext> {\
 														static bool Read(Type& value, UnFormatContext& context) {\
 															return context.LittleUnFormat(fmt, __VA_ARGS__);\
 														}\

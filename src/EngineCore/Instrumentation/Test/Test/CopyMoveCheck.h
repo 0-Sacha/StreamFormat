@@ -1,7 +1,7 @@
 
 #include "../TestCore/TestCore.h"
 
-namespace CPPTools::Test {
+namespace EngineCore::Test {
 
     class TestCopy {
     public:

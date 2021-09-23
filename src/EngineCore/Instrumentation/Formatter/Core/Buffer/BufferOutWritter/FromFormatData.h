@@ -3,7 +3,7 @@
 #include "Integer.h"
 #include "Float.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>

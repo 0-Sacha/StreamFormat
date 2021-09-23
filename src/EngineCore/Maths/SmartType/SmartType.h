@@ -30,7 +30,7 @@ namespace EngineCore {
 		static inline constexpr ValueType MaxValue() { return std::numeric_limits<ValueType>::max(); }
 		static inline constexpr ValueType MinValue() { return std::numeric_limits<ValueType>::min(); }
 
-		inline constexpr void Dump() { CPPTools::Fmt::FilePrintLn(std::cout, Value); }
+		inline constexpr void Dump() { EngineCore::Fmt::FilePrintLn(std::cout, Value); }
 
 
 
@@ -175,8 +175,8 @@ namespace EngineCore {
 
 
 template <typename T, typename FormatContext>
-struct CPPTools::Fmt::FormatType<EngineCore::SmartType<T>, FormatContext> {
+struct EngineCore::Fmt::FormatType<EngineCore::SmartType<T>, FormatContext> {
 	inline static void Write(const EngineCore::SmartType<T>& i, FormatContext& context) {
-		CPPTools::Fmt::FormatType<T, FormatContext>::Write(i.Value, context);
+		EngineCore::Fmt::FormatType<T, FormatContext>::Write(i.Value, context);
 	}
 };

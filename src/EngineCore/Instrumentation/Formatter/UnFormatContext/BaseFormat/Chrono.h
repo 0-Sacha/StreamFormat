@@ -3,10 +3,10 @@
 #include "../BasicUnFormatContextClassImpl.h"
 #include <chrono>
 
-namespace CPPTools::Fmt::ChronoDetail {
+namespace EngineCore::Fmt::ChronoDetail {
 
 } // namespace CPPTools::Fmt::ChronoDetail
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 } // namespace CPPTools::Fmt

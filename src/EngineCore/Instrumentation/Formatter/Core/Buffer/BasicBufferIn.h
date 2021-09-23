@@ -2,7 +2,7 @@
 
 #include "../Detail.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	template <typename CharBuffer>
 	class BasicFormatterMemoryBufferIn {

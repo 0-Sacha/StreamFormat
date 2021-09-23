@@ -3,7 +3,7 @@
 #include "BasicFormatContext.h"
 #include "BasicFormatContextClassImpl.h"
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	/////---------- Get format parameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>

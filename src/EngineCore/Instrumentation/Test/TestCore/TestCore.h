@@ -2,19 +2,19 @@
 
 #include "CPPTools/LogSystem/LogSystem.h"
 
-#define CPPTOOLS_TEST_TRACE(...)	CPPTools::Test::TestCore::GetLogger().LogTrace(__VA_ARGS__)
-#define CPPTOOLS_TEST_INFO(...)		CPPTools::Test::TestCore::GetLogger().LogInfo(__VA_ARGS__)
-#define CPPTOOLS_TEST_WARN(...)		CPPTools::Test::TestCore::GetLogger().LogWarn(__VA_ARGS__)
-#define CPPTOOLS_TEST_ERROR(...)	CPPTools::Test::TestCore::GetLogger().LogError(__VA_ARGS__)
-#define CPPTOOLS_TEST_FATAL(...)	CPPTools::Test::TestCore::GetLogger().LogFatal(__VA_ARGS__)
+#define CPPTOOLS_TEST_TRACE(...)	EngineCore::Test::TestCore::GetLogger().LogTrace(__VA_ARGS__)
+#define CPPTOOLS_TEST_INFO(...)		EngineCore::Test::TestCore::GetLogger().LogInfo(__VA_ARGS__)
+#define CPPTOOLS_TEST_WARN(...)		EngineCore::Test::TestCore::GetLogger().LogWarn(__VA_ARGS__)
+#define CPPTOOLS_TEST_ERROR(...)	EngineCore::Test::TestCore::GetLogger().LogError(__VA_ARGS__)
+#define CPPTOOLS_TEST_FATAL(...)	EngineCore::Test::TestCore::GetLogger().LogFatal(__VA_ARGS__)
 
-#define CPPTOOLS_TEST_OK(...)		CPPTools::Test::TestCore::GetLogger().LogOk(__VA_ARGS__)
-#define CPPTOOLS_TEST_FAIL(...)		CPPTools::Test::TestCore::GetLogger().LogFail(__VA_ARGS__)
+#define CPPTOOLS_TEST_OK(...)		EngineCore::Test::TestCore::GetLogger().LogOk(__VA_ARGS__)
+#define CPPTOOLS_TEST_FAIL(...)		EngineCore::Test::TestCore::GetLogger().LogFail(__VA_ARGS__)
 
-#define CPPTOOLS_TEST_BASIC(...)	CPPTools::Test::TestCore::GetLogger().LogBasic(__VA_ARGS__)
+#define CPPTOOLS_TEST_BASIC(...)	EngineCore::Test::TestCore::GetLogger().LogBasic(__VA_ARGS__)
 
 
-namespace CPPTools::Test {
+namespace EngineCore::Test {
 	class TestCore
 	{
 	public:

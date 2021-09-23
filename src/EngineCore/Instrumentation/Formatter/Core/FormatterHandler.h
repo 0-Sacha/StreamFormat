@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	class FormatterHandler {
 
@@ -27,6 +27,6 @@ namespace CPPTools::Fmt {
 	};
 }
 
-#define CPPTOOLS_FORMATTER_TIME_BEGIN()	CPPTools::Fmt::FormatterHandler::SetBeginTime()
+#define CPPTOOLS_FORMATTER_TIME_BEGIN()	EngineCore::Fmt::FormatterHandler::SetBeginTime()
 
-#define CPPTOOLS_FORMATTER_SET_TIME_GTM(i) CPPTools::Fmt::FormatterHandler::SetHoursShift(std::chrono::hours(i))
+#define CPPTOOLS_FORMATTER_SET_TIME_GTM(i) EngineCore::Fmt::FormatterHandler::SetHoursShift(std::chrono::hours(i))

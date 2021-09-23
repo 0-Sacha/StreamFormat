@@ -4,7 +4,7 @@
 #include "CPPTools/Formatter/Formatter.h"
 #include <array>
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	template<std::size_t SIZE, typename T, typename FormatContext>
 	struct FormatType<std::array<T, SIZE>, FormatContext>

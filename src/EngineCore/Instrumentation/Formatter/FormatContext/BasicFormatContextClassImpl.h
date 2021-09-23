@@ -9,7 +9,7 @@
 #include "BaseFormat/Chrono.h"
 #include "BaseFormat/BaseSTDLib.h"
 
-namespace CPPTools::Fmt {
+namespace EngineCore::Fmt {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat> format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)

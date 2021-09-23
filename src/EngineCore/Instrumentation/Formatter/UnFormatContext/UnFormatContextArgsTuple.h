@@ -4,7 +4,7 @@
 #include "BaseFormat/UnFormatType.h"
 #include "../FormatContext/BasicFormatContext.h"
 
-namespace CPPTools::Fmt::Detail {
+namespace EngineCore::Fmt::Detail {
 
 	template <typename... Types>
 	struct UnFormatContextArgsTuple;
