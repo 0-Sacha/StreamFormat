@@ -273,7 +273,7 @@ namespace EngineCore {
 	template<typename FormatStr, typename ...Args>
 	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
 	inline void LogSystem::LogBasic(const FormatStr& format, Args&& ...args) const {
-		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
+		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("color", ""), FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
 		Fmt::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)...);
 	}
 
