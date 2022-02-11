@@ -242,18 +242,18 @@ namespace EngineCore::Fmt {
 	
 	//------------------ Pointer/Array of Type ------------------//
 
-	template<typename T, typename UnFormatContext>
-	struct UnFormatType<T*, UnFormatContext>
-	{
-		static bool Read(T*& t, UnFormatContext& context) {
-			return false;
-		}
-	};
-
 	template<typename UnFormatContext>
 	struct UnFormatType<void*, UnFormatContext>
 	{
 		static bool Read(void*& t, UnFormatContext& context) {
+			return false;
+		}
+	};
+
+	template<typename T, typename UnFormatContext>
+	struct UnFormatType<T*, UnFormatContext>
+	{
+		static bool Read(T*& t, UnFormatContext& context) {
 			return false;
 		}
 	};

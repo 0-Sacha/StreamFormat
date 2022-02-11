@@ -3,14 +3,6 @@
 #include "EngineCore/Core/Core.h"
 #include "EngineCore/Instrumentation/LogSystem/LogSystem.h"
 
-// __LINE__
-// __FUNCTION__
-// __FUNCDNAME__
-// __FUNCSIG__
-// __FILE__
-// __DATE__
-
-
 namespace EngineCore::Instrumentation {
 
 	class Profiler;
@@ -70,7 +62,7 @@ namespace EngineCore::Instrumentation {
 }
 
 
-#ifdef PROFILING_ENABLE
+#ifdef ENGINE_CORE_PROFILING_ENABLE
 
 #define PROFILER_FUNCSIG_AUTO(profiler)								EngineCore::Instrumentation::ProfileResult profile##__LINE__(profiler, __FUNCSIG__)
 #define PROFILER_DEFAULT_FUNCSIG_AUTO()								PROFILER_FUNCSIG_AUTO(EngineCore::Instrumentation::Profiler::GetInstance())
@@ -113,28 +105,3 @@ namespace EngineCore::Instrumentation {
 #define PROFILER_END(profiler)										
 
 #endif // PROFILING_ENABLE
-
-
-
-#ifdef CTOOLS_PROFILER_ENABLE
-
-#ifdef PROFILING_ENABLE
-
-#define PROFILER_CREATE(profiler)									EngineCore::Instrumentation::Profiler profiler(#profiler);
-#define PROFILER_BEGIN(profiler)									EngineCore::Instrumentation::Profiler profiler(#profiler);
-
-#define PROFILER_DEFAULT_BEGIN()									EngineCore::Instrumentation::Profiler::GetInstance()
-#define PROFILER_DEFAULT_END()										PROFILER_END(EngineCore::Instrumentation::Profiler::GetInstance())
-
-#else // PROFILING_ENABLE
-
-#define PROFILER_CREATE(profiler)									
-#define PROFILER_BEGIN(profiler)									
-
-#define PROFILER_DEFAULT_BEGIN()									
-#define PROFILER_DEFAULT_END()										
-
-#endif // PROFILING_ENABLE
-
-
-#endif // CTOOLS_PROFILER_ENABLE

@@ -302,7 +302,7 @@ namespace EngineCore::Fmt {
 			std::uint8_t step = (std::uint8_t)(FormatStr().IsEqualForward('+') ? Detail::AnsiNColorType::MinBrightColor : Detail::AnsiNColorType::MinNormalColor);
 			std::uint8_t code = GetColorCode();
 			if (code == (std::numeric_limits<std::uint8_t>::max)())		WriteType(Detail::RESET_ANSI_UNDERLINE_COLOR);
-			else														{ code += step; WriteType(Detail::AnsiNColorUnderline(code)); }
+			else														WriteType(Detail::AnsiNColorUnderline(code + step));
 		} else {
 			WriteType(val);
 		}

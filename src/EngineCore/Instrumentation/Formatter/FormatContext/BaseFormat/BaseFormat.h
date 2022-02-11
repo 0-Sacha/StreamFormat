@@ -276,19 +276,32 @@ namespace EngineCore::Fmt {
 
 	//------------------ Pointer/Array of Type ------------------//
 
+	template<typename FormatContext>
+	struct FormatType<void*, FormatContext>
+	{
+		static void Write(const void* const t, FormatContext& context) {
+			if (t == nullptr)	context.Print("nullptr");
+			else				context.LittleFormat("{:X,=,U}", (std::size_t)t);
+		}
+	};
+
 	template<typename T, typename FormatContext>
 	struct FormatType<T*, FormatContext>
 	{
 		static void Write(const T* const t, FormatContext& context) {
 
 			if (t == nullptr) {
-				context.LittleFormat("{}", (void*)t); return;
+				context.Print("nullptr");
+				return;
 			}
 
 			auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
 			if(size == Detail::FORMAT_DATA_NOT_SPECIFIED) {
-				context.LittleFormat("{} -> {:{}}", (void*)t, *t, context.ForwardFormatData());
+				if (context.GetFormatData().TrueValue)
+					context.LittleFormat("{} -> {:{}}", (void*)t, *t, context.ForwardFormatData());
+				else
+					context.WriteType(*t);
 				return;
 			}
 
@@ -312,15 +325,6 @@ namespace EngineCore::Fmt {
 			}
 
 			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
-		}
-	};
-
-	template<typename FormatContext>
-	struct FormatType<void*, FormatContext>
-	{
-		static void Write(const void* const t, FormatContext& context) {
-			if (t == nullptr)	context.LittleFormat("nullptr");
-			else				context.LittleFormat("{:X,=,U}", (std::size_t)t);
 		}
 	};
 

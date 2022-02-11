@@ -9,17 +9,28 @@
 
 #include "NumberDetail.h"
 
+#include "Exception.h"
+
 // TODO :
 //
-//		End writing all writer and reader	
+//		-- USE STD
+// 
+//		Base Digit
+// 
+//		JSON	
+// 
+//		TEST
+//		
+//		GLOBBER
 // 
 //		REGEX		
 //			{I:REGEX}
 //			{:regex=REGEX} (string / char array)
 //			{}
 //
+//		End writing all writer and reader (string / char pt)	
+//		
 //		PackSave (foreshadowing for constexpr)
-//
 //
 
 
@@ -31,7 +42,7 @@ namespace EngineCore::Fmt::Detail {
 	static inline constexpr FormatDataType FLOAT_PRECISION_NOT_SPECIFIED	= 2;
 } // namespace CPPTools::Fmt::Detail
 
-//ToRemove
+// FIXME: Delete
 namespace EngineCore::Fmt {
 	using FormatDataType = Detail::FormatDataType;
 	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED = Detail::FORMAT_DATA_NOT_SPECIFIED;

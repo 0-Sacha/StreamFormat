@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Maths/Core/Core.h"
+#include "EngineCore/Core/Core.h"
 
 // A Vector must have the "constexpr Count()" function and the "using ValueType" define to the used Type
 namespace EngineCore {
@@ -23,7 +23,7 @@ namespace EngineCore {
 
 
 
-
+#include "EngineCore/Instrumentation/Formatter/Formatter.h"
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename FormatContext>
 struct EngineCore::Fmt::FormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
 {

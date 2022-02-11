@@ -1,58 +1,113 @@
 #pragma once
 
-#include "../Detail.h"
+#include "BasicBuffer.h"
 
 namespace EngineCore::Fmt::Detail {
 
-	template <typename CharBuffer>
-	class BasicFormatterMemoryBufferIn {
+	template<typename CharBuffer>
+	class BasicFormatterMemoryBufferIn : public BasicFormatterMemoryBuffer<const CharBuffer> {
 
 	private:
-		const CharBuffer*	m_Buffer;
-		const CharBuffer*	m_CurrentPos;
-		const CharBuffer*	m_BufferEnd;			// Point to the end char of the format
-		std::size_t			m_BufferSize;			// Do not count the end char
+		using Base = BasicFormatterMemoryBuffer<const CharBuffer>;
+		using Base::m_Buffer;
+		using Base::m_BufferEnd;
+		using Base::m_BufferSize;
+		using Base::m_CurrentPos;
 
 	public:
-		inline const CharBuffer*	GetBuffer() const									{ return m_Buffer; }
-		inline const CharBuffer*	GetBufferCurrentPos() const							{ return m_CurrentPos; }
-		inline const CharBuffer*	GetBufferEnd() const								{ return m_BufferEnd; }
-		inline std::size_t			GetBufferSize() const								{ return m_BufferSize; }
-		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
-		inline void					SetBufferCurrentPos(const CharBuffer* const pos)	{ m_CurrentPos = pos; }
+		using Base::CanMoveForward;
+		using Base::CanMoveBackward;
+		using Base::IsNotOutOfBound;
+
+		using Base::IsEnd;
+
+		using Base::CanMoveForwardThrow;
+		using Base::CanMoveBackwardThrow;
+		using Base::IsNotOutOfBoundThrow;
+		using Base::IsEndThrow;
+
+		using Base::Forward;
+		using Base::ForwardNoCheck;
+		using Base::Backward;
+		using Base::BackwardNoCheck;
+
+		using Base::Get;
+		using Base::GetAndForward;
+		using Base::GetAndForwardNoCheck;
+		using Base::GetAndBackward;
+		using Base::GetAndBackwardNoCheck;
+		using Base::GetNext;
+		using Base::GetNextNoCheck;
+
+	public:
+		using CharBufferType = CharBuffer;
+
+	public:
+		inline const CharBuffer*	GetBuffer() const									{ return Base::GetBuffer(); }
+		inline const CharBuffer*	GetBufferCurrentPos() const							{ return Base::GetBufferCurrentPos(); }
+		inline const CharBuffer*	GetBufferEnd() const								{ return Base::GetBufferEnd(); }
+		inline std::size_t			GetBufferSize() const								{ return Base::GetBufferSize(); }
+		inline std::size_t			GetBufferCurrentSize() const						{ return Base::GetBufferCurrentSize(); }
+		inline void					SetBufferCurrentPos(const CharBuffer* const pos)	{ Base::SetBufferCurrentPos(pos); }
+
+	public:
+		BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer> format)
+			: Base(format) {}
+
+	public:
+		// TODO
+		template <typename ChildBuffer>
+		inline void UpdateFromChlidBuffer(ChildBuffer& childBuffer) { SetBufferCurrentPos(childBuffer.GetBufferCurrentPos()); }
+
+	public:
+		template<typename T> void FastReadInt	(T& i);
+		template<typename T> void FastReadUInt	(T& i);
+		template<typename T> void FastReadFloat	(T& i, FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
 		
-	public:
-		BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer> bufferIn)
-			: m_Buffer(bufferIn.data())
-			, m_CurrentPos(bufferIn.data())
-			, m_BufferEnd(bufferIn.data() + bufferIn.size())
-			, m_BufferSize(bufferIn.size()) {}
+		template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicReadFloat	(T& i, FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		
+		template<typename T> void BasicReadIntAsBin	(T& i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+		template<typename T> void BasicReadIntAsHex	(T& i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+		template<typename T> void BasicReadIntAsOct	(T& i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+
 
 	public:
-		// Format
-		inline bool CanMoveForward() const							{ return m_CurrentPos < m_BufferEnd; }
-		inline bool CanMoveBackward() const							{ return m_CurrentPos > m_Buffer; }
-		inline bool CanMoveForward(const std::size_t count) const	{ return m_CurrentPos + count <= m_BufferEnd; }
-		inline bool CanMoveBackward(const std::size_t count) const	{ return m_CurrentPos + count >= m_Buffer; }
-		inline bool IsNotOutOfBound() const							{ return !CanMoveForward() || !CanMoveBackward(); }
-		inline bool End() const										{ return m_CurrentPos >= m_BufferEnd; }
+		template<typename T, typename FormatDataCharType> void ReadIntFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
+		template<typename T, typename FormatDataCharType> void ReadUIntFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
+		template<typename T, typename FormatDataCharType> void ReadFloatFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
 
-		// Format base commands
-		inline void Forward()										{ if (CanMoveForward()) ++m_CurrentPos; }
-		inline void ForwardNoCheck()								{ ++m_CurrentPos; }
-		inline void Backward()										{ if (CanMoveBackward()) --m_CurrentPos; }
-		inline void BackwardNoCheck()								{ --m_CurrentPos; }
-		template<typename Int> inline void Forward(const Int size)	{ m_CurrentPos += size; if (!CanMoveForward()) m_CurrentPos = m_BufferEnd; }
-		template<typename Int> inline void Backward(const Int size) { m_CurrentPos -= size; if (!CanMoveBackward()) m_CurrentPos = m_Buffer; }
+	public:
+		// Basic types
+		template<typename T> bool BasicReadType(T& i) { return false; }
 
-		inline CharBuffer Get() const								{ return *m_CurrentPos; }
-		inline CharBuffer GetAndForward()							{ return CanMoveForward() ? *m_CurrentPos++ : '\0'; }
-		inline CharBuffer GetAndForwardNoCheck()					{ return *m_CurrentPos++; }
-		inline CharBuffer GetAndBackward()							{ return CanMoveBackward() ? *m_CurrentPos-- : '\0'; }
-		inline CharBuffer GetAndBackwardNoCheck()					{ return *m_CurrentPos--; }
-		inline CharBuffer GetNext() const							{ return CanMoveForward() ? *(m_CurrentPos + 1) : '\0'; }
-		inline CharBuffer GetNextNoCheck() const					{ return *(m_CurrentPos + 1); }
+		inline void BasicReadType(std::int8_t& i)	{ return FastReadInt(i); 	}
+		inline void BasicReadType(std::uint8_t& i)	{ return FastReadUInt(i); 	}
+		inline void BasicReadType(std::int16_t& i)	{ return FastReadInt(i);	}
+		inline void BasicReadType(std::uint16_t& i)	{ return FastReadUInt(i); 	}
+		inline void BasicReadType(std::int32_t& i)	{ return FastReadInt(i);	}
+		inline void BasicReadType(std::uint32_t& i)	{ return FastReadUInt(i); 	}
+		inline void BasicReadType(std::int64_t& i)	{ return FastReadInt(i);	}
+		inline void BasicReadType(std::uint64_t& i)	{ return FastReadUInt(i); 	}
 
+		inline void BasicReadType(float& i)			{ return FastReadFloat(i);	}
+		inline void BasicReadType(double& i)		{ return FastReadFloat(i);	}
+		inline void BasicReadType(long double& i)	{ return FastReadFloat(i);	}
+
+		inline void BasicReadType(char& i)		{ i = Base::GetAndForward(); return true; }
+		inline void BasicReadType(wchar_t& i)	{ i = Base::GetAndForward(); return true; }
+		inline void BasicReadType(char16_t& i)	{ i = Base::GetAndForward(); return true; }
+		inline void BasicReadType(char32_t& i)	{ i = Base::GetAndForward(); return true; }
+
+		template<std::size_t SIZE> inline void BasicReadType(char(&i)[SIZE])		{ return true; }
+		template<std::size_t SIZE> inline void BasicReadType(wchar_t(&i)[SIZE])		{ return true; }
+		template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ return true; }
+		template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ return true; }
+
+		template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType> i) { return true; }
+
+	public:
 		// Format check
 		inline bool IsEqualTo(const CharBuffer c) const				{ return Get() == c; }
 		inline bool IsNotEqualTo(const CharBuffer c) const			{ return Get() != c; }
@@ -62,7 +117,13 @@ namespace EngineCore::Fmt::Detail {
 		template<typename ...CharToTest> inline bool IsEqualForward(const CharToTest ...ele)							{ if (IsEqualTo(ele...)) { Forward(); return true; } return false; }
 		template<typename ...CharToTest> inline bool IsNotEqualTo(const CharBuffer c, const CharToTest ...ele) const	{ return IsNotEqualTo(c) && IsNotEqualTo(ele...); }
 		template<typename ...CharToTest> inline bool IsNotEqualForward(const CharToTest ...ele)							{ if (IsNotEqualTo(ele...)) { Forward(); return true; } return false; }
-
+		// Auto throw variant
+		template<typename ...CharToTest> inline void IsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (IsEqualTo(c, ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsEqualForwardThrow(const CharToTest ...ele)							{ if (IsEqualForward(ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (IsNotEqualTo(c, ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)						{ if (IsNotEqualForward(ele...)) return true; throw FormatParseError(); }
+		
+		
 		// Format Next check
 		inline bool NextIsEqualTo(const CharBuffer c) const			{ return GetNext() == c; }
 		inline bool NextIsNotEqualTo(const CharBuffer c) const		{ return GetNext() != c; }
@@ -72,7 +133,14 @@ namespace EngineCore::Fmt::Detail {
 		template<typename ...CharToTest> inline bool NextIsEqualTo(const CharToTest ...ele) const		{ Forward(); if (IsEqualTo(ele...)) { BackwardNoCheck(); return true; } BackwardNoCheck(); return false; }
 		template<typename ...CharToTest> inline bool NextIsNotEqualForward(const CharToTest ...ele)		{ Forward(); if (IsNotEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
 		template<typename ...CharToTest> inline bool NextIsNotEqualTo(const CharToTest ...ele) const	{ Forward(); if (IsNotEqualTo(ele...)) { BackwardNoCheck(); return true; } BackwardNoCheck(); return false; }
+		// Auto throw variant
+		template<typename ...CharToTest> inline void NextIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (NextIsEqualTo(c, ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsEqualForwardThrow(const CharToTest ...ele)							{ if (NextIsEqualForward(ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (NextIsNotEqualTo(c, ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)						{ if (NextIsNotEqualForward(ele...)) return true; throw FormatParseError(); }
 
+
+	public:
 		template<typename CharToTest> bool NextIsANamedArgs(std::basic_string_view<CharToTest> sv) {
 			const CharBuffer* const prevSubFormat = m_CurrentPos;
 			if (NextIsSame(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
@@ -97,9 +165,41 @@ namespace EngineCore::Fmt::Detail {
 		inline bool IsUpperCase() const	{ return Get() >= 'A' && Get() <= 'Z'; }
 		inline bool IsADigit() const	{ return Get() >= '0' && Get() <= '9'; }
 
+		// Auto throw variant
+		template<typename CharToTest> inline void NextIsANamedArgsThrow(std::basic_string_view<CharToTest> sv)		{ if (NextIsANamedArgs(sv)) return true; throw FormatParseError(); }
+		template<typename CharToTest> inline void NextIsSameThrow(std::basic_string_view<CharToTest> sv)			{ if (NextIsSame(sv)) return true; throw FormatParseError(); }
+		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])	{ if (NextIsSame(data)) return true; throw FormatParseError(); }
+
+		inline void IsLowerCaseThrow() const	{ if (IsLowerCase()) return true; throw FormatParseError(); }
+		inline void IsUpperCaseThrow() const	{ if (IsUpperCase()) return true; throw FormatParseError(); }
+		inline void IsADigitThrow() const		{ if (IsADigit()) return true; throw FormatParseError(); }
+
 		// Format commands
+	public:
 		inline void IgnoreSpace()															{ while (IsEqualTo(' ') && CanMoveForward()) ForwardNoCheck(); }
 		template<typename ...CharToTest> inline void GoTo(const CharToTest ...ele)			{ while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); }
 		template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele)	{ while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); Forward(); }
+
+
+		// Utils
+	private:
+		template<typename T>
+		void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
+			if ((st == ShiftType::Right || st == ShiftType::Center) && sp == ShiftPrint::Space)
+				while (Base::Get() == ' ') {
+					Base::Forward();
+					--shift;
+				}
+		}
+
+		template<typename T>
+		void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
+			if (st == ShiftType::Left || st == ShiftType::Center)
+				while (Base::Get() == ' ' && shift > 0) {
+					Base::Forward();
+					--shift;
+				}
+		}
 	};
+
 }

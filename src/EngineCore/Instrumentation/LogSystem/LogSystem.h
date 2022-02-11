@@ -25,8 +25,16 @@ namespace EngineCore {
 
 	public:
 		LogSystem() : m_Name("Logger"), m_SeverityMin(LogSeverity::Trace), m_Stream(std::cout) { ResetFormat(); }
-		explicit LogSystem(const std::string& name, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout) : m_Name(name), m_SeverityMin(severityMin), m_Stream(stream)			{ ResetFormat(); }
-		explicit LogSystem(std::string&& name, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)		: m_Name(std::move(name)), m_SeverityMin(severityMin), m_Stream(stream) { ResetFormat(); }
+		explicit LogSystem(const std::string_view name, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
+			: m_Name(name), m_SeverityMin(severityMin), m_Stream(stream)
+		{
+			ResetFormat();
+		}
+		explicit LogSystem(const std::string_view name, const std::string_view format, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
+			: m_Name(name), m_SeverityMin(severityMin), m_Stream(stream)
+		{
+			SetFormat(format);
+		}
 		~LogSystem() = default;
 
 	public:
@@ -234,7 +242,7 @@ namespace EngineCore {
 	template<typename FormatStr, typename ...Args>
 	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
 	void LogSystem::Log(LogStatus status, const FormatStr& format, Args&& ...args) const {
-		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
+		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut(m_FmtBuffer, FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
 		Fmt::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)..., FORMAT_SV("color", status));
 	}
 
@@ -273,7 +281,7 @@ namespace EngineCore {
 	template<typename FormatStr, typename ...Args>
 	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
 	inline void LogSystem::LogBasic(const FormatStr& format, Args&& ...args) const {
-		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut<char, char>(m_FmtBuffer, FORMAT_SV("color", ""), FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
+		auto formatBuffer = Fmt::Detail::FormatAndGetBufferOut(m_FmtBuffer, FORMAT_SV("color", ""), FORMAT_SV("name", m_Name), FORMAT_SV("data", format));
 		Fmt::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)...);
 	}
 

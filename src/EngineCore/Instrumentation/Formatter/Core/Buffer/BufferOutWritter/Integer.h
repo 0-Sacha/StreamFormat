@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../BufferOut.h"
+#include "../BasicBufferOut.h"
 
 namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::FastWriteInt(T i) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::FastWriteInt(T i) {
 		if (i == 0) { PushBack('0'); return; }
 		if (i < 0)	{ PushBack('-'); i = -i; }
 
@@ -18,7 +18,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::FastWriteUInt(T i) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::FastWriteUInt(T i) {
 		if (i == 0) { PushBack('0'); return; }
 
 		FormatDataType nbDigit = GetNumberOfDigitDec(i);
@@ -29,7 +29,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::FastWriteFloat(T i, FormatDataType nbDecimal) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::FastWriteFloat(T i, FormatDataType nbDecimal) {
 		FastWriteInt<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(static_cast<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(i));
 		PushBack('.');
 		if (i < 0)	i = -i;
@@ -47,7 +47,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
 
 		FormatDataType nbDigit = GetNumberOfDigitDec(i);
 
@@ -71,7 +71,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::BasicWriteUInt(T i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteUInt(T i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
 		FormatDataType nbDigit = GetNumberOfDigitDec(i);
 		shift -= nbDigit;
 
@@ -89,7 +89,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::BasicWriteFloat(T i, FormatDataType nbDecimal, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteFloat(T i, FormatDataType nbDecimal, ShiftType st, FormatDataType shift, ShiftPrint sp) {
 
 		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt = static_cast<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(i);
 
@@ -128,7 +128,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsBin(T i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsBin(T i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
 		// Compute shift and "TureValue" print
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 8;
 		shift -= digitSize;
@@ -156,7 +156,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsHex(T i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsHex(T i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
 		// Compute shift and "TureValue" print
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 2;
 		shift -= digitSize;
@@ -183,7 +183,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsOct(T i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsOct(T i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
 		// Compute shift and "TureValue" print
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = static_cast<FormatDataType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
 		shift -= digitSize;

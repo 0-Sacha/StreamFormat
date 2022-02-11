@@ -49,8 +49,8 @@ namespace EngineCore::Fmt {
 		inline void UpdateContextFromChild(BasicFormatContext<ChildCharFormat, CharBuffer, ChildContextArgs...>& childContext);
 
 	private:
-		Detail::FormatterMemoryBufferIn<CharBuffer>	m_BufferIn;
-		Detail::FormatterMemoryFormat<CharFormat>	m_FormatStr;
+		Detail::BasicFormatterMemoryBufferIn<CharBuffer>	m_BufferIn;
+		Detail::FormatterMemoryFormat<CharFormat>			m_FormatStr;
 
 		Detail::UnFormatContextArgsTuple<ContextArgs...>	m_ContextArgs;
 
@@ -65,8 +65,8 @@ namespace EngineCore::Fmt {
 		Detail::AnsiFormatterChange		m_AnsiFormatterChange;
 
 	public:
-		inline Detail::FormatterMemoryBufferIn<CharBuffer>&			BufferIn()			{ return m_BufferIn; }
-		inline const Detail::FormatterMemoryBufferIn<CharBuffer>&	BufferIn() const	{ return m_BufferIn; }
+		inline Detail::BasicFormatterMemoryBufferIn<CharBuffer>&			BufferIn()			{ return m_BufferIn; }
+		inline const Detail::BasicFormatterMemoryBufferIn<CharBuffer>&	BufferIn() const	{ return m_BufferIn; }
 		inline Detail::FormatterMemoryFormat<CharFormat>&			FormatStr()			{ return m_FormatStr; }
 		inline const Detail::FormatterMemoryFormat<CharFormat>&		FormatStr() const	{ return m_FormatStr; }
 

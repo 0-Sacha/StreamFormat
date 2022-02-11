@@ -6,7 +6,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	void FormatterMemoryBufferOut<CharBuffer>::WriteIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::WriteIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Int:
@@ -25,7 +25,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	void FormatterMemoryBufferOut<CharBuffer>::WriteUIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::WriteUIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Int:
@@ -44,7 +44,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	void FormatterMemoryBufferOut<CharBuffer>::WriteFloatFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::WriteFloatFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			if (formatData.ShiftType == ShiftType::Nothing)	return FastWriteFloat(i, formatData.FloatPrecision);
 			else											return BasicWriteFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);

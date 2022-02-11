@@ -14,7 +14,7 @@ namespace EngineCore::Fmt {
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color.Fg = t;
 
-			return context.BasicReadType('\033', '[', dynamic_cast<std::uint8_t&>(t), 'm');
+			return context.BasicReadType('\033', '[', (std::uint8_t&)(t), 'm');
 		}
 	};
 
@@ -28,7 +28,7 @@ namespace EngineCore::Fmt {
 			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color.Bg = t;
 
-			return context.BasicReadType('\033', '[', dynamic_cast<std::uint8_t&>(t), 'm');
+			return context.BasicReadType('\033', '[', (std::uint8_t&)(t), 'm');
 		}
 	};
 
@@ -44,8 +44,8 @@ namespace EngineCore::Fmt {
 			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color = t;
 
-			return context.BasicReadType('\033', '[', dynamic_cast<std::uint8_t&>(t.Fg), ';'
-													, dynamic_cast<std::uint8_t&>(t.Bg), 'm');
+			return context.BasicReadType('\033', '[', (std::uint8_t&)(t.Fg), ';'
+													, (std::uint8_t&)(t.Bg), 'm');
 		}
 	};
 

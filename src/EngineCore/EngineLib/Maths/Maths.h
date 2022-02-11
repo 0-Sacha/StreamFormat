@@ -11,7 +11,6 @@
 #include "Vector/VectorDefaultBasicImpl.inl"
 
 
-
 #include "Matrix/Matrix.h"
 #include "Matrix/Matrix2x2/Matrix2x2.h"
 #include "Matrix/Matrix3x3/Matrix3x3.h"

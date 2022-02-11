@@ -28,6 +28,5 @@ namespace EngineCore::Fmt::Detail {
 		inline bool IsEndOfParameter()		{ return BasicFormatterMemoryBufferIn<CharFormat>::IsEqualTo('}'); }
 		inline void GoToEndOfParameter()	{ while (BasicFormatterMemoryBufferIn<CharFormat>::IsNotEqualTo('}') && BasicFormatterMemoryBufferIn<CharFormat>::CanMoveForward()) BasicFormatterMemoryBufferIn<CharFormat>::ForwardNoCheck(); }
 		inline void GoOutOfParameter()		{ while (BasicFormatterMemoryBufferIn<CharFormat>::IsNotEqualTo('}') && BasicFormatterMemoryBufferIn<CharFormat>::CanMoveForward()) BasicFormatterMemoryBufferIn<CharFormat>::ForwardNoCheck(); BasicFormatterMemoryBufferIn<CharFormat>::Forward(); }
-
 	};
 }

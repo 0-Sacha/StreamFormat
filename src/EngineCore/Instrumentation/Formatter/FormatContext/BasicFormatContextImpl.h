@@ -47,6 +47,7 @@ namespace EngineCore::Fmt {
 					else if (m_FormatStr.IsEqualForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
 
 				} else if(!m_FormatStr.IsLowerCase()) {
+
 					if (m_FormatStr.IsEqualForward('{')) {		// Forward specifier
 						FormatIdx dataIdx;
 						GetFormatIdx(dataIdx);
@@ -62,12 +63,15 @@ namespace EngineCore::Fmt {
 					else if (m_FormatStr.IsEqualForward('<')) { m_FormatData.ShiftType = Detail::ShiftType::Left;	FormatReadParameter(m_FormatData.ShiftValue); }
 					else if (m_FormatStr.IsEqualForward('^')) { m_FormatData.ShiftType = Detail::ShiftType::Center;	FormatReadParameter(m_FormatData.ShiftValue); }
 					else if (m_FormatStr.IsEqualForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint::Zeros;											  }
+
 				} else {
+
 					const char* namePos = m_FormatStr.GetBufferCurrentPos();
 					m_FormatStr.ParamGoTo(' ', '=');
 					StringViewFormat name(namePos, m_FormatStr.GetBufferCurrentPos() - namePos);
 
-					m_FormatStr.ParamGoToForward('=');
+					m_FormatStr.ParamGoTo('=', '\'');
+					m_FormatStr.IsEqualForward('=');
 					m_FormatStr.IgnoreSpace();
 
 					if (m_FormatStr.IsEqualForward('\'')) {
@@ -168,7 +172,7 @@ namespace EngineCore::Fmt {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::Format() {
-		while (!m_FormatStr.End()) {
+		while (!m_FormatStr.IsEnd()) {
 
 			WriteUntilNextParameter();
 
@@ -202,7 +206,7 @@ namespace EngineCore::Fmt {
 	namespace Detail {
 		template<typename FormatStr = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<FormatStr>::Type, typename ...Args>
 		requires Detail::IsFmtConvertible<FormatStr>::Value && Detail::IsCharType<CharBuffer>::Value
-		Detail::FormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const FormatStr& format, Args&& ...args) {
+		Detail::BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const FormatStr& format, Args&& ...args) {
 			BasicFormatContext<typename Detail::GetFmtBaseType<FormatStr>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 			context.MainFormat();
 			context.BufferOut().PushEndChar();

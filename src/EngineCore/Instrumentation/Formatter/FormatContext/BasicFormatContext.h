@@ -38,8 +38,8 @@ namespace EngineCore::Fmt {
 		inline void UpdateContextFromChild(BasicFormatContext<ChildCharFormat, CharBuffer, ChildContextArgs...>& childContext);
 
 	private:
-		Detail::FormatterMemoryBufferOut<CharBuffer>	m_BufferOut;
-		Detail::FormatterMemoryFormat<CharFormat>		m_FormatStr;
+		Detail::BasicFormatterMemoryBufferOut<CharBuffer>	m_BufferOut;
+		Detail::FormatterMemoryFormat<CharFormat>			m_FormatStr;
 
 		Detail::FormatContextArgsTuple<ContextArgs...> 	m_ContextArgs;
 
@@ -55,8 +55,8 @@ namespace EngineCore::Fmt {
 		Detail::AnsiFormatterChange		m_AnsiFormatterChange;
 
 	public:
-		inline Detail::FormatterMemoryBufferOut<CharBuffer>&			BufferOut()			{ return m_BufferOut; }
-		inline const Detail::FormatterMemoryBufferOut<CharBuffer>&		BufferOut() const	{ return m_BufferOut; }
+		inline Detail::BasicFormatterMemoryBufferOut<CharBuffer>&			BufferOut()			{ return m_BufferOut; }
+		inline const Detail::BasicFormatterMemoryBufferOut<CharBuffer>&		BufferOut() const	{ return m_BufferOut; }
 		inline Detail::FormatterMemoryFormat<CharFormat>&				FormatStr()			{ return m_FormatStr; }
 		inline const Detail::FormatterMemoryFormat<CharFormat>&			FormatStr() const	{ return m_FormatStr; }
 
@@ -144,6 +144,7 @@ namespace EngineCore::Fmt {
 		template<typename CharStr>						inline void PrintCharPt(const CharStr* str, std::size_t size)	{ m_BufferOut.WriteCharPt(str, size); }
 		template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPt(str, SIZE); }
 		template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr> str)	{ m_BufferOut.WriteCharPt(str.data(), str.size()); }
+		template<typename CharStr>						inline void Print(const std::basic_string<CharStr>& str)		{ Print(static_cast<std::basic_string_view<CharStr>>(str)); }
 
 	public:
 		inline void CopyFormatToBuffer() { m_BufferOut.PushBack(m_FormatStr.GetAndForward()); }

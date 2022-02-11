@@ -122,6 +122,7 @@ namespace EngineCore::Fmt::Detail {
 				return AnsiColorNType::Cube666;
 			else if (Color >= MinGrayscale && Color <= MaxGrayscale)
 				return AnsiColorNType::Grayscale;
+			return AnsiColorNType::Normal;
 		}
 
 		static AnsiNColorType MakeNormalColor(std::uint8_t value) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BufferIn.h"
+#include "../BasicBufferIn.h"
 #include "Integer.h"
 
 namespace EngineCore::Fmt::Detail {
@@ -8,7 +8,7 @@ namespace EngineCore::Fmt::Detail {
 	//------------------ Buffer Read Int ------------------//
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	bool FormatterMemoryBufferIn<CharBuffer>::ReadIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
+	bool BasicFormatterMemoryBufferIn<CharBuffer>::ReadIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Int:
@@ -28,7 +28,7 @@ namespace EngineCore::Fmt::Detail {
 	//------------------ Buffer Read UInt ------------------//
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	bool FormatterMemoryBufferIn<CharBuffer>::ReadUIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
+	bool BasicFormatterMemoryBufferIn<CharBuffer>::ReadUIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Int:
@@ -48,7 +48,7 @@ namespace EngineCore::Fmt::Detail {
 	//------------------ Buffer Read Float ------------------//
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	bool FormatterMemoryBufferIn<CharBuffer>::ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
+	bool BasicFormatterMemoryBufferIn<CharBuffer>::ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			if (formatData.ShiftType == ShiftType::Nothing)	return FastReadFloat(i, formatData.FloatPrecision);
 			else											return BasicReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);

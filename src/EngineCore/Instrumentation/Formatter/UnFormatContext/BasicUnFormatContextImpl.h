@@ -90,15 +90,16 @@ namespace EngineCore::Fmt {
 					else if (m_FormatStr.IsEqualForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint::Zeros;											  }
 
 				} else {
-					const char* namePos = m_FormatStr.GetBufferCurrentPos();
+					const char *const namePos = m_FormatStr.GetBufferCurrentPos();
 					m_FormatStr.ParamGoTo(' ', '=');
 					StringViewFormat name(namePos, m_FormatStr.GetBufferCurrentPos() - namePos);
 
-					m_FormatStr.ParamGoToForward('=');
+					m_FormatStr.ParamGoTo('=', '\'');
+					m_FormatStr.IsEqualForward('=');
 					m_FormatStr.IgnoreSpace();
 
 					if (m_FormatStr.IsEqualForward('\'')) {
-						const char* valuePos = m_FormatStr.GetBufferCurrentPos();
+						const char *const valuePos = m_FormatStr.GetBufferCurrentPos();
 						m_FormatStr.ParamGoTo('\'');
 						std::size_t valueSize = m_FormatStr.GetBufferCurrentPos() - valuePos;
 						m_FormatData.AddSpecifier(name, StringViewFormat(valuePos, valueSize));
@@ -111,7 +112,7 @@ namespace EngineCore::Fmt {
 					else if (m_FormatStr.IsEqualForward('{')) {
 						Detail::FormatDataType value = 0;
 						FormatIdx idx = 0;
-						bool get = GetFormatIdx(idx);
+						GetFormatIdx(idx);
 						m_FormatStr.IsEqualForward('}');
 						m_ContextArgs.GetFormatValueAt(value, idx);
 						m_FormatData.AddSpecifier(name, value);
