@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core/Core.h"
+#include "EngineCore/Core.h"
 #include "EngineCore/Instrumentation/LogSystem/LogSystem.h"
 
 namespace EngineCore::Instrumentation {
@@ -41,7 +41,7 @@ namespace EngineCore::Instrumentation {
 		void WriteProfile(const std::string& name, const double start, const double dur, const std::size_t tid);
 		void EndSession();
 
-		inline const EngineCore::LogSystem& GetLogger() const		{ return m_Logger; }
+		inline const EngineCore::Instrumentation::LogSystem& GetLogger() const		{ return m_Logger; }
 
 	public:
 		static Profiler& GetInstance()		{ static Profiler profiler("Profiler"); return profiler; }
@@ -54,7 +54,7 @@ namespace EngineCore::Instrumentation {
 	private:
 		std::string m_Name;
 		std::ofstream m_File;
-		EngineCore::LogSystem m_Logger;
+		EngineCore::Instrumentation::LogSystem m_Logger;
 		double m_Start;
 		bool m_IsEnd;
 		size_t m_ProfilesCount;
@@ -62,7 +62,7 @@ namespace EngineCore::Instrumentation {
 }
 
 
-#ifdef ENGINE_CORE_PROFILING_ENABLE
+#ifdef ENGINECORE_PROFILING_ENABLE
 
 #define PROFILER_FUNCSIG_AUTO(profiler)								EngineCore::Instrumentation::ProfileResult profile##__LINE__(profiler, __FUNCSIG__)
 #define PROFILER_DEFAULT_FUNCSIG_AUTO()								PROFILER_FUNCSIG_AUTO(EngineCore::Instrumentation::Profiler::GetInstance())
@@ -70,7 +70,7 @@ namespace EngineCore::Instrumentation {
 #define PROFILER_FUNC_AUTO(profiler)								EngineCore::Instrumentation::ProfileResult profile##__LINE__(profiler, __FUNCTION__)
 #define PROFILER_DEFAULT_FUNC_AUTO()								PROFILER_FUNC_AUTO(EngineCore::Instrumentation::Profiler::GetInstance())
 
-#define PROFILER_FUNC_FMT(profile, profiler, ...)					PROFILER_FUNC_NAME(EngineCore::Fmt::FormatString(__VA_ARGS__), profile, profiler);
+#define PROFILER_FUNC_FMT(profile, profiler, ...)					PROFILER_FUNC_NAME(EngineCore::Instrumentation::Fmt::FormatString(__VA_ARGS__), profile, profiler);
 #define PROFILER_DEFAULT_FUNC_FMT(profile, ...)						PROFILER_FUNC_FMT(profile, EngineCore::Instrumentation::Profiler::GetInstance(), __VA_ARGS__);
 
 // ----------- CTools ----------- //

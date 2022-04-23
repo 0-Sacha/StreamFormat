@@ -5,7 +5,7 @@
 
 #include "std_tuple.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 	template<typename T1, typename T2, typename FormatContext>
 	struct FormatType<std::map<T1, T2>, FormatContext>
 	{

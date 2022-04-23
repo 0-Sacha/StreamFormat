@@ -2,7 +2,7 @@
 
 #include "BasicBuffer.h"
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 
 	template<typename CharBuffer>
 	class BasicFormatterMemoryBufferIn : public BasicFormatterMemoryBuffer<const CharBuffer> {
@@ -95,17 +95,17 @@ namespace EngineCore::Fmt::Detail {
 		inline void BasicReadType(double& i)		{ return FastReadFloat(i);	}
 		inline void BasicReadType(long double& i)	{ return FastReadFloat(i);	}
 
-		inline void BasicReadType(char& i)		{ i = Base::GetAndForward(); return true; }
-		inline void BasicReadType(wchar_t& i)	{ i = Base::GetAndForward(); return true; }
-		inline void BasicReadType(char16_t& i)	{ i = Base::GetAndForward(); return true; }
-		inline void BasicReadType(char32_t& i)	{ i = Base::GetAndForward(); return true; }
+		inline void BasicReadType(char& i)		{ i = Base::GetAndForward(); return; }
+		inline void BasicReadType(wchar_t& i)	{ i = Base::GetAndForward(); return; }
+		inline void BasicReadType(char16_t& i)	{ i = Base::GetAndForward(); return; }
+		inline void BasicReadType(char32_t& i)	{ i = Base::GetAndForward(); return; }
 
-		template<std::size_t SIZE> inline void BasicReadType(char(&i)[SIZE])		{ return true; }
-		template<std::size_t SIZE> inline void BasicReadType(wchar_t(&i)[SIZE])		{ return true; }
-		template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ return true; }
-		template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ return true; }
+		template<std::size_t SIZE> inline void BasicReadType(char(&i)[SIZE])		{ /* TODO */ return; }
+		template<std::size_t SIZE> inline void BasicReadType(wchar_t(&i)[SIZE])		{ /* TODO */ return; }
+		template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ /* TODO */ return; }
+		template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ /* TODO */ return; }
 
-		template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType> i) { return true; }
+		template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType> i) { /* TODO */ return true; }
 
 	public:
 		// Format check
@@ -118,10 +118,10 @@ namespace EngineCore::Fmt::Detail {
 		template<typename ...CharToTest> inline bool IsNotEqualTo(const CharBuffer c, const CharToTest ...ele) const	{ return IsNotEqualTo(c) && IsNotEqualTo(ele...); }
 		template<typename ...CharToTest> inline bool IsNotEqualForward(const CharToTest ...ele)							{ if (IsNotEqualTo(ele...)) { Forward(); return true; } return false; }
 		// Auto throw variant
-		template<typename ...CharToTest> inline void IsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (IsEqualTo(c, ele...)) return true; throw FormatParseError(); }
-		template<typename ...CharToTest> inline void IsEqualForwardThrow(const CharToTest ...ele)							{ if (IsEqualForward(ele...)) return true; throw FormatParseError(); }
-		template<typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (IsNotEqualTo(c, ele...)) return true; throw FormatParseError(); }
-		template<typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)						{ if (IsNotEqualForward(ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (IsEqualTo(c, ele...)) return; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsEqualForwardThrow(const CharToTest ...ele)							{ if (IsEqualForward(ele...)) return; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (IsNotEqualTo(c, ele...)) return; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)						{ if (IsNotEqualForward(ele...)) return; throw FormatParseError(); }
 		
 		
 		// Format Next check
@@ -134,10 +134,10 @@ namespace EngineCore::Fmt::Detail {
 		template<typename ...CharToTest> inline bool NextIsNotEqualForward(const CharToTest ...ele)		{ Forward(); if (IsNotEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
 		template<typename ...CharToTest> inline bool NextIsNotEqualTo(const CharToTest ...ele) const	{ Forward(); if (IsNotEqualTo(ele...)) { BackwardNoCheck(); return true; } BackwardNoCheck(); return false; }
 		// Auto throw variant
-		template<typename ...CharToTest> inline void NextIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (NextIsEqualTo(c, ele...)) return true; throw FormatParseError(); }
-		template<typename ...CharToTest> inline void NextIsEqualForwardThrow(const CharToTest ...ele)							{ if (NextIsEqualForward(ele...)) return true; throw FormatParseError(); }
-		template<typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (NextIsNotEqualTo(c, ele...)) return true; throw FormatParseError(); }
-		template<typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)						{ if (NextIsNotEqualForward(ele...)) return true; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (NextIsEqualTo(c, ele...)) return; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsEqualForwardThrow(const CharToTest ...ele)							{ if (NextIsEqualForward(ele...)) return; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (NextIsNotEqualTo(c, ele...)) return; throw FormatParseError(); }
+		template<typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)						{ if (NextIsNotEqualForward(ele...)) return; throw FormatParseError(); }
 
 
 	public:
@@ -166,13 +166,13 @@ namespace EngineCore::Fmt::Detail {
 		inline bool IsADigit() const	{ return Get() >= '0' && Get() <= '9'; }
 
 		// Auto throw variant
-		template<typename CharToTest> inline void NextIsANamedArgsThrow(std::basic_string_view<CharToTest> sv)		{ if (NextIsANamedArgs(sv)) return true; throw FormatParseError(); }
-		template<typename CharToTest> inline void NextIsSameThrow(std::basic_string_view<CharToTest> sv)			{ if (NextIsSame(sv)) return true; throw FormatParseError(); }
-		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])	{ if (NextIsSame(data)) return true; throw FormatParseError(); }
+		template<typename CharToTest> inline void NextIsANamedArgsThrow(std::basic_string_view<CharToTest> sv)		{ if (NextIsANamedArgs(sv)) return; throw FormatParseError(); }
+		template<typename CharToTest> inline void NextIsSameThrow(std::basic_string_view<CharToTest> sv)			{ if (NextIsSame(sv)) return; throw FormatParseError(); }
+		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])	{ if (NextIsSame(data)) return; throw FormatParseError(); }
 
-		inline void IsLowerCaseThrow() const	{ if (IsLowerCase()) return true; throw FormatParseError(); }
-		inline void IsUpperCaseThrow() const	{ if (IsUpperCase()) return true; throw FormatParseError(); }
-		inline void IsADigitThrow() const		{ if (IsADigit()) return true; throw FormatParseError(); }
+		inline void IsLowerCaseThrow() const	{ if (IsLowerCase()) return; throw FormatParseError(); }
+		inline void IsUpperCaseThrow() const	{ if (IsUpperCase()) return; throw FormatParseError(); }
+		inline void IsADigitThrow() const		{ if (IsADigit()) return; throw FormatParseError(); }
 
 		// Format commands
 	public:

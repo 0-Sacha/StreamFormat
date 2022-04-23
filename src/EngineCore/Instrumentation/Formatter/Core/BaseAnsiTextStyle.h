@@ -1,9 +1,9 @@
 #pragma once
 
-#include "EngineCore/Core/Core.h"
+#include "EngineCore/Core.h"
 #include "BaseAnsiTextColor.h"
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 
 	// According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 

@@ -2,45 +2,45 @@
 
 // Target Define
 #ifdef BASE_TARGET_DEBUG
-#define ENGINE_CORE_DEBUG
+#define ENGINECORE_DEBUG
 #endif
 
 #ifdef BASE_TARGET_RELEASE
-#define ENGINE_CORE_RELEASE
+#define ENGINECORE_RELEASE
 #endif
 
 #ifdef BASE_TARGET_DIST
-#define ENGINE_CORE_DIST
+#define ENGINECORE_DIST
 #endif
 
 
 // Architecture Define
 #ifdef BASE_ARCHITECTURE_X86
-#define ENGINE_CORE_X86
+#define ENGINECORE_X86
 #endif
 
 #ifdef BASE_ARCHITECTURE_X86_64
-#define ENGINE_CORE_X64
+#define ENGINECORE_X64
 #endif
 
 
 // Platform Define 
 #ifdef BASE_PLATFORM_WINDOWS
-#define ENGINE_CORE_PLATFORM_WINDOWS
+#define ENGINECORE_PLATFORM_WINDOWS
 #endif
 
 #ifdef BASE_PLATFORM_LINUX
-#define ENGINE_CORE_PLATFORM_LINUX
+#define ENGINECORE_PLATFORM_LINUX
 #endif
 
 
 // Compiler Define
 #ifdef BASE_COMPILER_MSVC
-#define ENGINE_CORE_COMPILER_MSVC
+#define ENGINECORE_COMPILER_MSVC
 #endif
 
 #ifdef BASE_COMPILER_GCC
-#define ENGINE_CORE_COMPILER_GCC
+#define ENGINECORE_COMPILER_GCC
 #endif
 
 
@@ -67,6 +67,6 @@
 
 
 // Intrinsic
-#ifdef ENGINE_CORE_PLATFORM_WINDOWS
+#ifdef ENGINECORE_PLATFORM_WINDOWS
 #include <intrin.h>
 #endif

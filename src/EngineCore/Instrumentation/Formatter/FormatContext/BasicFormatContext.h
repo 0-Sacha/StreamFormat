@@ -12,7 +12,7 @@
 
 #include "../Core/FormatterHandler.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
 	class BasicFormatContext {
 	public:

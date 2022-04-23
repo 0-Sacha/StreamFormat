@@ -3,7 +3,7 @@
 #include "FormatType.h"
 
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	class STDEnumerableUtility {
 	public:

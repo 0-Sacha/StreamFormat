@@ -2,7 +2,7 @@
 
 #include "Integer.h"
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>

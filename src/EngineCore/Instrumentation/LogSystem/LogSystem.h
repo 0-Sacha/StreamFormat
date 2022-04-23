@@ -2,11 +2,11 @@
 
 #include "EngineCore/Instrumentation/Formatter/Formatter.h"
 
-#ifndef ENGINE_CORE_BASE_LOGGER_NAME
-	#define ENGINE_CORE_BASE_LOGGER_NAME "APP"
+#ifndef ENGINECORE_BASE_LOGGER_NAME
+	#define ENGINECORE_BASE_LOGGER_NAME "APP"
 #endif
 
-namespace EngineCore {
+namespace EngineCore::Instrumentation {
 
 	class LogSystem {
 	public:
@@ -38,8 +38,8 @@ namespace EngineCore {
 		~LogSystem() = default;
 
 	public:
-		static LogSystem& GetCoreInstance()				{ static LogSystem instance(ENGINE_CORE_BASE_LOGGER_NAME "-Core", LogSeverity::Trace); return instance; }
-		static LogSystem& GetClientInstance()			{ static LogSystem instance(ENGINE_CORE_BASE_LOGGER_NAME "-Client", LogSeverity::Trace); return instance; }
+		static LogSystem& GetCoreInstance()				{ static LogSystem instance(ENGINECORE_BASE_LOGGER_NAME "-Core", LogSeverity::Trace); return instance; }
+		static LogSystem& GetClientInstance()			{ static LogSystem instance(ENGINECORE_BASE_LOGGER_NAME "-Client", LogSeverity::Trace); return instance; }
 
 	public:
 		void SetSeverity(LogSeverity severityMin)		{ m_SeverityMin = severityMin; }
@@ -123,7 +123,7 @@ namespace EngineCore {
 }
 
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 	template<typename FormatContext>
 	struct FormatType<LogSystem::LogSeverity, FormatContext>
 	{
@@ -160,7 +160,7 @@ namespace EngineCore::Fmt {
 }
 
 
-namespace EngineCore {
+namespace EngineCore::Instrumentation {
 
 	/////---------- Logger Severity with format ----------/////
 	template<typename FormatStr, typename ...Args>
@@ -236,7 +236,7 @@ namespace EngineCore {
 
 }
 
-namespace EngineCore {
+namespace EngineCore::Instrumentation {
 
 	/////---------- Logger Status with format ----------/////
 	template<typename FormatStr, typename ...Args>
@@ -277,7 +277,8 @@ namespace EngineCore {
 }
 
 
-namespace EngineCore {
+namespace EngineCore::Instrumentation {
+
 	template<typename FormatStr, typename ...Args>
 	requires Fmt::Detail::IsFmtConvertible<FormatStr>::Value
 	inline void LogSystem::LogBasic(const FormatStr& format, Args&& ...args) const {
@@ -289,4 +290,5 @@ namespace EngineCore {
 	inline void LogSystem::LogBasic(T&& t) const {
 		Fmt::FilePrintLn(m_Stream, m_FmtBuffer, FORMAT_SV("color", ""), FORMAT_SV("data", t), FORMAT_SV("name", m_Name));
 	}
+
 }

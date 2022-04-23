@@ -2,7 +2,7 @@
 
 #include "../BasicUnFormatContextClassImpl.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 
 	template<typename UnFormatContext>

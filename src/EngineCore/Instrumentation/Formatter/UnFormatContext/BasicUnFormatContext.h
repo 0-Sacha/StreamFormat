@@ -6,7 +6,7 @@
 
 #include "UnFormatContextArgsTuple.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	struct UnFormatContextError
 	{
@@ -22,7 +22,7 @@ namespace EngineCore::Fmt {
 
 }
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
 	class BasicUnFormatContext

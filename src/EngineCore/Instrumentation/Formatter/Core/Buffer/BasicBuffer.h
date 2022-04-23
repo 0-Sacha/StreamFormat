@@ -2,7 +2,7 @@
 
 #include "../Detail.h"
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 
 	template <typename CharBuffer>
 	class BasicFormatterMemoryBuffer {
@@ -52,12 +52,12 @@ namespace EngineCore::Fmt::Detail {
 		inline bool IsNotOutOfBound() const							{ return !CanMoveForward() || !CanMoveBackward(); }
 		inline bool IsEnd() const									{ return m_CurrentPos >= m_BufferEnd; }
 
-		inline void CanMoveForwardThrow()								{ if (CanMoveForward())		return true; throw FormatBufferFull(); }
-		inline void CanMoveForwardThrow(const std::size_t count)		{ if (CanMoveForward())		return true; throw FormatBufferFull(); }
-		inline void CanMoveBackwardThrow() const						{ if (CanMoveBackward())	return true; throw FormatBufferIndex(); }
-		inline void CanMoveBackwardThrow(const std::size_t count)		{ if (CanMoveBackward())	return true; throw FormatBufferIndex(); }
-		inline void IsNotOutOfBoundThrow() const						{ if (IsNotOutOfBound())	return true; throw FormatBufferIndex(); }
-		inline void IsEndThrow() const									{ if (IsEnd())				return true; throw FormatBufferEnd(); }
+		inline void CanMoveForwardThrow()								{ if (CanMoveForward())		return; throw FormatBufferFull(); }
+		inline void CanMoveForwardThrow(const std::size_t count)		{ if (CanMoveForward())		return; throw FormatBufferFull(); }
+		inline void CanMoveBackwardThrow() const						{ if (CanMoveBackward())	return; throw FormatBufferIndex(); }
+		inline void CanMoveBackwardThrow(const std::size_t count)		{ if (CanMoveBackward())	return; throw FormatBufferIndex(); }
+		inline void IsNotOutOfBoundThrow() const						{ if (IsNotOutOfBound())	return; throw FormatBufferIndex(); }
+		inline void IsEndThrow() const									{ if (IsEnd())				return; throw FormatBufferEnd(); }
 
 		// Format base commands
 		inline void Forward()										{ if (CanMoveForward()) ++m_CurrentPos; }

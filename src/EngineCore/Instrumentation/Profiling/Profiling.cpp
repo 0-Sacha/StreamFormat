@@ -44,9 +44,6 @@ namespace EngineCore::Instrumentation {
 
 
 
-
-
-
 	Profiler::Profiler(const std::string& name)
 		: m_Name(name), m_File(m_Name + ".json", std::ios::out), m_Logger(m_Name), m_Start(GetMicroseconds()), m_IsEnd(false), m_ProfilesCount(0)
 	{

@@ -3,7 +3,7 @@
 #include "../../Formatter.h"
 #include <stack>
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	template<typename T, typename FormatContext>
 	struct FormatType<std::stack<T>, FormatContext>
