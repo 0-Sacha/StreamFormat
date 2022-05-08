@@ -28,7 +28,7 @@ namespace EngineCore {
 		inline constexpr static std::size_t Count()		{ return COUNT; }
 		inline constexpr static std::size_t Size()		{ return COUNT; }
 
-		inline constexpr	   ValueType& operator[](const std::size_t idx)		{ ENGINE_CORE_ASSERT(idx < 1); return data[0]; }
+		inline constexpr	   ValueType& operator[](const std::size_t idx)			{ ENGINE_CORE_ASSERT(idx < 1); return data[0]; }
 		inline constexpr const ValueType& operator[](const std::size_t idx) const	{ ENGINE_CORE_ASSERT(idx < 1); return data[0]; }
 
 		inline constexpr		ValueArrayType& GetArray()			{ return data; }

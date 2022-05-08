@@ -12,9 +12,8 @@ namespace EngineCore::Fmt {
 	template<typename T, typename UnFormatContext = BasicUnFormatContext<char, char>>
 	struct UnFormatType {
 		template<class K = T>
-		static inline auto Read(K& t, UnFormatContext& context) {
+		static inline void Read(K& t, UnFormatContext& context) {
 			// ENGINE_CORE_IF_MSVC(static_assert(false, __FUNCSIG__));
-			return false;
 		}
 	};
 
@@ -22,11 +21,10 @@ namespace EngineCore::Fmt {
 
 #define ENGINE_CORE_AUTO_UNFORMAT(Type, fmt, ...)	template<typename UnFormatContext>\
 													struct EngineCore::Fmt::UnFormatType<Type, UnFormatContext> {\
-														static bool Read(Type& value, UnFormatContext& context) {\
-															return context.LittleUnFormat(fmt, __VA_ARGS__);\
+														static inline void Read(Type& value, UnFormatContext& context) {\
+															context.LittleUnFormat(fmt, __VA_ARGS__);\
 														}\
-													};\
-												}
+													};
 
 
 

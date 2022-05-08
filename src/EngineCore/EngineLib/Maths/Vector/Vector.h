@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
+#include "EngineCore/Instrumentation/Test/Test.h"
 
 // A Vector must have the "constexpr Count()" function and the "using ValueType" define to the used Type
 namespace EngineCore {
@@ -42,14 +43,14 @@ struct EngineCore::Fmt::FormatType<EngineCore::Vector<COUNT, Type, ComputeAlgori
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename UnFormatContext>
 struct EngineCore::Fmt::UnFormatType<EngineCore::Vector<COUNT, Type, ComputeAlgorithm>, UnFormatContext>
 {
-	static bool Read(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, UnFormatContext& context) {
-		if(!context.BufferOut().IsEqualForward('{')) return false;
+	static void Read(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, UnFormatContext& context) {
+		context.BufferOut().IsEqualForwardThrow('{');
 		bool first = true;
 		for (auto i = 0; i < COUNT; ++i) {
 			if (first)	first = false;
 			else		{ context.BufferOut().PushBack(','); context.BufferOut().PushBack(' '); }
 			context.ReadType(vec.data[i]);
 		}
-		if(!context.BufferOut().IsEqualForward('}')) return false;
+		context.BufferOut().IsEqualForwardThrow('}');
 	}
 };

@@ -12,3 +12,9 @@
 #include "TestSuite/TestSuiteImpl.h"
 #include "TestSuite/TestSuite.h"
 #endif
+
+#ifdef ENGINE_CORE_ASSERT_ENABLE
+	#define ENGINE_CORE_ASSERT(x)	if(!(x)) ENGINE_CORE_FATAL("ASSERT FAILED! : {}", #x)
+#else
+	#define ENGINE_CORE_ASSERT(x)
+#endif

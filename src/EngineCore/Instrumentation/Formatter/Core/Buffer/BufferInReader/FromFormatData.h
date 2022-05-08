@@ -8,52 +8,52 @@ namespace EngineCore::Fmt::Detail {
 	//------------------ Buffer Read Int ------------------//
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::ReadIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::ReadIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Int:
-				if (formatData.ShiftType == ShiftType::Nothing) return FastReadInt(i);
-				else											return BasicReadInt(i, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);
+				if (formatData.ShiftType == ShiftType::Nothing) FastReadInt(i);
+				else											BasicReadInt(i, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
-				return BasicReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
+				BasicReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
 			case ValueIntPrint::Hex:
-				return BasicReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+				BasicReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
 			case ValueIntPrint::Oct:
-				return BasicReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
+				BasicReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
 			}
 		}
-		return FastReadInt(i);
+		FastReadInt(i);
 	}
 
 	//------------------ Buffer Read UInt ------------------//
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::ReadUIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::ReadUIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Int:
-				if (formatData.ShiftType == ShiftType::Nothing) return FastReadUInt(i);
-				else											return BasicReadUInt(i, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);
+				if (formatData.ShiftType == ShiftType::Nothing) FastReadUInt(i);
+				else											BasicReadUInt(i, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
-				return BasicReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
+				BasicReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
 			case ValueIntPrint::Hex:
-				return BasicReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+				BasicReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
 			case ValueIntPrint::Oct:
-				return BasicReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
+				BasicReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint, formatData.TrueValue);
 			}
 		}
-		return FastReadUInt(i);
+		FastReadUInt(i);
 	}
 
 	//------------------ Buffer Read Float ------------------//
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
-			if (formatData.ShiftType == ShiftType::Nothing)	return FastReadFloat(i, formatData.FloatPrecision);
-			else											return BasicReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);
+			if (formatData.ShiftType == ShiftType::Nothing)	FastReadFloat(i, formatData.FloatPrecision);
+			else											BasicReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftValue, formatData.ShiftPrint);
 		}
-		return FastReadFloat(i, formatData.FloatPrecision);
+		FastReadFloat(i, formatData.FloatPrecision);
 	}
 
 }

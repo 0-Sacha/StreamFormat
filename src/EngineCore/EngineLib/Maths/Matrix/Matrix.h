@@ -47,8 +47,8 @@ struct EngineCore::Fmt::FormatType<EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT,
 template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename Type, typename UnFormatContext>
 struct EngineCore::Fmt::UnFormatType<EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::EngineCompute::EngineComputeBasic>, UnFormatContext>
 {
-	static bool Read(const EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::EngineCompute::EngineComputeBasic>& mat, UnFormatContext& context) {
-		if (!context.BufferOut().IsEqualForward('{')) return false;
+	static void Read(const EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::EngineCompute::EngineComputeBasic>& mat, UnFormatContext& context) {
+		context.BufferOut().IsEqualForwardThrow('{');
 		bool first = true;
 		for (auto i = 0; i < mat.GetNumberOfRows(); ++i) {
 			if (first)	first = false;
@@ -58,7 +58,7 @@ struct EngineCore::Fmt::UnFormatType<EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUN
 			context.ReadType(row);
 			mat.SetRow(row);
 		}
-		if (!context.BufferOut().IsEqualForward('}')) return false;
+		context.BufferOut().IsEqualForwardThrow('}');
 	}
 };
 

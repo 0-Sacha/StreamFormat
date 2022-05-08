@@ -7,14 +7,14 @@ namespace EngineCore::Fmt::Detail {
 	template<typename CharBuffer>
 	template<typename T>
 	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadInt(T& i) {
-		T res = 0;
+		T res = static_cast<T>(0);
 
-		bool sign = Base::IsEqualForward('-');
-		if (!Base::IsADigit())
-			throw FormatParseError();
+		bool sign = IsEqualForward('-');
+		
+		IsADigitThrow();
 
-		while (Base::IsADigit())
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit())
+			res = res * static_cast<T>(10) + (GetAndForward() - '0');
 
 		i = sign ? -res : res;
 	}
@@ -22,37 +22,35 @@ namespace EngineCore::Fmt::Detail {
 	template<typename CharBuffer>
 	template<typename T>
 	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadUInt(T& i) {
-		T res = (T)0;
+		T res = static_cast<T>(0);
 
-		if(!Base::IsADigit())
-			throw FormatParseError();
+		IsADigitThrow();
 
-		while (Base::IsADigit())
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit())
+			res = res * static_cast<T>(10) + (GetAndForward() - '0');
 
 		i = res;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::FastReadFloat(T& i, FormatDataType nbDecimal) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadFloat(T& i, FormatDataType nbDecimal) {
 		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt;
-		if(!FastReadInt(iInt)) return false;
 
-		T res = 0;
-		T dec = 0.1f;
+		FastReadInt(iInt);
 
-		if (!Base::IsEqualForward('.')) return false;
+		T res = static_cast<T>(0);
+		T dec = static_cast<T>(0.1);
+
+		IsEqualForwardThrow('.');
 		
 		++nbDecimal;
-		while (Base::IsADigit() && --nbDecimal != 0) {
-			res += (Base::GetAndForward() - '0') * dec;
-			dec *= 0.1f;
+		while (IsADigit() && --nbDecimal != 0) {
+			res += (GetAndForward() - '0') * dec;
+			dec *= static_cast<T>(0.1);
 		}
 
 		i = iInt + res;
-
-		return true;
 	}
 
 
@@ -62,95 +60,89 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
-		T res = 0;
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+		T res = static_cast<T>(0);
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		bool sign = Base::IsEqualForward('-'); 
+		bool sign = IsEqualForward('-'); 
 		if (sign) --shift;
 	
-		if(!Base::IsADigit()) return false;
+		IsADigitThrow();
 
-		while (Base::IsADigit()) {
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit()) {
+			res = res * static_cast<T>(10) + (GetAndForward() - '0');
 			--shift;
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0)
-			return false;
+			throw FormatParseError();
 		
 		i = sign ? -res : res;
-		
-		return true;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
-		T res = 0;
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+		T res = static_cast<T>(0);
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		if(!Base::IsADigit()) return false;
+		IsADigitThrow();
 
-		while (Base::IsADigit()) {
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit()) {
+			res = res * static_cast<T>(10) + (GetAndForward() - '0');
 			--shift;
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0)
-			return false;
+			throw FormatParseError();
 
 		i = res;
-
-		return true;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadFloat(T& i, FormatDataType nbDecimal, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadFloat(T& i, FormatDataType nbDecimal, ShiftType st, FormatDataType shift, ShiftPrint sp) {
 
 		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		bool sign = Base::IsEqualForward('-');
+		bool sign = IsEqualForward('-');
 		if (sign) --shift;
 
-		if(!Base::IsADigit()) return false;
+		IsADigitThrow();
 
-		while (Base::IsADigit()) {
-			iInt = iInt * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit()) {
+			iInt = iInt * 10 + (GetAndForward() - '0');
 			--shift;
 		}
 
 
-		T res = 0;
-		T dec = 0.1f;
+		T res = static_cast<T>(0);
+		T dec = static_cast<T>(0.1);
 
-		if(!Base::IsEqualForward('.')) return false;
+		IsEqualForwardThrow('.');
 		--shift;
 			
 		++nbDecimal;
-		while (Base::IsADigit() && --nbDecimal != 0) {
-			res += (Base::GetAndForward() - '0') * dec;
-			dec *= 0.1f;
+		while (IsADigit() && --nbDecimal != 0) {
+			res += (GetAndForward() - '0') * dec;
+			dec *= static_cast<T>(0.1);
 			--shift;
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0)
-			return false;
+			throw FormatParseError();
 
 		sign ? i = -iInt - res : i = iInt + res;
-
-		return true;
 	}
 
 	//---------------------------------------------//
@@ -159,7 +151,7 @@ namespace EngineCore::Fmt::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 8;
 
 		shift -= digitSize;
@@ -167,32 +159,28 @@ namespace EngineCore::Fmt::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 		
-		if (trueValue) {
-			if(!Base::IsEqualForward('0')) return false;
-			if(!Base::IsEqualForward('b')) return false;
-		}
+		if (trueValue)
+			IsEqualForwardThrow('0', 'b');
 
-		T res = 0;
+		T res = static_cast<T>(0);
 
-		while (Base::IsEqualTo('0', '1')) {
+		while (IsEqualTo('0', '1')) {
 			res = res << 1;
-			res += Base::Get() - '0';
-			Base::Forward();
+			res += Get() - '0';
+			Forward();
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0)
-			return false;
+			throw FormatParseError();
 
 		i = res;
-
-		return true;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 2;
 
 		shift -= digitSize;
@@ -200,34 +188,30 @@ namespace EngineCore::Fmt::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		if (trueValue) {
-			if (!Base::IsEqualForward('0')) return false;
-			if (!Base::IsEqualForward('x')) return false;
-		}
+		if (trueValue)
+			IsEqualForwardThrow('0', 'x');
 
-		T res = 0;
+		T res = static_cast<T>(0);
 
-		while (Base::IsADigit() || (Base::Get() >= 'A' && Base::Get() <= 'F') || (Base::Get() >= 'a' && Base::Get() <= 'f')) {
+		while (IsADigit() || (Get() >= 'A' && Get() <= 'F') || (Get() >= 'a' && Get() <= 'f')) {
 			res = res << 4;
-			if (Base::IsADigit())								res += Base::Get() - '0';
-			else if (Base::Get() >= 'A' && Base::Get() <= 'F')	res += Base::Get() - 'A' + 10;
-			else if (Base::Get() >= 'a' && Base::Get() <= 'f')	res += Base::Get() - 'a' + 10;
-			Base::Forward();
+			if (IsADigit())								res += Get() - '0';
+			else if (Get() >= 'A' && Get() <= 'F')	res += Get() - 'A' + 10;
+			else if (Get() >= 'a' && Get() <= 'f')	res += Get() - 'a' + 10;
+			Forward();
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0)
-			return false;
+			throw FormatParseError();
 
 		i = res;
-
-		return true;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	bool BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = static_cast<FormatDataType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
 
 		shift -= digitSize;
@@ -235,27 +219,23 @@ namespace EngineCore::Fmt::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		if (trueValue) {
-			if (!Base::IsEqualForward('0')) return false;
-			if (!Base::IsEqualForward('o')) return false;
-		}
+		if (trueValue)
+			IsEqualForwardThrow('0', 'o');
 
-		T res = 0;
+		T res = static_cast<T>(0);
 
-		while (Base::Get() >= '0' && Base::Get() <= '8') {
+		while (Get() >= '0' && Get() <= '8') {
 			res = res << 3;
-			res += Base::Get() - '0';
-			Base::Forward();
+			res += Get() - '0';
+			Forward();
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0)
-			return false;
+			throw FormatParseError();
 
 		i = res;
-
-		return true;
 	}
 
 }

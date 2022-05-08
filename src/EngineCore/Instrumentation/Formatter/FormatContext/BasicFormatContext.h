@@ -83,13 +83,19 @@ namespace EngineCore::Fmt {
 		inline static FormatterHandler& GetAPI()				{ return FormatterHandler::GetInstance(); }
 
 	private:
+		void ParameterParseDataStyle();
+		void ParameterParseDataSpecial();
+		void ParameterParseDataCustom();
+		void ParameterParseData();
 		bool GetFormatIdx(FormatIdx& idx);
-		bool ParameterPrint();
-		void ParameterData();
+
+		void ParameterParseSpecial();
+		void ParameterParseVariable(FormatIdx formatIdx);
+		bool ParameterParse();
 
 	public:
-		void Format();
-		void MainFormat();
+		void Run();
+		void SafeRun();
 
 		template<typename NewCharFormat, typename ...NewContextArgs>
 		void LittleFormat(const std::basic_string_view<NewCharFormat> format, NewContextArgs&& ...args);
@@ -137,7 +143,6 @@ namespace EngineCore::Fmt {
 		inline void BasicWriteType(Type&& type)						{ m_BufferOut.BasicWriteType(type); }
 		template<typename Type, typename ...Rest>
 		inline void BasicWriteType(Type&& type, Rest&& ...rest)		{ m_BufferOut.BasicWriteType(type); BasicWriteType(std::forward<Rest>(rest)...); }
-
 
 
 		template<typename CharStr>						inline void PrintCharPt(const CharStr* str)						{ m_BufferOut.WriteCharPt(str); }

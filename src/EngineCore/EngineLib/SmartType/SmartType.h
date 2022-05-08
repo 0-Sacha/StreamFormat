@@ -2,8 +2,6 @@
 
 #include "EngineCore/Core/Core.h"
 
-// This is a test
-
 namespace EngineCore {
 
 	template <typename From, typename T>
@@ -31,8 +29,6 @@ namespace EngineCore {
 		static inline constexpr ValueType MinValue() { return std::numeric_limits<ValueType>::min(); }
 
 		inline constexpr void PrintFile() { EngineCore::Fmt::FilePrintLn(std::cout, Value); }
-
-
 
 
 		//************* Base Function *************//

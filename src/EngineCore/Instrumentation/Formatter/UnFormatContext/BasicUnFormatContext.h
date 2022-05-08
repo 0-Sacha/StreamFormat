@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Core/Detail.h"
+#include "../Core/Exception.h"
 #include "BaseFormat/UnFormatType.h"
 #include "../FormatContext/BasicFormatContext.h"
 
@@ -10,14 +11,14 @@ namespace EngineCore::Fmt {
 
 	struct UnFormatContextError
 	{
-		bool error					{false};
+		bool Error					{false};
 		std::int16_t FormatPosError	{0};
 		std::int16_t BufferPosError	{0};
 		UnFormatContextError()
-			: error(false), FormatPosError(0), BufferPosError(0) { }
+			: Error(false), FormatPosError(0), BufferPosError(0) { }
 		UnFormatContextError(std::int16_t formatPosError, std::int16_t bufferPosError)
-			: error(true), FormatPosError(formatPosError), BufferPosError(bufferPosError) { }
-		inline operator bool() const { return error; }
+			: Error(true), FormatPosError(formatPosError), BufferPosError(bufferPosError) { }
+		inline operator bool() const { return Error; }
 	};
 
 }
@@ -31,8 +32,8 @@ namespace EngineCore::Fmt {
 		using CharFormatType = CharFormat;
 		using CharBufferType = CharBuffer;
 
-		using FormatDataType		= FormatData<CharFormat>;
-		using FormatSpecifierType	= FormatSpecifier<CharFormat>;
+		using FormatDataType = FormatData<CharFormat>;
+		using FormatSpecifierType = FormatSpecifier<CharFormat>;
 
 		using StringViewFormat = std::basic_string_view<CharFormat>;
 		using StringViewBuffer = std::basic_string_view<CharBuffer>;
@@ -65,17 +66,17 @@ namespace EngineCore::Fmt {
 		Detail::AnsiFormatterChange		m_AnsiFormatterChange;
 
 	public:
-		inline Detail::BasicFormatterMemoryBufferIn<CharBuffer>&			BufferIn()			{ return m_BufferIn; }
+		inline Detail::BasicFormatterMemoryBufferIn<CharBuffer>&		BufferIn()			{ return m_BufferIn; }
 		inline const Detail::BasicFormatterMemoryBufferIn<CharBuffer>&	BufferIn() const	{ return m_BufferIn; }
-		inline Detail::FormatterMemoryFormat<CharFormat>&			FormatStr()			{ return m_FormatStr; }
-		inline const Detail::FormatterMemoryFormat<CharFormat>&		FormatStr() const	{ return m_FormatStr; }
+		inline Detail::FormatterMemoryFormat<CharFormat>&				FormatStr()			{ return m_FormatStr; }
+		inline const Detail::FormatterMemoryFormat<CharFormat>&			FormatStr() const	{ return m_FormatStr; }
 
 		inline Detail::AnsiTextCurrentColor&		GetAnsiTextCurrentColor()		{ return m_AnsiTextCurrentColor; }
-		inline const Detail::AnsiTextCurrentColor&	GetAnsiTextCurrentColor() const	{ return m_AnsiTextCurrentColor; }
+		inline const Detail::AnsiTextCurrentColor&	GetAnsiTextCurrentColor() const { return m_AnsiTextCurrentColor; }
 		inline Detail::AnsiTextCurrentStyle&		GetAnsiTextCurrentStyle()		{ return m_AnsiTextCurrentStyle; }
 		inline const Detail::AnsiTextCurrentStyle&	GetAnsiTextCurrentStyle() const { return m_AnsiTextCurrentStyle; }
 		inline Detail::AnsiTextCurrentFront&		GetAnsiTextCurrentFront()		{ return m_AnsiTextCurrentFront; }
-		inline const Detail::AnsiTextCurrentFront&	GetAnsiTextCurrentFront() const	{ return m_AnsiTextCurrentFront; }
+		inline const Detail::AnsiTextCurrentFront&	GetAnsiTextCurrentFront() const { return m_AnsiTextCurrentFront; }
 
 		inline Detail::AnsiFormatterChange&			GetAnsiFormatterChange()		{ return m_AnsiFormatterChange; }
 		inline const Detail::AnsiFormatterChange&	GetAnsiFormatterChange() const	{ return m_AnsiFormatterChange; }
@@ -84,18 +85,24 @@ namespace EngineCore::Fmt {
 		inline const FormatDataType&	GetFormatData() const		{ return m_FormatData; }
 		inline FormatDataType			ForwardFormatData() const	{ return m_FormatData; }
 
-		inline void AddNoStride(const std::size_t noStride)		{ m_NoStride += noStride; }
-		inline std::size_t GetNoStride() const					{ return m_NoStride; }
-		inline std::size_t GetStride() const					{ return m_BufferIn.GetBufferCurrentSize() - m_NoStride; }
-		inline std::size_t StrideGetBufferCurrentSize() const	{ return m_BufferIn.GetBufferCurrentSize(); }
+		inline void			AddNoStride(const std::size_t noStride) { m_NoStride += noStride; }
+		inline std::size_t	GetNoStride() const						{ return m_NoStride; }
+		inline std::size_t	GetStride() const						{ return m_BufferIn.GetBufferCurrentSize() - m_NoStride; }
+		inline std::size_t	StrideGetBufferCurrentSize() const		{ return m_BufferIn.GetBufferCurrentSize(); }
 
-		static inline std::int16_t NoError()				{ return -1; }
+		static inline std::int16_t NoError()						{ return -1; }
 
 	private:
 		/////---------- Impl ----------/////
+		void ParameterParseDataStyle();
+		void ParameterParseDataSpecial();
+		void ParameterParseDataCustom();
+		void ParameterParseData();
 		bool GetFormatIdx(FormatIdx& idx);
-		bool ParameterRead();
-		void ParameterData();
+
+		void ParameterParseSpecial();
+		void ParameterParseVariable(FormatIdx formatIdx);
+		bool ParameterParse();
 
 	private:
 		static void ReadAnsiTextColorParameter();
@@ -106,13 +113,13 @@ namespace EngineCore::Fmt {
 		void IgnoreParameter();
 
 	public:
-		bool UnFormat();
-		UnFormatContextError MainUnFormat();
+		void Run();
+		UnFormatContextError SafeRun();
 
 		template<typename NewCharFormat, typename ...NewContextArgs>
 		void LittleUnFormat(const std::basic_string_view<NewCharFormat> format, NewContextArgs&& ...args);
 		template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
-		inline void LittleFormat(const CharType(&format)[SIZE], NewContextArgs&& ...args)			{ LittleFormat(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
+		inline void LittleUnFormat(const CharType(&format)[SIZE], NewContextArgs&& ...args) { LittleUnFormat(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
 
 	public:
 		template<typename T> bool FormatReadParameter(T& i);
@@ -120,22 +127,22 @@ namespace EngineCore::Fmt {
 	public:
 		// Other Type from UnFormatType
 		template<typename Type>
-		inline bool ReadType(Type& type)						{ return UnFormatType<Detail::GetBaseType<Type>, BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Read(type, *this); }
+		inline void ReadType(Type& type)						{ UnFormatType<Detail::GetBaseType<Type>, BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Read(type, *this); }
 		template<typename Type, typename ...Rest>
-		inline bool ReadType(Type& type, Rest&& ...rest)		{ if (ReadType(type)) { return ReadType(rest...); } return false; }
+		inline void ReadType(Type& type, Rest&& ...rest)		{ ReadType(type); ReadType(std::forward<Rest>(rest)...); }
 
 		template<typename Type>
-		inline bool BasicReadType(Type& type)					{ return m_BufferIn.BasicReadType(type); }
+		inline void BasicReadType(Type& type)					{ m_BufferIn.BasicReadType(type); }
 		template<typename Type, typename ...Rest>
-		inline bool BasicReadType(Type& type, Rest& ...rest)	{ if (m_BufferIn.BasicReadType(type)) { return BasicReadType(std::forward<Rest>(rest)...); } return false; }
+		inline void BasicReadType(Type& type, Rest& ...rest)	{ m_BufferIn.BasicReadType(type); BasicReadType(std::forward<Rest>(rest)...); }
 
 	public:
-		inline bool FormatIsEndOfParameter()						{ return m_FormatStr.IsEqualTo('}'); }
-		inline void FormatGoToEndOfParameter()						{ while (m_FormatStr.IsNotEqualTo('}') && m_FormatStr.CanMoveForward()) m_FormatStr.ForwardNoCheck(); }
-		inline void FormatGoOutOfParameter()						{ while (m_FormatStr.IsNotEqualTo('}') && m_FormatStr.CanMoveForward()) m_FormatStr.ForwardNoCheck(); m_FormatStr.Forward(); }
+		inline bool FormatIsEndOfParameter()	{ return m_FormatStr.IsEqualTo('}'); }
+		inline void FormatGoToEndOfParameter()	{ while (m_FormatStr.IsNotEqualTo('}') && m_FormatStr.CanMoveForward()) m_FormatStr.ForwardNoCheck(); }
+		inline void FormatGoOutOfParameter()	{ while (m_FormatStr.IsNotEqualTo('}') && m_FormatStr.CanMoveForward()) m_FormatStr.ForwardNoCheck(); m_FormatStr.Forward(); }
 
-		inline bool Check()											{ return m_BufferIn.IsEqualTo(m_FormatStr.Get()); }
-		inline bool CheckAndNext()									{ if (m_BufferIn.IsEqualTo(m_FormatStr.Get())) { m_BufferIn.Forward(); m_FormatStr.Forward(); return true; } return false; }
+		inline bool Check() { return m_BufferIn.IsEqualTo(m_FormatStr.Get()); }
+		inline bool CheckAndNext() { if (m_BufferIn.IsEqualTo(m_FormatStr.Get())) { m_BufferIn.Forward(); m_FormatStr.Forward(); return true; } return false; }
 
 		template<typename ...CharToTest>
 		inline bool CheckUntilNextParameter(const CharToTest ...ele) {
@@ -155,3 +162,5 @@ namespace EngineCore::Fmt {
 		}
 	};
 }
+
+

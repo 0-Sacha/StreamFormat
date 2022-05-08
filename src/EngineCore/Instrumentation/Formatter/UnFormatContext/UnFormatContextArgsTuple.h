@@ -77,13 +77,13 @@ namespace EngineCore::Fmt::Detail {
 
         /////---------- GetNamedArgsIdx ----------/////
         template<typename UnFormatContext, class KType = TypeWithoutRef>
-        inline auto GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value>{
+        inline auto GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value> {
             UnFormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
         }
 
         template<typename UnFormatContext, class KType = TypeWithoutRef>
-        inline auto GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value>{
-            if (context.FormatNextIsANamedArgs(m_Value.GetName()))    idx = currentIdx;
+        inline auto GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value> {
+            if (context.FormatNextIsANamedArgs(m_Value.GetName()))  idx = currentIdx;
             else                                                    UnFormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
         }
 

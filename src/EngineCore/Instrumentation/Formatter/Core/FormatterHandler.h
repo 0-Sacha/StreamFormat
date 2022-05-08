@@ -7,7 +7,7 @@ namespace EngineCore::Fmt {
 	class FormatterHandler {
 
 	public:
-		static FormatterHandler& GetInstance() { static FormatterHandler instance; return instance; }
+		static FormatterHandler& GetInstance();
 
 	public:
 		static void SetBeginTime()																	{ GetInstance().m_TimeShift = std::chrono::high_resolution_clock::now(); }
