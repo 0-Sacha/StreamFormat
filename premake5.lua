@@ -24,6 +24,10 @@ project "EngineCore"
 
 	IncludeProject("EngineCore")
 
+	defines {
+		"ENGINE_CORE_BASE_LOGGER_NAME=\"%{ProjectName}\""
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 

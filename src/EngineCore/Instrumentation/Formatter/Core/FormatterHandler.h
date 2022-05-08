@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EngineCore/Core.h"
 #include <chrono>
 
 namespace EngineCore::Instrumentation::Fmt {

@@ -3,7 +3,7 @@
 
 #include "BasicFormatContextParseImpl.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	/////---------- Impl with as Format ----------//////
 
