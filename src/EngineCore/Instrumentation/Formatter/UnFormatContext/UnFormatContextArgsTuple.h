@@ -4,7 +4,7 @@
 #include "BaseFormat/UnFormatType.h"
 #include "../FormatContext/BasicFormatContext.h"
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 
 	template <typename... Types>
 	struct UnFormatContextArgsTuple;
@@ -82,9 +82,9 @@ namespace EngineCore::Fmt::Detail {
         }
 
         template<typename UnFormatContext, class KType = TypeWithoutRef>
-        inline auto GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value> {
-            if (context.FormatNextIsANamedArgs(m_Value.GetName()))  idx = currentIdx;
-            else                                                    UnFormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
+        inline auto GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value>{
+            if (context.FormatNextIsANamedArgs(m_Value.GetName()))    idx = currentIdx;
+            else                                                      UnFormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
         }
 
         /////---------- GetFormatValueAt ----------/////

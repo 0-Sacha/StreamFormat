@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core/Core.h"
+#include "EngineCore/Core.h"
 
 #include "BaseAnsiTextColor.h"
 #include "BaseAnsiTextStyle.h"
@@ -34,7 +34,7 @@
 //
 
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 	using FormatDataType	= std::int16_t;
 	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED	= (std::numeric_limits<FormatDataType>::max)();
 	static inline constexpr FormatDataType SHIFT_NOT_SPECIFIED			= 0;
@@ -43,12 +43,12 @@ namespace EngineCore::Fmt::Detail {
 } // namespace CPPTools::Fmt::Detail
 
 // FIXME: Delete
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 	using FormatDataType = Detail::FormatDataType;
 	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED = Detail::FORMAT_DATA_NOT_SPECIFIED;
 } // namespace CPPTools::Fmt
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 
 	template<typename T> struct ForwardAsInt;
 	template<typename T> struct ForwardAsUInt;
@@ -89,7 +89,7 @@ namespace EngineCore::Fmt::Detail {
 
 } // CPPTools::Fmt::Detail
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	// Type for dealing with index
 	using FormatIdx = int;
@@ -134,14 +134,14 @@ namespace EngineCore::Fmt {
 
 			, TrueValue(false)
 
-			, IntPrint(::EngineCore::Fmt::Detail::ValueIntPrint::Default)
+			, IntPrint(::EngineCore::Instrumentation::Fmt::Detail::ValueIntPrint::Default)
 			, DigitSize(Detail::DIGIT_SIZE_NOT_SPECIFIED)
 			, FloatPrecision(Detail::FLOAT_PRECISION_NOT_SPECIFIED)
 
 			, PrintStyle(Detail::PrintStyle::Default)
 
-			, ShiftPrint(::EngineCore::Fmt::Detail::ShiftPrint::Default)
-			, ShiftType(::EngineCore::Fmt::Detail::ShiftType::Default)
+			, ShiftPrint(::EngineCore::Instrumentation::Fmt::Detail::ShiftPrint::Default)
+			, ShiftType(::EngineCore::Instrumentation::Fmt::Detail::ShiftType::Default)
 			, ShiftValue(Detail::SHIFT_NOT_SPECIFIED)
 
 			, SpecifierCount(0)
@@ -271,7 +271,7 @@ namespace EngineCore::Fmt {
 	};
 } // CPPTools::Fmt
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 	template<typename T, typename CharFormat>	struct CopyFormatData										{ static void Copy(FormatData<CharFormat>& data, const T& t) { } };
 	template<typename CharFormat>				struct CopyFormatData<FormatData<CharFormat>, CharFormat>	{ static void Copy(FormatData<CharFormat>& data, const FormatData<CharFormat>& t) { data = t; } };
 

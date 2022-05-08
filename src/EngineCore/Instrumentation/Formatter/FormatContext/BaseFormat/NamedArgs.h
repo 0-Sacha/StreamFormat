@@ -2,7 +2,7 @@
 
 #include "FormatType.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 	/////---------- string_view NamedArgs Do not allocate memory (Best) ----------/////
 	template<typename T, typename CharName = char>
 	struct StringViewNamedArgs
@@ -106,7 +106,7 @@ namespace EngineCore::Fmt {
 }
 
 
-#define FORMAT(value)				EngineCore::Fmt::StringViewNamedArgs(#value, value)
-#define FORMAT_SV(name, value)		EngineCore::Fmt::StringViewNamedArgs(name, value)
+#define FORMAT(value)				EngineCore::Instrumentation::Fmt::StringViewNamedArgs(#value, value)
+#define FORMAT_SV(name, value)		EngineCore::Instrumentation::Fmt::StringViewNamedArgs(name, value)
 
-#define FORMAT_STR(name, value)		EngineCore::Fmt::StringNamedArgs(name, value)
+#define FORMAT_STR(name, value)		EngineCore::Instrumentation::Fmt::StringNamedArgs(name, value)

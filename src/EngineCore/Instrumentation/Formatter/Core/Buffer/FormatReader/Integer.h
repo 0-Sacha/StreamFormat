@@ -2,7 +2,7 @@
 
 #include "../Format.h"
 
-namespace EngineCore::Fmt::Detail {
+namespace EngineCore::Instrumentation::Fmt::Detail {
 	template<typename CharFormat>
 	template<typename T>
 	bool FormatterMemoryFormat<CharFormat>::ReadInt(T& i) {

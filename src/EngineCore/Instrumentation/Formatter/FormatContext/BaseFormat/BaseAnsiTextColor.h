@@ -4,7 +4,7 @@
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	template<typename FormatContext>
 	struct FormatType<Detail::AnsiTextColorFG, FormatContext>

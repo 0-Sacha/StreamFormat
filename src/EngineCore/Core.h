@@ -1,0 +1,45 @@
+#pragma once
+
+#include "EngineCorepch.h"
+
+#ifdef ENGINECORE_DEV
+#define ENGINECORE_DEBUG
+#define ENGINECORE_EC_ENABLE
+#endif
+
+#ifdef ENGINECORE_DEBUG
+
+#define ENGINECORE_ASSERT_ENABLE
+#define ENGINECORE_LOGGER
+
+// Logger
+#define ENGINECORE_LOGGER_ENABLE
+
+// Profiling
+#define ENGINECORE_PROFILING_ENABLE
+
+// Test
+#define ENGINECORE_ECTM_ENABLE
+#define ENGINECORE_TESTMACRO_ENABLE
+#define ENGINECORE_ECTS_ENABLE
+#define ENGINECORE_TESTSUITE_ENABLE
+
+#define ENGINECORE_ONLY_ON_DEBUG(x) x
+
+#else /* ENGINECORE_DEBUG */
+
+#define ENGINECORE_ONLY_ON_DEBUG(x)
+
+#endif /* ENGINECORE_DEBUG */
+
+
+// NOT USED YET
+#define ENGINECORE_NODISCARD	[[nodiscard]]
+#define ENGINECORE_INLINE		inline
+
+
+#ifdef ENGINECORE_ASSERT_ENABLE
+	#define ENGINECORE_ASSERT(x)	if(!(x)) ENGINECORE_FATAL("ASSERT FAILED! : {}", #x)
+#else
+	#define ENGINECORE_ASSERT(x)
+#endif

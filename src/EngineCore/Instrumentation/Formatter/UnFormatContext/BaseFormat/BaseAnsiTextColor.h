@@ -2,7 +2,7 @@
 
 #include "../BasicUnFormatContext.h"
 
-namespace EngineCore::Fmt {
+namespace EngineCore::Instrumentation::Fmt {
 
 	template<typename UnFormatContext>
 	struct UnFormatType<Detail::AnsiTextColorFG, UnFormatContext>

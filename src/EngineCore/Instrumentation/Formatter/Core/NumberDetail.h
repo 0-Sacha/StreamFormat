@@ -1,8 +1,8 @@
 #pragma once
 
-#include "EngineCore/Core/Core.h"
+#include "EngineCore/Core.h"
 
-namespace EngineCore::Fmt::Detail::ValuesDetail {
+namespace EngineCore::Instrumentation::Fmt::Detail::ValuesDetail {
 	
 	template<typename T>
 	struct NumberDetail {
