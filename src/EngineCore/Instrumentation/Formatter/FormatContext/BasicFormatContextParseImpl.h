@@ -71,7 +71,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 		if (m_FormatStr.IsEqualForward('\'')) {
 			const char* valuePos = m_FormatStr.GetBufferCurrentPos();
-			m_FormatStr.ParamGoTo('\'');
+			m_FormatStr.GoTo('\'');
 			std::size_t valueSize = m_FormatStr.GetBufferCurrentPos() - valuePos;
 			m_FormatData.AddSpecifier(name, StringViewFormat(valuePos, valueSize));
 		}
