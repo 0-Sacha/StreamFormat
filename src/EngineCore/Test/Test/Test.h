@@ -2,14 +2,14 @@
 
 #include "../TestCore.h"
 
-#define ENGINECORE_TEST_TRACE(...)	EngineCore::TestCore::TestCore::GetLogger().LogTrace(__VA_ARGS__)
-#define ENGINECORE_TEST_INFO(...)	EngineCore::TestCore::TestCore::GetLogger().LogInfo(__VA_ARGS__)
-#define ENGINECORE_TEST_WARN(...)	EngineCore::TestCore::TestCore::GetLogger().LogWarn(__VA_ARGS__)
-#define ENGINECORE_TEST_ERROR(...)	EngineCore::TestCore::TestCore::GetLogger().LogError(__VA_ARGS__)
-#define ENGINECORE_TEST_FATAL(...)	EngineCore::TestCore::TestCore::GetLogger().LogFatal(__VA_ARGS__)
-#define ENGINECORE_TEST_OK(...)	EngineCore::TestCore::TestCore::GetLogger().LogOk(__VA_ARGS__)
-#define ENGINECORE_TEST_FAIL(...)	EngineCore::TestCore::TestCore::GetLogger().LogFail(__VA_ARGS__)
-#define ENGINECORE_TEST_BASIC(...)	EngineCore::TestCore::TestCore::GetLogger().LogBasic(__VA_ARGS__)
+#define ENGINECORE_TEST_TRACE(...)	EngineCore::Test::TestCore::GetLogger().LogTrace(__VA_ARGS__)
+#define ENGINECORE_TEST_INFO(...)	EngineCore::Test::TestCore::GetLogger().LogInfo(__VA_ARGS__)
+#define ENGINECORE_TEST_WARN(...)	EngineCore::Test::TestCore::GetLogger().LogWarn(__VA_ARGS__)
+#define ENGINECORE_TEST_ERROR(...)	EngineCore::Test::TestCore::GetLogger().LogError(__VA_ARGS__)
+#define ENGINECORE_TEST_FATAL(...)	EngineCore::Test::TestCore::GetLogger().LogFatal(__VA_ARGS__)
+#define ENGINECORE_TEST_OK(...)		EngineCore::Test::TestCore::GetLogger().LogOk(__VA_ARGS__)
+#define ENGINECORE_TEST_FAIL(...)	EngineCore::Test::TestCore::GetLogger().LogFail(__VA_ARGS__)
+#define ENGINECORE_TEST_BASIC(...)	EngineCore::Test::TestCore::GetLogger().LogBasic(__VA_ARGS__)
 
 namespace EngineCore::Test {
 

@@ -9,6 +9,8 @@
 *.vcxproj.filters
 *.vcxproj.user
 
+Makefile
+
 # VSCode
 .vscode
 

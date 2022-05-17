@@ -1,5 +1,14 @@
 #pragma once
 
+#ifdef ENGINECORE_TEST_ALL_ENABLE
+
+#define ENGINECORE_ECTM_ENABLE
+#define ENGINECORE_TESTMACRO_ENABLE
+#define ENGINECORE_ECTS_ENABLE
+#define ENGINECORE_TESTSUITE_ENABLE
+
+#endif /* ENGINECORE_TEST_ALL_ENABLE */
+
 #include "TestCore.h"
 
 #include "CopyMoveCheck/CopyMoveCheck.h"
