@@ -4,14 +4,14 @@
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<Detail::ResetAnsiAllParameters, FormatContext>
 	{
 		static void Write(const Detail::ResetAnsiAllParameters t, FormatContext& context) {
 			context.BasicWriteType('\033', '[', 'm');
-			context.AddNoStride(3);
+			context.BufferOut().AddNoStride(3);
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -31,8 +31,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>
 	{
 		static void Write(const Detail::ForwardAsAnsiBasicTextStyle t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -89,7 +88,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	{
 		static void Write(const Detail::ResetAnsiUnderlineColor t, FormatContext& context) {
 			context.BufferOut().WriteCharArray("\033[59m");
-			context.AddNoStride(5);
+			context.BufferOut().AddNoStride(5);
 
 			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor = true;
 
@@ -101,7 +100,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiNColorUnderline, FormatContext>
 	{
 		static void Write(const Detail::AnsiNColorUnderline t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
+			Detail::NoStrideFunction nostride(context.BufferOut());
 
 			context.BasicWriteType("\033[58;5;", t.GetColorRef(), 'm');
 
@@ -117,7 +116,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiUnderlineColor24b, FormatContext>
 	{
 		static void Write(const Detail::AnsiUnderlineColor24b t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
+			Detail::NoStrideFunction nostride(context.BufferOut());
 
 			context.BasicWriteType("\033[58;2;", t.R, ';', t.G, ';', t.B, 'm');
 

@@ -9,35 +9,35 @@
 #include "BaseFormat/Chrono.h"
 #include "BaseFormat/BaseSTDLib.h"
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat> format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
+	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
 		: m_BufferOut(buffer, bufferSize)
 		, m_FormatStr(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_NoStride(0)
+		, m_Indent(0)
 		, m_ValuesIdx(0)
 	{
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const bool bufferIsAutoResize, const std::basic_string_view<CharFormat> format, ContextArgs &&...args)
+	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args)
 		: m_BufferOut()
 		, m_FormatStr(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_NoStride(0)
+		, m_Indent(0)
 		, m_ValuesIdx(0)
 	{
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename ParentCharFormat, typename ...ParentContextArgs>
-	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat> format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
+	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
 		: m_BufferOut(parentContext.BufferOut())
 		, m_FormatStr(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_NoStride(parentContext.GetNoStride())
+		, m_Indent(parentContext.GetIndent())
 		, m_ValuesIdx(0)
 	{
 		m_FormatData.Clone(parentContext.GetFormatData());
@@ -64,7 +64,8 @@ namespace EngineCore::Instrumentation::Fmt {
 	std::uint8_t BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::GetWordFromList(const std::basic_string_view<CharList>(&formatTypes)[SIZE]) {
 		std::uint8_t res = (std::numeric_limits<std::uint8_t>::max)();
 		for (int idx = 0; idx < SIZE; ++idx) {
-			if (m_FormatStr.NextIsSame(formatTypes[idx])) {
+			if (m_FormatStr.NextIsSame(formatTypes[idx]))
+			{
 				res = idx; idx = SIZE;
 			}
 		}
@@ -87,7 +88,7 @@ namespace EngineCore::Instrumentation::Fmt {
 		WriteType(ns);
 	}
 
-	/////---------- ReadColorParameter ----------/////
+	/////---------- ReadAnsiTextColorParameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextColorParameter() {
 		if (m_FormatStr.IsEqualForward(':')) {
@@ -337,7 +338,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	}
 
 
-
+	/////---------- ReadAnsiTextFrontParameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextFrontParameter() {
 		if (m_FormatStr.IsEqualForward(':')) {
@@ -371,5 +372,32 @@ namespace EngineCore::Instrumentation::Fmt {
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReloadFront(const Detail::AnsiTextCurrentFront& targetFront, const Detail::AnsiTextFrontChange& changeFront) {
 		if (changeFront.HasChangeFront)
 			WriteType(targetFront.Front);
+	}
+
+	
+	
+	/////---------- ReadSetterParameter ----------/////
+	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadSetterParameter() {
+		static constexpr std::string_view keys[] = {
+			"indent"
+		};
+		m_FormatStr.ParamGoTo(':');
+		m_FormatStr.IsEqualForward(':');
+		m_FormatStr.IgnoreSpace();
+		auto idx = GetWordFromList(keys);
+		if (idx == 0)
+		{
+			m_FormatStr.ParamGoTo('=');
+			if (m_FormatStr.IsEqualForward('='))
+			{
+				m_FormatStr.IgnoreSpace();
+				Detail::FormatDataType value = 0;
+				m_FormatStr.ReadInt(value);
+				m_Indent = value;
+			}
+			else
+				SetIndent();
+		}
 	}
 }

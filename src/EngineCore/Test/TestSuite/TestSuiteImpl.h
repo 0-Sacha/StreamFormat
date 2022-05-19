@@ -138,7 +138,7 @@ namespace EngineCore::Test {
 }
 
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 	template<typename FormatContext>
 	struct FormatType<EngineCore::Test::TestSuite, FormatContext>
 	{

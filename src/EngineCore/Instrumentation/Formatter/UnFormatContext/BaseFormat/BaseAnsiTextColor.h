@@ -2,14 +2,13 @@
 
 #include "../BasicUnFormatContext.h"
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename UnFormatContext>
 	struct UnFormatType<Detail::AnsiTextColorFG, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextColorFG& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color.Fg = t;
@@ -22,8 +21,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextColorBG, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextColorBG& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
 			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color.Bg = t;
@@ -36,8 +34,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextColor, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextColor& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor;
@@ -53,8 +50,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextColor24bFg, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextColor24bFg& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits.Fg = t;
@@ -67,8 +63,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextColor24bBg, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextColor24bBg& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
 			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits.Bg = t;
@@ -81,8 +76,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextColor24b, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextColor24b& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
@@ -98,8 +92,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextNColorFg, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextNColorFg& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextNColor;
 			context.GetAnsiTextCurrentColor().ColorN.Fg = t;
@@ -112,8 +105,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextNColorBg, UnFormatContext>
 	{
 		static void Read(Detail::AnsiTextNColorBg& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
 			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextNColor;
 			context.GetAnsiTextCurrentColor().ColorN.Bg = t;
@@ -126,8 +118,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiTextNColor, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTextNColor& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
 			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextNColor;

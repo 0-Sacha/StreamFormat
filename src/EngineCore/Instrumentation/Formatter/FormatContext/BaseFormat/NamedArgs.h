@@ -2,7 +2,7 @@
 
 #include "FormatType.h"
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 	/////---------- string_view NamedArgs Do not allocate memory (Best) ----------/////
 	template<typename T, typename CharName = char>
 	struct StringViewNamedArgs
@@ -11,14 +11,14 @@ namespace EngineCore::Instrumentation::Fmt {
 		StringViewNamedArgs(const CharName(&name)[SIZE], T&& t)
 			: m_Name(name), value(t) {}
 
-		StringViewNamedArgs(const std::basic_string_view<CharName> name, T&& t)
+		StringViewNamedArgs(const std::basic_string_view<CharName>& name, T&& t)
 			: m_Name(name), value(t) {}
 
 		template<std::size_t SIZE>
 		StringViewNamedArgs(const CharName(&name)[SIZE], T& t)
 			: m_Name(name), value(t) {}
 
-		StringViewNamedArgs(const std::basic_string_view<CharName> name, T& t)
+		StringViewNamedArgs(const std::basic_string_view<CharName>& name, T& t)
 			: m_Name(name), value(t) {}
 
 	public:
@@ -81,17 +81,17 @@ namespace EngineCore::Instrumentation::Fmt {
 		template <typename T>
 		struct IsANamedArgs {
 		public:
-			inline constexpr static bool value = false;
+			[[maybe_unused]] inline constexpr static bool value = false;
 		};
 
 		template <typename T, typename CharName>
 		struct IsANamedArgs<StringViewNamedArgs<T, CharName>> {
-			inline constexpr static bool value = true;
+			[[maybe_unused]] inline constexpr static bool value = true;
 		};
 
 		template <typename T, typename CharName>
 		struct IsANamedArgs<StringNamedArgs<T, CharName>> {
-			inline constexpr static bool value = true;
+			[[maybe_unused]] inline constexpr static bool value = true;
 		};
 
 		template <typename T>
@@ -106,7 +106,7 @@ namespace EngineCore::Instrumentation::Fmt {
 }
 
 
-#define FORMAT(value)				EngineCore::Instrumentation::Fmt::StringViewNamedArgs(#value, value)
-#define FORMAT_SV(name, value)		EngineCore::Instrumentation::Fmt::StringViewNamedArgs(name, value)
+#define FORMAT(value)				EngineCore::Instrumentation::FMT::StringViewNamedArgs(#value, value)
+#define FORMAT_SV(name, value)		EngineCore::Instrumentation::FMT::StringViewNamedArgs(name, value)
 
-#define FORMAT_STR(name, value)		EngineCore::Instrumentation::Fmt::StringNamedArgs(name, value)
+#define FORMAT_STR(name, value)		EngineCore::Instrumentation::FMT::StringNamedArgs(name, value)

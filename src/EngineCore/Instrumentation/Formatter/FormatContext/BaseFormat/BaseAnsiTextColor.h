@@ -4,13 +4,13 @@
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<Detail::AnsiTextColorFG, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextColorFG& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
+			Detail::NoStrideFunction nostride(context.BufferOut());
 
 			context.BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');
 
@@ -26,7 +26,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextColorBG, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextColorBG& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
+			Detail::NoStrideFunction nostride(context.BufferOut());
 
 			context.BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');
 
@@ -42,8 +42,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextColor, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextColor& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType('\033', '[', static_cast<std::uint8_t>(t.Fg)
 										 , ';', static_cast<std::uint8_t>(t.Bg), 'm');
 
@@ -61,8 +60,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextColor24bFg, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextColor24bFg& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[38;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
@@ -77,8 +75,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextColor24bBg, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextColor24bBg& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[48;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
@@ -93,8 +90,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextColor24b, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextColor24b& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[38;2;", t.Fg.R, ';', t.Fg.G, ';', t.Fg.B, "; 48; 2;", t.Bg.R, ';', t.Bg.G, ';', t.Bg.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
@@ -112,8 +108,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextNColorFg, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextNColorFg& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[38;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
@@ -128,8 +123,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextNColorBg, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextNColorBg& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[48;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
@@ -144,8 +138,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct FormatType<Detail::AnsiTextNColor, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextNColor& t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[48;5;", t.Fg.GetColorRef(), ";48;5;", t.Bg.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;

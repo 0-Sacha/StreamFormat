@@ -1,54 +1,8 @@
 #pragma once
 
-#include "EngineCore/Core.h"
+#include "Base.h"
 
-#include "BaseAnsiTextColor.h"
-#include "BaseAnsiTextStyle.h"
-#include "BaseAnsiTextFront.h"
-#include "GetBaseType.h"
-
-#include "NumberDetail.h"
-
-#include "Exception.h"
-
-// TODO :
-//
-//		-- USE STD
-// 
-//		Base Digit
-// 
-//		JSON	
-// 
-//		TEST
-//		
-//		GLOBBER
-// 
-//		REGEX		
-//			{I:REGEX}
-//			{:regex=REGEX} (string / char array)
-//			{}
-//
-//		End writing all writer and reader (string / char pt)	
-//		
-//		PackSave (foreshadowing for constexpr)
-//
-
-
-namespace EngineCore::Instrumentation::Fmt::Detail {
-	using FormatDataType	= std::int16_t;
-	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED	= (std::numeric_limits<FormatDataType>::max)();
-	static inline constexpr FormatDataType SHIFT_NOT_SPECIFIED			= 0;
-	static inline constexpr FormatDataType DIGIT_SIZE_NOT_SPECIFIED			= FORMAT_DATA_NOT_SPECIFIED;
-	static inline constexpr FormatDataType FLOAT_PRECISION_NOT_SPECIFIED	= 2;
-} // namespace CPPTools::Fmt::Detail
-
-// FIXME: Delete
-namespace EngineCore::Instrumentation::Fmt {
-	using FormatDataType = Detail::FormatDataType;
-	static inline constexpr FormatDataType FORMAT_DATA_NOT_SPECIFIED = Detail::FORMAT_DATA_NOT_SPECIFIED;
-} // namespace CPPTools::Fmt
-
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename T> struct ForwardAsInt;
 	template<typename T> struct ForwardAsUInt;
@@ -86,31 +40,29 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		Default = UpperCase
 	};
 
+} // CPPTools::FMT::Detail
 
-} // CPPTools::Fmt::Detail
-
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	// Type for dealing with index
-	using FormatIdx = int;
-	static const FormatIdx FORMAT_IDX_NOT_FOUND = -1;
+	using FormatIdx 		= int;
+	static const FormatIdx  FORMAT_IDX_NOT_FOUND = -1;
 
 	template <typename CharFormat>
 	struct FormatSpecifier {
-
 		FormatSpecifier()
 			: Name(nullptr, 0)
 			, ValueAsText(nullptr, 0)
 			, ValueAsNumber(0)
 			, ValueIsText(true) {}
 
-		FormatSpecifier(const std::basic_string_view<CharFormat> name, const std::basic_string_view<CharFormat> value)
+		FormatSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value)
 			: Name(name)
 			, ValueAsText(value)
 			, ValueAsNumber(0)
 			, ValueIsText(true) {}
 
-		FormatSpecifier(const std::basic_string_view<CharFormat> name, const Detail::FormatDataType value)
+		FormatSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::FormatDataType value)
 			: Name(name)
 			, ValueAsText(nullptr, 0)
 			, ValueAsNumber(value)
@@ -133,15 +85,16 @@ namespace EngineCore::Instrumentation::Fmt {
 			, HasSpec(false)
 
 			, TrueValue(false)
+			, Safe(false)
 
-			, IntPrint(::EngineCore::Instrumentation::Fmt::Detail::ValueIntPrint::Default)
+			, IntPrint(::EngineCore::Instrumentation::FMT::Detail::ValueIntPrint::Default)
 			, DigitSize(Detail::DIGIT_SIZE_NOT_SPECIFIED)
 			, FloatPrecision(Detail::FLOAT_PRECISION_NOT_SPECIFIED)
 
 			, PrintStyle(Detail::PrintStyle::Default)
 
-			, ShiftPrint(::EngineCore::Instrumentation::Fmt::Detail::ShiftPrint::Default)
-			, ShiftType(::EngineCore::Instrumentation::Fmt::Detail::ShiftType::Default)
+			, ShiftPrint(::EngineCore::Instrumentation::FMT::Detail::ShiftPrint::Default)
+			, ShiftType(::EngineCore::Instrumentation::FMT::Detail::ShiftType::Default)
 			, ShiftValue(Detail::SHIFT_NOT_SPECIFIED)
 
 			, SpecifierCount(0)
@@ -157,6 +110,7 @@ namespace EngineCore::Instrumentation::Fmt {
 			, HasSpec(other.HasSpec)
 
 			, TrueValue(other.TrueValue)
+			, Safe(other.Safe)
 
 			, IntPrint(other.IntPrint)
 			, DigitSize(other.DigitSize)
@@ -179,6 +133,7 @@ namespace EngineCore::Instrumentation::Fmt {
 		explicit FormatData(bool hasSpec
 
 			, bool baseValue = false
+			, bool safe = false
 
 			, Detail::ValueIntPrint intPrint		= Detail::ValueIntPrint::Default
 			, Detail::FormatDataType digitSize		= Detail::DIGIT_SIZE_NOT_SPECIFIED
@@ -194,6 +149,7 @@ namespace EngineCore::Instrumentation::Fmt {
 			, HasSpec(hasSpec)
 
 			, TrueValue(baseValue)
+			, Safe(safe)
 
 			, IntPrint(intPrint)
 			, DigitSize(digitSize)
@@ -229,6 +185,7 @@ namespace EngineCore::Instrumentation::Fmt {
 		bool HasSpec;
 
 		bool TrueValue;							// = 
+		bool Safe;								// Safe 
 
 		Detail::ValueIntPrint IntPrint; 		// B  - X  - O  - D
 		Detail::FormatDataType DigitSize;		// B? - X? - O? - D?
@@ -250,83 +207,23 @@ namespace EngineCore::Instrumentation::Fmt {
 	public:
 		static inline constexpr std::uint8_t NotFound() { return (std::numeric_limits<std::uint8_t>::max)(); }
 
-		std::basic_string_view<CharFormat> GetSpecifierAsText(const std::basic_string_view<CharFormat> str, const std::basic_string_view<CharFormat> defaultValue = FormatSpecifier<CharFormat>::SpecifierAsTextNotSpecified()) const {
+		std::basic_string_view<CharFormat> GetSpecifierAsText(const std::basic_string_view<CharFormat>& str, const std::basic_string_view<CharFormat>& defaultValue = FormatSpecifier<CharFormat>::SpecifierAsTextNotSpecified()) const {
 			for (auto i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueIsText == true && Specifier[i].Name == str)
 					return Specifier[i].ValueAsText;
 			return defaultValue;
 		}
 
-		Detail::FormatDataType GetSpecifierAsNumber(const std::basic_string_view<CharFormat> str, const Detail::FormatDataType defaultValue = FormatSpecifier<CharFormat>::SpecifierAsNumberNotSpecified()) const {
+		Detail::FormatDataType GetSpecifierAsNumber(const std::basic_string_view<CharFormat>& str, const Detail::FormatDataType defaultValue = FormatSpecifier<CharFormat>::SpecifierAsNumberNotSpecified()) const {
 			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueIsText == false && Specifier[i].Name == str)
 					return Specifier[i].ValueAsNumber;
 			return defaultValue;
 		}
 
-		void AddSpecifier(const FormatSpecifier<CharFormat> specifier)														{ if (SpecifierCount < Specifier.size()) Specifier[SpecifierCount++] = specifier; }
-		void AddSpecifier(const std::basic_string_view<CharFormat> name, const std::basic_string_view<CharFormat> value)	{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
-		void AddSpecifier(const std::basic_string_view<CharFormat> name, const Detail::FormatDataType value)				{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
+		void AddSpecifier(const FormatSpecifier<CharFormat>& specifier)														{ if (SpecifierCount < Specifier.size()) Specifier[SpecifierCount++] = specifier; }
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value)	{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::FormatDataType value)				{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
 
 	};
-} // CPPTools::Fmt
-
-namespace EngineCore::Instrumentation::Fmt::Detail {
-	template<typename T, typename CharFormat>	struct CopyFormatData										{ static void Copy(FormatData<CharFormat>& data, const T& t) { } };
-	template<typename CharFormat>				struct CopyFormatData<FormatData<CharFormat>, CharFormat>	{ static void Copy(FormatData<CharFormat>& data, const FormatData<CharFormat>& t) { data = t; } };
-
-	template <typename CharJoin>
-	struct FormatSpecifierJoinSpliter {
-		std::basic_string_view<CharJoin> 	Str1;
-		std::basic_string_view<CharJoin> 	Str2;
-		
-		bool HasBeenSplited;
-
-		FormatSpecifierJoinSpliter(const std::basic_string_view<CharJoin> str) : HasBeenSplited(false) {
-			if(IsSplitNeeded(str)) {
-				HasBeenSplited = true;
-				auto indexOfNewLine = std::distance(str.cbegin(), std::find(str.cbegin(), str.cend(), '\n'));
-				Str1 = std::basic_string_view<CharJoin>(str.data(), indexOfNewLine);
-				Str2 = std::basic_string_view<CharJoin>(str.data() + indexOfNewLine + 1, str.size() - indexOfNewLine - 1);
-			} else {
-				Str1 = str;
-				Str2 = std::basic_string_view<CharJoin>(nullptr, 0);
-			}
-		}
-
-		template <typename FormatContext>
-		void Write(FormatContext& context, const std::size_t stride = (std::numeric_limits<std::size_t>::max)()) const {
-			context.BufferOut().WriteStringView(Str1);
-			if(HasBeenSplited) {
-				context.BufferOut().PushBack('\n');
-				stride == (std::numeric_limits<std::size_t>::max)() ? context.BufferOut().AddSpaces(context.GetStride()) : context.BufferOut().AddSpaces(stride);
-			}
-			context.BufferOut().WriteStringView(Str2);
-		}
-
-		inline static bool IsSplitNeeded(const std::basic_string_view<CharJoin> str) 	{ return std::find(str.cbegin(), str.cend(), '\n') != str.cend(); } 
-	};
-
-
-	template <typename FormatContext>
-	struct NoStrideFunction {
-		inline NoStrideFunction(FormatContext& context)
-			: Context(context)
-			, SizeBuffer(Context.StrideGetBufferCurrentSize()) {}
-
-		~NoStrideFunction() {
-			Context.AddNoStride(Context.StrideGetBufferCurrentSize() - SizeBuffer);
-		}
-
-		FormatContext&	Context;
-		std::size_t		SizeBuffer;
-	};
-
-
-	struct AnsiFormatterChange {
-	public:
-		bool HasMadeChange = false;
-	};
-
-} // CPPTools::Fmt::Detail
-
+}

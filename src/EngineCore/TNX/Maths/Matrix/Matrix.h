@@ -26,7 +26,7 @@ namespace EngineCore::TNX {
 namespace EngineCore::TNX {
 
 template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename Type, typename FormatContext>
-struct EngineCore::Instrumentation::Fmt::FormatType<EngineCore::TNX::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::TNX::TNXBasic>, FormatContext>
+struct EngineCore::Instrumentation::FMT::FormatType<EngineCore::TNX::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::TNX::TNXBasic>, FormatContext>
 {
 	static void Write(const EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::TNX::TNXBasic>& mat, FormatContext& context) {
 		context.BufferOut().PushBack('{');
@@ -45,7 +45,7 @@ struct EngineCore::Instrumentation::Fmt::FormatType<EngineCore::TNX::Matrix<COLU
 };
 
 template <std::size_t COLUMNS_COUNT, std::size_t ROWS_COUNT, typename Type, typename UnFormatContext>
-struct EngineCore::Instrumentation::Fmt::UnFormatType<EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::TNX::TNXBasic>, UnFormatContext>
+struct EngineCore::Instrumentation::FMT::UnFormatType<EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::TNX::TNXBasic>, UnFormatContext>
 {
 	static void Read(const EngineCore::Matrix<COLUMNS_COUNT, ROWS_COUNT, Type, EngineCore::TNX::TNXBasic>& mat, UnFormatContext& context) {
 		context.BufferOut().IsEqualForwardThrow('{');

@@ -2,7 +2,7 @@
 
 #include "../BasicFormatContext.h"
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<typename FormatContext::FormatSpecifierType, FormatContext> {
@@ -72,7 +72,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	template<typename T, std::size_t SIZE, typename FormatContext>
 	struct FormatType<Detail::ForwardAsCharArray<T, SIZE>, FormatContext> {
 		static void Write(const T(&t)[SIZE], FormatContext& context) {
-			auto& data = context.GetFormatData();
+			const auto& data = context.GetFormatData();
 
 			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
 			auto size = context.GetFormatData().GetSpecifierAsNumber("size", SIZE - begin);
@@ -86,7 +86,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	template<typename T, typename FormatContext>
 	struct FormatType<Detail::ForwardAsCharPt<T>, FormatContext> {
 		static void Write(const T* t, FormatContext& context) {
-			auto& data = context.GetFormatData();
+			const auto& data = context.GetFormatData();
 
 			if (data.TrueValue)										context.BufferOut().PushBack('\"');
 
@@ -308,9 +308,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
-			std::size_t stride = context.GetStride();
-
-			Detail::FormatSpecifierJoinSpliter join(context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin));
+			const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
 
 			auto beginValue = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
 
@@ -320,7 +318,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 			while (begin < end) {
 				if (first)	first = false;
-				else		join.Write(context, stride);
+				else		context.PrintIndent(join);
 				context.WriteType(*begin++);
 			}
 
@@ -335,9 +333,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
-			std::size_t stride = context.GetStride();
-
-			Detail::FormatSpecifierJoinSpliter join(context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin));
+			const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
 
 			bool first = true;
 			std::size_t beginValue = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
@@ -346,7 +342,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 			while(begin < end) {
 				if (first)	first = false;
-				else		join.Write(context, stride);
+				else		context.PrintIndent(join);
 				context.WriteType(*begin++);
 			}
 

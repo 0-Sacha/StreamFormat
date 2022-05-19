@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Core/Detail.h"
+#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 
 #define ENGINECORE_FORMAT_DECLARED
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...Args>
 	class BasicFormatContext;
@@ -18,7 +18,7 @@ namespace EngineCore::Instrumentation::Fmt {
 }
 
 #define ENGINECORE_AUTO_FORMAT(Type, fmt, ...)	template<typename FormatContext>\
-													struct EngineCore::Instrumentation::Fmt::FormatType<Type, FormatContext> {\
+													struct EngineCore::Instrumentation::FMT::FormatType<Type, FormatContext> {\
 														static void Write(const Type& value, FormatContext& context) {\
 															context.LittleFormat(fmt, __VA_ARGS__);\
 														}\

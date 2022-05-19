@@ -3,7 +3,7 @@
 #include "BasicFormatContext.h"
 #include "BasicFormatContextCoreImpl.h"
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	/////---------- Get format parameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
@@ -37,6 +37,8 @@ namespace EngineCore::Instrumentation::Fmt {
 
 		else if (m_FormatStr.IsEqualForward('L')) { m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase; }
 		else if (m_FormatStr.IsEqualForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
+
+		else if (m_FormatStr.IsEqualForward('K')) { m_FormatData.Safe = true; }
 
 	}
 
@@ -83,7 +85,8 @@ namespace EngineCore::Instrumentation::Fmt {
 		else if (m_FormatStr.IsEqualForward('{')) {
 			Detail::FormatDataType value = 0;
 			FormatIdx idx = 0;
-			bool get = GetFormatIdx(idx);
+			if (GetFormatIdx(idx))
+				throw Detail::FormatBufferWrongIndex();
 			m_FormatStr.IsEqualForward('}');
 			m_ContextArgs.GetFormatValueAt(value, idx);
 			m_FormatData.AddSpecifier(name, value);
@@ -157,10 +160,11 @@ namespace EngineCore::Instrumentation::Fmt {
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParameterParseSpecial() {
 			 if (m_FormatStr.IsEqualTo('C') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadAnsiTextColorParameter(); }
-		else if (m_FormatStr.IsEqualTo('T') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadTimerParameter();		    }
-		else if (m_FormatStr.IsEqualTo('D') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadDateParameter();		    }
 		else if (m_FormatStr.IsEqualTo('S') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadAnsiTextStyleParameter(); }
 		else if (m_FormatStr.IsEqualTo('F') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadAnsiTextFrontParameter(); }
+		else if (m_FormatStr.IsEqualTo('T') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadTimerParameter();		    }
+		else if (m_FormatStr.IsEqualTo('D') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadDateParameter();		    }
+		else if (m_FormatStr.IsEqualTo('K') && m_FormatStr.NextIsEqualForward(':'))				{ ReadSetterParameter(); 		}
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
@@ -225,7 +229,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename NewCharFormat, typename ...Args>
-	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleFormat(const std::basic_string_view<NewCharFormat> format, Args&& ...args) {
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleFormat(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
 		BasicFormatContext<NewCharFormat, CharBuffer, Args...> child(format, *this, std::forward<Args>(args)...);
 		child.Run();
 		UpdateContextFromChild(child);

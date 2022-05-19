@@ -2,7 +2,7 @@
 
 #include "BasicBufferIn.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 	template <typename CharFormat>
 	class FormatterMemoryFormat : public BasicFormatterMemoryBufferIn<CharFormat> {
 
@@ -13,7 +13,7 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		using CharFormatType = CharFormat;
 
 	public:
-		FormatterMemoryFormat(const std::basic_string_view<CharFormat> format)
+		FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)
 			: BasicFormatterMemoryBufferIn<CharFormat>(format) {}
 
 	public:

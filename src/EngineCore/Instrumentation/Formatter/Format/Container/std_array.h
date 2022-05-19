@@ -3,7 +3,7 @@
 #include "../../Formatter.h"
 #include <array>
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<std::size_t SIZE, typename T, typename FormatContext>
 	struct FormatType<std::array<T, SIZE>, FormatContext>

@@ -2,7 +2,7 @@
 
 #include "../BasicBufferIn.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>

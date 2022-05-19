@@ -4,14 +4,13 @@
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<Detail::AnsiTextFront, FormatContext>
 	{
 		static void Write(const Detail::AnsiTextFront t, FormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType('\033', '[', t.FrontId, 'm');
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;

@@ -1,14 +1,12 @@
 #pragma once
 
-#include "../Core/Detail.h"
-#include "../Core/Exception.h"
+#include "../Core/Detail/Detail.h"
 #include "BaseFormat/UnFormatType.h"
 #include "../FormatContext/BasicFormatContext.h"
 
 #include "UnFormatContextArgsTuple.h"
 
-namespace EngineCore::Instrumentation::Fmt {
-
+namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatContextError
 	{
 		bool Error					{false};
@@ -23,9 +21,9 @@ namespace EngineCore::Instrumentation::Fmt {
 
 }
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
+	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	class BasicUnFormatContext
 	{
 	public:
@@ -41,10 +39,10 @@ namespace EngineCore::Instrumentation::Fmt {
 		using M_Type = BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>;
 
 	public:
-		BasicUnFormatContext(const std::basic_string_view<CharFormat> format, const std::basic_string_view<CharBuffer> buffer, ContextArgs&& ...args);
+		BasicUnFormatContext(const std::basic_string_view<CharFormat>& format, const std::basic_string_view<CharBuffer>& buffer, ContextArgs&& ...args);
 
 		template<typename ParentCharFormat, typename ...ParentContextArgs>
-		BasicUnFormatContext(const std::basic_string_view<CharFormat> format, BasicUnFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args);
+		BasicUnFormatContext(const std::basic_string_view<CharFormat>& format, BasicUnFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args);
 
 		template<typename ChildCharFormat, typename ...ChildContextArgs>
 		inline void UpdateContextFromChild(BasicFormatContext<ChildCharFormat, CharBuffer, ChildContextArgs...>& childContext);
@@ -55,8 +53,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 		Detail::UnFormatContextArgsTuple<ContextArgs...>	m_ContextArgs;
 
-		// Stride (mostly for container and new line format-style)
-		std::size_t 			m_NoStride;
+		std::size_t 			m_Indent;
 
 		FormatIdx				m_ValuesIdx;
 		FormatDataType			m_FormatData;
@@ -85,10 +82,7 @@ namespace EngineCore::Instrumentation::Fmt {
 		inline const FormatDataType&	GetFormatData() const		{ return m_FormatData; }
 		inline FormatDataType			ForwardFormatData() const	{ return m_FormatData; }
 
-		inline void			AddNoStride(const std::size_t noStride) { m_NoStride += noStride; }
-		inline std::size_t	GetNoStride() const						{ return m_NoStride; }
-		inline std::size_t	GetStride() const						{ return m_BufferIn.GetBufferCurrentSize() - m_NoStride; }
-		inline std::size_t	StrideGetBufferCurrentSize() const		{ return m_BufferIn.GetBufferCurrentSize(); }
+		inline std::size_t	GetIndent() const						{ return m_Indent; }
 
 		static inline std::int16_t NoError()						{ return -1; }
 
@@ -117,7 +111,7 @@ namespace EngineCore::Instrumentation::Fmt {
 		UnFormatContextError SafeRun();
 
 		template<typename NewCharFormat, typename ...NewContextArgs>
-		void LittleUnFormat(const std::basic_string_view<NewCharFormat> format, NewContextArgs&& ...args);
+		void LittleUnFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args);
 		template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
 		inline void LittleUnFormat(const CharType(&format)[SIZE], NewContextArgs&& ...args) { LittleUnFormat(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
 

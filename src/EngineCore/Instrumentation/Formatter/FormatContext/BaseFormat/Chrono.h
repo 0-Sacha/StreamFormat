@@ -3,7 +3,7 @@
 #include "../BasicFormatContext.h"
 #include <chrono>
 
-namespace EngineCore::Instrumentation::Fmt::ChronoDetail {
+namespace EngineCore::Instrumentation::FMT::ChronoDetail {
 
 	template<typename Clock, typename Duration, typename FormatContext>
 	void WriteTestTime(const std::chrono::time_point<Clock, Duration>& value, FormatContext& context) {
@@ -44,7 +44,7 @@ namespace EngineCore::Instrumentation::Fmt::ChronoDetail {
 }
 
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<std::chrono::time_point<std::chrono::high_resolution_clock>, FormatContext>

@@ -64,7 +64,7 @@ namespace EngineCore::Instrumentation {
 	{
 		const char* newLine = m_ProfilesCount++ ? ",\n" : "";
 
-		Fmt::FilePrint(m_File,
+		FMT::FilePrint(m_File,
 			R"({0}{"cat":"function","dur":{1},"name":"{2}","ph":"X","pid":{3},"tid":{4},"ts":{5}})",
 			newLine,
 			dur,
@@ -90,11 +90,11 @@ namespace EngineCore::Instrumentation {
 	}
 
 	void Profiler::WriteHeaderFile() {
-		Fmt::FilePrint(m_File, "{\"otherData\": {},\"traceEvents\":[\n");
+		FMT::FilePrint(m_File, "{\"otherData\": {},\"traceEvents\":[\n");
 	}
 
 	void Profiler::WriteFooter() {
-		Fmt::FilePrint(m_File, "]}");
+		FMT::FilePrint(m_File, "]}");
 	}
 
 }

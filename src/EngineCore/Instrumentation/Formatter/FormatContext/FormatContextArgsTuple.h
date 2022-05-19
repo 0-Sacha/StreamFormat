@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include "../Core/Detail.h"
+#include "../Core/Detail/Detail.h"
 
 #include "BaseFormat/FormatType.h"
 #include "BaseFormat/NamedArgs.h"
 #include "BaseFormat/FormatArgs.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template <typename... Types>
 	struct FormatContextArgsTuple;
@@ -39,9 +39,6 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
     };
 
 
-
-
-
     template <typename Type, typename... Rest>
     struct FormatContextArgsTuple<Type, Rest...> : FormatContextArgsTuple<Rest...>
     {
@@ -68,37 +65,43 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 
         /////---------- GetParameterDataFromIdx ----------/////
         template <typename CharFormat, typename CharBuffer, typename ...ContextArgs, class KType = TypeWithoutRef>
-        inline auto GetParameterDataFromIdx(BasicFormatContext<CharFormat, CharBuffer, ContextArgs...> &context, FormatIdx idx) -> std::enable_if_t<std::is_same_v<Detail::GetBaseType<KType>, FormatData<CharFormat>>> {
+        requires (std::is_same_v<Detail::GetBaseType<KType>, FormatData<CharFormat>>)
+        inline void GetParameterDataFromIdx(BasicFormatContext<CharFormat, CharBuffer, ContextArgs...> &context, FormatIdx idx) {
             if (idx == 0)           context.GetFormatData() = m_Value;
             else if (idx > 0)       FormatContextArgsTuple<Rest...>::GetParameterDataFromIdx(context, idx - 1);
         }
 
         template <typename CharFormat, typename CharBuffer, typename ...ContextArgs, class KType = TypeWithoutRef>
-		inline auto GetParameterDataFromIdx(BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context, FormatIdx idx) -> std::enable_if_t<!std::is_same_v<Detail::GetBaseType<KType>, FormatData<CharFormat>>> {
+        requires (!std::is_same_v<Detail::GetBaseType<KType>, FormatData<CharFormat>>)
+		inline void GetParameterDataFromIdx(BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context, FormatIdx idx) {
             if (idx > 0)      FormatContextArgsTuple<Rest...>::GetParameterDataFromIdx(context, idx - 1);
         }
 
 
         /////---------- GetNamedArgsIdx ----------/////
         template<typename FormatContext, class KType = TypeWithoutRef>
-        inline auto GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value>{
+        requires (!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
+        inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) {
             FormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
         }
 
         template<typename FormatContext, class KType = TypeWithoutRef>
-        inline auto GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) -> std::enable_if_t<Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value>{
-            if (context.FormatStr().NextIsANamedArgs(m_Value.GetName()))  idx = currentIdx;
-            else                                                    FormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
+        requires (Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
+        inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) {
+            if (context.FormatStr().NextIsANamedArgs(m_Value.GetName()))    idx = currentIdx;
+            else                                                            FormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
         }
 
         /////---------- GetFormatValueAt ----------/////
         template <class ValueType, class KType = TypeWithoutRef>
-        inline auto GetFormatValueAt(ValueType& value, FormatIdx idx) -> std::enable_if_t<!std::is_convertible_v<KType, ValueType>> {
+        requires (!std::is_convertible_v<KType, ValueType>)
+        inline void GetFormatValueAt(ValueType& value, FormatIdx idx) {
 		    if (idx > 0)	    FormatContextArgsTuple<Rest...>::GetFormatValueAt(value, idx - 1);
         }
 
         template <class ValueType, class KType = TypeWithoutRef>
-        inline auto GetFormatValueAt(ValueType& value, FormatIdx idx) -> std::enable_if_t<std::is_convertible_v<KType, ValueType>> {
+        requires (std::is_convertible_v<KType, ValueType>)
+        inline void GetFormatValueAt(ValueType& value, FormatIdx idx) {
 		    if (idx == 0)		value = static_cast<ValueType>(m_Value);
 		    else if(idx > 0)    FormatContextArgsTuple<Rest...>::GetFormatValueAt(value, idx - 1);
         }

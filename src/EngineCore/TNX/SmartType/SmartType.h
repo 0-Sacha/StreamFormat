@@ -30,7 +30,7 @@ namespace EngineCore::TNX {
 		static inline constexpr ValueType MaxValue() { return std::numeric_limits<ValueType>::max(); }
 		static inline constexpr ValueType MinValue() { return std::numeric_limits<ValueType>::min(); }
 
-		inline constexpr void PrintFile() { EngineCore::Instrumentation::Fmt::FilePrintLn(std::cout, Value); }
+		inline constexpr void PrintFile() { EngineCore::Instrumentation::FMT::FilePrintLn(std::cout, Value); }
 
 
 		//************* Base Function *************//
@@ -173,8 +173,8 @@ namespace EngineCore {
 
 #include "EngineCore/Instrumentation/Formatter/Formatter.h"
 template <typename T, typename FormatContext>
-struct EngineCore::Instrumentation::Fmt::FormatType<EngineCore::SmartType<T>, FormatContext> {
+struct EngineCore::Instrumentation::FMT::FormatType<EngineCore::SmartType<T>, FormatContext> {
 	inline static void Write(const EngineCore::SmartType<T>& i, FormatContext& context) {
-		EngineCore::Instrumentation::Fmt::FormatType<T, FormatContext>::Write(i.Value, context);
+		EngineCore::Instrumentation::FMT::FormatType<T, FormatContext>::Write(i.Value, context);
 	}
 };

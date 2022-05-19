@@ -5,6 +5,6 @@
 #include <string_view>
 #include <sstream>
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 }

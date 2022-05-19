@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Core/Detail.h"
-#include "../Core/Buffer/Buffer.h"
+#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
+#include "EngineCore/Instrumentation/Formatter/Core/Buffer/Buffer.h"
 
 #include "BaseFormat/FormatType.h"
 #include "BaseFormat/NamedArgs.h"
@@ -10,10 +10,10 @@
 
 #include "FormatContextArgsTuple.h"
 
-#include "../Core/FormatterHandler.h"
+#include "../Core/FormatterHandler/FormatterHandler.h"
 
-namespace EngineCore::Instrumentation::Fmt {
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
+namespace EngineCore::Instrumentation::FMT {
+	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	class BasicFormatContext {
 	public:
 		using CharFormatType = CharFormat;
@@ -28,11 +28,11 @@ namespace EngineCore::Instrumentation::Fmt {
 		using M_Type = BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>;
 
 	public:
-		BasicFormatContext(const std::basic_string_view<CharFormat> format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs &&...args);
-		BasicFormatContext(const bool bufferIsAutoResize, const std::basic_string_view<CharFormat> format, ContextArgs &&...args);
+		BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs &&...args);
+		BasicFormatContext(const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args);
 
 		template<typename ParentCharFormat, typename ...ParentContextArgs>
-		BasicFormatContext(const std::basic_string_view<CharFormat> format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...> &parentContext, ContextArgs &&...args);
+		BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...> &parentContext, ContextArgs &&...args);
 
 		template<typename ChildCharFormat, typename ...ChildContextArgs>
 		inline void UpdateContextFromChild(BasicFormatContext<ChildCharFormat, CharBuffer, ChildContextArgs...>& childContext);
@@ -41,10 +41,9 @@ namespace EngineCore::Instrumentation::Fmt {
 		Detail::BasicFormatterMemoryBufferOut<CharBuffer>	m_BufferOut;
 		Detail::FormatterMemoryFormat<CharFormat>			m_FormatStr;
 
-		Detail::FormatContextArgsTuple<ContextArgs...> 	m_ContextArgs;
+		Detail::FormatContextArgsTuple<ContextArgs...> 		m_ContextArgs;
 
-		// Stride (mostly for container and new line format-style)
-		std::size_t 			m_NoStride;
+		std::size_t 			m_Indent;
 
 		// For handling color / format data and idx (for not specified parameter)
 		FormatIdx						m_ValuesIdx;
@@ -74,10 +73,10 @@ namespace EngineCore::Instrumentation::Fmt {
 		inline const FormatData<CharFormat>&	GetFormatData() const		{ return m_FormatData; }
 		inline FormatData<CharFormat>			ForwardFormatData() const	{ return m_FormatData; }
 
-		inline void AddNoStride(const std::size_t noStride)		{ m_NoStride += noStride; }
-		inline std::size_t GetNoStride() const					{ return m_NoStride; }
-		inline std::size_t GetStride() const					{ return m_BufferOut.GetBufferCurrentSize() - m_NoStride; }
-		inline std::size_t StrideGetBufferCurrentSize() const	{ return m_BufferOut.GetBufferCurrentSize(); }
+		inline std::size_t GetIndent() const					{ return m_Indent; }
+		inline void SetIndent(const std::size_t indent) 		{ m_Indent = indent; }
+		inline void AddIndent(const std::size_t indent) 		{ m_Indent += indent; }
+		void SetIndent() 										{ m_Indent = m_BufferOut.GetBufferCurrentSize() - m_BufferOut.GetNoStride(); }
 
 	public:
 		inline static FormatterHandler& GetAPI()				{ return FormatterHandler::GetInstance(); }
@@ -98,7 +97,7 @@ namespace EngineCore::Instrumentation::Fmt {
 		void SafeRun();
 
 		template<typename NewCharFormat, typename ...NewContextArgs>
-		void LittleFormat(const std::basic_string_view<NewCharFormat> format, NewContextArgs&& ...args);
+		void LittleFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args);
 		template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
 		inline void LittleFormat(const CharType (&format)[SIZE], NewContextArgs&& ...args)				{ LittleFormat(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
 
@@ -106,26 +105,34 @@ namespace EngineCore::Instrumentation::Fmt {
 		template<typename CharList, std::size_t SIZE>
 		std::uint8_t GetWordFromList(const std::basic_string_view<CharList> (&formatTypes)[SIZE]);
 
-		void CheckEndStr();
+		/////---------- ReadTimerParameter ----------/////
+		void ReadTimerParameter();
 
+		/////---------- ReadDateParameter ----------/////
+		void ReadDateParameter();
+
+		/////---------- ReadAnsiTextColorParameter ----------/////
 		void ReadAnsiTextColorParameter();
 		std::uint8_t GetColorCode();
 		std::uint8_t GetColorFG();
 		std::uint8_t GetColorBG();
+		void ReloadColor(const Detail::AnsiTextCurrentColor& targetColor, const Detail::AnsiTextColorChange& changeColor);
 
-		void ReadTimerParameter();
-		void ReadDateParameter();
-		
+		/////---------- ReadTextFormatStyleParameter ----------/////
 		void ReadAnsiTextStyleParameter();
 		void WriteStyleParameter();
+		void ReloadStyle(const Detail::AnsiTextCurrentStyle& targetStyle, const Detail::AnsiTextStyleChange& changeStyle);
 
+		/////---------- ReadAnsiTextFrontParameter ----------/////
 		void ReadAnsiTextFrontParameter();
 		std::uint8_t GetFrontCode();
+		void ReloadFront(const Detail::AnsiTextCurrentFront& targetFront, const Detail::AnsiTextFrontChange& changeFront);
+
+		/////---------- ReadSetterParameter ----------/////
+		void ReadSetterParameter();
 
 	public:
-		void ReloadColor(const Detail::AnsiTextCurrentColor& targetColor, const Detail::AnsiTextColorChange& changeColor);
-		void ReloadStyle(const Detail::AnsiTextCurrentStyle& targetStyle, const Detail::AnsiTextStyleChange& changeStyle);
-		void ReloadFront(const Detail::AnsiTextCurrentFront& targetFront, const Detail::AnsiTextFrontChange& changeFront);
+		void CheckEndStr();
 
 	public:
 		// Unsigned-Integer Only
@@ -148,14 +155,26 @@ namespace EngineCore::Instrumentation::Fmt {
 		template<typename CharStr>						inline void PrintCharPt(const CharStr* str)						{ m_BufferOut.WriteCharPt(str); }
 		template<typename CharStr>						inline void PrintCharPt(const CharStr* str, std::size_t size)	{ m_BufferOut.WriteCharPt(str, size); }
 		template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPt(str, SIZE); }
-		template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr> str)	{ m_BufferOut.WriteCharPt(str.data(), str.size()); }
+		template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr>& str)	{ m_BufferOut.WriteCharPt(str.data(), str.size()); }
 		template<typename CharStr>						inline void Print(const std::basic_string<CharStr>& str)		{ Print(static_cast<std::basic_string_view<CharStr>>(str)); }
 
+		template<typename CharStr>						inline void PrintCharPtIndent(const CharStr* str)					{ m_BufferOut.WriteCharPtIndent(str, m_Indent); }
+		template<typename CharStr>						inline void PrintCharPtIndent(const CharStr* str, std::size_t size) { m_BufferOut.WriteCharPtIndent(str, size, m_Indent); }
+		template<typename CharStr, std::size_t SIZE>	inline void PrintIndent(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPtIndent(str, SIZE, m_Indent); }
+		template<typename CharStr>						inline void PrintIndent(const std::basic_string_view<CharStr>& str) { m_BufferOut.WriteCharPtIndent(str.data(), str.size(), m_Indent); }
+
 	public:
-		inline void CopyFormatToBuffer() { m_BufferOut.PushBack(m_FormatStr.GetAndForward()); }
+		inline void CopyFormatToBuffer() { m_BufferOut.PushBackIndent(m_FormatStr.GetAndForward(), m_Indent); }
 
 		template<typename ...CharToTest> inline void WriteUntilNextParameter(const CharToTest ...ele)	{ while (m_FormatStr.IsNotEqualTo('{', ele...) && m_FormatStr.CanMoveForward())	CopyFormatToBuffer(); }
 		template<typename ...CharToTest> inline void WriteUntilEndOfParameter(const CharToTest ...ele)	{ while (m_FormatStr.IsNotEqualTo('}', ele...) && m_FormatStr.CanMoveForward())	CopyFormatToBuffer(); }
 
+	public:
+
+		void NewLineIndent()
+		{
+			m_BufferOut.PushBack('\n');
+			m_BufferOut.PushBack(' ', m_Indent);
+		}
 	};
 }

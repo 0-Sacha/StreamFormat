@@ -3,7 +3,7 @@
 #include "EngineCore/Core.h"
 #include <chrono>
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	class FormatterHandler {
 
@@ -28,6 +28,6 @@ namespace EngineCore::Instrumentation::Fmt {
 	};
 }
 
-#define ENGINECORE_FORMATTER_TIME_BEGIN()	EngineCore::Instrumentation::Fmt::FormatterHandler::SetBeginTime()
+#define ENGINECORE_FORMATTER_TIME_BEGIN()	EngineCore::Instrumentation::FMT::FormatterHandler::SetBeginTime()
 
-#define ENGINECORE_FORMATTER_SET_TIME_GTM(i) EngineCore::Instrumentation::Fmt::FormatterHandler::SetHoursShift(std::chrono::hours(i))
+#define ENGINECORE_FORMATTER_SET_TIME_GTM(i) EngineCore::Instrumentation::FMT::FormatterHandler::SetHoursShift(std::chrono::hours(i))

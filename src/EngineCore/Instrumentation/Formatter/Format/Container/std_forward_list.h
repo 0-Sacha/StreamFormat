@@ -3,7 +3,7 @@
 #include "../../Formatter.h"
 #include <forward_list>
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 	template<typename T, typename FormatContext>
 	struct FormatType<std::forward_list<T>, FormatContext>
 	{

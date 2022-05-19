@@ -2,7 +2,7 @@
 
 #include "BasicBuffer.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template <typename CharBuffer>
 	class BasicFormatterMemoryBufferOutCopy;
@@ -16,6 +16,20 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
+		using Base::m_NoStride;
+
+	public:
+		using CharBufferType = CharBuffer;
+
+		using Base::GetBuffer;
+		using Base::GetBufferCurrentPos;
+		using Base::GetBufferEnd;
+		using Base::GetBufferSize;
+		using Base::GetBufferCurrentSize;
+		using Base::SetBufferCurrentPos;
+
+		using Base::GetNoStride;
+		using Base::AddNoStride;
 
 	public:
 		using Base::CanMoveForward;
@@ -43,7 +57,6 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		using Base::GetNextNoCheck;
 
 	public:
-		using CharBufferType = CharBuffer;
 
 		static constexpr std::size_t	DEFAULT_BEGIN_SIZE	= 512;
 		static constexpr std::size_t	GROW_UP_BUFFER_SIZE = 2;
@@ -96,14 +109,14 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		}
 
 		template <typename ParentBuffer>
-		BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
-			: BasicFormatterMemoryBuffer<CharBuffer>(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
+		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
+			: BasicFormatterMemoryBuffer<CharBuffer>(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize(), parentBuffer.GetNoStride())
 			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
 			, m_FreeOnDestructor(false) {}
 
 	public:
 		template <typename ChildBuffer>
-		inline void UpdateFromChildBuffer(ChildBuffer& childBuffer) { SetBufferCurrentPos(childBuffer.GetBufferCurrentPos()); }
+		inline void UpdateFromChildBuffer(ChildBuffer& childBuffer) { SetBufferCurrentPos(childBuffer.GetBufferCurrentPos()); m_NoStride = childBuffer.GetNoStride(); }
 
 	public:
 		template<typename T> void FastWriteInt	(T i);
@@ -151,7 +164,7 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		template<std::size_t SIZE> inline void BasicWriteType(const char16_t (&i)[SIZE])	{ WriteCharArray(i); }
 		template<std::size_t SIZE> inline void BasicWriteType(const char32_t (&i)[SIZE])	{ WriteCharArray(i); }
 
-		template<typename CharType> inline void BasicWriteType(const std::basic_string_view<CharType> i) { WriteStringView(i); }
+		template<typename CharType> inline void BasicWriteType(const std::basic_string_view<CharType>& i) { WriteStringView(i); }
 
 	public:
 		inline bool CanMoveForward()									{ if (m_CurrentPos < m_BufferEnd)			return true; return CheckResize(); }
@@ -189,28 +202,59 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 			return true;
 		}
 
+		/////---------- Buffer Commands ----------/////
 		inline void Set(const CharBuffer c)								{ *m_CurrentPos = c; }
 		inline void PushBack(const CharBuffer c)						{ if (CanMoveForward()) *m_CurrentPos++ = c; }
 		inline void PushReverse(const CharBuffer c)						{ if (CanMoveBackward()) *m_CurrentPos-- = c; }
 		inline void PushBackNoCheck(const CharBuffer c)					{ *m_CurrentPos++ = c; }
 		inline void PushReverseNoCheck(const CharBuffer c)				{ *m_CurrentPos-- = c; }
 
-		// Buffer commands
+		inline void PushBack(const CharBuffer c, std::size_t count)			{ if (CanMoveForward(count)) while (count-- > 0) PushBackNoCheck(c); }
+		inline void PushReverse(const CharBuffer c, std::size_t count)		{ if (CanMoveBackward(count)) while (count-- > 0) PushReverseNoCheck(c); }
+
 		inline void PushEndChar()										{ PushBack('\0'); }
 		inline void PushEndCharToTheEnd() 								{ *(m_BufferEnd - 1) = 0; }
 		inline void AddSpaces(const std::size_t count)					{ for (std::size_t i = count; i > 0 && CanMoveForward(); --i) PushBackNoCheck(' '); }
 
-		// Buffer commands for C-style string and c++ style string
-		template<typename CharStr>	inline void WriteCharPt(const CharStr* str)					  { while (*str != 0) PushBack(*str++); }
-		template<typename CharStr>	inline void WriteCharPt(const CharStr* str, std::size_t size) {
+		template<typename CharStr, std::size_t SIZE>	inline void WriteCharArray(const CharStr(&str)[SIZE])					{ WriteCharPt(str, SIZE); }
+		template<typename CharStr>						inline void WriteStringView(const std::basic_string_view<CharStr>& str)	{ WriteCharPt(str.data(), str.size()); }
+		template<typename CharStr>	inline void WriteCharPt(const CharStr* str)						{ while (*str != 0) PushBack(*str++); }
+		template<typename CharStr>	inline void WriteCharPt(const CharStr* str, std::size_t size)	{
 			if (CanMoveForward(size))
 				while (size-- != 0 && *str != 0)
 					PushBackNoCheck(*str++);
 		}
 
-		template<typename CharStr, std::size_t SIZE>	inline void WriteCharArray(const CharStr(&str)[SIZE])					{ WriteCharPt(str, SIZE); }
-		template<typename CharStr>						inline void WriteStringView(const std::basic_string_view<CharStr> str)	{ WriteCharPt(str.data(), str.size()); }
 
+		/////---------- Buffer Commands Indent ----------/////
+		inline void SetIndent(const CharBuffer c, const std::size_t indent)								{ Set(c);  if (c == '\n') PushBack(' ', indent); }
+		inline void PushBackIndent(const CharBuffer c, const std::size_t indent)						{ PushBack(c);  if (c == '\n') PushBack(' ', indent); }
+
+		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str, const std::size_t indent) {
+			while (*str != 0)
+			{
+				if (*str == '\n')
+				{
+					PushBack('\n');
+					PushBack(' ', indent);
+				}
+				else
+					PushBack(*str++);
+			}
+		}
+		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str, std::size_t size, const std::size_t indent) {
+			if (CanMoveForward(size))
+				while (size-- != 0 && *str != 0)
+				{
+					if (*str == '\n')
+					{
+						PushBack('\n');
+						PushBack(' ', indent);
+					}
+					else
+						PushBackNoCheck(*str++);
+				}
+		}
 
 		// Utils
 	private:

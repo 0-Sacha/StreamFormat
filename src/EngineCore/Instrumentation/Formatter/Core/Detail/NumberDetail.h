@@ -2,7 +2,7 @@
 
 #include "EngineCore/Core.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail::ValuesDetail {
+namespace EngineCore::Instrumentation::FMT::Detail::ValuesDetail {
 	
 	template<typename T>
 	struct NumberDetail {

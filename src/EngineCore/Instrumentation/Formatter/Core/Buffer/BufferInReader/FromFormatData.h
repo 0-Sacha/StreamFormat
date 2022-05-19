@@ -3,7 +3,7 @@
 #include "../BasicBufferIn.h"
 #include "Integer.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	//------------------ Buffer Read Int ------------------//
 	template<typename CharBuffer>

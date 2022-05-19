@@ -3,7 +3,7 @@
 #include "../../Formatter.h"
 #include <deque>
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename T, typename FormatContext>
 	struct FormatType<std::deque<T>, FormatContext>

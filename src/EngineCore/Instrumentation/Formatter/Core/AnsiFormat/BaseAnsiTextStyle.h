@@ -3,7 +3,7 @@
 #include "EngineCore/Core.h"
 #include "BaseAnsiTextColor.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	// According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
@@ -56,13 +56,13 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 	};
 
 	struct ForwardAsAnsiBasicTextStyle {
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSIntensity value)	: Value(static_cast<std::uint8_t>(value)) {}
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSItalic value)		: Value(static_cast<std::uint8_t>(value)) {}
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSUnderline value)	: Value(static_cast<std::uint8_t>(value)) {}
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSBlink value)		: Value(static_cast<std::uint8_t>(value)) {}
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSInverted value)		: Value(static_cast<std::uint8_t>(value)) {}
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSIdeogram value)		: Value(static_cast<std::uint8_t>(value)) {}
-		inline ForwardAsAnsiBasicTextStyle(const AnsiTFSScript value)		: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSIntensity value)	: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSItalic value)		: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSUnderline value)	: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSBlink value)		: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSInverted value)		: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSIdeogram value)		: Value(static_cast<std::uint8_t>(value)) {}
+		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSScript value)		: Value(static_cast<std::uint8_t>(value)) {}
 
 		std::uint8_t Value;
 

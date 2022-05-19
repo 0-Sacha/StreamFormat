@@ -2,7 +2,7 @@
 
 #include "BasicBuffer.h"
 
-namespace EngineCore::Instrumentation::Fmt::Detail {
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	class BasicFormatterMemoryBufferIn : public BasicFormatterMemoryBuffer<const CharBuffer> {
@@ -13,6 +13,19 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
+
+	public:
+		using CharBufferType = CharBuffer;
+
+		using Base::GetBuffer;
+		using Base::GetBufferCurrentPos;
+		using Base::GetBufferEnd;
+		using Base::GetBufferSize;
+		using Base::GetBufferCurrentSize;
+		using Base::SetBufferCurrentPos;
+
+		using Base::GetNoStride;
+		using Base::AddNoStride;
 
 	public:
 		using Base::CanMoveForward;
@@ -40,18 +53,7 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		using Base::GetNextNoCheck;
 
 	public:
-		using CharBufferType = CharBuffer;
-
-	public:
-		inline const CharBuffer*	GetBuffer() const									{ return Base::GetBuffer(); }
-		inline const CharBuffer*	GetBufferCurrentPos() const							{ return Base::GetBufferCurrentPos(); }
-		inline const CharBuffer*	GetBufferEnd() const								{ return Base::GetBufferEnd(); }
-		inline std::size_t			GetBufferSize() const								{ return Base::GetBufferSize(); }
-		inline std::size_t			GetBufferCurrentSize() const						{ return Base::GetBufferCurrentSize(); }
-		inline void					SetBufferCurrentPos(const CharBuffer* const pos)	{ Base::SetBufferCurrentPos(pos); }
-
-	public:
-		BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer> format)
+		explicit BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer>& format)
 			: Base(format) {}
 
 	public:
@@ -105,7 +107,7 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ /* TODO */ return; }
 		template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ /* TODO */ return; }
 
-		template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType> i) { /* TODO */ return true; }
+		template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType>& i) { /* TODO */ return true; }
 
 	public:
 		// Format check
@@ -141,14 +143,14 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 
 
 	public:
-		template<typename CharToTest> bool NextIsANamedArgs(std::basic_string_view<CharToTest> sv) {
+		template<typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
 			const CharBuffer* const prevSubFormat = m_CurrentPos;
 			if (NextIsSame(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
 			m_CurrentPos = prevSubFormat;
 			return false;
 		}
 
-		template<typename CharToTest> bool NextIsSame(std::basic_string_view<CharToTest> sv) {
+		template<typename CharToTest> bool NextIsSame(const std::basic_string_view<CharToTest>& sv) {
 			const CharToTest* str = sv.data();
 			std::size_t size = sv.size();
 			const CharBuffer* prevSubFormat = m_CurrentPos;		bool isSame = true;
@@ -166,9 +168,9 @@ namespace EngineCore::Instrumentation::Fmt::Detail {
 		inline bool IsADigit() const	{ return Get() >= '0' && Get() <= '9'; }
 
 		// Auto throw variant
-		template<typename CharToTest> inline void NextIsANamedArgsThrow(std::basic_string_view<CharToTest> sv)		{ if (NextIsANamedArgs(sv)) return; throw FormatParseError(); }
-		template<typename CharToTest> inline void NextIsSameThrow(std::basic_string_view<CharToTest> sv)			{ if (NextIsSame(sv)) return; throw FormatParseError(); }
-		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])	{ if (NextIsSame(data)) return; throw FormatParseError(); }
+		template<typename CharToTest> inline void NextIsANamedArgsThrow(const std::basic_string_view<CharToTest>& sv)		{ if (NextIsANamedArgs(sv)) return; throw FormatParseError(); }
+		template<typename CharToTest> inline void NextIsSameThrow(const std::basic_string_view<CharToTest>& sv)				{ if (NextIsSame(sv)) return; throw FormatParseError(); }
+		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])			{ if (NextIsSame(data)) return; throw FormatParseError(); }
 
 		inline void IsLowerCaseThrow() const	{ if (IsLowerCase()) return; throw FormatParseError(); }
 		inline void IsUpperCaseThrow() const	{ if (IsUpperCase()) return; throw FormatParseError(); }

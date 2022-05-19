@@ -2,7 +2,7 @@
 
 #include "../BasicUnFormatContext.h"
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 
 	template<typename UnFormatContext>
@@ -28,8 +28,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>
 	{
 		static void Read(const Detail::ForwardAsAnsiBasicTextStyle& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');
 		}
 	};
@@ -87,8 +86,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiNColorUnderline, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiNColorUnderline& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor	= true;
 			context.GetAnsiTextCurrentStyle().UnderlineColorType				= Detail::AnsiColorUnderlineType::AnsiTextNColor;
 			context.GetAnsiTextCurrentStyle().UnderlineColorN					= t;
@@ -101,8 +99,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	struct UnFormatType<Detail::AnsiUnderlineColor24b, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiUnderlineColor24b& t, UnFormatContext& context) {
-			Detail::NoStrideFunction nostride(context);
-
+			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor	= true;
 			context.GetAnsiTextCurrentStyle().UnderlineColorType				= Detail::AnsiColorUnderlineType::AnsiTextColor24b;
 			context.GetAnsiTextCurrentStyle().UnderlineColor24bits				= t;

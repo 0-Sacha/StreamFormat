@@ -4,7 +4,7 @@
 #include "BasicUnFormatContextCoreImpl.h"
 
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<UnFormatContextError, FormatContext>
@@ -195,9 +195,6 @@ namespace EngineCore::Instrumentation::Fmt {
 		data.Clone(m_FormatData);
 		m_FormatData = FormatDataType();
 
-		Detail::AnsiTextCurrentColor ansiTextCurrentColor(m_AnsiTextCurrentColor);
-		Detail::AnsiTextCurrentStyle ansiTextCurrentStyle(m_AnsiTextCurrentStyle);
-
 		if (!m_FormatData.IsInit)	ParameterParseData();
 
 		m_ContextArgs.ReadTypeFromIdx(*this, formatIdx);
@@ -256,7 +253,7 @@ namespace EngineCore::Instrumentation::Fmt {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename NewCharFormat, typename ...Args>
-	void BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleUnFormat(const std::basic_string_view<NewCharFormat> format, Args&& ...args) {
+	void BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleUnFormat(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
 		BasicUnFormatContext<NewCharFormat, CharBuffer, Args...> child(format, *this, std::forward<Args>(args)...);
 		child.Format();
 		UpdateContextFromChild(child);

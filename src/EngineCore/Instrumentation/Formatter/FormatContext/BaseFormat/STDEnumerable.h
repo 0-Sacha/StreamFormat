@@ -3,7 +3,7 @@
 #include "FormatType.h"
 
 
-namespace EngineCore::Instrumentation::Fmt {
+namespace EngineCore::Instrumentation::FMT {
 
 	class STDEnumerableUtility {
 	public:
@@ -16,25 +16,24 @@ namespace EngineCore::Instrumentation::Fmt {
 	class STDEnumerable {
 	public:
 
-		inline STDEnumerable(const T& value,
-			const std::basic_string_view<CharJoin> strJoin = ", ",
-			const std::basic_string_view<CharBegin> strBegin = "{ ",
-			const std::basic_string_view<CharEnd> strEnd = " }",
+		explicit inline STDEnumerable(const T& value,
+			const std::basic_string_view<CharJoin>& strJoin = ", ",
+			const std::basic_string_view<CharBegin>& strBegin = "{ ",
+			const std::basic_string_view<CharEnd>& strEnd = " }",
 			const Detail::FormatDataType beginIdx = 0,
-			const Detail::FormatDataType size = FORMAT_DATA_NOT_SPECIFIED)
+			const Detail::FormatDataType size = Detail::FORMAT_DATA_NOT_SPECIFIED)
 			: m_Value(value)
-			, m_JoinSplited(strJoin)
+			, m_StrJoin(strJoin)
 			, m_StrBegin(strBegin)
 			, m_StrEnd(strEnd)
 			, m_BeginIdx(beginIdx)
-			, m_Size(size == FORMAT_DATA_NOT_SPECIFIED ? (Detail::FormatDataType)value.size() - beginIdx : size)
+			, m_Size(size == Detail::FORMAT_DATA_NOT_SPECIFIED ? (Detail::FormatDataType)value.size() - beginIdx : size)
 		{
 		}
 
 		inline const T& GetValue() const { return m_Value; }
 
-		inline const Detail::FormatSpecifierJoinSpliter<CharJoin>&	GetJoinSplited() const	{ return m_JoinSplited; }
-
+		inline std::basic_string_view<CharEnd>		GetStrJoin() const	{ return m_StrJoin; }
 		inline std::basic_string_view<CharBegin>	GetStrBegin() const	{ return m_StrBegin; }
 		inline std::basic_string_view<CharEnd>		GetStrEnd() const	{ return m_StrEnd; }
 
@@ -44,8 +43,7 @@ namespace EngineCore::Instrumentation::Fmt {
 	private:
 		const T& m_Value;
 
-		Detail::FormatSpecifierJoinSpliter<CharJoin>	m_JoinSplited;
-
+		std::basic_string_view<CharBegin> m_StrJoin;
 		std::basic_string_view<CharBegin> m_StrBegin;
 		std::basic_string_view<CharEnd>	m_StrEnd;
 
@@ -56,18 +54,31 @@ namespace EngineCore::Instrumentation::Fmt {
 	template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatContext>
 	struct FormatType<STDEnumerable<T, CharBegin, CharJoin, CharEnd>, FormatContext> {
 		static void Write(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatContext& context) {
+			{
+				Detail::RestoreIndentFunction restoreIndent(context, enumerable.GetStrEnd(), false);
 
-			context.BufferOut().WriteStringView(enumerable.GetStrBegin());
+				context.PrintIndent(enumerable.GetStrBegin());
 
-			std::size_t stride = context.GetStride();
+				context.AddIndent(enumerable.GetStrBegin().size());
 
-			bool first = true;
-			std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
-				if (first)	first = false;
-				else		{ enumerable.GetJoinSplited().Write(context, stride); }
-				context.WriteType(element); });
+				bool first = true;
+				std::size_t addindent = 0;
+				std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
+					if (first)	first = false;
+					else 		context.PrintIndent(enumerable.GetStrJoin());
+					{
+						Detail::GetIndentFunction getindent(context);
+						context.WriteType(element);
+						addindent = getindent.GetIndent();
+					}
+				});
 
-			context.BufferOut().WriteStringView(enumerable.GetStrEnd());
+				Detail::GetIndentInfo info(enumerable.GetStrJoin());
+				context.AddIndent(info.AddIndent);
+				context.AddIndent(addindent);
+			}
+
+			context.PrintIndent(enumerable.GetStrEnd());
 		}
 	};
 
@@ -80,10 +91,10 @@ namespace EngineCore::Instrumentation::Fmt {
 		static void Write(const T& container, FormatContext& context) {
 			STDEnumerable<T> enumerable(container,
 				context.GetFormatData().GetSpecifierAsText("join",		STDEnumerableUtility::DefaultJoin),
-				context.GetFormatData().GetSpecifierAsText("begin",	STDEnumerableUtility::DefaultBegin),
+				context.GetFormatData().GetSpecifierAsText("begin",		STDEnumerableUtility::DefaultBegin),
 				context.GetFormatData().GetSpecifierAsText("end",		STDEnumerableUtility::DefaultEnd),
 				context.GetFormatData().GetSpecifierAsNumber("begin",	0),
-				context.GetFormatData().GetSpecifierAsNumber("size",	FORMAT_DATA_NOT_SPECIFIED));
+				context.GetFormatData().GetSpecifierAsNumber("size",	Detail::FORMAT_DATA_NOT_SPECIFIED));
 
 			context.WriteType(enumerable);
 		}
