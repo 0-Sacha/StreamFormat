@@ -160,74 +160,74 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		}
 	};
 
-	struct AnsiTextNColorFg	: public AnsiNColorType {
+	struct AnsiNColorFg	: public AnsiNColorType {
 	public:
-		AnsiTextNColorFg(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
-		AnsiTextNColorFg(const AnsiNColorType color)	: AnsiNColorType(color.GetColor()) {}
+		AnsiNColorFg(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
+		AnsiNColorFg(const AnsiNColorType color)	: AnsiNColorType(color.GetColor()) {}
 
 	public:
-		static AnsiTextNColorFg MakeNormalColor(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorFg>(AnsiNColorType::MakeNormalColor(value));
+		static AnsiNColorFg MakeNormalColor(const std::uint8_t value) {
+			return static_cast<AnsiNColorFg>(AnsiNColorType::MakeNormalColor(value));
 		}
 
-		static AnsiTextNColorFg MakeBrightColor(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorFg>(AnsiNColorType::MakeBrightColor(value));
+		static AnsiNColorFg MakeBrightColor(const std::uint8_t value) {
+			return static_cast<AnsiNColorFg>(AnsiNColorType::MakeBrightColor(value));
 		}
 
-		static AnsiTextNColorFg Make666CubeColor255(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
-			return static_cast<AnsiTextNColorFg>(AnsiNColorType::Make666CubeColor255(r, g, b));
+		static AnsiNColorFg Make666CubeColor255(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
+			return static_cast<AnsiNColorFg>(AnsiNColorType::Make666CubeColor255(r, g, b));
 		}
 
-		static AnsiTextNColorFg Make666CubeColor5(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
-			return static_cast<AnsiTextNColorFg>(AnsiNColorType::Make666CubeColor5(r, g, b));
+		static AnsiNColorFg Make666CubeColor5(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
+			return static_cast<AnsiNColorFg>(AnsiNColorType::Make666CubeColor5(r, g, b));
 		}
 
-		static AnsiTextNColorFg MakeGrayscaleColor255(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorFg>(AnsiNColorType::MakeGrayscaleColor255(value));
+		static AnsiNColorFg MakeGrayscaleColor255(const std::uint8_t value) {
+			return static_cast<AnsiNColorFg>(AnsiNColorType::MakeGrayscaleColor255(value));
 		}
 
-		static AnsiTextNColorFg MakeGrayscaleColor24(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorFg>(AnsiNColorType::MakeGrayscaleColor24(value));
+		static AnsiNColorFg MakeGrayscaleColor24(const std::uint8_t value) {
+			return static_cast<AnsiNColorFg>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
 	};
 	
-	struct AnsiTextNColorBg	: public AnsiNColorType {
-		AnsiTextNColorBg(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
-		AnsiTextNColorBg(const AnsiNColorType color)	: AnsiNColorType(color.GetColor()) {}
+	struct AnsiNColorBg	: public AnsiNColorType {
+		AnsiNColorBg(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
+		AnsiNColorBg(const AnsiNColorType color)	: AnsiNColorType(color.GetColor()) {}
 
 	public:
-		static AnsiTextNColorBg MakeNormalColor(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorBg>(AnsiNColorType::MakeNormalColor(value));
+		static AnsiNColorBg MakeNormalColor(const std::uint8_t value) {
+			return static_cast<AnsiNColorBg>(AnsiNColorType::MakeNormalColor(value));
 		}
 
-		static AnsiTextNColorBg MakeBrightColor(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorBg>(AnsiNColorType::MakeBrightColor(value));
+		static AnsiNColorBg MakeBrightColor(const std::uint8_t value) {
+			return static_cast<AnsiNColorBg>(AnsiNColorType::MakeBrightColor(value));
 		}
 
-		static AnsiTextNColorBg Make666CubeColor255(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
-			return static_cast<AnsiTextNColorBg>(AnsiNColorType::Make666CubeColor255(r, g, b));
+		static AnsiNColorBg Make666CubeColor255(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
+			return static_cast<AnsiNColorBg>(AnsiNColorType::Make666CubeColor255(r, g, b));
 		}
 
-		static AnsiTextNColorBg Make666CubeColor5(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
-			return static_cast<AnsiTextNColorBg>(AnsiNColorType::Make666CubeColor5(r, g, b));
+		static AnsiNColorBg Make666CubeColor5(const std::uint8_t r, const std::uint8_t g, const std::uint8_t b) {
+			return static_cast<AnsiNColorBg>(AnsiNColorType::Make666CubeColor5(r, g, b));
 		}
 
-		static AnsiTextNColorBg MakeGrayscaleColor255(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorBg>(AnsiNColorType::MakeGrayscaleColor255(value));
+		static AnsiNColorBg MakeGrayscaleColor255(const std::uint8_t value) {
+			return static_cast<AnsiNColorBg>(AnsiNColorType::MakeGrayscaleColor255(value));
 		}
 
-		static AnsiTextNColorBg MakeGrayscaleColor24(const std::uint8_t value) {
-			return static_cast<AnsiTextNColorBg>(AnsiNColorType::MakeGrayscaleColor24(value));
+		static AnsiNColorBg MakeGrayscaleColor24(const std::uint8_t value) {
+			return static_cast<AnsiNColorBg>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
 	};
 
-	struct AnsiTextNColor {
-		AnsiTextNColor(const AnsiTextNColorFg&& fg = AnsiTextNColorFg(0), const AnsiTextNColorBg bg = AnsiTextNColorBg(0))
+	struct AnsiNColor {
+		AnsiNColor(const AnsiNColorFg&& fg = AnsiNColorFg(0), const AnsiNColorBg bg = AnsiNColorBg(0))
 			: Fg(fg)
 			, Bg(bg) {}
 		
-		AnsiTextNColorFg Fg;
-		AnsiTextNColorBg Bg;
+		AnsiNColorFg Fg;
+		AnsiNColorBg Bg;
 	};
 
 
@@ -237,47 +237,54 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		std::uint8_t R, G, B;
 	};
 
-	struct AnsiTextColor24bFg : public AnsiColor24bType {
-		AnsiTextColor24bFg(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
+	struct AnsiColor24bFg : public AnsiColor24bType {
+		AnsiColor24bFg(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
 			: AnsiColor24bType(r, g, b) {};
 	};
 
-	struct AnsiTextColor24bBg : public AnsiColor24bType {
-		AnsiTextColor24bBg(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
+	struct AnsiColor24bBg : public AnsiColor24bType {
+		AnsiColor24bBg(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: AnsiColor24bType(r, g, b) {};
 	};
 
 
-	struct AnsiTextColor24b {
-		AnsiTextColor24b(const AnsiTextColor24bFg&& fg = AnsiTextColor24bFg(), const AnsiTextColor24bBg&& bg = AnsiTextColor24bBg())
+	struct AnsiColor24b {
+		AnsiColor24b(const AnsiColor24bFg&& fg = AnsiColor24bFg(), const AnsiColor24bBg&& bg = AnsiColor24bBg())
 			: Fg(fg), Bg(bg) { }
-		AnsiTextColor24bFg Fg;
-		AnsiTextColor24bBg Bg;
+		AnsiColor24bFg Fg;
+		AnsiColor24bBg Bg;
 	};
 
 	enum class AnsiTextColorDataType: std::uint8_t {
 		Default,
 		AnsiTextColor,
-		AnsiTextNColor,
-		AnsiTextColor24b
+		AnsiNColor,
+		AnsiColor24b
 	};
 
 	// Manage only the text color / the underline color will be manage by the AnsiTextFormatStyle
-	struct AnsiTextCurrentColor
+	struct AnsiColor
 	{
-		AnsiTextCurrentColor()
+		AnsiColor()
 			: FgType(AnsiTextColorDataType::Default), BgType(AnsiTextColorDataType::Default) {}
+
 		AnsiTextColorDataType	FgType;
 		AnsiTextColorDataType	BgType;
-		AnsiTextColor			Color;
-		AnsiTextNColor			ColorN;
-		AnsiTextColor24b		Color24bits;
+		union {
+			AnsiNColorFg Text;
+			AnsiNColorFg NColor;
+			AnsiColor24bFg Color24b;
+		} Fg;
+
+		union {
+			AnsiNColorBg Text;
+			AnsiNColorBg NColor;
+			AnsiColor24bBg Color24b;
+		} Bg;
 	};
 
 	struct AnsiTextColorChange
 	{
-		bool HasChangeColor = false;
-
 		bool HasSetFg = false;
 		bool HasSetBg = false;
 	};

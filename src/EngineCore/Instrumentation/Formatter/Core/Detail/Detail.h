@@ -2,7 +2,7 @@
 
 #include "EngineCore/Core.h"
 
-#include "../AnsiFormat/AnsiHandler.h"
+#include "../AnsiFormat/AnsiManager.h"
 
 #include "Base.h"
 #include "Exception.h"
@@ -13,6 +13,9 @@
 
 // TODO :
 //
+//		TOKEN bufferIn
+//		Auto bufferRestore
+// 
 //		JSON	
 // 
 //		GLOBBER
@@ -22,7 +25,7 @@
 //			{:regex=REGEX} (string / char array)
 //			{}
 //
-//		End writing all writer and reader (string / char pt)	
+//		End writing all writer and reader (string / char pt)
 //		
 //		PackSave (foreshadowing for constexpr)
 //

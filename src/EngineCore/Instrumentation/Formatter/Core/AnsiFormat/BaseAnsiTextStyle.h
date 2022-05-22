@@ -131,7 +131,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			return static_cast<AnsiNColorUnderline>(AnsiNColorType::Make666CubeColor5(r, g, b));
 		}
 
-		static AnsiTextNColorFg MakeGrayscaleColor255(const std::uint8_t value) {
+		static AnsiNColorFg MakeGrayscaleColor255(const std::uint8_t value) {
 			return static_cast<AnsiNColorUnderline>(AnsiNColorType::MakeGrayscaleColor255(value));
 		}
 
@@ -142,27 +142,30 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	enum class AnsiColorUnderlineType : std::uint8_t {
 		Default,
-		AnsiTextNColor,
-		AnsiTextColor24b
+		AnsiNColor,
+		AnsiColor24b
 	};
 
-	struct AnsiTextCurrentStyle {
+	struct AnsiStyle {
 	public:
-		AnsiTextCurrentStyle() {}
+		AnsiStyle() {}
 
 		AnsiTFSIntensity		Intensity			= AnsiTFSIntensity::Normal;
 		AnsiTFSItalic			Italic				= AnsiTFSItalic::Disable;
 		AnsiTFSUnderline		Underline			= AnsiTFSUnderline::Disable;
 		AnsiColorUnderlineType	UnderlineColorType	= AnsiColorUnderlineType::Default;
-		AnsiNColorUnderline		UnderlineColorN;
-		AnsiUnderlineColor24b	UnderlineColor24bits;
+		union {
+			AnsiNColorUnderline		NColor;
+			AnsiUnderlineColor24b	Color24b;
+		} UnderlineColor;
+		
 		AnsiTFSBlink			Blink				= AnsiTFSBlink::Disable;
 		AnsiTFSInverted			Inverted			= AnsiTFSInverted::Disable;
 		AnsiTFSIdeogram			Ideogram			= AnsiTFSIdeogram::AllDisable;
 		AnsiTFSScript			Script				= AnsiTFSScript::AllDisable;
 	};
 
-	struct AnsiTextStyleChange
+	struct AnsiStyleChange
 	{
 		bool HasChangeStyle			= false;
 

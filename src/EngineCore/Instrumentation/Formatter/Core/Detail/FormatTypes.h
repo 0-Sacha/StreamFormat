@@ -3,7 +3,7 @@
 #include "Base.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
-
+	
 	template<typename T> struct ForwardAsInt;
 	template<typename T> struct ForwardAsUInt;
 	template<typename T> struct ForwardAsFloat;
@@ -40,13 +40,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Default = UpperCase
 	};
 
-} // CPPTools::FMT::Detail
+}
 
-namespace EngineCore::Instrumentation::FMT {
-
-	// Type for dealing with index
-	using FormatIdx 		= int;
-	static const FormatIdx  FORMAT_IDX_NOT_FOUND = -1;
+namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template <typename CharFormat>
 	struct FormatSpecifier {
@@ -100,7 +96,7 @@ namespace EngineCore::Instrumentation::FMT {
 			, SpecifierCount(0)
 
 			, AnsiTextColorChange()
-			, AnsiTextStyleChange()
+			, AnsiStyleChange()
 			, AnsiTextFrontChange()
 		{}
 
@@ -126,7 +122,7 @@ namespace EngineCore::Instrumentation::FMT {
 			, Specifier(other.Specifier)
 
 			, AnsiTextColorChange()
-			, AnsiTextStyleChange()
+			, AnsiStyleChange()
 			, AnsiTextFrontChange()
 		{}
 
@@ -164,7 +160,7 @@ namespace EngineCore::Instrumentation::FMT {
 			, SpecifierCount(0)
 
 			, AnsiTextColorChange()
-			, AnsiTextStyleChange()
+			, AnsiStyleChange()
 			, AnsiTextFrontChange()
 		{}
 
@@ -172,7 +168,7 @@ namespace EngineCore::Instrumentation::FMT {
 		FormatData& operator=(const FormatData& other) {
 			std::memcpy(this, &other, sizeof(FormatData));
 			AnsiTextColorChange = Detail::AnsiTextColorChange();
-			AnsiTextStyleChange = Detail::AnsiTextStyleChange();
+			AnsiStyleChange = Detail::AnsiStyleChange();
 			AnsiTextFrontChange = Detail::AnsiTextFrontChange();
 			return *this;
 		}
@@ -201,7 +197,7 @@ namespace EngineCore::Instrumentation::FMT {
 		std::array<FormatSpecifier<CharFormat>, 10> Specifier;
 
 		Detail::AnsiTextColorChange AnsiTextColorChange;
-		Detail::AnsiTextStyleChange AnsiTextStyleChange;
+		Detail::AnsiStyleChange AnsiStyleChange;
 		Detail::AnsiTextFrontChange AnsiTextFrontChange;
 
 	public:

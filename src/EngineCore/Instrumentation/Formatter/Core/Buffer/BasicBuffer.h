@@ -8,12 +8,17 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	class BasicFormatterMemoryBuffer {
 
 	public:
+		using StringView = std::basic_string_view<CharFormat>;
+		using CharBuffer = CharBuffer;
+
+	protected:
 		CharBuffer*			m_Buffer;
 		CharBuffer*			m_CurrentPos;
 		CharBuffer*			m_BufferEnd;			// Point to the end char of the format
 		std::size_t			m_BufferSize;			// Do not count the end char
 		
-		std::size_t 		m_NoStride;
+	private:
+		BasicFormatterMemoryBuffer<CharBuffer>* m_ChildBuffer;
 
 	protected:
 		inline CharBuffer*			GetBuffer()											{ return m_Buffer; }
@@ -26,33 +31,42 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
 
-		inline std::size_t GetNoStride() const						{ return m_NoStride; }
-		inline void AddNoStride(const std::size_t noStride)			{ m_NoStride += noStride; }
+		inline void					SetChildBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* childBuffer)	{ m_ChildBuffer = childBuffer; }
 
 	public:
-		explicit BasicFormatterMemoryBuffer(const std::basic_string_view<typename std::remove_const<CharBuffer>::type>& buffer)
+		BasicFormatterMemoryBuffer(const std::basic_string_view<typename std::remove_const<CharBuffer>::type>& buffer)
 			: m_Buffer(buffer.data())
 			, m_CurrentPos(buffer.data())
 			, m_BufferEnd(buffer.data() + buffer.size())
 			, m_BufferSize(buffer.size())
-			, m_NoStride(0)
+			, m_ChildBuffer(nullptr)
 		{}
 
-		BasicFormatterMemoryBuffer(CharBuffer *const buffer, const std::size_t size)
+		explicit BasicFormatterMemoryBuffer(CharBuffer *const buffer, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(m_Buffer)
 			, m_BufferEnd(m_Buffer + size)
 			, m_BufferSize(size)
-			, m_NoStride(0)
+			, m_ChildBuffer(nullptr)
 		{}
-		
-		BasicFormatterMemoryBuffer(CharBuffer* const buffer, CharBuffer* const bufferCurrentPos, CharBuffer* const bufferEnd, const std::size_t size, const std::size_t noStride)
+
+		// Used for LittleFormat
+		BasicFormatterMemoryBuffer(CharBuffer* const buffer, CharBuffer* const bufferCurrentPos, CharBuffer* const bufferEnd, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(bufferCurrentPos)
 			, m_BufferEnd(m_Buffer + size)
 			, m_BufferSize(size)
-			, m_NoStride(noStride)
 		{}
+
+		~BasicFormatterMemoryBuffer() {
+			UpdateFromChlid();
+		}
+
+	private:
+		inline void UpdateFromChlid() {
+			if (m_ChildBuffer != nullptr)
+				SetBufferCurrentPos(m_ChildBuffer->GetBufferCurrentPos());
+		}
 
 	public:
 		// Format

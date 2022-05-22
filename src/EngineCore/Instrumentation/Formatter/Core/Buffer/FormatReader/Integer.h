@@ -6,12 +6,12 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	template<typename CharFormat>
 	template<typename T>
 	bool FormatterMemoryFormat<CharFormat>::ReadInt(T& i) {
-		T res = (T)0;
-		bool sign		= Base::IsEqualForward('-');
-		bool isValid	= Base::IsADigit();
+		T res{};
+		bool sign		= IsEqualForward('-');
+		bool isValid	= IsADigit();
 
-		while (Base::IsADigit())
-			res = res * 10 + T(Base::GetAndForward() - '0');
+		while (IsADigit())
+			res = res * 10 + static_cast<T>(GetAndForward() - '0');
 
 		if (isValid)
 			i = sign ? -res : res;
@@ -22,11 +22,11 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	template<typename CharFormat>
 	template<typename T>
 	bool FormatterMemoryFormat<CharFormat>::ReadUInt(T& i) {
-		T res = (T)0;
-		bool isValid = Base::IsADigit();
+		T res{};
+		bool isValid = IsADigit();
 
-		while (Base::IsADigit())
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit())
+			res = res * 10 + static_cast<T>(GetAndForward() - '0');
 
 		if (isValid) i = res;
 

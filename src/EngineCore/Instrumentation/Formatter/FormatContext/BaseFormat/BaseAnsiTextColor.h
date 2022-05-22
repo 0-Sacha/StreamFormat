@@ -57,14 +57,14 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextColor24bFg, FormatContext>
+	struct FormatType<Detail::AnsiColor24bFg, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextColor24bFg& t, FormatContext& context) {
+		static void Write(const Detail::AnsiColor24bFg& t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[38;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits.Fg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -72,14 +72,14 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextColor24bBg, FormatContext>
+	struct FormatType<Detail::AnsiColor24bBg, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextColor24bBg& t, FormatContext& context) {
+		static void Write(const Detail::AnsiColor24bBg& t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[48;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits.Bg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -87,16 +87,16 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextColor24b, FormatContext>
+	struct FormatType<Detail::AnsiColor24b, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextColor24b& t, FormatContext& context) {
+		static void Write(const Detail::AnsiColor24b& t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[38;2;", t.Fg.R, ';', t.Fg.G, ';', t.Fg.B, "; 48; 2;", t.Bg.R, ';', t.Bg.G, ';', t.Bg.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor24b;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiColor24b;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -105,14 +105,14 @@ namespace EngineCore::Instrumentation::FMT {
 
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextNColorFg, FormatContext>
+	struct FormatType<Detail::AnsiNColorFg, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextNColorFg& t, FormatContext& context) {
+		static void Write(const Detail::AnsiNColorFg& t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[38;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextNColor;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiNColor;
 			context.GetAnsiTextCurrentColor().ColorN.Fg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -120,14 +120,14 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextNColorBg, FormatContext>
+	struct FormatType<Detail::AnsiNColorBg, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextNColorBg& t, FormatContext& context) {
+		static void Write(const Detail::AnsiNColorBg& t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[48;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextNColor;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiNColor;
 			context.GetAnsiTextCurrentColor().ColorN.Bg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -135,16 +135,16 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextNColor, FormatContext>
+	struct FormatType<Detail::AnsiNColor, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextNColor& t, FormatContext& context) {
+		static void Write(const Detail::AnsiNColor& t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType("\033[48;5;", t.Fg.GetColorRef(), ";48;5;", t.Bg.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextNColor;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextNColor;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiNColor;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiNColor;
 			context.GetAnsiTextCurrentColor().ColorN = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;

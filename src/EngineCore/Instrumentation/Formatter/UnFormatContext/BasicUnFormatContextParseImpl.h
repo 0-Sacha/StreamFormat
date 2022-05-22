@@ -56,7 +56,7 @@ namespace EngineCore::Instrumentation::FMT {
 	void BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParameterParseDataStyle() {
 		
 			 if (m_FormatStr.IsEqualForward('C')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiTextColorChange.HasChangeColor = true; m_AnsiTextCurrentColor = Detail::AnsiTextCurrentColor();	ReadAnsiTextColorParameter(); }
-		else if (m_FormatStr.IsEqualForward('S')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiTextStyleChange.HasChangeStyle = true; m_AnsiTextCurrentStyle = Detail::AnsiTextCurrentStyle();	ReadAnsiTextStyleParameter(); }
+		else if (m_FormatStr.IsEqualForward('S')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiStyleChange.HasChangeStyle = true; m_AnsiStyle = Detail::AnsiStyle();	ReadAnsiTextStyleParameter(); }
 		else if (m_FormatStr.IsEqualForward('F')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiTextFrontChange.HasChangeFront = true; m_AnsiTextCurrentFront = Detail::AnsiTextCurrentFront();	ReadAnsiTextFrontParameter(); }
 
 		else if (m_FormatStr.IsEqualForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameter(m_FormatData.DigitSize); }

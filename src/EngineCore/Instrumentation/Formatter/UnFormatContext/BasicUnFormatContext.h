@@ -58,7 +58,7 @@ namespace EngineCore::Instrumentation::FMT {
 		FormatIdx				m_ValuesIdx;
 		FormatDataType			m_FormatData;
 		Detail::AnsiTextCurrentColor	m_AnsiTextCurrentColor;
-		Detail::AnsiTextCurrentStyle	m_AnsiTextCurrentStyle;
+		Detail::AnsiStyle	m_AnsiStyle;
 		Detail::AnsiTextCurrentFront	m_AnsiTextCurrentFront;
 		Detail::AnsiFormatterChange		m_AnsiFormatterChange;
 
@@ -70,8 +70,8 @@ namespace EngineCore::Instrumentation::FMT {
 
 		inline Detail::AnsiTextCurrentColor&		GetAnsiTextCurrentColor()		{ return m_AnsiTextCurrentColor; }
 		inline const Detail::AnsiTextCurrentColor&	GetAnsiTextCurrentColor() const { return m_AnsiTextCurrentColor; }
-		inline Detail::AnsiTextCurrentStyle&		GetAnsiTextCurrentStyle()		{ return m_AnsiTextCurrentStyle; }
-		inline const Detail::AnsiTextCurrentStyle&	GetAnsiTextCurrentStyle() const { return m_AnsiTextCurrentStyle; }
+		inline Detail::AnsiStyle&		GetAnsiStyle()		{ return m_AnsiStyle; }
+		inline const Detail::AnsiStyle&	GetAnsiStyle() const { return m_AnsiStyle; }
 		inline Detail::AnsiTextCurrentFront&		GetAnsiTextCurrentFront()		{ return m_AnsiTextCurrentFront; }
 		inline const Detail::AnsiTextCurrentFront&	GetAnsiTextCurrentFront() const { return m_AnsiTextCurrentFront; }
 

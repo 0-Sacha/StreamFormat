@@ -16,8 +16,7 @@ namespace EngineCore::Instrumentation::FMT {
 		: m_BufferOut(buffer, bufferSize)
 		, m_FormatStr(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_Indent(0)
-		, m_ValuesIdx(0)
+		, m_ValuesIdx()
 	{
 	}
 
@@ -26,29 +25,54 @@ namespace EngineCore::Instrumentation::FMT {
 		: m_BufferOut()
 		, m_FormatStr(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_Indent(0)
-		, m_ValuesIdx(0)
+		, m_ValuesIdx()
 	{
 	}
 
+	// Used for LittleFormat | Clone
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename ParentCharFormat, typename ...ParentContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
 		: m_BufferOut(parentContext.BufferOut())
 		, m_FormatStr(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_Indent(parentContext.GetIndent())
-		, m_ValuesIdx(0)
+		, m_ValuesIdx()
 	{
 		m_FormatData.Clone(parentContext.GetFormatData());
 		m_AnsiTextCurrentColor	= parentContext.GetAnsiTextCurrentColor();
-		m_AnsiTextCurrentStyle	= parentContext.GetAnsiTextCurrentStyle();
+		m_AnsiStyle	= parentContext.GetAnsiStyle();
+	}
+
+
+
+	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::Run() {
+		while (!m_FormatStr.IsEnd()) {
+
+			WriteUntilNextParameter();
+
+			if (m_FormatStr.IsEqualTo('{'))
+				if (!ParameterParse())
+					m_BufferOut.PushBack('{');
+		}
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	template<typename ChildCharFormat, typename ...ChildContextArgs>
-	inline void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::UpdateContextFromChild(BasicFormatContext<ChildCharFormat, CharBuffer, ChildContextArgs...>& childContext) {
-		m_BufferOut.UpdateFromChildBuffer(childContext.BufferOut());
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::SafeRun() {
+		try {
+			Run();
+		}
+		catch (...) {}
+
+		CheckEndStr();
+	}
+
+	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
+	template<typename NewCharFormat, typename ...Args>
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleFormat(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
+		BasicFormatContext<NewCharFormat, CharBuffer, Args...> child(format, *this, std::forward<Args>(args)...);
+		child.Run();
+		UpdateContextFromChild(child);
 	}
 
 
@@ -58,21 +82,6 @@ namespace EngineCore::Instrumentation::FMT {
 		if(m_AnsiFormatterChange.HasMadeChange)
 			WriteType(Detail::RESET_ANSI_ALL_PARAMETERS);
 	}
-
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	template<typename CharList, std::size_t SIZE>
-	std::uint8_t BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::GetWordFromList(const std::basic_string_view<CharList>(&formatTypes)[SIZE]) {
-		std::uint8_t res = (std::numeric_limits<std::uint8_t>::max)();
-		for (int idx = 0; idx < SIZE; ++idx) {
-			if (m_FormatStr.NextIsSame(formatTypes[idx]))
-			{
-				res = idx; idx = SIZE;
-			}
-		}
-		return res;
-	}
-
-
 
 	/////---------- ReadTimerParameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
@@ -163,10 +172,10 @@ namespace EngineCore::Instrumentation::FMT {
 				case Detail::AnsiTextColorDataType::AnsiTextColor:
 					WriteType(targetColor.Color);
 					break;
-				case Detail::AnsiTextColorDataType::AnsiTextNColor:
+				case Detail::AnsiTextColorDataType::AnsiNColor:
 					WriteType(targetColor.ColorN);
 					break;
-				case Detail::AnsiTextColorDataType::AnsiTextColor24b:
+				case Detail::AnsiTextColorDataType::AnsiColor24b:
 					WriteType(targetColor.Color24bits);
 					break;
 				case Detail::AnsiTextColorDataType::Default:
@@ -180,10 +189,10 @@ namespace EngineCore::Instrumentation::FMT {
 					case Detail::AnsiTextColorDataType::AnsiTextColor:
 						WriteType(targetColor.Color.Fg);
 						break;
-					case Detail::AnsiTextColorDataType::AnsiTextNColor:
+					case Detail::AnsiTextColorDataType::AnsiNColor:
 						WriteType(targetColor.ColorN.Fg);
 						break;
-					case Detail::AnsiTextColorDataType::AnsiTextColor24b:
+					case Detail::AnsiTextColorDataType::AnsiColor24b:
 						WriteType(targetColor.Color24bits.Fg);
 						break;
 					case Detail::AnsiTextColorDataType::Default:
@@ -196,10 +205,10 @@ namespace EngineCore::Instrumentation::FMT {
 					case Detail::AnsiTextColorDataType::AnsiTextColor:
 						WriteType(targetColor.Color.Bg);
 						break;
-					case Detail::AnsiTextColorDataType::AnsiTextNColor:
+					case Detail::AnsiTextColorDataType::AnsiNColor:
 						WriteType(targetColor.ColorN.Bg);
 						break;
-					case Detail::AnsiTextColorDataType::AnsiTextColor24b:
+					case Detail::AnsiTextColorDataType::AnsiColor24b:
 						WriteType(targetColor.Color24bits.Bg);
 						break;
 					case Detail::AnsiTextColorDataType::Default:
@@ -310,7 +319,7 @@ namespace EngineCore::Instrumentation::FMT {
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReloadStyle(const Detail::AnsiTextCurrentStyle& targetStyle, const Detail::AnsiTextStyleChange& changeStyle) {
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReloadStyle(const Detail::AnsiStyle& targetStyle, const Detail::AnsiStyleChange& changeStyle) {
 		if (changeStyle.HasChangeStyle) {
 			if (changeStyle.HasSetIntensity)	WriteType(targetStyle.Intensity);
 			if (changeStyle.HasSetItalic)		WriteType(targetStyle.Italic);
@@ -323,10 +332,10 @@ namespace EngineCore::Instrumentation::FMT {
 
 			if (changeStyle.HasSetUnderlineColor) {
 				switch (targetStyle.UnderlineColorType) {
-				case Detail::AnsiColorUnderlineType::AnsiTextNColor:
+				case Detail::AnsiColorUnderlineType::AnsiNColor:
 					WriteType(targetStyle.UnderlineColorN);
 					break;
-				case Detail::AnsiColorUnderlineType::AnsiTextColor24b:
+				case Detail::AnsiColorUnderlineType::AnsiColor24b:
 					WriteType(targetStyle.UnderlineColor24bits);
 					break;
 				case Detail::AnsiColorUnderlineType::Default:

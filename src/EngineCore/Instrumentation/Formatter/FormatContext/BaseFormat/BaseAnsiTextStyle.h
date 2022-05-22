@@ -46,8 +46,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSIntensity t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetIntensity = true;
-			context.GetAnsiTextCurrentStyle().Intensity					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetIntensity = true;
+			context.GetAnsiStyle().Intensity					= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -61,8 +61,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSItalic t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetItalic	= true;
-			context.GetAnsiTextCurrentStyle().Italic					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetItalic	= true;
+			context.GetAnsiStyle().Italic					= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -76,8 +76,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSUnderline t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderline		= true;
-			context.GetAnsiTextCurrentStyle().Underline						= t;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderline		= true;
+			context.GetAnsiStyle().Underline						= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -90,7 +90,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BufferOut().WriteCharArray("\033[59m");
 			context.BufferOut().AddNoStride(5);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor = true;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor = true;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -104,9 +104,9 @@ namespace EngineCore::Instrumentation::FMT {
 
 			context.BasicWriteType("\033[58;5;", t.GetColorRef(), 'm');
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor = true;
-			context.GetAnsiTextCurrentStyle().UnderlineColorType	= Detail::AnsiColorUnderlineType::AnsiTextNColor;
-			context.GetAnsiTextCurrentStyle().UnderlineColorN		= t;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor = true;
+			context.GetAnsiStyle().UnderlineColorType	= Detail::AnsiColorUnderlineType::AnsiNColor;
+			context.GetAnsiStyle().UnderlineColorN		= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -120,9 +120,9 @@ namespace EngineCore::Instrumentation::FMT {
 
 			context.BasicWriteType("\033[58;2;", t.R, ';', t.G, ';', t.B, 'm');
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor = true;
-			context.GetAnsiTextCurrentStyle().UnderlineColorType		= Detail::AnsiColorUnderlineType::AnsiTextColor24b;
-			context.GetAnsiTextCurrentStyle().UnderlineColor24bits		= t;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor = true;
+			context.GetAnsiStyle().UnderlineColorType		= Detail::AnsiColorUnderlineType::AnsiColor24b;
+			context.GetAnsiStyle().UnderlineColor24bits		= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -136,8 +136,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSBlink t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetBlink	= true;
-			context.GetAnsiTextCurrentStyle().Blink					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetBlink	= true;
+			context.GetAnsiStyle().Blink					= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -151,8 +151,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSInverted t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetInverted	= true;
-			context.GetAnsiTextCurrentStyle().Inverted					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetInverted	= true;
+			context.GetAnsiStyle().Inverted					= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -166,8 +166,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSIdeogram t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetIdeogram	= true;
-			context.GetAnsiTextCurrentStyle().Ideogram					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetIdeogram	= true;
+			context.GetAnsiStyle().Ideogram					= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}
@@ -181,8 +181,8 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiTFSScript t, FormatContext& context) {
 			FormatType<Detail::ForwardAsAnsiBasicTextStyle, FormatContext>::Write(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 
-			context.GetFormatData().AnsiTextStyleChange.HasSetScript	= true;
-			context.GetAnsiTextCurrentStyle().Script					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetScript	= true;
+			context.GetAnsiStyle().Script					= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
 		}

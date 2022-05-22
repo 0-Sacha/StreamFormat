@@ -27,7 +27,7 @@ namespace EngineCore::Instrumentation::FMT {
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParameterParseDataStyle() {
 
 			 if (m_FormatStr.IsEqualForward('C')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiTextColorChange.HasChangeColor = true; m_AnsiTextCurrentColor = Detail::AnsiTextCurrentColor();	ReadAnsiTextColorParameter(); }
-		else if (m_FormatStr.IsEqualForward('S')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiTextStyleChange.HasChangeStyle = true; m_AnsiTextCurrentStyle = Detail::AnsiTextCurrentStyle();	ReadAnsiTextStyleParameter(); }
+		else if (m_FormatStr.IsEqualForward('S')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiStyleChange.HasChangeStyle = true; m_AnsiStyle = Detail::AnsiStyle();	ReadAnsiTextStyleParameter(); }
 		else if (m_FormatStr.IsEqualForward('F')) { m_AnsiFormatterChange.HasMadeChange = true; m_FormatData.AnsiTextFrontChange.HasChangeFront = true; m_AnsiTextCurrentFront = Detail::AnsiTextCurrentFront();	ReadAnsiTextFrontParameter(); }
 
 		else if (m_FormatStr.IsEqualForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameter(m_FormatData.DigitSize); }
@@ -159,9 +159,9 @@ namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParameterParseSpecial() {
-			 if (m_FormatStr.IsEqualTo('C') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadAnsiTextColorParameter(); }
-		else if (m_FormatStr.IsEqualTo('S') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadAnsiTextStyleParameter(); }
-		else if (m_FormatStr.IsEqualTo('F') && m_FormatStr.NextIsEqualForward(':', '}'))		{ m_AnsiFormatterChange.HasMadeChange = true; ReadAnsiTextFrontParameter(); }
+			 if (m_FormatStr.IsEqualTo('C') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadAnsiTextColorParameter(); }
+		else if (m_FormatStr.IsEqualTo('S') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadAnsiTextStyleParameter(); }
+		else if (m_FormatStr.IsEqualTo('F') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadAnsiTextFrontParameter(); }
 		else if (m_FormatStr.IsEqualTo('T') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadTimerParameter();		    }
 		else if (m_FormatStr.IsEqualTo('D') && m_FormatStr.NextIsEqualForward(':', '}'))		{ ReadDateParameter();		    }
 		else if (m_FormatStr.IsEqualTo('K') && m_FormatStr.NextIsEqualForward(':'))				{ ReadSetterParameter(); 		}
@@ -174,7 +174,7 @@ namespace EngineCore::Instrumentation::FMT {
 		m_FormatData = FormatDataType();
 
 		Detail::AnsiTextCurrentColor ansiTextColor(m_AnsiTextCurrentColor);
-		Detail::AnsiTextCurrentStyle ansiTextStyle(m_AnsiTextCurrentStyle);
+		Detail::AnsiStyle ansiTextStyle(m_AnsiStyle);
 		Detail::AnsiTextCurrentFront ansiTextFront(m_AnsiTextCurrentFront);
 
 		if (!m_FormatData.IsInit)		ParameterParseData();
@@ -182,7 +182,7 @@ namespace EngineCore::Instrumentation::FMT {
 		m_ContextArgs.FormatTypeFromIdx(*this, formatIdx);
 
 		if (m_FormatData.AnsiTextColorChange.HasChangeColor) { m_AnsiTextCurrentColor = ansiTextColor;	ReloadColor(m_AnsiTextCurrentColor, m_FormatData.AnsiTextColorChange); }
-		if (m_FormatData.AnsiTextStyleChange.HasChangeStyle) { m_AnsiTextCurrentStyle = ansiTextStyle;	ReloadStyle(m_AnsiTextCurrentStyle, m_FormatData.AnsiTextStyleChange); }
+		if (m_FormatData.AnsiStyleChange.HasChangeStyle) { m_AnsiStyle = ansiTextStyle;	ReloadStyle(m_AnsiStyle, m_FormatData.AnsiStyleChange); }
 		if (m_FormatData.AnsiTextFrontChange.HasChangeFront) { m_AnsiTextCurrentFront = ansiTextFront;	ReloadFront(m_AnsiTextCurrentFront, m_FormatData.AnsiTextFrontChange); }
 
 		m_FormatData.Clone(data);
@@ -203,36 +203,6 @@ namespace EngineCore::Instrumentation::FMT {
 
 		m_FormatStr.GoOutOfParameter();		// Skip}
 		return true;
-	}
-
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::Run() {
-		while (!m_FormatStr.IsEnd()) {
-
-			WriteUntilNextParameter();
-
-			if (m_FormatStr.IsEqualTo('{'))
-				if (!ParameterParse())
-					m_BufferOut.PushBack('{');
-		}
-	}
-
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::SafeRun() {
-		try {
-			Run();
-		}
-		catch (...) { }
-
-		CheckEndStr();
-	}
-
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	template<typename NewCharFormat, typename ...Args>
-	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleFormat(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
-		BasicFormatContext<NewCharFormat, CharBuffer, Args...> child(format, *this, std::forward<Args>(args)...);
-		child.Run();
-		UpdateContextFromChild(child);
 	}
 }
 

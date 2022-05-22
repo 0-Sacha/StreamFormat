@@ -19,6 +19,10 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::m_NoStride;
 
 	public:
+		using Base::StringView;
+		using Base::CharBuffer;
+
+	public:
 		using CharBufferType = CharBuffer;
 
 		using Base::GetBuffer;
@@ -69,6 +73,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		bool				m_BufferAutoResize;
 		bool				m_FreeOnDestructor;
 
+		std::size_t 		m_NoStride;
+		std::size_t 		m_Indent;
+
 	public:
 		inline CharBuffer*			GetBuffer()									{ return Base::GetBuffer(); }
 		inline const CharBuffer*	GetBuffer() const							{ return Base::GetBuffer(); }
@@ -82,6 +89,15 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		inline bool					BufferIsAutoResize()						{ return m_BufferAutoResize; }
 
+
+		inline std::size_t GetNoStride() const					{ return m_NoStride; }
+		inline void AddNoStride(const std::size_t noStride)		{ m_NoStride += noStride; }
+
+		inline std::size_t GetIndent() const					{ return m_Indent; }
+		inline void SetIndent(const std::size_t m_Indent) 		{ m_Indent = m_Indent; }
+		inline void AddIndent(const std::size_t m_Indent) 		{ m_Indent += m_Indent; }
+		void SetIndent() 										{ m_Indent = GetBufferCurrentSize() - GetNoStride(); }
+
 	private:
 		friend BasicFormatterMemoryBufferOutCopy<CharBuffer>;
 		inline void					DoNotFreeOnDestructor()					{ m_FreeOnDestructor = false; }
@@ -91,6 +107,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			: BasicFormatterMemoryBuffer<CharBuffer>(buffer, bufferSize)
 			, m_BufferAutoResize(false)
 			, m_FreeOnDestructor(false)
+			, m_NoStride(0)
+			, m_Indent(0)
 		{
 			PushEndCharToTheEnd();
 		}
@@ -99,24 +117,27 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			: BasicFormatterMemoryBuffer<CharBuffer>(new CharBuffer[beginSize], beginSize)
 			, m_BufferAutoResize(true)
 			, m_FreeOnDestructor(true)
+			, m_NoStride(0)
+			, m_Indent(0)
 		{
 			PushEndCharToTheEnd();
 		}
 
+		template <typename ParentBuffer>
+		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
+			: BasicFormatterMemoryBuffer<CharBuffer>(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
+			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
+			, m_FreeOnDestructor(false)
+			, m_NoStride(parentBuffer.GetNoStride())
+			, m_Indent(parentBuffer.GetIndent())
+		{}
+
 		~BasicFormatterMemoryBufferOut() {
+			BasicFormatterMemoryBuffer::~BasicFormatterMemoryBuffer();
+
 			if (m_FreeOnDestructor)
 				delete[] m_Buffer;
 		}
-
-		template <typename ParentBuffer>
-		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
-			: BasicFormatterMemoryBuffer<CharBuffer>(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize(), parentBuffer.GetNoStride())
-			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
-			, m_FreeOnDestructor(false) {}
-
-	public:
-		template <typename ChildBuffer>
-		inline void UpdateFromChildBuffer(ChildBuffer& childBuffer) { SetBufferCurrentPos(childBuffer.GetBufferCurrentPos()); m_NoStride = childBuffer.GetNoStride(); }
 
 	public:
 		template<typename T> void FastWriteInt	(T i);
@@ -227,29 +248,31 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 
 		/////---------- Buffer Commands Indent ----------/////
-		inline void SetIndent(const CharBuffer c, const std::size_t indent)								{ Set(c);  if (c == '\n') PushBack(' ', indent); }
-		inline void PushBackIndent(const CharBuffer c, const std::size_t indent)						{ PushBack(c);  if (c == '\n') PushBack(' ', indent); }
+		inline void NewLineIndent()											{ PushBack('\n'); PushBack(' ', m_Indent); }
 
-		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str, const std::size_t indent) {
+		inline void SetIndent(const CharBuffer c)							{ Set(c);  if (c == '\n') PushBack(' ', m_Indent); }
+		inline void PushBackIndent(const CharBuffer c)						{ PushBack(c);  if (c == '\n') PushBack(' ', m_Indent); }
+
+		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str) {
 			while (*str != 0)
 			{
 				if (*str == '\n')
 				{
 					PushBack('\n');
-					PushBack(' ', indent);
+					PushBack(' ', m_Indent);
 				}
 				else
 					PushBack(*str++);
 			}
 		}
-		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str, std::size_t size, const std::size_t indent) {
+		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str, std::size_t size) {
 			if (CanMoveForward(size))
 				while (size-- != 0 && *str != 0)
 				{
 					if (*str == '\n')
 					{
 						PushBack('\n');
-						PushBack(' ', indent);
+						PushBack(' ', m_Indent);
 					}
 					else
 						PushBackNoCheck(*str++);
@@ -340,7 +363,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			bufferOut.DoNotFreeOnDestructor();
 		}
 
-		BasicFormatterMemoryBufferOutCopy(BasicFormatterMemoryBufferOutCopy<CharBuffer>& bufferOutCopy)
+		explicit BasicFormatterMemoryBufferOutCopy(BasicFormatterMemoryBufferOutCopy<CharBuffer>& bufferOutCopy)
 			: m_Buffer(bufferOutCopy.GetBuffer())
 			, m_Size(bufferOutCopy.GetSize())
 			, m_FreeOnDestructor(true)

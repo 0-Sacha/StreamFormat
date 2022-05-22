@@ -39,8 +39,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSIntensity, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSIntensity& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetIntensity = true;
-			context.GetAnsiTextCurrentStyle().Intensity					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetIntensity = true;
+			context.GetAnsiStyle().Intensity					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}
@@ -52,8 +52,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSItalic, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSItalic& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetItalic	= true;
-			context.GetAnsiTextCurrentStyle().Italic					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetItalic	= true;
+			context.GetAnsiStyle().Italic					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}
@@ -65,8 +65,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSUnderline, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSUnderline& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderline = true;
-			context.GetAnsiTextCurrentStyle().Underline					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderline = true;
+			context.GetAnsiStyle().Underline					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}
@@ -76,7 +76,7 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::ResetAnsiUnderlineColor, UnFormatContext>
 	{
 		static void Read(const Detail::ResetAnsiUnderlineColor& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor = true;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor = true;
 
 			context.BufferOut().WriteCharArray("\033[59m");
 		}
@@ -87,9 +87,9 @@ namespace EngineCore::Instrumentation::FMT {
 	{
 		static void Read(const Detail::AnsiNColorUnderline& t, UnFormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor	= true;
-			context.GetAnsiTextCurrentStyle().UnderlineColorType				= Detail::AnsiColorUnderlineType::AnsiTextNColor;
-			context.GetAnsiTextCurrentStyle().UnderlineColorN					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor	= true;
+			context.GetAnsiStyle().UnderlineColorType				= Detail::AnsiColorUnderlineType::AnsiNColor;
+			context.GetAnsiStyle().UnderlineColorN					= t;
 
 			context.BasicReadType("\033[58;5;", t.GetColorRef(), 'm');
 		}
@@ -100,9 +100,9 @@ namespace EngineCore::Instrumentation::FMT {
 	{
 		static void Read(const Detail::AnsiUnderlineColor24b& t, UnFormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
-			context.GetFormatData().AnsiTextStyleChange.HasSetUnderlineColor	= true;
-			context.GetAnsiTextCurrentStyle().UnderlineColorType				= Detail::AnsiColorUnderlineType::AnsiTextColor24b;
-			context.GetAnsiTextCurrentStyle().UnderlineColor24bits				= t;
+			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor	= true;
+			context.GetAnsiStyle().UnderlineColorType				= Detail::AnsiColorUnderlineType::AnsiColor24b;
+			context.GetAnsiStyle().UnderlineColor24bits				= t;
 
 			context.BasicReadType("\033[58;2;", t.R, ';', t.G, ';', t.B, 'm');
 		}
@@ -114,8 +114,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSBlink, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSBlink& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetBlink	= true;
-			context.GetAnsiTextCurrentStyle().Blink					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetBlink	= true;
+			context.GetAnsiStyle().Blink					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}
@@ -127,8 +127,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSInverted, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSInverted& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetInverted	= true;
-			context.GetAnsiTextCurrentStyle().Inverted					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetInverted	= true;
+			context.GetAnsiStyle().Inverted					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}
@@ -140,8 +140,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSIdeogram, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSIdeogram& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetIdeogram	= true;
-			context.GetAnsiTextCurrentStyle().Ideogram					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetIdeogram	= true;
+			context.GetAnsiStyle().Ideogram					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}
@@ -153,8 +153,8 @@ namespace EngineCore::Instrumentation::FMT {
 	struct UnFormatType<Detail::AnsiTFSScript, UnFormatContext>
 	{
 		static void Read(const Detail::AnsiTFSScript& t, UnFormatContext& context) {
-			context.GetFormatData().AnsiTextStyleChange.HasSetScript	= true;
-			context.GetAnsiTextCurrentStyle().Script					= t;
+			context.GetFormatData().AnsiStyleChange.HasSetScript	= true;
+			context.GetAnsiStyle().Script					= t;
 
 			UnFormatType<Detail::ForwardAsAnsiBasicTextStyle, UnFormatContext>::Read(static_cast<Detail::ForwardAsAnsiBasicTextStyle>(t), context);
 		}

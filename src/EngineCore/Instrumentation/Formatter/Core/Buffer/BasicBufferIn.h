@@ -15,8 +15,10 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::m_CurrentPos;
 
 	public:
-		using CharBufferType = CharBuffer;
+		using Base::StringView;
+		using Base::CharBuffer;
 
+	public:
 		using Base::GetBuffer;
 		using Base::GetBufferCurrentPos;
 		using Base::GetBufferEnd;
@@ -55,11 +57,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	public:
 		explicit BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer>& format)
 			: Base(format) {}
-
-	public:
-		// TODO
-		template <typename ChildBuffer>
-		inline void UpdateFromChlidBuffer(ChildBuffer& childBuffer) { SetBufferCurrentPos(childBuffer.GetBufferCurrentPos()); }
 
 	public:
 		template<typename T> void FastReadInt	(T& i);
@@ -141,6 +138,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		template<typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (NextIsNotEqualTo(c, ele...)) return; throw FormatParseError(); }
 		template<typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)						{ if (NextIsNotEqualForward(ele...)) return; throw FormatParseError(); }
 
+	public:
+		inline bool IsLowerCase() const			{ return Get() >= 'a' && Get() <= 'z'; }
+		inline bool IsUpperCase() const			{ return Get() >= 'A' && Get() <= 'Z'; }
+		inline bool IsADigit() const			{ return Get() >= '0' && Get() <= '9'; }
+		inline void IsLowerCaseThrow() const	{ if (IsLowerCase()) return; throw FormatParseError(); }
+		inline void IsUpperCaseThrow() const	{ if (IsUpperCase()) return; throw FormatParseError(); }
+		inline void IsADigitThrow() const		{ if (IsADigit()) return; throw FormatParseError(); }
 
 	public:
 		template<typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
@@ -161,20 +165,34 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		}
 
 		template<std::size_t SIZE, typename CharToTest>
-		inline bool NextIsSame(const CharToTest(&data)[SIZE]) { return NextIsSame(std::basic_string_view<CharToTest>(data)); }
+		inline bool NextIsSame(const CharToTest(&data)[SIZE])															{ return NextIsSame(std::basic_string_view<CharToTest>(data)); }
+		template<typename CharToTest> inline void NextIsANamedArgsThrow(const std::basic_string_view<CharToTest>& sv)	{ if (NextIsANamedArgs(sv)) return; throw FormatParseError(); }
+		template<typename CharToTest> inline void NextIsSameThrow(const std::basic_string_view<CharToTest>& sv)			{ if (NextIsSame(sv)) return; throw FormatParseError(); }
+		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])		{ if (NextIsSame(data)) return; throw FormatParseError(); }
 
-		inline bool IsLowerCase() const	{ return Get() >= 'a' && Get() <= 'z'; }
-		inline bool IsUpperCase() const	{ return Get() >= 'A' && Get() <= 'Z'; }
-		inline bool IsADigit() const	{ return Get() >= '0' && Get() <= '9'; }
 
-		// Auto throw variant
-		template<typename CharToTest> inline void NextIsANamedArgsThrow(const std::basic_string_view<CharToTest>& sv)		{ if (NextIsANamedArgs(sv)) return; throw FormatParseError(); }
-		template<typename CharToTest> inline void NextIsSameThrow(const std::basic_string_view<CharToTest>& sv)				{ if (NextIsSame(sv)) return; throw FormatParseError(); }
-		template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])			{ if (NextIsSame(data)) return; throw FormatParseError(); }
+		static constexpr std::size_t GET_WORD_FROM_LIST_NOT_FOUND = (std::numeric_limits<std::size_t>::max)();
+		template<std::size_t SIZE>
+		std::size_t GetWordFromList(const StringView (&data)[SIZE], const std::size_t defaultValue = GET_WORD_FROM_LIST_NOT_FOUND)
+		{
+			for (std::size_t idx = 0; idx < SIZE; ++idx)
+				if (m_FormatStr.NextIsSame(data[idx]))
+					return idx;
+			return defaultValue;
+		}
 
-		inline void IsLowerCaseThrow() const	{ if (IsLowerCase()) return; throw FormatParseError(); }
-		inline void IsUpperCaseThrow() const	{ if (IsUpperCase()) return; throw FormatParseError(); }
-		inline void IsADigitThrow() const		{ if (IsADigit()) return; throw FormatParseError(); }
+
+		template<typename T, std::size_t SIZE>
+		using TextTo = const std::array<std::pair<StringView, T>, SIZE>&;
+
+		template<typename T, std::size_t SIZE>
+		std::size_t GetWordFromList(TextTo<T, SIZE> data, T defaultValue = T{})
+		{
+			for (std::size_t idx = 0; idx < SIZE; ++idx)
+				if (m_FormatStr.NextIsSame(data[idx].first))
+					return data[idx].second;
+			return defaultValue;
+		}
 
 		// Format commands
 	public:
