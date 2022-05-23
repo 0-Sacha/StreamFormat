@@ -35,7 +35,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadFloat(T& i, FormatDataType nbDecimal) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadFloat(T& i, DataType nbDecimal) {
 		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt;
 		FastReadInt(iInt);
 
@@ -60,7 +60,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, DataType shift, ShiftPrint sp) {
 		T res = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -84,7 +84,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, DataType shift, ShiftPrint sp) {
 		T res = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -105,7 +105,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadFloat(T& i, FormatDataType nbDecimal, ShiftType st, FormatDataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadFloat(T& i, DataType nbDecimal, ShiftType st, DataType shift, ShiftPrint sp) {
 		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -146,7 +146,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, DataType digitSize, ShiftType st, DataType shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 8;
 
 		shift -= digitSize;
@@ -176,7 +176,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, DataType digitSize, ShiftType st, DataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
 		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 2;
 
 		shift -= digitSize;
@@ -208,8 +208,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, FormatDataType digitSize, ShiftType st, FormatDataType shift, ShiftPrint sp, bool trueValue) {
-		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = static_cast<FormatDataType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
+	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, DataType digitSize, ShiftType st, DataType shift, ShiftPrint sp, bool trueValue) {
+		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = static_cast<DataType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
 
 		shift -= digitSize;
 		if (trueValue) shift -= 2;

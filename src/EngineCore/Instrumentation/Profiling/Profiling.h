@@ -70,7 +70,7 @@ namespace EngineCore::Instrumentation {
 #define PROFILER_FUNC_AUTO(profiler)								EngineCore::Instrumentation::ProfileResult profile##__LINE__(profiler, __FUNCTION__)
 #define PROFILER_DEFAULT_FUNC_AUTO()								PROFILER_FUNC_AUTO(EngineCore::Instrumentation::Profiler::GetInstance())
 
-#define PROFILER_FUNC_FMT(profile, profiler, ...)					PROFILER_FUNC_NAME(EngineCore::Instrumentation::FMT::FormatString(__VA_ARGS__), profile, profiler);
+#define PROFILER_FUNC_FMT(profile, profiler, ...)					PROFILER_FUNC_NAME(EngineCore::Instrumentation::FMT::Formating(__VA_ARGS__), profile, profiler);
 #define PROFILER_DEFAULT_FUNC_FMT(profile, ...)						PROFILER_FUNC_FMT(profile, EngineCore::Instrumentation::Profiler::GetInstance(), __VA_ARGS__);
 
 // ----------- CTools ----------- //

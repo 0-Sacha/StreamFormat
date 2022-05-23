@@ -61,15 +61,15 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	public:
 		template<typename T> void FastReadInt	(T& i);
 		template<typename T> void FastReadUInt	(T& i);
-		template<typename T> void FastReadFloat	(T& i, FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
+		template<typename T> void FastReadFloat	(T& i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
 		
-		template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
-		template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
-		template<typename T> void BasicReadFloat	(T& i, FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicReadFloat	(T& i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
 		
-		template<typename T> void BasicReadIntAsBin	(T& i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
-		template<typename T> void BasicReadIntAsHex	(T& i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-		template<typename T> void BasicReadIntAsOct	(T& i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+		template<typename T> void BasicReadIntAsBin	(T& i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+		template<typename T> void BasicReadIntAsHex	(T& i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+		template<typename T> void BasicReadIntAsOct	(T& i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
 
 
 	public:
@@ -176,7 +176,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		std::size_t GetWordFromList(const StringView (&data)[SIZE], const std::size_t defaultValue = GET_WORD_FROM_LIST_NOT_FOUND)
 		{
 			for (std::size_t idx = 0; idx < SIZE; ++idx)
-				if (m_FormatStr.NextIsSame(data[idx]))
+				if (m_Format.NextIsSame(data[idx]))
 					return idx;
 			return defaultValue;
 		}
@@ -189,7 +189,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		std::size_t GetWordFromList(TextTo<T, SIZE> data, T defaultValue = T{})
 		{
 			for (std::size_t idx = 0; idx < SIZE; ++idx)
-				if (m_FormatStr.NextIsSame(data[idx].first))
+				if (m_Format.NextIsSame(data[idx].first))
 					return data[idx].second;
 			return defaultValue;
 		}

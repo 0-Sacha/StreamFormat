@@ -25,7 +25,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         inline void GetParameterDataFromIdx(UnFormatContext &context, FormatIdx idx) {}
 
         template <typename UnFormatContext>
-        inline void GetParameterData(UnFormatContext &context, FormatIdx idx) { context.GetFormatData() = UnFormatContext::FormatDataType(); }
+        inline void GetParameterData(UnFormatContext &context, FormatIdx idx) { context.GetFormatData() = UnFormatContext::DataType(); }
 
         template <typename UnFormatContext>
         inline void GetNamedArgsIdx(UnFormatContext& context, FormatIdx& idx, FormatIdx currentIdx) { idx = FORMAT_IDX_NOT_FOUND; }
@@ -64,14 +64,14 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
         /////---------- GetParameterDataFromIdx ----------/////
         template <typename UnFormatContext, class KType = TypeWithoutRef>
-        requires (std::is_same_v<Detail::GetBaseType<KType>, typename UnFormatContext::FormatDataType>)
+        requires (std::is_same_v<Detail::GetBaseType<KType>, typename UnFormatContext::DataType>)
         inline void GetParameterDataFromIdx(UnFormatContext &context, FormatIdx idx) {
             if (idx == 0)       context.GetFormatData() = m_Value;
             else if (idx > 0)   UnFormatContextArgsTuple<Rest...>::GetParameterDataFromIdx(context, idx - 1);
         }
 
         template <typename UnFormatContext, class KType = TypeWithoutRef>
-        requires (!std::is_same_v<Detail::GetBaseType<KType>, typename UnFormatContext::FormatDataType>)
+        requires (!std::is_same_v<Detail::GetBaseType<KType>, typename UnFormatContext::DataType>)
         inline void GetParameterDataFromIdx(UnFormatContext &context, FormatIdx idx) {
             if (idx > 0)        UnFormatContextArgsTuple<Rest...>::GetParameterDataFromIdx(context, idx - 1);
         }

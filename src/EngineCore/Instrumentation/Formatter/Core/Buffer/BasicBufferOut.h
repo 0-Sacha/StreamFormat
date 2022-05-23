@@ -142,15 +142,15 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	public:
 		template<typename T> void FastWriteInt	(T i);
 		template<typename T> void FastWriteUInt	(T i);
-		template<typename T> void FastWriteFloat(T i, FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
+		template<typename T> void FastWriteFloat(T i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
 
-		template<typename T> void BasicWriteInt		(T i, ShiftType st = ShiftType::Default, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Default);
-		template<typename T> void BasicWriteUInt	(T i, ShiftType st = ShiftType::Default, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Default);
-		template<typename T> void BasicWriteFloat	(T i, FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicWriteInt		(T i, ShiftType st = ShiftType::Default, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Default);
+		template<typename T> void BasicWriteUInt	(T i, ShiftType st = ShiftType::Default, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Default);
+		template<typename T> void BasicWriteFloat	(T i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
 
-		template<typename T> void BasicWriteIntAsBin	(T i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
-		template<typename T> void BasicWriteIntAsHex	(T i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-		template<typename T> void BasicWriteIntAsOct	(T i, FormatDataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, FormatDataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+		template<typename T> void BasicWriteIntAsBin	(T i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+		template<typename T> void BasicWriteIntAsHex	(T i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+		template<typename T> void BasicWriteIntAsOct	(T i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
 
 
 	public:
@@ -282,11 +282,11 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		// Utils
 	private:
 		template<typename T>
-		static inline FormatDataType GetNumberOfDigitDec(T value) {
+		static inline DataType GetNumberOfDigitDec(T value) {
 			if constexpr (std::numeric_limits<T>::is_signed) {
 				if (value < 0)	value = -value;
 			}
-			FormatDataType nb = 0;
+			DataType nb = 0;
 			while(true) {
 				if (value < 10)
 					return nb + 1;
@@ -314,7 +314,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		inline void PrintShiftCenterBegin(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
 			if(st == Detail::ShiftType::Center)
 			{
-				FormatDataType shift_ = shift / 2;
+				DataType shift_ = shift / 2;
 				PrintShift(Detail::ShiftPrint::Space, shift - shift_);
 				shift = shift_;
 			}

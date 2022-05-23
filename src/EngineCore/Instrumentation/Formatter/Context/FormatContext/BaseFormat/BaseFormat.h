@@ -15,8 +15,8 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<typename FormatContext::FormatDataType, FormatContext> {
-		static void Write(const typename FormatContext::FormatDataType& t, FormatContext& context) {
+	struct FormatType<typename FormatContext::DataType, FormatContext> {
+		static void Write(const typename FormatContext::DataType& t, FormatContext& context) {
 			context.LittleFormat("{:C:red}", "Missing '{' or '}' because currently the format data is used as a parameter");
 		}
 	};

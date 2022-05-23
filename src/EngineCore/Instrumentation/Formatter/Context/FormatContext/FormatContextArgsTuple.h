@@ -29,7 +29,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         inline void GetParameterDataFromIdx(FormatContext &context, FormatIdx idx)  {}
 
         template <typename FormatContext>
-        inline void GetParameterData(FormatContext &context, FormatIdx idx)         { context.GetFormatData() = FormatContext::FormatDataType(); }
+        inline void GetParameterData(FormatContext &context, FormatIdx idx)         { context.GetFormatData() = FormatContext::DataType(); }
 
         template <typename FormatContext>
         inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) { idx = FORMAT_IDX_NOT_FOUND; }
@@ -88,7 +88,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         template<typename FormatContext, class KType = TypeWithoutRef>
         requires (Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
         inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) {
-            if (context.FormatStr().NextIsANamedArgs(m_Value.GetName()))    idx = currentIdx;
+            if (context.Format().NextIsANamedArgs(m_Value.GetName()))    idx = currentIdx;
             else                                                            FormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
         }
 

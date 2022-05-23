@@ -30,7 +30,7 @@ namespace EngineCore::Instrumentation::FMT {
 		using CharFormatType = CharFormat;
 		using CharBufferType = CharBuffer;
 
-		using FormatDataType = FormatData<CharFormat>;
+		using DataType = FormatData<CharFormat>;
 		using FormatSpecifierType = FormatSpecifier<CharFormat>;
 
 		using StringViewFormat = std::basic_string_view<CharFormat>;
@@ -49,14 +49,14 @@ namespace EngineCore::Instrumentation::FMT {
 
 	private:
 		Detail::BasicFormatterMemoryBufferIn<CharBuffer>	m_BufferIn;
-		Detail::FormatterMemoryFormat<CharFormat>			m_FormatStr;
+		Detail::FormatterMemoryFormat<CharFormat>			m_Format;
 
 		Detail::UnFormatContextArgsTuple<ContextArgs...>	m_ContextArgs;
 
 		std::size_t 			m_Indent;
 
 		FormatIdx				m_ValuesIdx;
-		FormatDataType			m_FormatData;
+		DataType			m_FormatData;
 		Detail::AnsiTextCurrentColor	m_AnsiTextCurrentColor;
 		Detail::AnsiStyle	m_AnsiStyle;
 		Detail::AnsiTextCurrentFront	m_AnsiTextCurrentFront;
@@ -65,8 +65,8 @@ namespace EngineCore::Instrumentation::FMT {
 	public:
 		inline Detail::BasicFormatterMemoryBufferIn<CharBuffer>&		BufferIn()			{ return m_BufferIn; }
 		inline const Detail::BasicFormatterMemoryBufferIn<CharBuffer>&	BufferIn() const	{ return m_BufferIn; }
-		inline Detail::FormatterMemoryFormat<CharFormat>&				FormatStr()			{ return m_FormatStr; }
-		inline const Detail::FormatterMemoryFormat<CharFormat>&			FormatStr() const	{ return m_FormatStr; }
+		inline Detail::FormatterMemoryFormat<CharFormat>&				Format()			{ return m_Format; }
+		inline const Detail::FormatterMemoryFormat<CharFormat>&			Format() const	{ return m_Format; }
 
 		inline Detail::AnsiTextCurrentColor&		GetAnsiTextCurrentColor()		{ return m_AnsiTextCurrentColor; }
 		inline const Detail::AnsiTextCurrentColor&	GetAnsiTextCurrentColor() const { return m_AnsiTextCurrentColor; }
@@ -78,9 +78,9 @@ namespace EngineCore::Instrumentation::FMT {
 		inline Detail::AnsiFormatterChange&			GetAnsiFormatterChange()		{ return m_AnsiFormatterChange; }
 		inline const Detail::AnsiFormatterChange&	GetAnsiFormatterChange() const	{ return m_AnsiFormatterChange; }
 
-		inline FormatDataType&			GetFormatData()				{ return m_FormatData; }
-		inline const FormatDataType&	GetFormatData() const		{ return m_FormatData; }
-		inline FormatDataType			ForwardFormatData() const	{ return m_FormatData; }
+		inline DataType&			GetFormatData()				{ return m_FormatData; }
+		inline const DataType&	GetFormatData() const		{ return m_FormatData; }
+		inline DataType			ForwardFormatData() const	{ return m_FormatData; }
 
 		inline std::size_t	GetIndent() const						{ return m_Indent; }
 
@@ -131,26 +131,26 @@ namespace EngineCore::Instrumentation::FMT {
 		inline void BasicReadType(Type& type, Rest& ...rest)	{ m_BufferIn.BasicReadType(type); BasicReadType(std::forward<Rest>(rest)...); }
 
 	public:
-		inline bool FormatIsEndOfParameter()	{ return m_FormatStr.IsEqualTo('}'); }
-		inline void FormatGoToEndOfParameter()	{ while (m_FormatStr.IsNotEqualTo('}') && m_FormatStr.CanMoveForward()) m_FormatStr.ForwardNoCheck(); }
-		inline void FormatGoOutOfParameter()	{ while (m_FormatStr.IsNotEqualTo('}') && m_FormatStr.CanMoveForward()) m_FormatStr.ForwardNoCheck(); m_FormatStr.Forward(); }
+		inline bool FormatIsEndOfParameter()	{ return m_Format.IsEqualTo('}'); }
+		inline void FormatGoToEndOfParameter()	{ while (m_Format.IsNotEqualTo('}') && m_Format.CanMoveForward()) m_Format.ForwardNoCheck(); }
+		inline void FormatGoOutOfParameter()	{ while (m_Format.IsNotEqualTo('}') && m_Format.CanMoveForward()) m_Format.ForwardNoCheck(); m_Format.Forward(); }
 
-		inline bool Check() { return m_BufferIn.IsEqualTo(m_FormatStr.Get()); }
-		inline bool CheckAndNext() { if (m_BufferIn.IsEqualTo(m_FormatStr.Get())) { m_BufferIn.Forward(); m_FormatStr.Forward(); return true; } return false; }
+		inline bool Check() { return m_BufferIn.IsEqualTo(m_Format.Get()); }
+		inline bool CheckAndNext() { if (m_BufferIn.IsEqualTo(m_Format.Get())) { m_BufferIn.Forward(); m_Format.Forward(); return true; } return false; }
 
 		template<typename ...CharToTest>
 		inline bool CheckUntilNextParameter(const CharToTest ...ele) {
-			while (m_FormatStr.IsNotEqualTo('{', ele...) && m_FormatStr.CanMoveForward()) {
+			while (m_Format.IsNotEqualTo('{', ele...) && m_Format.CanMoveForward()) {
 				if (!Check()) return false;
-				m_FormatStr.ForwardNoCheck(); m_BufferIn.Forward();
+				m_Format.ForwardNoCheck(); m_BufferIn.Forward();
 			}
 			return true;
 		}
 		template<typename ...CharToTest>
 		inline bool CheckUntilEndOfParameter(const CharToTest ...ele) {
-			while (m_FormatStr.IsNotEqualTo('}', ele...) && m_FormatStr.CanMoveForward()) {
+			while (m_Format.IsNotEqualTo('}', ele...) && m_Format.CanMoveForward()) {
 				if (!Check()) return false;
-				m_FormatStr.ForwardNoCheck(); m_BufferIn.Forward();
+				m_Format.ForwardNoCheck(); m_BufferIn.Forward();
 			}
 			return true;
 		}

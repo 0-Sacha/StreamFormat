@@ -5,8 +5,8 @@
 namespace EngineCore::Instrumentation::FMT {
 
 	template<typename UnFormatContext>
-	struct UnFormatType<typename UnFormatContext::FormatDataType, UnFormatContext> {
-		static inline void Read(typename UnFormatContext::FormatDataType& t, UnFormatContext& context) {
+	struct UnFormatType<typename UnFormatContext::DataType, UnFormatContext> {
+		static inline void Read(typename UnFormatContext::DataType& t, UnFormatContext& context) {
 			// FIXME
 		}
 	};

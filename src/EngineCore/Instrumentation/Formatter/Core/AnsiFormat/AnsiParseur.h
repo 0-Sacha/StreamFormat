@@ -31,25 +31,25 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		if constexpr (Get)
 			AnsiColor res;
 
-		if (Context.FormatStr().IsEqualForward(':')) {
-			Context.FormatStr().IgnoreSpace();
-			if (Context.FormatStr().IsEqualForward('{'))
+		if (Context.Format().IsEqualForward(':')) {
+			Context.Format().IgnoreSpace();
+			if (Context.Format().IsEqualForward('{'))
 			{
 				Detail::FormatIndex idx = Context.GetFormatIndexThrow(idx);
 				if constexpr (Get)
 					AnsiColorModif(Context.GetTypeAtIndex(idx));
 				else
 					Context.TypeRunAtIndex(idx);
-				Context.FormatStr().IsEqualForward('}');
+				Context.Format().IsEqualForward('}');
 			}
 			else
 			{
 				res.FgType = AnsiTextColorDataType::AnsiTextColor;
 				res.Fg.Text = GetColorFG();
 
-				m_FormatStr.ParamGoTo('-', ',');
-				if (m_FormatStr.IsEqualForward('-')) {
-					m_FormatStr.IgnoreSpace();
+				m_Format.ParamGoTo('-', ',');
+				if (m_Format.IsEqualForward('-')) {
+					m_Format.IgnoreSpace();
 					res.BgType = AnsiTextColorDataType::AnsiTextColor;
 					res.Bg.Text = GetColorBG();
 				}
@@ -76,12 +76,12 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			"default"
 		};
 
-		return Context.FormatStr().GetWordFromList(colorCode);
+		return Context.Format().GetWordFromList(colorCode);
 	}
 
 	template<typename CharFormat, bool Get, bool Exec>
 	Detail::AnsiTextColorFG AnsiParseur<CharFormat, Get, Exec>::GetColorFG() {
-		std::size_t step = static_cast<std::size_t>(Context.FormatStr().IsEqualForward('+') ? Detail::AnsiTextColorFG::BaseBStep : Detail::AnsiTextColorFG::BaseStep);
+		std::size_t step = static_cast<std::size_t>(Context.Format().IsEqualForward('+') ? Detail::AnsiTextColorFG::BaseBStep : Detail::AnsiTextColorFG::BaseStep);
 		std::size_t code = GetColorCode();
 		if (code == GET_WORD_FROM_LIST_NOT_FOUND) 	code = static_cast<std::size_t>(Detail::AnsiTextColorFG::Default);
 		return static_cast<Detail::AnsiTextColorFG>(code + step);
@@ -89,7 +89,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharFormat, bool Get, bool Exec>
 	Detail::AnsiTextColorBG AnsiParseur<CharFormat, Get, Exec>::GetColorBG() {
-		std::size_t step = static_cast<std::size_t>(Context.FormatStr().IsEqualForward('+') ? Detail::AnsiTextColorBG::BaseBStep : Detail::AnsiTextColorBG::BaseStep);
+		std::size_t step = static_cast<std::size_t>(Context.Format().IsEqualForward('+') ? Detail::AnsiTextColorBG::BaseBStep : Detail::AnsiTextColorBG::BaseStep);
 		std::size_t code = GetColorCode();
 		if (code == GET_WORD_FROM_LIST_NOT_FOUND) 	code = static_cast<std::size_t>(Detail::AnsiTextColorBG::Default);
 		return static_cast<Detail::AnsiTextColorBG>(code + step);
@@ -101,27 +101,27 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		if constexpr (Get)
 			AnsiStyle style;
 
-		if (Context.FormatStr().IsEqualForward(':')) {
-			if (!Context.FormatStr().IsEqualTo('}', ',')) {
+		if (Context.Format().IsEqualForward(':')) {
+			if (!Context.Format().IsEqualTo('}', ',')) {
 				bool l = true;
 				while (l) {
-					Context.FormatStr().IgnoreSpace();
-					if (Context.FormatStr().IsEqualForward('{')) {
+					Context.Format().IgnoreSpace();
+					if (Context.Format().IsEqualForward('{')) {
 						Detail::FormatIndex idx = Context.GetFormatIndexThrow(idx);
 						if constexpr (Get)
 							AnsiStyle.Modif(Context.GetTypeAtIndex(idx));
 						else
 							Context.TypeRunAtIndex(idx);
-						m_FormatStr.IsEqualForward('}');
+						m_Format.IsEqualForward('}');
 					} else {
 						if constexpr (Get)
 							AnsiStyle.Modif(GetStyle());
 						else
 							Context.TypeRun(GetStyle());
 					}
-					Context.FormatStr().ParamGoTo('|', ',');
-					l = Context.FormatStr().IsEqualForward('|');
-					Context.FormatStr().IgnoreSpace();
+					Context.Format().ParamGoTo('|', ',');
+					l = Context.Format().IsEqualForward('|');
+					Context.Format().IgnoreSpace();
 				}
 			}
 		}
@@ -184,12 +184,12 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			Detail::AnsiBasicTextStyle::Script_AllDisable			// n-script
 		};
 
-		Detail::AnsiBasicTextStyle val = Context.FormatStr().GetWordFromList(styleCode);
+		Detail::AnsiBasicTextStyle val = Context.Format().GetWordFromList(styleCode);
 		if (val == Detail::AnsiBasicTextStyle::Underline_SelectColor) {
-			m_FormatStr.IgnoreSpace();
-			m_FormatStr.IsEqualForward(':');
-			m_FormatStr.IgnoreSpace();
-			std::uint8_t step = (std::uint8_t)(FormatStr().IsEqualForward('+') ? Detail::AnsiNColorType::MinBrightColor : Detail::AnsiNColorType::MinNormalColor);
+			m_Format.IgnoreSpace();
+			m_Format.IsEqualForward(':');
+			m_Format.IgnoreSpace();
+			std::uint8_t step = (std::uint8_t)(Format().IsEqualForward('+') ? Detail::AnsiNColorType::MinBrightColor : Detail::AnsiNColorType::MinNormalColor);
 			std::uint8_t code = GetColorCode();
 			if (code == (std::numeric_limits<std::uint8_t>::max)())		WriteType(Detail::RESET_ANSI_UNDERLINE_COLOR);
 			else														WriteType(Detail::AnsiNColorUnderline(code + step));
@@ -200,8 +200,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextFrontParameter() {
-		if (m_FormatStr.IsEqualForward(':')) {
-			m_FormatStr.IgnoreSpace();
+		if (m_Format.IsEqualForward(':')) {
+			m_Format.IgnoreSpace();
 			WriteType(Detail::AnsiTextFront(GetFrontCode()));
 		}
 	}
@@ -235,18 +235,18 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static constexpr std::string_view keys[] = {
 			"indent"
 		};
-		m_FormatStr.ParamGoTo(':');
-		m_FormatStr.IsEqualForward(':');
-		m_FormatStr.IgnoreSpace();
+		m_Format.ParamGoTo(':');
+		m_Format.IsEqualForward(':');
+		m_Format.IgnoreSpace();
 		auto idx = GetWordFromList(keys);
 		if (idx == 0)
 		{
-			m_FormatStr.ParamGoTo('=');
-			if (m_FormatStr.IsEqualForward('='))
+			m_Format.ParamGoTo('=');
+			if (m_Format.IsEqualForward('='))
 			{
-				m_FormatStr.IgnoreSpace();
-				Detail::FormatDataType value = 0;
-				m_FormatStr.ReadInt(value);
+				m_Format.IgnoreSpace();
+				Detail::DataType value = 0;
+				m_Format.ReadInt(value);
 				m_Indent = value;
 			}
 			else

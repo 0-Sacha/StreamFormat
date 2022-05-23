@@ -11,7 +11,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	template<typename CharType, std::size_t SIZE> struct ForwardAsCharArray {};
 	template<typename CharType> struct ForwardAsCharPt {};
 
-	enum class ValueIntPrint : FormatDataType {
+	enum class ValueIntPrint : DataType {
 		Int,
 		Bin,
 		Hex,
@@ -19,7 +19,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Default = Int
 	};
 
-	enum class ShiftType : FormatDataType {
+	enum class ShiftType : DataType {
 		Nothing,
 		Right,
 		Left,
@@ -27,13 +27,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Default = Nothing
 	};
 
-	enum class ShiftPrint : FormatDataType {
+	enum class ShiftPrint : DataType {
 		Space,
 		Zeros,
 		Default = Space
 	};
 
-	enum class PrintStyle : FormatDataType {
+	enum class PrintStyle : DataType {
 		UpperCase,
 		LowerCase,
 		Nothing,
@@ -58,18 +58,18 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			, ValueAsNumber(0)
 			, ValueIsText(true) {}
 
-		FormatSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::FormatDataType value)
+		FormatSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value)
 			: Name(name)
 			, ValueAsText(nullptr, 0)
 			, ValueAsNumber(value)
 			, ValueIsText(false) {}
 
-		static inline constexpr Detail::FormatDataType SpecifierAsNumberNotSpecified()				{ return Detail::FORMAT_DATA_NOT_SPECIFIED; }
+		static inline constexpr Detail::DataType SpecifierAsNumberNotSpecified()				{ return Detail::FORMAT_DATA_NOT_SPECIFIED; }
 		static inline constexpr std::basic_string_view<CharFormat> SpecifierAsTextNotSpecified()	{ return std::basic_string_view<CharFormat>(""); }
 
 		std::basic_string_view<CharFormat>	Name;
 		std::basic_string_view<CharFormat>	ValueAsText;
-		Detail::FormatDataType				ValueAsNumber;
+		Detail::DataType				ValueAsNumber;
 		bool ValueIsText;
 	};
 
@@ -132,14 +132,14 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			, bool safe = false
 
 			, Detail::ValueIntPrint intPrint		= Detail::ValueIntPrint::Default
-			, Detail::FormatDataType digitSize		= Detail::DIGIT_SIZE_NOT_SPECIFIED
-			, Detail::FormatDataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED
+			, Detail::DataType digitSize		= Detail::DIGIT_SIZE_NOT_SPECIFIED
+			, Detail::DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED
 
 			, Detail::PrintStyle printStyle			= Detail::PrintStyle::Default 
 
 			, Detail::ShiftPrint shiftPrint		= Detail::ShiftPrint::Default
 			, Detail::ShiftType shiftType		= Detail::ShiftType::Default
-			, Detail::FormatDataType shiftValue = Detail::SHIFT_NOT_SPECIFIED)
+			, Detail::DataType shiftValue = Detail::SHIFT_NOT_SPECIFIED)
 
 			: IsInit(true)
 			, HasSpec(hasSpec)
@@ -184,13 +184,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		bool Safe;								// Safe 
 
 		Detail::ValueIntPrint IntPrint; 		// B  - X  - O  - D
-		Detail::FormatDataType DigitSize;		// B? - X? - O? - D?
-		Detail::FormatDataType FloatPrecision;	// .
+		Detail::DataType DigitSize;		// B? - X? - O? - D?
+		Detail::DataType FloatPrecision;	// .
 
 		Detail::PrintStyle PrintStyle;			// U  - L
 
 		Detail::ShiftPrint ShiftPrint;			// <  - >  - ^
-		Detail::FormatDataType ShiftValue;		// <? - >? - ^?
+		Detail::DataType ShiftValue;		// <? - >? - ^?
 		Detail::ShiftType ShiftType; 			// 0
 
 		std::uint8_t SpecifierCount;
@@ -210,7 +210,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			return defaultValue;
 		}
 
-		Detail::FormatDataType GetSpecifierAsNumber(const std::basic_string_view<CharFormat>& str, const Detail::FormatDataType defaultValue = FormatSpecifier<CharFormat>::SpecifierAsNumberNotSpecified()) const {
+		Detail::DataType GetSpecifierAsNumber(const std::basic_string_view<CharFormat>& str, const Detail::DataType defaultValue = FormatSpecifier<CharFormat>::SpecifierAsNumberNotSpecified()) const {
 			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueIsText == false && Specifier[i].Name == str)
 					return Specifier[i].ValueAsNumber;
@@ -219,7 +219,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		void AddSpecifier(const FormatSpecifier<CharFormat>& specifier)														{ if (SpecifierCount < Specifier.size()) Specifier[SpecifierCount++] = specifier; }
 		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value)	{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
-		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::FormatDataType value)				{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value)				{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
 
 	};
 }

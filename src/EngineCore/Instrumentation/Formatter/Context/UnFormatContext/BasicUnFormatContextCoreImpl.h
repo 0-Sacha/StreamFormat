@@ -13,7 +13,7 @@ namespace EngineCore::Instrumentation::FMT {
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicUnFormatContext(const std::basic_string_view<CharFormat>& format, const std::basic_string_view<CharBuffer>& buffer, ContextArgs&& ...args)
 		: m_BufferIn(buffer)
-		, m_FormatStr(format)
+		, m_Format(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
 		, m_Indent(0)
 		, m_ValuesIdx(0)
@@ -24,7 +24,7 @@ namespace EngineCore::Instrumentation::FMT {
 	template<typename ParentCharFormat, typename ...ParentContextArgs>
 	BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicUnFormatContext(const std::basic_string_view<CharFormat>& format, BasicUnFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
 		: m_BufferIn(parentContext.BufferIn())
-		, m_FormatStr(format)
+		, m_Format(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
 		, m_Indent(0)
 		, m_ValuesIdx(0)

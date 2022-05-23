@@ -14,7 +14,7 @@ namespace EngineCore::Instrumentation::FMT {
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
 		: m_BufferOut(buffer, bufferSize)
-		, m_FormatStr(format)
+		, m_Format(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
 		, m_ValuesIdx()
 	{
@@ -23,7 +23,7 @@ namespace EngineCore::Instrumentation::FMT {
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args)
 		: m_BufferOut()
-		, m_FormatStr(format)
+		, m_Format(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
 		, m_ValuesIdx()
 	{
@@ -34,7 +34,7 @@ namespace EngineCore::Instrumentation::FMT {
 	template<typename ParentCharFormat, typename ...ParentContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
 		: m_BufferOut(parentContext.BufferOut())
-		, m_FormatStr(format)
+		, m_Format(format)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
 		, m_ValuesIdx()
 	{
@@ -47,11 +47,11 @@ namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::Run() {
-		while (!m_FormatStr.IsEnd()) {
+		while (!m_Format.IsEnd()) {
 
 			WriteUntilNextParameter();
 
-			if (m_FormatStr.IsEqualTo('{'))
+			if (m_Format.IsEqualTo('{'))
 				if (!ParameterParse())
 					m_BufferOut.PushBack('{');
 		}
@@ -100,21 +100,21 @@ namespace EngineCore::Instrumentation::FMT {
 	/////---------- ReadAnsiTextColorParameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextColorParameter() {
-		if (m_FormatStr.IsEqualForward(':')) {
-			m_FormatStr.IgnoreSpace();
-			if (m_FormatStr.IsEqualForward('{')) {
+		if (m_Format.IsEqualForward(':')) {
+			m_Format.IgnoreSpace();
+			if (m_Format.IsEqualForward('{')) {
 				FormatIdx idx = 0;
 				if (GetFormatIdx(idx))
 					m_ContextArgs.FormatTypeFromIdx(*this, idx);
-				m_FormatStr.IsEqualForward('}');
+				m_Format.IsEqualForward('}');
 			}
 			else {
 				Detail::AnsiTextColorFG colorFg;
 				colorFg = (Detail::AnsiTextColorFG)GetColorFG();
-				m_FormatStr.ParamGoTo('-', ',');
-				if (m_FormatStr.IsEqualForward('-')) {
+				m_Format.ParamGoTo('-', ',');
+				if (m_Format.IsEqualForward('-')) {
 					Detail::AnsiTextColorBG colorBg;
-					m_FormatStr.IgnoreSpace();
+					m_Format.IgnoreSpace();
 					colorBg = (Detail::AnsiTextColorBG)GetColorBG();
 					WriteType(Detail::AnsiTextColor{ colorFg, colorBg });
 				}
@@ -147,7 +147,7 @@ namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	std::uint8_t BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::GetColorFG() {
-		std::uint8_t step = (std::uint8_t)(FormatStr().IsEqualForward('+') ? Detail::AnsiTextColorFG::BaseBStep : Detail::AnsiTextColorFG::BaseStep);
+		std::uint8_t step = (std::uint8_t)(Format().IsEqualForward('+') ? Detail::AnsiTextColorFG::BaseBStep : Detail::AnsiTextColorFG::BaseStep);
 		std::uint8_t code = GetColorCode();
 		if (code == (std::numeric_limits<std::uint8_t>::max)()) code = (std::uint8_t)Detail::AnsiTextColorFG::Default;
 		else													code += step;
@@ -156,7 +156,7 @@ namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	std::uint8_t BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::GetColorBG() {
-		std::uint8_t step = (std::uint8_t)(FormatStr().IsEqualForward('+') ? Detail::AnsiTextColorBG::BaseBStep : Detail::AnsiTextColorBG::BaseStep);
+		std::uint8_t step = (std::uint8_t)(Format().IsEqualForward('+') ? Detail::AnsiTextColorBG::BaseBStep : Detail::AnsiTextColorBG::BaseStep);
 		std::uint8_t code = GetColorCode();
 		if (code == (std::numeric_limits<std::uint8_t>::max)())	code = (std::uint8_t)Detail::AnsiTextColorBG::Default;
 		else													code += step;
@@ -224,22 +224,22 @@ namespace EngineCore::Instrumentation::FMT {
 	/////---------- ReadTextFormatStyleParameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextStyleParameter() {
-		if (m_FormatStr.IsEqualForward(':')) {
-			if (!m_FormatStr.IsEqualTo('}', ',')) {
+		if (m_Format.IsEqualForward(':')) {
+			if (!m_Format.IsEqualTo('}', ',')) {
 				bool l = true;
 				while (l) {
-					m_FormatStr.IgnoreSpace();
-					if (m_FormatStr.IsEqualForward('{')) {
+					m_Format.IgnoreSpace();
+					if (m_Format.IsEqualForward('{')) {
 						FormatIdx idx = 0;
 						if (GetFormatIdx(idx))
 							m_ContextArgs.FormatTypeFromIdx(*this, idx);
-						m_FormatStr.IsEqualForward('}');
+						m_Format.IsEqualForward('}');
 					} else {
 						WriteStyleParameter();
 					}
-					m_FormatStr.ParamGoTo('|', ',');
-					l = m_FormatStr.IsEqualForward('|');
-					m_FormatStr.IgnoreSpace();
+					m_Format.ParamGoTo('|', ',');
+					l = m_Format.IsEqualForward('|');
+					m_Format.IgnoreSpace();
 				}
 			}
 			else {
@@ -306,10 +306,10 @@ namespace EngineCore::Instrumentation::FMT {
 
 		Detail::AnsiBasicTextStyle val = styleLookUpTable[GetWordFromList(styleCode)];
 		if (val == Detail::AnsiBasicTextStyle::Underline_SelectColor) {
-			m_FormatStr.IgnoreSpace();
-			m_FormatStr.IsEqualForward(':');
-			m_FormatStr.IgnoreSpace();
-			std::uint8_t step = (std::uint8_t)(FormatStr().IsEqualForward('+') ? Detail::AnsiNColorType::MinBrightColor : Detail::AnsiNColorType::MinNormalColor);
+			m_Format.IgnoreSpace();
+			m_Format.IsEqualForward(':');
+			m_Format.IgnoreSpace();
+			std::uint8_t step = (std::uint8_t)(Format().IsEqualForward('+') ? Detail::AnsiNColorType::MinBrightColor : Detail::AnsiNColorType::MinNormalColor);
 			std::uint8_t code = GetColorCode();
 			if (code == (std::numeric_limits<std::uint8_t>::max)())		WriteType(Detail::RESET_ANSI_UNDERLINE_COLOR);
 			else														WriteType(Detail::AnsiNColorUnderline(code + step));
@@ -350,8 +350,8 @@ namespace EngineCore::Instrumentation::FMT {
 	/////---------- ReadAnsiTextFrontParameter ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextFrontParameter() {
-		if (m_FormatStr.IsEqualForward(':')) {
-			m_FormatStr.IgnoreSpace();
+		if (m_Format.IsEqualForward(':')) {
+			m_Format.IgnoreSpace();
 			WriteType(Detail::AnsiTextFront(GetFrontCode()));
 		}
 	}
@@ -391,18 +391,18 @@ namespace EngineCore::Instrumentation::FMT {
 		static constexpr std::string_view keys[] = {
 			"indent"
 		};
-		m_FormatStr.ParamGoTo(':');
-		m_FormatStr.IsEqualForward(':');
-		m_FormatStr.IgnoreSpace();
+		m_Format.ParamGoTo(':');
+		m_Format.IsEqualForward(':');
+		m_Format.IgnoreSpace();
 		auto idx = GetWordFromList(keys);
 		if (idx == 0)
 		{
-			m_FormatStr.ParamGoTo('=');
-			if (m_FormatStr.IsEqualForward('='))
+			m_Format.ParamGoTo('=');
+			if (m_Format.IsEqualForward('='))
 			{
-				m_FormatStr.IgnoreSpace();
-				Detail::FormatDataType value = 0;
-				m_FormatStr.ReadInt(value);
+				m_Format.IgnoreSpace();
+				Detail::DataType value = 0;
+				m_Format.ReadInt(value);
 				m_Indent = value;
 			}
 			else

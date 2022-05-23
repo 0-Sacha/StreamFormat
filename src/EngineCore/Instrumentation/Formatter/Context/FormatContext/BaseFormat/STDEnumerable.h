@@ -20,14 +20,14 @@ namespace EngineCore::Instrumentation::FMT {
 			const std::basic_string_view<CharJoin>& strJoin = ", ",
 			const std::basic_string_view<CharBegin>& strBegin = "{ ",
 			const std::basic_string_view<CharEnd>& strEnd = " }",
-			const Detail::FormatDataType beginIdx = 0,
-			const Detail::FormatDataType size = Detail::FORMAT_DATA_NOT_SPECIFIED)
+			const Detail::DataType beginIdx = 0,
+			const Detail::DataType size = Detail::FORMAT_DATA_NOT_SPECIFIED)
 			: m_Value(value)
 			, m_StrJoin(strJoin)
 			, m_StrBegin(strBegin)
 			, m_StrEnd(strEnd)
 			, m_BeginIdx(beginIdx)
-			, m_Size(size == Detail::FORMAT_DATA_NOT_SPECIFIED ? (Detail::FormatDataType)value.size() - beginIdx : size)
+			, m_Size(size == Detail::FORMAT_DATA_NOT_SPECIFIED ? (Detail::DataType)value.size() - beginIdx : size)
 		{
 		}
 
@@ -37,8 +37,8 @@ namespace EngineCore::Instrumentation::FMT {
 		inline std::basic_string_view<CharBegin>	GetStrBegin() const	{ return m_StrBegin; }
 		inline std::basic_string_view<CharEnd>		GetStrEnd() const	{ return m_StrEnd; }
 
-		inline Detail::FormatDataType GetBeginIdx() const	{ return m_BeginIdx; }
-		inline Detail::FormatDataType GetSize() const		{ return m_Size; }
+		inline Detail::DataType GetBeginIdx() const	{ return m_BeginIdx; }
+		inline Detail::DataType GetSize() const		{ return m_Size; }
 
 	private:
 		const T& m_Value;
@@ -47,8 +47,8 @@ namespace EngineCore::Instrumentation::FMT {
 		std::basic_string_view<CharBegin> m_StrBegin;
 		std::basic_string_view<CharEnd>	m_StrEnd;
 
-		Detail::FormatDataType m_BeginIdx;
-		Detail::FormatDataType m_Size;
+		Detail::DataType m_BeginIdx;
+		Detail::DataType m_Size;
 	};
 
 	template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatContext>
