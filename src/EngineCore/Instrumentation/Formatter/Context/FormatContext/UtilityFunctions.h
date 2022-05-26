@@ -93,7 +93,7 @@ namespace EngineCore::Instrumentation::FMT {
 
 	template<typename Format = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<Format>::Type, typename ...Args>
 	requires Detail::IsFmtConvertible<Format>::Value&& Detail::IsCharType<CharBuffer>::Value
-	inline std::basic_string<CharBuffer> Formating(const Format& format, Args&& ...args) {
+	inline std::basic_string<CharBuffer> FormatString(const Format& format, Args&& ...args) {
 		BasicFormatContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 		context.SafeRun();
 		context.BufferOut().PushEndChar();
@@ -175,7 +175,7 @@ namespace EngineCore::Instrumentation::FMT {
 
 	template<typename CharBuffer = char, typename T>
 	requires Detail::IsCharType<CharBuffer>::Value
-	inline std::basic_string<CharBuffer> Formating(T&& t) {
+	inline std::basic_string<CharBuffer> FormatString(T&& t) {
 		BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 		context.WriteType(t);
 		context.BufferOut().PushEndChar();

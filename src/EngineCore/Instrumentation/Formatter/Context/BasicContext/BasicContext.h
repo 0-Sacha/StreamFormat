@@ -13,7 +13,7 @@
 #include "../Core/FormatterHandler/FormatterHandler.h"
 
 namespace EngineCore::Instrumentation::FMT::Context {
-	template<typename CharFormat>
+	template<typename CharFormat, typename ContextPackageSaving>
 	class BasicContext {
 	public:
 		using CharFormatType = CharFormat;
@@ -21,27 +21,28 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		using FormatDataType		= FormatData<CharFormat>;
 		using FormatSpecifierType	= FormatSpecifier<CharFormat>;
 
+		using FormatBufferType	= Detail::FormatterMemoryFormat<CharFormat>;
+
 		using StringViewFormat = std::basic_string_view<CharFormat>;
 
 	public:
 		explicit BasicContext(const std::basic_string_view<CharFormat>& format);
 
 	private:
-		Detail::FormatterMemoryFormat<CharFormat>			m_Format;
-
-		Detail::FormatIndex									m_ValuesIndex;
-		FormatDataType						m_FormatData;
+		FormatBufferType		m_Format;
+		Detail::FormatIndex		m_ValuesIndex;
+		FormatDataType			m_FormatData;
 
 	public:
-		inline Detail::FormatterMemoryFormat<CharFormat>&					Format()		{ return m_Format; }
-		inline const Detail::FormatterMemoryFormat<CharFormat>&				Format() const	{ return m_Format; }
+		inline FormatBufferType&		Format()					{ return m_Format; }
+		inline const FormatBufferType&	Format() const				{ return m_Format; }
 
 		inline FormatDataType&			GetFormatData()				{ return m_FormatData; }
 		inline const FormatDataType&	GetFormatData() const		{ return m_FormatData; }
 		inline FormatDataType			ForwardFormatData() const	{ return m_FormatData; }
 
 	public:
-		inline static FormatterHandler& GetAPI()				{ return FormatterHandler::GetInstance(); }
+		inline static FormatterHandler& GetAPI()					{ return FormatterHandler::GetInstance(); }
 
 	public:
 		void Run() 		= 0;
@@ -67,7 +68,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		void RunTypeAtIndex(const Detail::FormatIndex& index) 				= 0;
 		
 	private:
-		void ParseFormatDataStyle();
+		void ParseFormatDataBase();
 		void ParseFormatDataSpecial();
 		void ParseFormatDataCustom();
 		void ParseFormatData();
@@ -75,28 +76,27 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		void ParseFormatDataColor() 	= 0;
 		void ParseFormatDataStyle() 	= 0;
 		void ParseFormatDataFront() 	= 0;
-		void ContextStyleSave() 		= 0;
-		void ContextStyleRestore() 		= 0;
+		ContextPackageSaving ContextStyleSave() 					= 0;
+		void ContextStyleRestore(const ContextPackageSaving&) 		= 0;
 
 		void ParseSpecial();
 		void ParseVariable(FormatIndex formatIdx);
 		bool Parse();
 
 	private:
-		void ParseTimer() 	= 0;
-		void ParseDate() 	= 0;
+		void ParseTimer() 			= 0;
+		void ParseDate() 			= 0;
 
-		void ParseColor() 	= 0;
-		void ParseStyle() 	= 0;
-		void ParseFront() 	= 0;
+		void ParseColor() 			= 0;
+		void ParseStyle() 			= 0;
+		void ParseFront() 			= 0;
 		void ContextStyleBegin() 	= 0;
 		void ContextStyleEnd() 		= 0;
 
-		void ParseSetter() 	= 0;
+		void ParseSetter() 			= 0;
 
 	public:
-		// Unsigned-Integer Only
-		template<typename T> bool FormatReadParameter(T& i);
+		template<typename T> void FormatReadParameterThrow(T& i);
 
 	public:
 		// Type formating from FormatType<>

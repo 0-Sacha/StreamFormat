@@ -1,11 +1,14 @@
 #include "BaseAnsiTextColor.h"
-#include "BaseAnsiTextFront.h"
+#include "BaseAnsiFront.h"
 #include "BaseAnsiTextStyle.h"
 
 
 namespace EngineCore::Instrumentation::FMT::Detail {
-	struct AnsiFormatterChange {
-	public:
-		bool HasMadeChange = false;
+
+	struct AnsiTextData {
+		Detail::AnsiColor	Color;
+		Detail::AnsiStyle	Style;
+		Detail::AnsiFront	Front;
 	};
+
 } // EngineCore::Instrumentation::FMT::Detail

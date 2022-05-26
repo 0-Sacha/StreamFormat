@@ -6,7 +6,7 @@
 namespace EngineCore::Instrumentation::FMT::Context {
 
 	template<typename CharFormat>
-	void BasicContext<CharFormat>::ParseFormatDataStyle() {
+	void BasicContext<CharFormat>::ParseFormatDataBase() {
 
 			 if (m_Format.IsEqualForward('C')) { ParseFormatDataColor(); }
 		else if (m_Format.IsEqualForward('S')) { ParseFormatDataStyle(); }
@@ -75,7 +75,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 				m_Format.IgnoreSpace();
 
 				if(m_Format.IsUpperCase())
-					ParseFormatDataStyle();
+					ParseFormatDataBase();
 				else if(!m_Format.IsLowerCase())
 					ParseFormatDataSpecial();
 				else
@@ -149,13 +149,13 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		data.Clone(m_FormatData);
 		m_FormatData = DataType();
 
-		ContextStyleSave();
+		ContextPackageSaving package = ContextStyleSave();
 
 		if (!m_FormatData.IsInit)		ParameterParseData();
 
 		RunTypeAtIndex(formatIdx);
 
-		ContextStyleRestore();
+		ContextStyleRestore(package);
 
 		m_FormatData.Clone(data);
 	}

@@ -97,7 +97,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 			, AnsiTextColorChange()
 			, AnsiStyleChange()
-			, AnsiTextFrontChange()
+			, AnsiFrontChange()
 		{}
 
 		template <typename CharFormatOther>
@@ -123,7 +123,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 			, AnsiTextColorChange()
 			, AnsiStyleChange()
-			, AnsiTextFrontChange()
+			, AnsiFrontChange()
 		{}
 
 		explicit FormatData(bool hasSpec
@@ -161,7 +161,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 			, AnsiTextColorChange()
 			, AnsiStyleChange()
-			, AnsiTextFrontChange()
+			, AnsiFrontChange()
 		{}
 
 
@@ -169,7 +169,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			std::memcpy(this, &other, sizeof(FormatData));
 			AnsiTextColorChange = Detail::AnsiTextColorChange();
 			AnsiStyleChange = Detail::AnsiStyleChange();
-			AnsiTextFrontChange = Detail::AnsiTextFrontChange();
+			AnsiFrontChange = Detail::AnsiFrontChange();
 			return *this;
 		}
 
@@ -198,7 +198,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		Detail::AnsiTextColorChange AnsiTextColorChange;
 		Detail::AnsiStyleChange AnsiStyleChange;
-		Detail::AnsiTextFrontChange AnsiTextFrontChange;
+		Detail::AnsiFrontChange AnsiFrontChange;
 
 	public:
 		static inline constexpr std::uint8_t NotFound() { return (std::numeric_limits<std::uint8_t>::max)(); }

@@ -94,6 +94,10 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static inline constexpr std::uint8_t MinGrayscale		= 232;	// grayscale from black to white in 24 step
 		static inline constexpr std::uint8_t MaxGrayscale		= 255;
 
+		static inline constexpr std::uint8_t BaseStep		= MinNormalColor;
+		static inline constexpr std::uint8_t BaseBStep		= MinBrightColor;
+		static inline constexpr std::uint8_t Default		= 0;
+
 	public:
 		enum class AnsiColorNType : std::uint8_t {
 			Normal,
@@ -255,7 +259,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AnsiColor24bBg Bg;
 	};
 
-	enum class AnsiTextColorDataType: std::uint8_t {
+	enum class AnsiColorDataType: std::uint8_t {
 		Default,
 		AnsiTextColor,
 		AnsiNColor,
@@ -265,29 +269,68 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	// Manage only the text color / the underline color will be manage by the AnsiTextFormatStyle
 	struct AnsiColor
 	{
+	public:
 		AnsiColor()
-			: FgType(AnsiTextColorDataType::Default), BgType(AnsiTextColorDataType::Default) {}
+			: FgType(AnsiColorDataType::Default), BgType(AnsiColorDataType::Default) {}
 
-		AnsiTextColorDataType	FgType;
-		AnsiTextColorDataType	BgType;
+	public:
+		AnsiColorDataType	FgType;
+		AnsiColorDataType	BgType;
+		
 		union {
-			AnsiNColorFg Text;
+			AnsiTextColorFG Text;
 			AnsiNColorFg NColor;
 			AnsiColor24bFg Color24b;
 		} Fg;
 
 		union {
-			AnsiNColorBg Text;
+			AnsiTextColorBG Text;
 			AnsiNColorBg NColor;
 			AnsiColor24bBg Color24b;
 		} Bg;
-	};
 
-	struct AnsiTextColorChange
-	{
-		bool HasSetFg = false;
-		bool HasSetBg = false;
-	};
+	public:
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
 
+		template <>
+		void ModifyThrow(const AnsiColor& given) { *this = given; }
+
+		template <>
+		void ModifyThrow(const AnsiTextColorFG& given) {
+			FgType = AnsiColorDataType::AnsiTextColor;
+			Fg.Text = given;
+		}
+
+		template <>
+		void ModifyThrow(const AnsiTextColorBG& given) {
+			BgType = AnsiColorDataType::AnsiTextColor;
+			Bg.Text = given;
+		}
+
+		template <>
+		void ModifyThrow(const AnsiNColorFg& given) {
+			FgType = AnsiColorDataType::AnsiNColor;
+			Fg.NColor = given;
+		}
+
+		template <>
+		void ModifyThrow(const AnsiNColorBg& given) {
+			BgType = AnsiColorDataType::AnsiNColor;
+			Bg.NColor = given;
+		}
+
+		template <>
+		void ModifyThrow(const AnsiColor24bFg& given) {
+			FgType = AnsiColorDataType::AnsiColor24b;
+			Fg.Color24b = given;
+		}
+
+		template <>
+		void ModifyThrow(const AnsiColor24bBg& given) {
+			BgType = AnsiColorDataType::AnsiColor24b;
+			Bg.Color24b = given;
+		}
+	};
+	
 	const static inline AnsiTextColor RESET_ANSI_COLOR;
 }

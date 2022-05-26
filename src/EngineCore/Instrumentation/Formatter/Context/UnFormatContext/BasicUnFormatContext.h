@@ -101,7 +101,7 @@ namespace EngineCore::Instrumentation::FMT {
 	private:
 		static void ReadAnsiTextColorParameter();
 		static void ReadAnsiTextStyleParameter();
-		static void ReadAnsiTextFrontParameter();
+		static void ReadAnsiFrontParameter();
 		static void ReadTimerParameter();
 		static void ReadDateParameter();
 		void IgnoreParameter();

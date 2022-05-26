@@ -6,7 +6,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	// According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-	struct AnsiTextFront {
+	struct AnsiFront {
 	public:
 		static inline constexpr std::uint8_t DefaultFront	= 0;
 		static inline constexpr std::uint8_t MinFront		= 0;
@@ -15,25 +15,23 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static inline constexpr std::uint8_t FrontAnsiIdx	= 10;
 
 	public:
-		AnsiTextFront(const std::uint8_t frontId = DefaultFront)
+		AnsiFront(const std::uint8_t frontId = DefaultFront)
 			: FrontId((frontId > MaxFront ? DefaultFront : frontId) + FrontAnsiIdx) {}
 		
 	public:
 		std::uint8_t FrontId;
+
+	public:
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+
+		template <> void ModifyThrow(const AnsiFront& given) { *this = given; }
 	};
 
 	struct AnsiTextCurrentFront {
 	public:
-		AnsiTextFront Front;
+		AnsiFront Front;
 	};
 
-	struct AnsiTextFrontChange
-	{
-	public:
-		bool HasChangeFront = false;
-	};
-
-
-	const static inline AnsiTextFront			RESET_ANSI_FRONT(AnsiTextFront::DefaultFront);
+	const static inline AnsiFront			RESET_ANSI_FRONT(AnsiFront::DefaultFront);
 }
 

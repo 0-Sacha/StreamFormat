@@ -182,11 +182,11 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		}
 
 
-		template<typename T, std::size_t SIZE>
-		using TextTo = const std::array<std::pair<StringView, T>, SIZE>&;
+		template<typename T>
+		using TextTo = std::pair<StringView, T>;
 
 		template<typename T, std::size_t SIZE>
-		std::size_t GetWordFromList(TextTo<T, SIZE> data, T defaultValue = T{})
+		std::size_t GetWordFromList(const TextTo<T> (&data)[SIZE], T defaultValue = T{})
 		{
 			for (std::size_t idx = 0; idx < SIZE; ++idx)
 				if (m_Format.NextIsSame(data[idx].first))

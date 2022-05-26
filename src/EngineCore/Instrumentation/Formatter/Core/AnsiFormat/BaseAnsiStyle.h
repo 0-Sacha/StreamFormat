@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineCore/Core.h"
-#include "BaseAnsiTextColor.h"
+#include "BaseAnsiColor.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 
@@ -103,6 +103,54 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Script_AllDisable			= static_cast<std::uint8_t>(AnsiTFSScript::AllDisable)
 	};
 
+	void AnsiBasicTextStyleDispatch(const AnsiBasicTextStyle& style, const std::function<void (const AnsiTFSIntensity&)>& 	funcIntensity
+																   , const std::function<void (const AnsiTFSItalic&)>& 		funcItalic
+																   , const std::function<void (const AnsiTFSUnderline&)>& 	funcUnderline
+																   , const std::function<void (const AnsiTFSBlink&)>& 		funcBlink
+																   , const std::function<void (const AnsiTFSInverted&)>& 	funcInverted
+																   , const std::function<void (const AnsiTFSIdeogram&)>& 	funcIdeogram
+																   , const std::function<void (const AnsiTFSScript&)>& 		funcScript)
+	{
+		switch(style)
+		{
+			case AnsiBasicTextStyle::Intensity_Bold:
+			case AnsiBasicTextStyle::Intensity_Dim:
+			case AnsiBasicTextStyle::Intensity_Normal:
+				return funcIntensity(static_cast<AnsiTFSIntensity>(style));
+
+			case AnsiBasicTextStyle::Italic_Enable:
+			case AnsiBasicTextStyle::Italic_Disable:
+				return funcItalic(static_cast<AnsiTFSItalic>(style));
+
+			case AnsiBasicTextStyle::Underline_Underlined:
+			case AnsiBasicTextStyle::Underline_DoubleUnerlined:
+			case AnsiBasicTextStyle::Underline_Disable:
+				return funcUnderline(static_cast<AnsiTFSUnderline>(style));
+
+			case AnsiBasicTextStyle::Blink_SlowBlink:
+			case AnsiBasicTextStyle::Blink_FastBlink:
+			case AnsiBasicTextStyle::Blink_Disable:
+				return funcBlink(static_cast<AnsiTFSBlink>(style));
+
+			case AnsiBasicTextStyle::Inverted_Enable:
+			case AnsiBasicTextStyle::Inverted_Disable:
+				return funcInverted(static_cast<AnsiTFSInverted>(style));
+
+			case AnsiBasicTextStyle::Ideogram_Underlined:
+			case AnsiBasicTextStyle::Ideogram_DoubleUnderlined:
+			case AnsiBasicTextStyle::Ideogram_Overlined:
+			case AnsiBasicTextStyle::Ideogram_DoubleOverlined:
+			case AnsiBasicTextStyle::Ideogram_StressMarking:
+			case AnsiBasicTextStyle::Ideogram_AllDisable:
+				return funcIdeogram(static_cast<AnsiTFSIdeogram>(style));
+
+			case AnsiBasicTextStyle::Script_Superscript:
+			case AnsiBasicTextStyle::Script_Subscript:
+			case AnsiBasicTextStyle::Script_AllDisable:
+				return funcScript(static_cast<AnsiTFSScript>(style));
+		}
+	}
+
 	struct ResetAnsiUnderlineColor {};
 
 	struct AnsiUnderlineColor24b : public AnsiColor24bType {
@@ -163,22 +211,23 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AnsiTFSInverted			Inverted			= AnsiTFSInverted::Disable;
 		AnsiTFSIdeogram			Ideogram			= AnsiTFSIdeogram::AllDisable;
 		AnsiTFSScript			Script				= AnsiTFSScript::AllDisable;
+
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+
+		template <> void ModifyThrow(const AnsiStyle& given) { *this = given; }
+
+		template <> void ModifyThrow(const AnsiTFSIntensity& given) 		{ Intensity = given; 	}
+		template <> void ModifyThrow(const AnsiTFSItalic& given) 			{ Italic = given; 		}
+		template <> void ModifyThrow(const AnsiTFSUnderline& given) 		{ Underline = given; 	}
+		template <> void ModifyThrow(const AnsiNColorUnderline& given) 		{ UnderlineColorType = AnsiColorUnderlineType::AnsiNColor; UnderlineColor.NColor = given; }
+		template <> void ModifyThrow(const AnsiUnderlineColor24b& given) 	{ UnderlineColorType = AnsiColorUnderlineType::AnsiColor24b; UnderlineColor.Color24b = given; }
+
+		template <> void ModifyThrow(const AnsiTFSBlink& given) 			{ Blink = given; 	}
+		template <> void ModifyThrow(const AnsiTFSInverted& given) 			{ Inverted = given; }
+		template <> void ModifyThrow(const AnsiTFSIdeogram& given) 			{ Ideogram = given; }
+		template <> void ModifyThrow(const AnsiTFSScript& given) 			{ Script = given; 	}
+
 	};
-
-	struct AnsiStyleChange
-	{
-		bool HasChangeStyle			= false;
-
-		bool HasSetIntensity		= false;
-		bool HasSetItalic			= false;
-		bool HasSetUnderlineColor	= false;
-		bool HasSetUnderline		= false;
-		bool HasSetBlink			= false;
-		bool HasSetInverted			= false;
-		bool HasSetIdeogram			= false;
-		bool HasSetScript			= false;
-	};
-
 
 	const static inline ResetAnsiAllParameters	RESET_ANSI_ALL_PARAMETERS;
 	const static inline ResetAnsiStyle			RESET_ANSI_STYLE;

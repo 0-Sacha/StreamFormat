@@ -5,7 +5,7 @@
 #include "BaseFormat/BaseFormat.h"
 #include "BaseFormat/BaseAnsiTextColor.h"
 #include "BaseFormat/BaseAnsiTextStyle.h"
-#include "BaseFormat/BaseAnsiTextFront.h"
+#include "BaseFormat/BaseAnsiFront.h"
 #include "BaseFormat/Chrono.h"
 #include "BaseFormat/BaseSTDLib.h"
 
@@ -28,18 +28,16 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 	template<typename CharFormat>
 	template<typename T>
-	bool BasicContext<CharFormat>::FormatReadParameter(T& i) {
-		if (!m_Format.IsEqualTo('{'))	return Format().ReadUInt(i);
+	void BasicContext<CharFormat>::FormatReadParameterThrow(T& i) {
+		if (!m_Format.IsEqualTo('{'))
+			if (!m_Format.ReadUInt(i))
+				throw Detail::FormatParseError{};
 
-		const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();
-		Detail::FormatIndex formatIdx;
-		if (GetFormatIdx(formatIdx)) {
-			m_Format.Forward();
-			m_ContextArgs.GetFormatValueAt(i, formatIdx);
-			return true;
-		}
-		m_Format.SetBufferCurrentPos(mainSubFormat);
-		return false;
+		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
+		m_Format.IsEqualForwardThrow();
+		i = GetTypeAtIndexThrow<T>(formatIdx);
+		// TRY 		const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();
+		// CATCH 	m_Format.SetBufferCurrentPos(mainSubFormat);
 	}
 
 }

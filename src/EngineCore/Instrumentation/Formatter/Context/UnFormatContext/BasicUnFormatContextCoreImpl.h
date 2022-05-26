@@ -50,7 +50,7 @@ namespace EngineCore::Instrumentation::FMT {
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	void BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiTextFrontParameter() {
+	void BasicUnFormatContext<CharFormat, CharBuffer, ContextArgs...>::ReadAnsiFrontParameter() {
 
 	}
 

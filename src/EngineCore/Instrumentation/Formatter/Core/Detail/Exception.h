@@ -6,13 +6,16 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	class FormatError {};
 
-	class FormatBufferFull	: public FormatError {};
-	class FormatBufferLock	: public FormatError {};
-	class FormatBufferEnd	: public FormatError {};
+	class FormatBufferError	: public FormatError {};
+	class FormatBufferFull	: public FormatBufferError {};
+	class FormatBufferLock	: public FormatBufferError {};
+	class FormatBufferEnd	: public FormatBufferError {};
 	
-	class FormatBufferWrongIndex 		: public FormatError {};
-	class FormatBufferIndexOutOfRange 	: public FormatError {};
+	class FormatIndexError				: public FormatError {};
+	class FormatBufferWrongIndex 		: public FormatIndexError {};
+	class FormatBufferIndexOutOfRange 	: public FormatIndexError {};
 
-	class FormatParseError	: public FormatError {};
+	class FormatParseError		: public FormatError {};
+	class FormatGivenTypeError	: public FormatParseError {};
 
 }

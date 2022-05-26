@@ -15,7 +15,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg		= true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color.Fg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -31,7 +31,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color.Bg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -48,8 +48,8 @@ namespace EngineCore::Instrumentation::FMT {
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiTextColor;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiTextColor;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiColorDataType::AnsiTextColor;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiColorDataType::AnsiTextColor;
 			context.GetAnsiTextCurrentColor().Color = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -64,7 +64,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType("\033[38;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiColor24b;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiColorDataType::AnsiColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits.Fg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -79,7 +79,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType("\033[48;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiColor24b;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiColorDataType::AnsiColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits.Bg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -95,8 +95,8 @@ namespace EngineCore::Instrumentation::FMT {
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiColor24b;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiColor24b;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiColorDataType::AnsiColor24b;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiColorDataType::AnsiColor24b;
 			context.GetAnsiTextCurrentColor().Color24bits = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -112,7 +112,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType("\033[38;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiNColor;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiColorDataType::AnsiNColor;
 			context.GetAnsiTextCurrentColor().ColorN.Fg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -127,7 +127,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType("\033[48;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiNColor;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiColorDataType::AnsiNColor;
 			context.GetAnsiTextCurrentColor().ColorN.Bg = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -143,8 +143,8 @@ namespace EngineCore::Instrumentation::FMT {
 
 			context.GetFormatData().AnsiTextColorChange.HasSetFg = true;
 			context.GetFormatData().AnsiTextColorChange.HasSetBg = true;
-			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiTextColorDataType::AnsiNColor;
-			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiTextColorDataType::AnsiNColor;
+			context.GetAnsiTextCurrentColor().FgType = Detail::AnsiColorDataType::AnsiNColor;
+			context.GetAnsiTextCurrentColor().BgType = Detail::AnsiColorDataType::AnsiNColor;
 			context.GetAnsiTextCurrentColor().ColorN = t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;

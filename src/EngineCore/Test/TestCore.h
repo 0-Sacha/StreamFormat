@@ -38,7 +38,7 @@ namespace EngineCore::Test {
 
 #define ENGINECORE_GET_COMPILER_DATA() EngineCore::Test::CompilerDataPack(__FILE__, __LINE__, __FUNCTION__, __FUNCSIG__, __FUNCDNAME__)
 
-#define ENGINECORE_FUNC() ENGINECORE_INFO("function : {function:C:+black} ; file : {file:C:+black} ; line : {line:C:+black}", __FUNCSIG__, __FILE__, __LINE__)
-#define ENGINECORE_FILE() ENGINECORE_INFO("file : {file:C:+black} ; line : {line:C:+black}", __FILE__, __LINE__)
+#define ENGINECORE_FUNC() ENGINECORE_INFO("function : {:C:+black} @ {C:+black}{}:{}{C}", __FUNCSIG__, __FILE__, __LINE__)
+#define ENGINECORE_FILE() ENGINECORE_INFO("{C:+black}{}:{}{C}", __FILE__, __LINE__)
 
 

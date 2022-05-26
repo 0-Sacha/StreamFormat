@@ -7,9 +7,9 @@
 namespace EngineCore::Instrumentation::FMT {
 
 	template<typename FormatContext>
-	struct FormatType<Detail::AnsiTextFront, FormatContext>
+	struct FormatType<Detail::AnsiFront, FormatContext>
 	{
-		static void Write(const Detail::AnsiTextFront t, FormatContext& context) {
+		static void Write(const Detail::AnsiFront t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType('\033', '[', t.FrontId, 'm');
 
