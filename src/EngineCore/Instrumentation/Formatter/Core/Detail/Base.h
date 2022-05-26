@@ -36,12 +36,18 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		BaseType MaxValue;
 
 	public:
-		bool IsValid() 				{ return Index != FORMAT_INDEX_NOT_SET && Index < MaxValue; }
+		bool IsValid() 				{ return Index >= 0 && Index < MaxValue; }
+		bool Is0() 					{ return Index == 0; }
 
 	public:
-		FormatIndex Get() 			{ return *this; }
-		FormatIndex GetAndNext() 	{ FormatIndex old = *this; ++Value; return old; }
-		FormatIndex NextAndGet() 	{ ++Value; return *this; }
+		FormatIndex Get() const		{ return *this; }
+		FormatIndex GetAndNext() 	{ FormatIndex old = *this; ++Index; return old; }
+		FormatIndex NextAndGet() 	{ ++Index; return *this; }
+		FormatIndex GetNext() const	{ FormatIndex res = *this; ++res.Index; return res; }
+
+		FormatIndex GetAndPrev() 	{ FormatIndex old = *this; --Index; return old; }
+		FormatIndex PrevAndGet() 	{ --Index; return *this; }
+		FormatIndex GetPrev() const	{ FormatIndex res = *this; --res.Index; return res; }
 	}
 } // namespace EngineCore::Instrumentation::FMT::Detail
 

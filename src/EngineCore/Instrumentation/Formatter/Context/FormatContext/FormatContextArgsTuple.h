@@ -23,19 +23,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
     public:
         template <typename FormatContext>
-        inline void FormatTypeFromIdx(FormatContext &context, FormatIdx idx)        {}
+        inline void RunTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)     { throw Detail::FormatBufferWrongIndex{}; }
+
+        template <typename FormatContext, typename T>
+        inline const Detail::GetBaseType<T>* GetTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)   { throw Detail::FormatGivenTypeError{}; }
 
         template <typename FormatContext>
-        inline void GetParameterDataFromIdx(FormatContext &context, FormatIdx idx)  {}
-
-        template <typename FormatContext>
-        inline void GetParameterData(FormatContext &context, FormatIdx idx)         { context.GetFormatData() = FormatContext::DataType(); }
-
-        template <typename FormatContext>
-        inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) { idx = FORMAT_IDX_NOT_FOUND; }
-
-        template <class ValueType>
-        inline void GetFormatValueAt(ValueType& value, FormatIdx idx)               {}
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& idx) { return Detail::FormatIndex{}; }
     };
 
 
@@ -56,54 +50,41 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         static inline constexpr std::size_t Size() { return sizeof...(Rest) + 1; }
 
     public:
-        /////---------- FormatTypeFromIdx ----------/////
         template <typename FormatContext>
-        inline void FormatTypeFromIdx(FormatContext &context, FormatIdx idx) {
-            if (idx == 0)           context.WriteType(m_Value);
-            else if (idx > 0)       FormatContextArgsTuple<Rest...>::FormatTypeFromIdx(context, idx - 1);
+        inline void RunTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx) {
+            if (idx.Is0())              context.RunType(m_Value);
+            else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::FormatTypeFromIdx(context, idx.GetPrev());
         }
 
-        /////---------- GetParameterDataFromIdx ----------/////
-        template <typename CharFormat, typename CharBuffer, typename ...ContextArgs, class KType = TypeWithoutRef>
-        requires (std::is_same_v<Detail::GetBaseType<KType>, FormatData<CharFormat>>)
-        inline void GetParameterDataFromIdx(BasicFormatContext<CharFormat, CharBuffer, ContextArgs...> &context, FormatIdx idx) {
-            if (idx == 0)           context.GetFormatData() = m_Value;
-            else if (idx > 0)       FormatContextArgsTuple<Rest...>::GetParameterDataFromIdx(context, idx - 1);
+
+        template <typename FormatContext, typename T, class KType = TypeWithoutRef>
+        requires (std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
+        inline const Detail::GetBaseType<T>* GetTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)
+        {
+            if (idx.Is0())              return &m_Value;
+            else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::GetTypeAtIdx(context, idx.GetPrev());
         }
 
-        template <typename CharFormat, typename CharBuffer, typename ...ContextArgs, class KType = TypeWithoutRef>
-        requires (!std::is_same_v<Detail::GetBaseType<KType>, FormatData<CharFormat>>)
-		inline void GetParameterDataFromIdx(BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context, FormatIdx idx) {
-            if (idx > 0)      FormatContextArgsTuple<Rest...>::GetParameterDataFromIdx(context, idx - 1);
+        template <typename FormatContext, typename T, class KType = TypeWithoutRef>
+        requires (!std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
+        inline const Detail::GetBaseType<T>* GetTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)
+        {
+            if (idx.Is0())              { throw Detail::FormatBufferWrongIndex{}; return nullptr; }
+            else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::GetTypeAtIdx(context, idx.GetPrev());
         }
-
 
         /////---------- GetNamedArgsIdx ----------/////
         template<typename FormatContext, class KType = TypeWithoutRef>
-        requires (!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
-        inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) {
-            FormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
+        requires (Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& idx) {
+            if (context.Format().NextIsANamedArgs(m_Value.GetName()))    return idx;
+            else if (idx.IsValid())                                      FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, idx.GetNext());
         }
 
         template<typename FormatContext, class KType = TypeWithoutRef>
-        requires (Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
-        inline void GetNamedArgsIdx(FormatContext& context, FormatIdx& idx, FormatIdx currentIdx) {
-            if (context.Format().NextIsANamedArgs(m_Value.GetName()))    idx = currentIdx;
-            else                                                            FormatContextArgsTuple<Rest...>::GetNamedArgsIdx(context, idx, currentIdx + 1);
-        }
-
-        /////---------- GetFormatValueAt ----------/////
-        template <class ValueType, class KType = TypeWithoutRef>
-        requires (!std::is_convertible_v<KType, ValueType>)
-        inline void GetFormatValueAt(ValueType& value, FormatIdx idx) {
-		    if (idx > 0)	    FormatContextArgsTuple<Rest...>::GetFormatValueAt(value, idx - 1);
-        }
-
-        template <class ValueType, class KType = TypeWithoutRef>
-        requires (std::is_convertible_v<KType, ValueType>)
-        inline void GetFormatValueAt(ValueType& value, FormatIdx idx) {
-		    if (idx == 0)		value = static_cast<ValueType>(m_Value);
-		    else if(idx > 0)    FormatContextArgsTuple<Rest...>::GetFormatValueAt(value, idx - 1);
+        requires (!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& idx) {
+            FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, idx.GetNext());
         }
     };
 }

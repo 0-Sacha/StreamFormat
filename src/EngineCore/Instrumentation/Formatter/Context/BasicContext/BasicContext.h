@@ -61,10 +61,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		// TupleInterface
 		template <typename T>
 		const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index) 		= 0;
-		const auto& GetTypeAtIndexAuto(const Detail::FormatIndex& index) 	= 0;
-
 		Detail::FormatIndex GetIndexOfCurrentNameArg() 						= 0;
-
 		void RunTypeAtIndex(const Detail::FormatIndex& index) 				= 0;
 		
 	private:

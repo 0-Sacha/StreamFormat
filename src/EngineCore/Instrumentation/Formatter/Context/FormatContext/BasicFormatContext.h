@@ -79,12 +79,9 @@ namespace EngineCore::Instrumentation::FMT::Context {
         using Base::RunTypeAtIndex;
         
         template <typename T>
-        const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index);
-        const auto& GetTypeAtIndexAuto(const Detail::FormatIndex& index);
-
-        Detail::FormatIndex GetIndexOfCurrentNameArg();
-
-        void RunTypeAtIndex(const Detail::FormatIndex& index);
+        const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index)      {}
+        Detail::FormatIndex GetIndexOfCurrentNameArg()                      {}
+        void RunTypeAtIndex(const Detail::FormatIndex& index)               {}
         
     private:
         using Base::ParseFormatDataStyle;
@@ -141,15 +138,16 @@ namespace EngineCore::Instrumentation::FMT::Context {
         using Base::RunType;
         using Base::BasicRunType;
 
+
         // Type formating from FormatType<>
         template<typename Type>
-        inline void RunType(Type&& type)                                {  }
+        inline void RunType(Type&& type)                                { FormatType<Detail::GetBaseType<Type>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Write(type, *this); }
         template<typename Type, typename ...Rest>
         inline void WriteType(Type&& type, const Rest&& ...rest)		{ RunType(type, std::forward<Rest>(rest)...); }
 
         // Only support basic type that are considered as basic by Buffer class
         template<typename Type>
-        inline void BasicRunType(Type&& type);
+        inline void BasicRunType(Type&& type)                           { m_BufferOut.BasicWriteType(type); }
         template<typename Type, typename ...Rest>
         inline void BasicWriteType(Type&& type, const Rest&& ...rest)	{ BasicRunType(type, std::forward<Rest>(rest)...); }
 
