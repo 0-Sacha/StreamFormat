@@ -25,12 +25,13 @@ namespace EngineCore::Instrumentation {
 
 	public:
 		LogSystem() : m_Name("Logger"), m_SeverityMin(LogSeverity::Trace), m_Stream(std::cout) { ResetFormat(); }
-		explicit LogSystem(const std::string_view name, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
+		
+		explicit LogSystem(const std::string_view& name, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
 			: m_Name(name), m_SeverityMin(severityMin), m_Stream(stream)
 		{
 			ResetFormat();
 		}
-		explicit LogSystem(const std::string_view name, const std::string_view format, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
+		explicit LogSystem(const std::string_view& name, const std::string_view& format, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
 			: m_Name(name), m_SeverityMin(severityMin), m_Stream(stream)
 		{
 			SetFormat(format);

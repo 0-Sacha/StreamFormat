@@ -6,16 +6,16 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	template <typename CharFormat>
 	class FormatterMemoryFormat : public BasicFormatterMemoryBufferIn<CharFormat> {
 
-	private:
-		using Base = BasicFormatterMemoryBuffer<const CharBuffer>;
+	protected:
+		using Base = BasicFormatterMemoryBufferIn<CharFormat>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
 
 	public:
-		using Base::StringView;
-		using Base::CharBuffer;
+		using typename Base::StringView;
+		using CharFormatType = CharFormat;
 
 	public:
 		using Base::GetBuffer;
@@ -24,9 +24,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
-
-		using Base::GetNoStride;
-		using Base::AddNoStride;
 
 	public:
 		using Base::CanMoveForward;
@@ -54,7 +51,64 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::GetNextNoCheck;
 
 	public:
-		using CharFormatType = CharFormat;
+		using Base::FastReadInt;
+		using Base::FastReadUInt;
+		using Base::FastReadFloat;
+
+		using Base::BasicReadInt;
+		using Base::BasicReadUInt;
+		using Base::BasicReadFloat;
+
+		using Base::BasicReadIntAsBin;
+		using Base::BasicReadIntAsHex;
+		using Base::BasicReadIntAsOct;
+
+		using Base::ReadIntFormatData;
+		using Base::ReadUIntFormatData;
+		using Base::ReadFloatFormatData;
+
+		using Base::BasicReadType;
+
+		using Base::IsEqualTo;
+		using Base::IsNotEqualTo;
+		using Base::IsEqualForward;
+		using Base::IsNotEqualForward;
+		using Base::IsEqualToThrow;
+		using Base::IsNotEqualToThrow;
+		using Base::IsEqualForwardThrow;
+		using Base::IsNotEqualForwardThrow;
+
+		using Base::NextIsEqualTo;
+		using Base::NextIsNotEqualTo;
+		using Base::NextIsEqualForward;
+		using Base::NextIsNotEqualForward;
+		using Base::NextIsEqualToThrow;
+		using Base::NextIsNotEqualToThrow;
+		using Base::NextIsEqualForwardThrow;
+		using Base::NextIsNotEqualForwardThrow;
+
+		using Base::IsLowerCase;
+		using Base::IsUpperCase;
+		using Base::IsADigit;
+		using Base::IsLowerCaseThrow;
+		using Base::IsUpperCaseThrow;
+		using Base::IsADigitThrow;
+
+		using Base::NextIsSame;
+		using Base::NextIsSameThrow;
+
+		using Base::NextIsANamedArgs;
+		using Base::NextIsANamedArgsThrow;
+
+		using Base::GetWordFromList;
+
+		using Base::IgnoreSpace;
+		using Base::GoTo;
+		using Base::GoToForward;
+
+	protected:
+		using Base::SkipShiftBeginSpace;
+		using Base::SkipShiftEnd;
 
 	public:
 		explicit FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)

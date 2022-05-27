@@ -94,10 +94,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			, ShiftValue(Detail::SHIFT_NOT_SPECIFIED)
 
 			, SpecifierCount(0)
-
-			, AnsiTextColorChange()
-			, AnsiStyleChange()
-			, AnsiFrontChange()
 		{}
 
 		template <typename CharFormatOther>
@@ -120,26 +116,21 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 			, SpecifierCount(other.SpecifierCount)
 			, Specifier(other.Specifier)
-
-			, AnsiTextColorChange()
-			, AnsiStyleChange()
-			, AnsiFrontChange()
 		{}
 
 		explicit FormatData(bool hasSpec
-
 			, bool baseValue = false
 			, bool safe = false
 
-			, Detail::ValueIntPrint intPrint		= Detail::ValueIntPrint::Default
+			, Detail::ValueIntPrint intPrint	= Detail::ValueIntPrint::Default
 			, Detail::DataType digitSize		= Detail::DIGIT_SIZE_NOT_SPECIFIED
-			, Detail::DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED
+			, Detail::DataType floatPrecision 	= Detail::FLOAT_PRECISION_NOT_SPECIFIED
 
-			, Detail::PrintStyle printStyle			= Detail::PrintStyle::Default 
+			, Detail::PrintStyle printStyle		= Detail::PrintStyle::Default 
 
 			, Detail::ShiftPrint shiftPrint		= Detail::ShiftPrint::Default
 			, Detail::ShiftType shiftType		= Detail::ShiftType::Default
-			, Detail::DataType shiftValue = Detail::SHIFT_NOT_SPECIFIED)
+			, Detail::DataType shiftValue 		= Detail::SHIFT_NOT_SPECIFIED)
 
 			: IsInit(true)
 			, HasSpec(hasSpec)
@@ -158,23 +149,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			, ShiftValue(shiftValue)
 
 			, SpecifierCount(0)
-
-			, AnsiTextColorChange()
-			, AnsiStyleChange()
-			, AnsiFrontChange()
 		{}
-
-
-		FormatData& operator=(const FormatData& other) {
-			std::memcpy(this, &other, sizeof(FormatData));
-			AnsiTextColorChange = Detail::AnsiTextColorChange();
-			AnsiStyleChange = Detail::AnsiStyleChange();
-			AnsiFrontChange = Detail::AnsiFrontChange();
-			return *this;
-		}
-
-	public:
-		inline void Clone(const FormatData& other) 	{ std::memcpy(this, &other, sizeof(FormatData)); }
 
 	public:
 		bool IsInit;
@@ -184,21 +159,17 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		bool Safe;								// Safe 
 
 		Detail::ValueIntPrint IntPrint; 		// B  - X  - O  - D
-		Detail::DataType DigitSize;		// B? - X? - O? - D?
-		Detail::DataType FloatPrecision;	// .
+		Detail::DataType DigitSize;				// B? - X? - O? - D?
+		Detail::DataType FloatPrecision;		// .
 
 		Detail::PrintStyle PrintStyle;			// U  - L
 
 		Detail::ShiftPrint ShiftPrint;			// <  - >  - ^
-		Detail::DataType ShiftValue;		// <? - >? - ^?
-		Detail::ShiftType ShiftType; 			// 0
+		Detail::DataType ShiftValue;			// <? - >? - ^?
+		Detail::ShiftType ShiftType; 			// 0 - ' '
 
 		std::uint8_t SpecifierCount;
 		std::array<FormatSpecifier<CharFormat>, 10> Specifier;
-
-		Detail::AnsiTextColorChange AnsiTextColorChange;
-		Detail::AnsiStyleChange AnsiStyleChange;
-		Detail::AnsiFrontChange AnsiFrontChange;
 
 	public:
 		static inline constexpr std::uint8_t NotFound() { return (std::numeric_limits<std::uint8_t>::max)(); }
@@ -219,7 +190,17 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		void AddSpecifier(const FormatSpecifier<CharFormat>& specifier)														{ if (SpecifierCount < Specifier.size()) Specifier[SpecifierCount++] = specifier; }
 		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value)	{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
-		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value)				{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value)						{ AddSpecifier(FormatSpecifier<CharFormat>(name, value)); }
 
+	public:
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+
+		void ModifyThrow(const FormatData& given) 					{ *this = given; }
+
+		void ModifyThrow(const Detail::ValueIntPrint& given) 		{ IntPrint = given; }
+		void ModifyThrow(const Detail::PrintStyle& given) 			{ PrintStyle = given; }
+		void ModifyThrow(const Detail::ShiftPrint& given) 			{ ShiftPrint = given; }
+		void ModifyThrow(const Detail::ShiftType& given) 			{ ShiftType = given; }
+		void ModifyThrow(const FormatSpecifier<CharFormat>& given) 	{ AddSpecifier(given); }
 	};
 }

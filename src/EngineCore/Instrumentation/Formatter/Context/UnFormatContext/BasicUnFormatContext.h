@@ -1,9 +1,7 @@
 #pragma once
 
-#include "../Core/Detail/Detail.h"
-#include "BaseFormat/UnFormatType.h"
 #include "../FormatContext/BasicFormatContext.h"
-
+#include "BaseFormat/UnFormatType.h"
 #include "UnFormatContextArgsTuple.h"
 
 namespace EngineCore::Instrumentation::FMT {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BasicFormatContext.h"
+#include "BasicFormatContextCoreImpl.h"
 
 #include "BaseFormat/BaseFormat.h"
 #include "BaseFormat/BaseAnsiTextColor.h"
@@ -9,23 +10,23 @@
 #include "BaseFormat/Chrono.h"
 #include "BaseFormat/BaseSTDLib.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::Instrumentation::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
-		: m_BufferOut(buffer, bufferSize)
-		, m_Format(format)
+		: Base(format)
+		, m_BufferOut(buffer, bufferSize)
+		, m_AnsiManager(*this)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_ValuesIdx()
 	{
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args)
-		: m_BufferOut()
-		, m_Format(format)
+	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext([[maybe_unused]] const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args)
+		: Base(format)
+		, m_BufferOut()
+		, m_AnsiManager(*this)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_ValuesIdx()
 	{
 	}
 
@@ -33,21 +34,16 @@ namespace EngineCore::Instrumentation::FMT {
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename ParentCharFormat, typename ...ParentContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
-		: m_BufferOut(parentContext.BufferOut())
-		, m_Format(format)
+		: Base(format, parentContext)
+		, m_BufferOut(parentContext.BufferOut())
+		, m_AnsiManager(parentContext.GetAnsiManager())
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-		, m_ValuesIdx()
-	{
-		m_FormatData.Clone(parentContext.GetFormatData());
-		m_AnsiTextCurrentColor	= parentContext.GetAnsiTextCurrentColor();
-		m_AnsiStyle	= parentContext.GetAnsiStyle();
-	}
-
+	{}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::~BasicFormatContext()
 	{
-		m_AnsiManager.Reload(Detail::AnsiData{});
+		m_AnsiManager.Reload(Detail::AnsiTextData{});
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
@@ -57,11 +53,10 @@ namespace EngineCore::Instrumentation::FMT {
 			WriteUntilNextParameter();
 
 			if (m_Format.IsEqualTo('{'))
-				if (!ParameterParse())
+				if (!Parse())
 					m_BufferOut.PushBack('{');
 		}
 	}
-
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename NewCharFormat, typename ...Args>

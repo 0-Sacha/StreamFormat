@@ -103,13 +103,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Script_AllDisable			= static_cast<std::uint8_t>(AnsiTFSScript::AllDisable)
 	};
 
-	void AnsiBasicTextStyleDispatch(const AnsiBasicTextStyle& style, const std::function<void (const AnsiTFSIntensity&)>& 	funcIntensity
-																   , const std::function<void (const AnsiTFSItalic&)>& 		funcItalic
-																   , const std::function<void (const AnsiTFSUnderline&)>& 	funcUnderline
-																   , const std::function<void (const AnsiTFSBlink&)>& 		funcBlink
-																   , const std::function<void (const AnsiTFSInverted&)>& 	funcInverted
-																   , const std::function<void (const AnsiTFSIdeogram&)>& 	funcIdeogram
-																   , const std::function<void (const AnsiTFSScript&)>& 		funcScript)
+	inline void AnsiBasicTextStyleDispatch(const AnsiBasicTextStyle& style, const std::function<void (const AnsiTFSIntensity&)>& 	funcIntensity
+																   		  , const std::function<void (const AnsiTFSItalic&)>& 		funcItalic
+																   		  , const std::function<void (const AnsiTFSUnderline&)>& 	funcUnderline
+																   		  , const std::function<void (const AnsiTFSBlink&)>& 		funcBlink
+																   		  , const std::function<void (const AnsiTFSInverted&)>& 	funcInverted
+																   		  , const std::function<void (const AnsiTFSIdeogram&)>& 	funcIdeogram
+																   		  , const std::function<void (const AnsiTFSScript&)>& 		funcScript)
 	{
 		switch(style)
 		{
@@ -126,6 +126,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			case AnsiBasicTextStyle::Underline_DoubleUnerlined:
 			case AnsiBasicTextStyle::Underline_Disable:
 				return funcUnderline(static_cast<AnsiTFSUnderline>(style));
+
+			case AnsiBasicTextStyle::Underline_SelectColor:
+				return;
 
 			case AnsiBasicTextStyle::Blink_SlowBlink:
 			case AnsiBasicTextStyle::Blink_FastBlink:
@@ -156,11 +159,14 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	struct AnsiUnderlineColor24b : public AnsiColor24bType {
 		AnsiUnderlineColor24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: AnsiColor24bType(r, g, b) {};
+	public:
+		bool operator==(const AnsiColor24bType& other) const { return R == other.R && R == other.G && R == other.B; }
 	};
 
 	struct AnsiNColorUnderline : public AnsiNColorType {
-		AnsiNColorUnderline(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
-		AnsiNColorUnderline(const AnsiNColorType color)		: AnsiNColorType(color.GetColor()) {}
+		AnsiNColorUnderline()								: AnsiNColorType() 	{}
+		AnsiNColorUnderline(const std::uint8_t color)		: AnsiNColorType(color) {}
+		AnsiNColorUnderline(const AnsiNColorType& color)	: AnsiNColorType(color) {}
 
 	public:
 		static AnsiNColorUnderline MakeNormalColor(const std::uint8_t value) {
@@ -186,12 +192,29 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static AnsiNColorUnderline MakeGrayscaleColor24(const std::uint8_t value) {
 			return static_cast<AnsiNColorUnderline>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
+	
+	public:
+		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 
-	enum class AnsiColorUnderlineType : std::uint8_t {
+	enum class AnsiUnderlineColorType : std::uint8_t {
 		Default,
 		AnsiNColor,
 		AnsiColor24b
+	};
+
+	union AnsiUnderlineColorUnion {
+		AnsiUnderlineColorUnion()
+			: NColor()
+		{}
+
+		AnsiNColorUnderline		NColor;
+		AnsiUnderlineColor24b	Color24b;
+	};
+
+	struct AnsiUnderlineColor {
+		AnsiUnderlineColorUnion Data;
+		AnsiUnderlineColorType	Type;
 	};
 
 	struct AnsiStyle {
@@ -201,11 +224,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AnsiTFSIntensity		Intensity			= AnsiTFSIntensity::Normal;
 		AnsiTFSItalic			Italic				= AnsiTFSItalic::Disable;
 		AnsiTFSUnderline		Underline			= AnsiTFSUnderline::Disable;
-		AnsiColorUnderlineType	UnderlineColorType	= AnsiColorUnderlineType::Default;
-		union {
-			AnsiNColorUnderline		NColor;
-			AnsiUnderlineColor24b	Color24b;
-		} UnderlineColor;
+		AnsiUnderlineColor		UnderlineColor;
 		
 		AnsiTFSBlink			Blink				= AnsiTFSBlink::Disable;
 		AnsiTFSInverted			Inverted			= AnsiTFSInverted::Disable;
@@ -214,18 +233,18 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
 
-		template <> void ModifyThrow(const AnsiStyle& given) { *this = given; }
+		void ModifyThrow(const AnsiStyle& given) { *this = given; }
 
-		template <> void ModifyThrow(const AnsiTFSIntensity& given) 		{ Intensity = given; 	}
-		template <> void ModifyThrow(const AnsiTFSItalic& given) 			{ Italic = given; 		}
-		template <> void ModifyThrow(const AnsiTFSUnderline& given) 		{ Underline = given; 	}
-		template <> void ModifyThrow(const AnsiNColorUnderline& given) 		{ UnderlineColorType = AnsiColorUnderlineType::AnsiNColor; UnderlineColor.NColor = given; }
-		template <> void ModifyThrow(const AnsiUnderlineColor24b& given) 	{ UnderlineColorType = AnsiColorUnderlineType::AnsiColor24b; UnderlineColor.Color24b = given; }
+		void ModifyThrow(const AnsiTFSIntensity& given) 		{ Intensity = given; 	}
+		void ModifyThrow(const AnsiTFSItalic& given) 			{ Italic = given; 		}
+		void ModifyThrow(const AnsiTFSUnderline& given) 		{ Underline = given; 	}
+		void ModifyThrow(const AnsiNColorUnderline& given) 		{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiNColor; 	UnderlineColor.Data.NColor = given; }
+		void ModifyThrow(const AnsiUnderlineColor24b& given) 	{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiColor24b; 	UnderlineColor.Data.Color24b = given; }
 
-		template <> void ModifyThrow(const AnsiTFSBlink& given) 			{ Blink = given; 	}
-		template <> void ModifyThrow(const AnsiTFSInverted& given) 			{ Inverted = given; }
-		template <> void ModifyThrow(const AnsiTFSIdeogram& given) 			{ Ideogram = given; }
-		template <> void ModifyThrow(const AnsiTFSScript& given) 			{ Script = given; 	}
+		void ModifyThrow(const AnsiTFSBlink& given) 			{ Blink = given; 	}
+		void ModifyThrow(const AnsiTFSInverted& given) 			{ Inverted = given; }
+		void ModifyThrow(const AnsiTFSIdeogram& given) 			{ Ideogram = given; }
+		void ModifyThrow(const AnsiTFSScript& given) 			{ Script = given; 	}
 
 	};
 

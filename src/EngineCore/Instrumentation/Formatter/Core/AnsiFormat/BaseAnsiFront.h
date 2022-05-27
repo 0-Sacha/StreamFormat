@@ -23,8 +23,10 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	public:
 		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+		void ModifyThrow(const AnsiFront& given) { *this = given; }
 
-		template <> void ModifyThrow(const AnsiFront& given) { *this = given; }
+	public:
+		bool operator==(const AnsiFront& other) const { return FrontId == other.FrontId; }
 	};
 
 	struct AnsiTextCurrentFront {

@@ -1,9 +1,8 @@
 #pragma once
 
 #include "BasicFormatContext.h"
-#include "BasicFormatContextCoreImpl.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::Instrumentation::FMT::Context {
 
 	/////---------- AAHHHHHHHHH ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
@@ -26,19 +25,18 @@ namespace EngineCore::Instrumentation::FMT {
 		m_Format.ParamGoTo(':');
 		m_Format.IsEqualForward(':');
 		m_Format.IgnoreSpace();
-		auto idx = GetWordFromList(keys);
+		auto idx = m_Format.GetWordFromList(keys);
 		if (idx == 0)
 		{
 			m_Format.ParamGoTo('=');
 			if (m_Format.IsEqualForward('='))
 			{
 				m_Format.IgnoreSpace();
-				Detail::DataType value = 0;
-				m_Format.ReadInt(value);
-				m_Indent = value;
+				Detail::DataType value = FormatReadParameterThrow();
+				BufferOut().SetIndent(value);
 			}
 			else
-				SetIndent();
+				BufferOut().SetIndent();
 		}
 	}
 

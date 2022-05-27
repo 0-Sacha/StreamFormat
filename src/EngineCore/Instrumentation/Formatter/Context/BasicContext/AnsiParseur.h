@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 #include "EngineCore/Instrumentation/Formatter/Core/Buffer/Buffer.h"
 #include "EngineCore/Instrumentation/Formatter/Core/AnsiFormat/AnsiHandler.h"
 
@@ -16,17 +17,17 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Detail::FormatIndex GetFormatIndexThrow();
 		
 	public:
-		void ColorRunOnIndex()(const Detail::FormatIndex& index) 	= 0;
+		void ColorRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
-		void ColorRun()(const T& modif) 							= 0;
+		void ColorRun(const T& modif) 							{ throw Detail::FormatShouldNotEndHere(); }
 
-		void StyleRunOnIndex()(const Detail::FormatIndex& index) 	= 0;
+		void StyleRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
-		void StyleRun()(const T& modif) 							= 0;
+		void StyleRun(const T& modif) 							{ throw Detail::FormatShouldNotEndHere(); }
 
-		void FrontRunOnIndex()(const Detail::FormatIndex& index) 	= 0;
+		void FrontRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
-		void FrontRun()(const T& modif) 							= 0;
+		void FrontRun(const T& modif) 							{ throw Detail::FormatShouldNotEndHere(); }
 
 	public:
 		void 						ParseColor();
@@ -36,10 +37,10 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		void 						ParseStyle();
 		Detail::AnsiBasicTextStyle 	GetStyleCode();
-		Detail::AnsiBasicTextStyle 	SelectUnderlinedColorStyle();
+		Detail::AnsiNColorUnderline SelectUnderlinedColorStyle();
 
 		void 						ParseFront();
-		std::size_t 				GetFrontCode();
+		Detail::AnsiFront 			GetFrontCode();
 
 	public:
 		FormatBuffer& Format;
@@ -95,8 +96,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		return Format.GetWordFromList(colorCode);
 	}
 
-	template<typename T>
 	template<typename FormatBuffer>
+	template<typename T>
 	T BasicAnsiParseur<FormatBuffer>::GetColorCodeAuto() {
 		std::size_t step = static_cast<std::size_t>(Format.IsEqualForward('+') ? T::BaseBStep : T::BaseStep);
 		std::size_t code = GetColorCode();
@@ -113,7 +114,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 					Format.IgnoreSpace();
 					if (Format.IsEqualForward('{'))
 					{
-						Detail::FormatIndex idx = Context.GetFormatIndexThrow();
+						Detail::FormatIndex idx = GetFormatIndexThrow();
 						StyleRunOnIndex(idx);
 						Format.IsEqualForward('}');
 					}
@@ -140,9 +141,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			StyleRun(Detail::RESET_ANSI_STYLE);
 	}
 
-	template <typename FormatBuffer, bool Get, bool Exec>
+	template <typename FormatBuffer>
 	Detail::AnsiBasicTextStyle BasicAnsiParseur<FormatBuffer>::GetStyleCode() {
-		static constexpr Format.TextTo<Detail::AnsiBasicTextStyle> styleCode[] = {
+		static constexpr typename FormatBuffer::template TextTo<Detail::AnsiBasicTextStyle> styleCode[] = {
 			{ "bold",			Detail::AnsiBasicTextStyle::Intensity_Bold				},
 			{ "dim",			Detail::AnsiBasicTextStyle::Intensity_Dim				},
 			{ "n-intensity",	Detail::AnsiBasicTextStyle::Intensity_Normal			},
@@ -188,7 +189,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			WriteType(GetFrontCode());
 		}
 		else
-			RunFront(RESET_ANSI_FRONT);
+			FrontRun(RESET_ANSI_FRONT);
 	}
 
 	template<typename FormatBuffer>

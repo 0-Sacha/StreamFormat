@@ -16,11 +16,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
-		using Base::m_NoStride;
 
 	public:
-		using Base::StringView;
-		using Base::CharBuffer;
+		using typename Base::StringView;
 
 	public:
 		using CharBufferType = CharBuffer;
@@ -31,9 +29,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
-
-		using Base::GetNoStride;
-		using Base::AddNoStride;
 
 	public:
 		using Base::CanMoveForward;
@@ -60,8 +55,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		using Base::GetNext;
 		using Base::GetNextNoCheck;
 
-	public:
+		using Base::UpdateFromChlid;
 
+	public:
 		static constexpr std::size_t	DEFAULT_BEGIN_SIZE	= 512;
 		static constexpr std::size_t	GROW_UP_BUFFER_SIZE = 2;
 		static constexpr bool			DEBUG_RESIZE		= true;
@@ -94,8 +90,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		inline void AddNoStride(const std::size_t noStride)		{ m_NoStride += noStride; }
 
 		inline std::size_t GetIndent() const					{ return m_Indent; }
-		inline void SetIndent(const std::size_t m_Indent) 		{ m_Indent = m_Indent; }
-		inline void AddIndent(const std::size_t m_Indent) 		{ m_Indent += m_Indent; }
+		inline void SetIndent(const std::size_t indent) 		{ m_Indent = indent; }
+		inline void AddIndent(const std::size_t indent) 		{ m_Indent += indent; }
 		void SetIndent() 										{ m_Indent = GetBufferCurrentSize() - GetNoStride(); }
 
 	private:
@@ -104,7 +100,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	public:
 		BasicFormatterMemoryBufferOut(CharBuffer* const buffer, const std::size_t bufferSize)
-			: BasicFormatterMemoryBuffer<CharBuffer>(buffer, bufferSize)
+			: Base(buffer, bufferSize)
 			, m_BufferAutoResize(false)
 			, m_FreeOnDestructor(false)
 			, m_NoStride(0)
@@ -114,7 +110,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		}
 
 		BasicFormatterMemoryBufferOut(const std::size_t beginSize = DEFAULT_BEGIN_SIZE)
-			: BasicFormatterMemoryBuffer<CharBuffer>(new CharBuffer[beginSize], beginSize)
+			: Base(new CharBuffer[beginSize], beginSize)
 			, m_BufferAutoResize(true)
 			, m_FreeOnDestructor(true)
 			, m_NoStride(0)
@@ -125,7 +121,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		template <typename ParentBuffer>
 		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
-			: BasicFormatterMemoryBuffer<CharBuffer>(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
+			: Base(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
 			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
 			, m_FreeOnDestructor(false)
 			, m_NoStride(parentBuffer.GetNoStride())
@@ -133,7 +129,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		{}
 
 		~BasicFormatterMemoryBufferOut() {
-			BasicFormatterMemoryBuffer::~BasicFormatterMemoryBuffer();
+			// Should call the destructo but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
+			UpdateFromChlid();
 
 			if (m_FreeOnDestructor)
 				delete[] m_Buffer;

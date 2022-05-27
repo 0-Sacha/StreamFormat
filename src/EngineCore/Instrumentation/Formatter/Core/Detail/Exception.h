@@ -18,4 +18,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	class FormatParseError		: public FormatError {};
 	class FormatGivenTypeError	: public FormatParseError {};
 
+	class FormatImplError			: public FormatError {};
+	class FormatShouldNotEndHere 	: public FormatImplError {};
+	class FormatNotImplYet 			: public FormatImplError {};
+
+
 }

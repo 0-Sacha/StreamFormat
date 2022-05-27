@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineCore/Core.h"
+#include "EngineCore/Instrumentation/Formatter/Core/Detail/Exception.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 
@@ -99,7 +100,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static inline constexpr std::uint8_t Default		= 0;
 
 	public:
-		enum class AnsiColorNType : std::uint8_t {
+		enum class AnsiNColorNType : std::uint8_t {
 			Normal,
 			Bright,
 			Cube666,
@@ -107,26 +108,31 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		};
 
 	public:
-		std::uint8_t	Color;
+		std::uint8_t Color;
+
+	public:
 		std::uint8_t GetColor() const { return Color; }
 
 		std::uint8_t GetColorRef()				{ return Color; }
 		const std::uint8_t GetColorRef() const	{ return Color; }
 	
 	public:
-		AnsiNColorType(const std::uint8_t color = 0)
+		AnsiNColorType(const std::uint8_t color)
 			: Color(color) {}
 
-		AnsiColorNType GetAnsiNType() {
+		AnsiNColorType()
+			: Color(0) {}
+
+		AnsiNColorNType GetAnsiNType() {
 			if (Color >= MinNormalColor && Color <= MaxNormalColor)
-				return AnsiColorNType::Normal;
+				return AnsiNColorNType::Normal;
 			else if (Color >= MinBrightColor && Color <= MaxBrightColor)
-				return AnsiColorNType::Bright;
+				return AnsiNColorNType::Bright;
 			else if (Color >= Min666CubeColor && Color <= Max666CubeColor)
-				return AnsiColorNType::Cube666;
+				return AnsiNColorNType::Cube666;
 			else if (Color >= MinGrayscale && Color <= MaxGrayscale)
-				return AnsiColorNType::Grayscale;
-			return AnsiColorNType::Normal;
+				return AnsiNColorNType::Grayscale;
+			return AnsiNColorNType::Normal;
 		}
 
 		static AnsiNColorType MakeNormalColor(std::uint8_t value) {
@@ -162,12 +168,16 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			if (value > 24) value = 24;
 			return AnsiNColorType(MinGrayscale + value);
 		}
+
+	public:
+		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 
 	struct AnsiNColorFg	: public AnsiNColorType {
 	public:
-		AnsiNColorFg(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
-		AnsiNColorFg(const AnsiNColorType color)	: AnsiNColorType(color.GetColor()) {}
+		explicit AnsiNColorFg()								: AnsiNColorType() 		{}
+		explicit AnsiNColorFg(const std::uint8_t color)		: AnsiNColorType(color) {}
+		AnsiNColorFg(const AnsiNColorType& color)			: AnsiNColorType(color) {}
 
 	public:
 		static AnsiNColorFg MakeNormalColor(const std::uint8_t value) {
@@ -193,11 +203,15 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static AnsiNColorFg MakeGrayscaleColor24(const std::uint8_t value) {
 			return static_cast<AnsiNColorFg>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
+
+	public:
+		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 	
 	struct AnsiNColorBg	: public AnsiNColorType {
-		AnsiNColorBg(const std::uint8_t color = 0)	: AnsiNColorType(color) {}
-		AnsiNColorBg(const AnsiNColorType color)	: AnsiNColorType(color.GetColor()) {}
+		AnsiNColorBg()								: AnsiNColorType() 		{}
+		AnsiNColorBg(const std::uint8_t color)		: AnsiNColorType(color) {}
+		AnsiNColorBg(const AnsiNColorType& color)	: AnsiNColorType(color) {}
 
 	public:
 		static AnsiNColorBg MakeNormalColor(const std::uint8_t value) {
@@ -223,13 +237,27 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static AnsiNColorBg MakeGrayscaleColor24(const std::uint8_t value) {
 			return static_cast<AnsiNColorBg>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
+
+	public:
+		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 
 	struct AnsiNColor {
-		AnsiNColor(const AnsiNColorFg&& fg = AnsiNColorFg(0), const AnsiNColorBg bg = AnsiNColorBg(0))
-			: Fg(fg)
-			, Bg(bg) {}
+		AnsiNColor()
+			: Fg()
+			, Bg()
+		{}
 		
+		AnsiNColor(const AnsiNColorBg& fg)
+			: Fg(fg)
+			, Bg()
+		{}
+
+		AnsiNColor(const AnsiNColorFg& fg, const AnsiNColorBg& bg)
+			: Fg(fg)
+			, Bg(bg)
+		{}
+
 		AnsiNColorFg Fg;
 		AnsiNColorBg Bg;
 	};
@@ -239,16 +267,23 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AnsiColor24bType(std::uint8_t r, std::uint8_t g, std::uint8_t b)
 			: R(r), G(g), B(b) { }
 		std::uint8_t R, G, B;
+
+	public:
+		bool operator==(const AnsiColor24bType& other) { return R == other.R && R == other.G && R == other.B; }
 	};
 
 	struct AnsiColor24bFg : public AnsiColor24bType {
 		AnsiColor24bFg(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
 			: AnsiColor24bType(r, g, b) {};
+	public:
+		bool operator==(const AnsiColor24bType& other) { return R == other.R && R == other.G && R == other.B; }
 	};
 
 	struct AnsiColor24bBg : public AnsiColor24bType {
 		AnsiColor24bBg(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: AnsiColor24bType(r, g, b) {};
+	public:
+		bool operator==(const AnsiColor24bType& other) { return R == other.R && R == other.G && R == other.B; }
 	};
 
 
@@ -259,76 +294,90 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AnsiColor24bBg Bg;
 	};
 
-	enum class AnsiColorDataType: std::uint8_t {
+	enum class AnsiColorDataType : std::uint8_t {
 		Default,
 		AnsiTextColor,
 		AnsiNColor,
 		AnsiColor24b
 	};
 
+	union AnsiColorUnionFG {
+		AnsiColorUnionFG()
+			: Text{ AnsiTextColorFG::Default }
+		{}
+
+		AnsiTextColorFG Text;
+		AnsiNColorFg 	NColor;
+		AnsiColor24bFg 	Color24b;
+	};
+
+	union AnsiColorUnionBG {
+		AnsiColorUnionBG()
+			: Text{ AnsiTextColorBG::Default }
+		{}
+
+		AnsiTextColorBG Text;
+		AnsiNColorBg 	NColor;
+		AnsiColor24bBg 	Color24b;
+	};
+
+	struct AnsiColorFG {
+		AnsiColorUnionFG 	Data;
+		AnsiColorDataType	Type {AnsiColorDataType::Default};
+	};
+
+	struct AnsiColorBG {
+		AnsiColorUnionBG 	Data;
+		AnsiColorDataType 	Type {AnsiColorDataType::Default};
+	};
+
+
 	// Manage only the text color / the underline color will be manage by the AnsiTextFormatStyle
 	struct AnsiColor
 	{
 	public:
 		AnsiColor()
-			: FgType(AnsiColorDataType::Default), BgType(AnsiColorDataType::Default) {}
+			: Fg()
+			, Bg()
+		{}
 
 	public:
-		AnsiColorDataType	FgType;
-		AnsiColorDataType	BgType;
-		
-		union {
-			AnsiTextColorFG Text;
-			AnsiNColorFg NColor;
-			AnsiColor24bFg Color24b;
-		} Fg;
-
-		union {
-			AnsiTextColorBG Text;
-			AnsiNColorBg NColor;
-			AnsiColor24bBg Color24b;
-		} Bg;
+		AnsiColorFG Fg;
+		AnsiColorBG Bg;
 
 	public:
-		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError(); }
 
-		template <>
 		void ModifyThrow(const AnsiColor& given) { *this = given; }
 
-		template <>
 		void ModifyThrow(const AnsiTextColorFG& given) {
-			FgType = AnsiColorDataType::AnsiTextColor;
-			Fg.Text = given;
+			Fg.Type = AnsiColorDataType::AnsiTextColor;
+			Fg.Data.Text = given;
 		}
 
-		template <>
 		void ModifyThrow(const AnsiTextColorBG& given) {
-			BgType = AnsiColorDataType::AnsiTextColor;
-			Bg.Text = given;
+			Bg.Type = AnsiColorDataType::AnsiTextColor;
+			Bg.Data.Text = given;
 		}
 
-		template <>
 		void ModifyThrow(const AnsiNColorFg& given) {
-			FgType = AnsiColorDataType::AnsiNColor;
-			Fg.NColor = given;
+			Fg.Type = AnsiColorDataType::AnsiNColor;
+			Fg.Data.NColor = given;
 		}
 
-		template <>
 		void ModifyThrow(const AnsiNColorBg& given) {
-			BgType = AnsiColorDataType::AnsiNColor;
-			Bg.NColor = given;
+			Bg.Type = AnsiColorDataType::AnsiNColor;
+			Bg.Data.NColor = given;
 		}
 
-		template <>
 		void ModifyThrow(const AnsiColor24bFg& given) {
-			FgType = AnsiColorDataType::AnsiColor24b;
-			Fg.Color24b = given;
+			Fg.Type = AnsiColorDataType::AnsiColor24b;
+			Fg.Data.Color24b = given;
 		}
 
-		template <>
 		void ModifyThrow(const AnsiColor24bBg& given) {
-			BgType = AnsiColorDataType::AnsiColor24b;
-			Bg.Color24b = given;
+			Bg.Type = AnsiColorDataType::AnsiColor24b;
+			Bg.Data.Color24b = given;
 		}
 	};
 	

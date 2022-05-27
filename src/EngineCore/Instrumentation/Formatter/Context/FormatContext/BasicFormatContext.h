@@ -1,33 +1,35 @@
 #pragma once
 
-#include "../BasicContext/BasicContext.h"
+#include "../BasicContext/BasicContextInclude.h"
 
 #include "BaseFormat/FormatType.h"
 #include "BaseFormat/NamedArgs.h"
 #include "BaseFormat/FormatArgs.h"
 #include "BaseFormat/STDEnumerable.h"
 
+#include "AnsiFormatParser.h"
+
 #include "FormatContextArgsTuple.h"
 
 namespace EngineCore::Instrumentation::FMT::Context {
 
     template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-    class BasicFormatContext : BasicContext<CharFormat, Detail::AnsiFormatParser<M_Type>::ContextPackageSaving>
+    class BasicFormatContext : BasicContext<CharFormat, Detail::AnsiTextData>
     {
     public:
-        using Base = BasicContext<CharFormat>;
+        using Base = BasicContext<CharFormat, Detail::AnsiTextData>;
+        using M_Type = BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>;
 
-        using Base::CharFormatType;
+        using typename Base::CharFormatType;
+        using typename Base::FormatDataType;
+        using typename Base::StringViewFormat;
+        using typename Base::FormatBufferType;
+        
         using CharBufferType 	= CharBuffer;
-        using Base::FormatDataType;
-        using Base::StringViewFormat;
         using StringViewBuffer 	= std::basic_string_view<CharBuffer>;
-        using Base::FormatBufferType;
         using BufferOutType 	= Detail::BasicFormatterMemoryBufferOut<CharBuffer>;
         using ContextArgsType 	= Detail::FormatContextArgsTuple<ContextArgs...>;
-        using AnsiParserType 	= Detail::AnsiFormatParser<M_Type>;
-
-        using M_Type 			= BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>;
+        using AnsiParserType 	= Detail::AnsiFormatParser<M_Type, CharFormat>;
 
     public:
         BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs &&...args);
@@ -37,7 +39,9 @@ namespace EngineCore::Instrumentation::FMT::Context {
         template<typename ParentCharFormat, typename ...ParentContextArgs>
         BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...> &parentContext, ContextArgs &&...args);
 
-    private:
+	    ~BasicFormatContext();
+
+    protected:
         using Base::m_Format;
         using Base::m_ValuesIndex;
         using Base::m_FormatData;
@@ -52,11 +56,11 @@ namespace EngineCore::Instrumentation::FMT::Context {
         using Base::ForwardFormatData;
         using Base::GetAPI;
 
-        inline BufferOutType>&			    BufferOut()			    { return m_BufferOut; }
-        inline const BufferOutType>&		BufferOut() const	    { return m_BufferOut; }
+        inline BufferOutType&			    BufferOut()			    { return m_BufferOut; }
+        inline const BufferOutType&		    BufferOut() const	    { return m_BufferOut; }
 
-        inline AnsiParserType&				GetAnsiManager()		{ return m_AnsiTextCurrentColor; }
-        inline const AnsiParserType&		GetAnsiManager() const	{ return m_AnsiTextCurrentColor; }
+        inline AnsiParserType&				GetAnsiManager()		{ return m_AnsiManager; }
+        inline const AnsiParserType&		GetAnsiManager() const	{ return m_AnsiManager; }
 
     public:
         using Base::Run;
@@ -74,17 +78,28 @@ namespace EngineCore::Instrumentation::FMT::Context {
     public:
         // TupleInterface
         using Base::GetTypeAtIndexThrow;
-        using Base::GetTypeAtIndexAuto;
         using Base::GetIndexOfCurrentNameArg;
         using Base::RunTypeAtIndex;
         
+        void RunTypeAtIndex(const Detail::FormatIndex& index)                                   { m_ContextArgs.RunTypeAtIdx(*this, index); }
         template <typename T>
-        const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index)      {}
-        Detail::FormatIndex GetIndexOfCurrentNameArg()                      {}
-        void RunTypeAtIndex(const Detail::FormatIndex& index)               {}
+        const Detail::GetBaseType<T>& GetTypeAtIndexThrow(const Detail::FormatIndex& index)     { return *m_ContextArgs.template GetTypeAtIndex<T>(*this, index); }
+        Detail::FormatIndex GetIndexOfCurrentNameArg()                                          { return m_ContextArgs.GetIndexOfCurrentNameArg(*this, 0); }
+
+        template <typename T>
+		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void (const T&)> func)
+        {
+            const T* value = m_ContextArgs.template GetTypeAtIndex<T>(*this, index);
+            if (value != nullptr)
+            {
+                func(*value);
+                return true;
+            }
+            return false;
+        }
         
-    private:
-        using Base::ParseFormatDataStyle;
+    protected:
+        using Base::ParseFormatDataBase;
         using Base::ParseFormatDataSpecial;
         using Base::ParseFormatDataCustom;
         using Base::ParseFormatData;
@@ -104,10 +119,10 @@ namespace EngineCore::Instrumentation::FMT::Context {
         void ParseFormatDataStyle()     { m_AnsiManager.ParseStyle(); }
         void ParseFormatDataFront()     { m_AnsiManager.ParseFront(); }
 
-        Detail::AnsiData ContextStyleSave()                         { return m_AnsiManager.Save(); }
-        void ContextStyleRestore(const Detail::AnsiData& data)      { m_AnsiManager.Reload(data); }
+        Detail::AnsiTextData ContextStyleSave()                         { return m_AnsiManager.Save(); }
+        void ContextStyleRestore(const Detail::AnsiTextData& data)      { m_AnsiManager.Reload(data); }
 
-    private:
+    protected:
         using Base::ParseTimer;
         using Base::ParseDate;
 
@@ -171,7 +186,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
         template<typename CharStr>						inline void PrintIndent(const std::basic_string_view<CharStr>& str) { m_BufferOut.WriteCharPtIndent(str.data(), str.size()); }
 
     public:
-        inline void CopyFormatToBuffer() { m_BufferOut.PushBackIndent(m_Format.GetAndForward(), m_Indent); }
+        inline void CopyFormatToBuffer() { m_BufferOut.PushBackIndent(m_Format.GetAndForward()); }
 
         template<typename ...CharToTest> inline void WriteUntilNextParameter(const CharToTest ...ele)	{ while (m_Format.IsNotEqualTo('{', ele...) && m_Format.CanMoveForward())	CopyFormatToBuffer(); }
         template<typename ...CharToTest> inline void WriteUntilEndOfParameter(const CharToTest ...ele)	{ while (m_Format.IsNotEqualTo('}', ele...) && m_Format.CanMoveForward())	CopyFormatToBuffer(); }

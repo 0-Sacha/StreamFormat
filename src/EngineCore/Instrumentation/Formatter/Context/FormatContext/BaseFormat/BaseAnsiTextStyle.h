@@ -105,7 +105,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType("\033[58;5;", t.GetColorRef(), 'm');
 
 			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor = true;
-			context.GetAnsiStyle().UnderlineColorType	= Detail::AnsiColorUnderlineType::AnsiNColor;
+			context.GetAnsiStyle().UnderlineColorType	= Detail::AnsiUnderlineColorType::AnsiNColor;
 			context.GetAnsiStyle().UnderlineColorN		= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;
@@ -121,7 +121,7 @@ namespace EngineCore::Instrumentation::FMT {
 			context.BasicWriteType("\033[58;2;", t.R, ';', t.G, ';', t.B, 'm');
 
 			context.GetFormatData().AnsiStyleChange.HasSetUnderlineColor = true;
-			context.GetAnsiStyle().UnderlineColorType		= Detail::AnsiColorUnderlineType::AnsiColor24b;
+			context.GetAnsiStyle().UnderlineColorType		= Detail::AnsiUnderlineColorType::AnsiColor24b;
 			context.GetAnsiStyle().UnderlineColor24bits		= t;
 
 			context.GetAnsiFormatterChange().HasMadeChange = true;

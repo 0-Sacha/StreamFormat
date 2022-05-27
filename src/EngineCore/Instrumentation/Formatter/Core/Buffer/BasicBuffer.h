@@ -8,8 +8,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	class BasicFormatterMemoryBuffer {
 
 	public:
-		using StringView = std::basic_string_view<CharFormat>;
-		using CharBuffer = CharBuffer;
+		using StringView = std::basic_string_view<CharBuffer>;
 
 	protected:
 		CharBuffer*			m_Buffer;
@@ -62,7 +61,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			UpdateFromChlid();
 		}
 
-	private:
+	protected:
 		inline void UpdateFromChlid() {
 			if (m_ChildBuffer != nullptr)
 				SetBufferCurrentPos(m_ChildBuffer->GetBufferCurrentPos());

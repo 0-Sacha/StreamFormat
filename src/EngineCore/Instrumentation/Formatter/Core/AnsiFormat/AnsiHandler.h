@@ -1,6 +1,8 @@
-#include "BaseAnsiTextColor.h"
+#pragma once
+
+#include "BaseAnsiColor.h"
 #include "BaseAnsiFront.h"
-#include "BaseAnsiTextStyle.h"
+#include "BaseAnsiStyle.h"
 
 
 namespace EngineCore::Instrumentation::FMT::Detail {

@@ -2,7 +2,7 @@
 
 #include "EngineCore/Core.h"
 
-#include "../AnsiFormat/AnsiManager.h"
+#include "../AnsiFormat/AnsiHandler.h"
 
 #include "Base.h"
 #include "Exception.h"

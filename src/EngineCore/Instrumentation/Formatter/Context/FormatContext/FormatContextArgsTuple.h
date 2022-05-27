@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "../Core/Detail/Detail.h"
+#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 
 #include "BaseFormat/FormatType.h"
 #include "BaseFormat/NamedArgs.h"
@@ -23,13 +23,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
     public:
         template <typename FormatContext>
-        inline void RunTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)     { throw Detail::FormatBufferWrongIndex{}; }
+        inline void RunTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                                          { throw Detail::FormatBufferWrongIndex(); }
 
         template <typename FormatContext, typename T>
-        inline const Detail::GetBaseType<T>* GetTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)   { throw Detail::FormatGivenTypeError{}; }
+        inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                 { throw Detail::FormatGivenTypeError(); }
 
         template <typename FormatContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& idx) { return Detail::FormatIndex{}; }
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& beginSearchIndex)    { return Detail::FormatIndex(); }
     };
 
 
@@ -51,7 +51,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
     public:
         template <typename FormatContext>
-        inline void RunTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx) {
+        inline void RunTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx) {
             if (idx.Is0())              context.RunType(m_Value);
             else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::FormatTypeFromIdx(context, idx.GetPrev());
         }
@@ -59,7 +59,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
         template <typename FormatContext, typename T, class KType = TypeWithoutRef>
         requires (std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
-        inline const Detail::GetBaseType<T>* GetTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)
+        inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)
         {
             if (idx.Is0())              return &m_Value;
             else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::GetTypeAtIdx(context, idx.GetPrev());
@@ -67,24 +67,24 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
         template <typename FormatContext, typename T, class KType = TypeWithoutRef>
         requires (!std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
-        inline const Detail::GetBaseType<T>* GetTypeAtIdx(FormatContext &context, const Detail::FormatIndex& idx)
+        inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)
         {
-            if (idx.Is0())              { throw Detail::FormatBufferWrongIndex{}; return nullptr; }
+            if (idx.Is0())              { return nullptr; }
             else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::GetTypeAtIdx(context, idx.GetPrev());
         }
 
         /////---------- GetNamedArgsIdx ----------/////
         template<typename FormatContext, class KType = TypeWithoutRef>
         requires (Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& idx) {
-            if (context.Format().NextIsANamedArgs(m_Value.GetName()))    return idx;
-            else if (idx.IsValid())                                      FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, idx.GetNext());
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& beginSearchIndex) {
+            if (context.Format().NextIsANamedArgs(m_Value.GetName()))    return beginSearchIndex;
+            else if (beginSearchIndex.IsValid())                         return FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, beginSearchIndex.GetNext());
         }
 
         template<typename FormatContext, class KType = TypeWithoutRef>
         requires (!Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& idx) {
-            FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, idx.GetNext());
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& beginSearchIndex) {
+            return FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, beginSearchIndex.GetNext());
         }
     };
 }

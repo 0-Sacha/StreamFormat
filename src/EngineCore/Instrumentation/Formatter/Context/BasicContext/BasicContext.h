@@ -2,33 +2,28 @@
 
 #include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 #include "EngineCore/Instrumentation/Formatter/Core/Buffer/Buffer.h"
-
-#include "BaseFormat/FormatType.h"
-#include "BaseFormat/NamedArgs.h"
-#include "BaseFormat/FormatArgs.h"
-#include "BaseFormat/STDEnumerable.h"
-
-#include "FormatContextArgsTuple.h"
-
-#include "../Core/FormatterHandler/FormatterHandler.h"
+#include "EngineCore/Instrumentation/Formatter/Core/FormatterHandler/FormatterHandler.h"
 
 namespace EngineCore::Instrumentation::FMT::Context {
 	template<typename CharFormat, typename ContextPackageSaving>
 	class BasicContext {
 	public:
-		using CharFormatType = CharFormat;
+		using CharFormatType 		= CharFormat;
 
-		using FormatDataType		= FormatData<CharFormat>;
-		using FormatSpecifierType	= FormatSpecifier<CharFormat>;
+		using FormatDataType		= Detail::FormatData<CharFormat>;
+		using FormatSpecifierType	= Detail::FormatSpecifier<CharFormat>;
 
-		using FormatBufferType	= Detail::FormatterMemoryFormat<CharFormat>;
+		using FormatBufferType		= Detail::FormatterMemoryFormat<CharFormat>;
 
-		using StringViewFormat = std::basic_string_view<CharFormat>;
+		using StringViewFormat 		= std::basic_string_view<CharFormat>;
 
 	public:
-		explicit BasicContext(const std::basic_string_view<CharFormat>& format);
+		explicit BasicContext(const std::basic_string_view<CharFormat>& format, const std::size_t maxIndex);
 
-	private:
+		template<typename NewCharFormat>
+		explicit BasicContext(const std::basic_string_view<CharFormat>& format, BasicContext<NewCharFormat, ContextPackageSaving>& parent, const std::size_t maxIndex);
+
+	protected:
 		FormatBufferType		m_Format;
 		Detail::FormatIndex		m_ValuesIndex;
 		FormatDataType			m_FormatData;
@@ -45,11 +40,11 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		inline static FormatterHandler& GetAPI()					{ return FormatterHandler::GetInstance(); }
 
 	public:
-		void Run() 		= 0;
+		void Run() 		{ throw Detail::FormatShouldNotEndHere(); }
 		void SafeRun();
 
 		template<typename NewCharFormat, typename ...NewContextArgs>
-		void LittleFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args) = 0;
+		void LittleFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args) { throw Detail::FormatShouldNotEndHere(); }
 		template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
 		inline void LittleFormat(const CharType (&format)[SIZE], NewContextArgs&& ...args)
 		{ LittleFormat(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
@@ -60,37 +55,40 @@ namespace EngineCore::Instrumentation::FMT::Context {
 	public:
 		// TupleInterface
 		template <typename T>
-		const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index) 		= 0;
-		Detail::FormatIndex GetIndexOfCurrentNameArg() 						= 0;
-		void RunTypeAtIndex(const Detail::FormatIndex& index) 				= 0;
+		const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index) 		{ throw Detail::FormatShouldNotEndHere(); }
+		Detail::FormatIndex GetIndexOfCurrentNameArg() 						{ throw Detail::FormatShouldNotEndHere(); }
+		void RunTypeAtIndex(const Detail::FormatIndex& index) 				{ throw Detail::FormatShouldNotEndHere(); }
 		
-	private:
+		template <typename T>
+		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void (const T&)> func) { throw Detail::FormatShouldNotEndHere(); }
+
+	protected:
 		void ParseFormatDataBase();
 		void ParseFormatDataSpecial();
 		void ParseFormatDataCustom();
 		void ParseFormatData();
 
-		void ParseFormatDataColor() 	= 0;
-		void ParseFormatDataStyle() 	= 0;
-		void ParseFormatDataFront() 	= 0;
-		ContextPackageSaving ContextStyleSave() 					= 0;
-		void ContextStyleRestore(const ContextPackageSaving&) 		= 0;
+		void ParseFormatDataColor() 	{ throw Detail::FormatShouldNotEndHere(); }
+		void ParseFormatDataStyle() 	{ throw Detail::FormatShouldNotEndHere(); }
+		void ParseFormatDataFront() 	{ throw Detail::FormatShouldNotEndHere(); }
+		ContextPackageSaving ContextStyleSave() 					{ throw Detail::FormatShouldNotEndHere(); }
+		void ContextStyleRestore(const ContextPackageSaving&) 		{ throw Detail::FormatShouldNotEndHere(); }
 
 		void ParseSpecial();
-		void ParseVariable(FormatIndex formatIdx);
+		void ParseVariable(Detail::FormatIndex formatIdx);
 		bool Parse();
 
-	private:
-		void ParseTimer() 			= 0;
-		void ParseDate() 			= 0;
+	protected:
+		void ParseTimer() 			{ throw Detail::FormatShouldNotEndHere(); }
+		void ParseDate() 			{ throw Detail::FormatShouldNotEndHere(); }
 
-		void ParseColor() 			= 0;
-		void ParseStyle() 			= 0;
-		void ParseFront() 			= 0;
-		void ContextStyleBegin() 	= 0;
-		void ContextStyleEnd() 		= 0;
+		void ParseColor() 			{ throw Detail::FormatShouldNotEndHere(); }
+		void ParseStyle() 			{ throw Detail::FormatShouldNotEndHere(); }
+		void ParseFront() 			{ throw Detail::FormatShouldNotEndHere(); }
+		void ContextStyleBegin() 	{ throw Detail::FormatShouldNotEndHere(); }
+		void ContextStyleEnd() 		{ throw Detail::FormatShouldNotEndHere(); }
 
-		void ParseSetter() 			= 0;
+		void ParseSetter() 			{ throw Detail::FormatShouldNotEndHere(); }
 
 	public:
 		template<typename T> void FormatReadParameterThrow(T& i);
@@ -98,26 +96,28 @@ namespace EngineCore::Instrumentation::FMT::Context {
 	public:
 		// Type formating from FormatType<>
 		template<typename Type>
-		inline void RunType(Type&& type) 						= 0;
+		inline void RunType(Type&& type) 						{ throw Detail::FormatShouldNotEndHere(); }
 		template<typename Type, typename ...Rest>
 		inline void RunType(Type&& type, const Rest&& ...rest) 	{ RunType(type); RunType(std::forward<Rest>(rest)...); }
 
 		// Only support basic type that are considered as basic by Buffer class
 		template<typename Type>
-		inline void BasicRunType(Type&& type) 					= 0;
+		inline void BasicRunType(Type&& type) 					{ throw Detail::FormatShouldNotEndHere(); }
 		template<typename Type, typename ...Rest>
 		inline void BasicRunType(Type&& type, Rest&& ...rest) 	{ BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); };
 
 	public:
-		inline StringViewFormat GetStringViewParamUntil(CharFormat... c) {
+		template <typename ...CharToTest>
+		inline StringViewFormat GetStringViewParamUntil(CharToTest ...c) {
 			const char* namePos = m_Format.GetBufferCurrentPos();
-			m_Format.ParamGoTo(c);
+			m_Format.ParamGoTo(c...);
 			return StringViewFormat(namePos, m_Format.GetBufferCurrentPos() - namePos);
 		}
 
-		inline StringViewFormat GetStringViewUntil(CharFormat... c) {
+		template <typename ...CharToTest>
+		inline StringViewFormat GetStringViewUntil(CharToTest ...c) {
 			const char* namePos = m_Format.GetBufferCurrentPos();
-			m_Format.GoTo(c);
+			m_Format.GoTo(c...);
 			return StringViewFormat(namePos, m_Format.GetBufferCurrentPos() - namePos);
 		}
 

@@ -1,34 +1,35 @@
 #pragma once
 
-#include "BasicFormatContext.h"
-
-#include "BaseFormat/BaseFormat.h"
-#include "BaseFormat/BaseAnsiTextColor.h"
-#include "BaseFormat/BaseAnsiTextStyle.h"
-#include "BaseFormat/BaseAnsiFront.h"
-#include "BaseFormat/Chrono.h"
-#include "BaseFormat/BaseSTDLib.h"
+#include "BasicContext.h"
 
 namespace EngineCore::Instrumentation::FMT::Context {
 
-	template<typename CharFormat>
-	BasicFormatContext<CharFormat>::BasicFormatContext(const std::basic_string_view<CharFormat>& format)
+	template<typename CharFormat, typename ContextPackageSaving>
+	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, const std::size_t maxIndex)
 		: m_Format(format)
-		, m_ValuesIndex()
+		, m_ValuesIndex(0, maxIndex)
 		, m_FormatData()
 	{}
 
-	template<typename CharFormat>
-	void BasicContext<CharFormat>::SafeRun() {
+	template<typename CharFormat, typename ContextPackageSaving>
+	template<typename NewCharFormat>
+	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, BasicContext<NewCharFormat, ContextPackageSaving>& parent, const std::size_t maxIndex)
+		: m_Format(format)
+		, m_ValuesIndex(0, maxIndex)
+		, m_FormatData()
+	{}
+
+	template<typename CharFormat, typename ContextPackageSaving>
+	void BasicContext<CharFormat, ContextPackageSaving>::SafeRun() {
 		try {
 			Run();
 		}
 		catch (const Detail::FormatError&) {}
 	}
 
-	template<typename CharFormat>
+	template<typename CharFormat, typename ContextPackageSaving>
 	template<typename T>
-	void BasicContext<CharFormat>::FormatReadParameterThrow(T& i) {
+	void BasicContext<CharFormat, ContextPackageSaving>::FormatReadParameterThrow(T& i) {
 		if (!m_Format.IsEqualTo('{'))
 			if (!m_Format.ReadUInt(i))
 				throw Detail::FormatParseError{};
