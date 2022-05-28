@@ -2,10 +2,10 @@
 
 #include "../BasicContext/BasicContextInclude.h"
 
-#include "BaseFormat/FormatType.h"
-#include "BaseFormat/NamedArgs.h"
-#include "BaseFormat/FormatArgs.h"
-#include "BaseFormat/STDEnumerable.h"
+#include "Utils/FormatType.h"
+#include "Utils/NamedArgs.h"
+#include "Utils/FormatArgs.h"
+#include "Utils/STDEnumerable.h"
 
 #include "AnsiFormatParser.h"
 
@@ -29,7 +29,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
         using StringViewBuffer 	= std::basic_string_view<CharBuffer>;
         using BufferOutType 	= Detail::BasicFormatterMemoryBufferOut<CharBuffer>;
         using ContextArgsType 	= Detail::FormatContextArgsTuple<ContextArgs...>;
-        using AnsiParserType 	= Detail::AnsiFormatParser<M_Type, CharFormat>;
+        using AnsiParserType 	= Detail::AnsiFormatParser<M_Type, FormatBufferType>;
 
     public:
         BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs &&...args);
@@ -156,15 +156,15 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
         // Type formating from FormatType<>
         template<typename Type>
-        inline void RunType(Type&& type)                                { FormatType<Detail::GetBaseType<Type>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Write(type, *this); }
+        inline void RunType(Type&& type)                        { FormatType<Detail::GetBaseType<Type>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Write(type, *this); }
         template<typename Type, typename ...Rest>
-        inline void WriteType(Type&& type, const Rest&& ...rest)		{ RunType(type, std::forward<Rest>(rest)...); }
+        inline void WriteType(Type&& type, Rest&& ...rest)		{ RunType(type, std::forward<Rest>(rest)...); }
 
         // Only support basic type that are considered as basic by Buffer class
         template<typename Type>
-        inline void BasicRunType(Type&& type)                           { m_BufferOut.BasicWriteType(type); }
+        inline void BasicRunType(Type&& type)                   { m_BufferOut.BasicWriteType(type); }
         template<typename Type, typename ...Rest>
-        inline void BasicWriteType(Type&& type, const Rest&& ...rest)	{ BasicRunType(type, std::forward<Rest>(rest)...); }
+        inline void BasicWriteType(Type&& type, Rest&& ...rest)	{ BasicRunType(type, std::forward<Rest>(rest)...); }
 
     public:
         using Base::GetStringViewParamUntil;

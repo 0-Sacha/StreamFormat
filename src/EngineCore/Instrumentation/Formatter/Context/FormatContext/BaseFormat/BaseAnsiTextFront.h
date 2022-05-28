@@ -12,8 +12,7 @@ namespace EngineCore::Instrumentation::FMT {
 		static void Write(const Detail::AnsiFront t, FormatContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
 			context.BasicWriteType('\033', '[', t.FrontId, 'm');
-
-			context.GetAnsiFormatterChange().HasMadeChange = true;
+			context.GetAnsiManager().FrontModif(t);
 		}
 	};
 

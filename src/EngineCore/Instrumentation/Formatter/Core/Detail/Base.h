@@ -26,7 +26,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			, MaxValue((std::numeric_limits<BaseType>::max)())
 		{}
 
-		explicit FormatIndex(const BaseType index, const BaseType maxValue)
+		FormatIndex(const BaseType index, const BaseType maxValue)
 			: Index(index)
 			, MaxValue(maxValue)
 		{}
@@ -48,6 +48,11 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		FormatIndex GetAndPrev() 	{ FormatIndex old = *this; --Index; return old; }
 		FormatIndex PrevAndGet() 	{ --Index; return *this; }
 		FormatIndex GetPrev() const	{ FormatIndex res = *this; --res.Index; return res; }
+
+		void SetContext(FormatIndex sameContext)
+		{
+			MaxValue = sameContext.MaxValue;
+		}
 	};
 } // namespace EngineCore::Instrumentation::FMT::Detail
 

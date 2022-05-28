@@ -3,7 +3,6 @@
 #include "BasicFormatContext.h"
 #include "BasicFormatContextCoreImpl.h"
 
-#include "BaseFormat/BaseFormat.h"
 #include "BaseFormat/BaseAnsiTextColor.h"
 #include "BaseFormat/BaseAnsiTextStyle.h"
 #include "BaseFormat/BaseAnsiTextFront.h"
@@ -14,21 +13,19 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
-		: Base(format)
+		: Base(format, sizeof...(ContextArgs))
 		, m_BufferOut(buffer, bufferSize)
 		, m_AnsiManager(*this)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-	{
-	}
+	{}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext([[maybe_unused]] const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args)
-		: Base(format)
+		: Base(format, sizeof...(ContextArgs))
 		, m_BufferOut()
 		, m_AnsiManager(*this)
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-	{
-	}
+	{}
 
 	// Used for LittleFormat | Clone
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>

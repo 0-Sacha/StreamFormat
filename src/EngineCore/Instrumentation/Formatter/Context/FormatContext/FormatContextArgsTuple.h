@@ -3,9 +3,9 @@
 
 #include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 
-#include "BaseFormat/FormatType.h"
-#include "BaseFormat/NamedArgs.h"
-#include "BaseFormat/FormatArgs.h"
+#include "Utils/FormatType.h"
+#include "Utils/NamedArgs.h"
+#include "Utils/FormatArgs.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 

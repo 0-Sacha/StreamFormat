@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BasicFormatContext.h"
+#include "BasicFormatContextCoreImpl.h"
 
 namespace EngineCore::Instrumentation::FMT::Context {
 

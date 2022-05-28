@@ -2,7 +2,6 @@
 
 #include "FormatType.h"
 
-
 namespace EngineCore::Instrumentation::FMT {
 
 	class STDEnumerableUtility {

@@ -55,22 +55,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AllDisable	= 76
 	};
 
-	struct ForwardAsAnsiBasicTextStyle {
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSIntensity value)	: Value(static_cast<std::uint8_t>(value)) {}
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSItalic value)		: Value(static_cast<std::uint8_t>(value)) {}
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSUnderline value)	: Value(static_cast<std::uint8_t>(value)) {}
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSBlink value)		: Value(static_cast<std::uint8_t>(value)) {}
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSInverted value)		: Value(static_cast<std::uint8_t>(value)) {}
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSIdeogram value)		: Value(static_cast<std::uint8_t>(value)) {}
-		explicit inline ForwardAsAnsiBasicTextStyle(const AnsiTFSScript value)		: Value(static_cast<std::uint8_t>(value)) {}
-
-		std::uint8_t Value;
-
-		inline operator std::uint8_t() const {
-			return Value;
-		}
-	};
-
 	enum class AnsiBasicTextStyle : std::uint8_t {
 		Intensity_Bold				= static_cast<std::uint8_t>(AnsiTFSIntensity::Bold),
 		Intensity_Dim				= static_cast<std::uint8_t>(AnsiTFSIntensity::Dim),

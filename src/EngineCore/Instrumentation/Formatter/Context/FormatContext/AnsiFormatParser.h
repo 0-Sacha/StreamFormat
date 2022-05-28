@@ -3,11 +3,11 @@
 #include "../BasicContext/AnsiParseur.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
-	template<typename FormatContext, typename CharFormat>
-	struct AnsiFormatParser : BasicAnsiParseur<CharFormat> {
+	template<typename FormatContext, typename Format>
+	struct AnsiFormatParser : BasicAnsiParseur<Format> {
 	
 	public:
-		using Base = BasicAnsiParseur<CharFormat>;
+		using Base = BasicAnsiParseur<Format>;
 		using ContextPackageSaving = Detail::AnsiTextData;
 
 	public:
@@ -20,6 +20,20 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Detail::AnsiTextData 	CurrentContext;
 		FormatContext& 			Context;
 	
+	public:
+		template <typename T>
+		void ColorModif(const T& modif) 	{ CurrentContext.Color.ModifyThrow(modif); }
+
+		template <typename T>
+		void StyleModif(const T& modif) 	{ CurrentContext.Style.ModifyThrow(modif); }
+
+		template <typename T>
+		void FrontModif(const T& modif) 	{ CurrentContext.Front.ModifyThrow(modif); }
+
+		void ColorModifReset() 				{ CurrentContext.Color.ModifyThrow(Detail::AnsiColor{}); }
+		void StyleModifReset() 				{ CurrentContext.Style.ModifyThrow(Detail::AnsiStyle{}); }
+		void FrontModifReset() 				{ CurrentContext.Front.ModifyThrow(Detail::AnsiFront{}); }
+
 	public:
 		template <typename T>
 		void ColorRun(const T& modif)

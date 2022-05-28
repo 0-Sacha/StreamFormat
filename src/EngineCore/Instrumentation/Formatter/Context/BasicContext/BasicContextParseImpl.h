@@ -95,10 +95,12 @@ namespace EngineCore::Instrumentation::FMT::Context {
 				return m_ValuesIndex.GetAndNext();
 
 		// II: A number(idx)
-		Detail::DataType idx;
-		if (m_Format.ReadUInt(idx))
+		Detail::FormatIndex idxGet;
+		idxGet.SetContext(m_ValuesIndex);
+		if (m_Format.ReadUInt(idxGet.Index))
 			if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('}'))
-				if (idx < m_ContextArgs.Size())	return idx;
+				if (idxGet.IsValid())
+					return idxGet;
 
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
@@ -114,7 +116,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		{
 			try {
 
-				Detail::FormatIndex recIndex = GetFormatIndexThrow(newIdx);
+				Detail::FormatIndex recIndex = GetFormatIndexThrow();
 				if(m_ValuesIndex.IsValid())
 				{
 					Detail::FormatIndex finalRecIndex = GetTypeAtIndexThrow(recIndex);
@@ -145,18 +147,17 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving>
 	void BasicContext<CharFormat, ContextPackageSaving>::ParseVariable(Detail::FormatIndex formatIdx) {
-		FormatDataType data = m_FormatData;
-		m_FormatData = DataType();
+		FormatDataType saveFormatData = m_FormatData;
+		m_FormatData = FormatDataType{};
+		ContextPackageSaving savePackage = ContextStyleSave();
 
-		ContextPackageSaving package = ContextStyleSave();
-
-		if (!m_FormatData.IsInit)		ParameterParseData();
+		if (!m_FormatData.IsInit)
+			ParseFormatData();
 
 		RunTypeAtIndex(formatIdx);
 
-		ContextStyleRestore(package);
-
-		m_FormatData = data;
+		ContextStyleRestore(savePackage);
+		m_FormatData = saveFormatData;
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving>
