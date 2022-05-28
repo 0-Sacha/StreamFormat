@@ -221,7 +221,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		}
 
 		/////---------- Buffer Commands ----------/////
-		inline void Set(const CharBuffer c)								{ *m_CurrentPos = c; }
+		inline void SetChar(const CharBuffer c)							{ *m_CurrentPos = c; }
 		inline void PushBack(const CharBuffer c)						{ if (CanMoveForward()) *m_CurrentPos++ = c; }
 		inline void PushReverse(const CharBuffer c)						{ if (CanMoveBackward()) *m_CurrentPos-- = c; }
 		inline void PushBackNoCheck(const CharBuffer c)					{ *m_CurrentPos++ = c; }
@@ -247,7 +247,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		/////---------- Buffer Commands Indent ----------/////
 		inline void NewLineIndent()											{ PushBack('\n'); PushBack(' ', m_Indent); }
 
-		inline void SetIndent(const CharBuffer c)							{ Set(c);  if (c == '\n') PushBack(' ', m_Indent); }
+		inline void SetCharIndent(const CharBuffer c)						{ SetChar(c);  if (c == '\n') PushBack(' ', m_Indent); }
 		inline void PushBackIndent(const CharBuffer c)						{ PushBack(c);  if (c == '\n') PushBack(' ', m_Indent); }
 
 		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str) {

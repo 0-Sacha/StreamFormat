@@ -25,7 +25,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         template <typename FormatContext>
         inline void RunTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                                          { throw Detail::FormatBufferWrongIndex(); }
 
-        template <typename FormatContext, typename T>
+        template <typename T, typename FormatContext>
         inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                 { throw Detail::FormatGivenTypeError(); }
 
         template <typename FormatContext>
@@ -52,33 +52,37 @@ namespace EngineCore::Instrumentation::FMT::Detail {
     public:
         template <typename FormatContext>
         inline void RunTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx) {
-            if (idx.Is0())              context.RunType(m_Value);
-            else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::FormatTypeFromIdx(context, idx.GetPrev());
+            if (idx.Is0())
+                return context.RunType(m_Value);
+            return FormatContextArgsTuple<Rest...>::RunTypeAtIndex(context, idx.GetPrev());
         }
 
 
-        template <typename FormatContext, typename T, class KType = TypeWithoutRef>
+        template <typename T, typename FormatContext, class KType = TypeWithoutRef>
         requires (std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
         inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)
         {
-            if (idx.Is0())              return &m_Value;
-            else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::GetTypeAtIdx(context, idx.GetPrev());
+            if (idx.Is0())
+                return &m_Value;
+            return FormatContextArgsTuple<Rest...>::template GetTypeAtIndex<T>(context, idx.GetPrev());
         }
 
-        template <typename FormatContext, typename T, class KType = TypeWithoutRef>
+        template <typename T, typename FormatContext, class KType = TypeWithoutRef>
         requires (!std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
         inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)
         {
-            if (idx.Is0())              { return nullptr; }
-            else if (idx.IsValid())     FormatContextArgsTuple<Rest...>::GetTypeAtIdx(context, idx.GetPrev());
+            if (idx.Is0())
+                return nullptr;
+            return FormatContextArgsTuple<Rest...>::template GetTypeAtIndex<T>(context, idx.GetPrev());
         }
 
         /////---------- GetNamedArgsIdx ----------/////
         template<typename FormatContext, class KType = TypeWithoutRef>
         requires (Detail::IsANamedArgs<Detail::GetBaseType<KType>>::value)
         inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& beginSearchIndex) {
-            if (context.Format().NextIsANamedArgs(m_Value.GetName()))    return beginSearchIndex;
-            else if (beginSearchIndex.IsValid())                         return FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, beginSearchIndex.GetNext());
+            if (context.Format().NextIsANamedArgs(m_Value.GetName()))
+                return beginSearchIndex;
+            return FormatContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, beginSearchIndex.GetNext());
         }
 
         template<typename FormatContext, class KType = TypeWithoutRef>

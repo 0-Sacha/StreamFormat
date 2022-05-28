@@ -14,11 +14,13 @@
 namespace EngineCore::Instrumentation::FMT::Context {
 
     template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-    class BasicFormatContext : BasicContext<CharFormat, Detail::AnsiTextData>
+    class BasicFormatContext : BasicContext<CharFormat, Detail::AnsiTextData, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>
     {
     public:
-        using Base = BasicContext<CharFormat, Detail::AnsiTextData>;
+        using Base = BasicContext<CharFormat, Detail::AnsiTextData, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>;
         using M_Type = BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>;
+
+        friend Base;
 
         using typename Base::CharFormatType;
         using typename Base::FormatDataType;
@@ -63,14 +65,13 @@ namespace EngineCore::Instrumentation::FMT::Context {
         inline const AnsiParserType&		GetAnsiManager() const	{ return m_AnsiManager; }
 
     public:
-        using Base::Run;
         using Base::SafeRun;
         using Base::LittleFormat;
 
         void Run();
 
         template<typename NewCharFormat, typename ...NewContextArgs>
-        void LittleFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args);
+        void LittleFormatImpl(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args);
 
     public:
         using Base::GetFormatIndexThrow;
@@ -81,10 +82,16 @@ namespace EngineCore::Instrumentation::FMT::Context {
         using Base::GetIndexOfCurrentNameArg;
         using Base::RunTypeAtIndex;
         
-        void RunTypeAtIndex(const Detail::FormatIndex& index)                                   { m_ContextArgs.RunTypeAtIdx(*this, index); }
+        void RunTypeAtIndex(const Detail::FormatIndex& index)                                   { m_ContextArgs.RunTypeAtIndex(*this, index); }
+        Detail::FormatIndex GetIndexOfCurrentNameArg()                                          { return m_ContextArgs.GetIndexOfCurrentNameArg(*this, Detail::FormatIndex(0)); }
+
         template <typename T>
-        const Detail::GetBaseType<T>& GetTypeAtIndexThrow(const Detail::FormatIndex& index)     { return *m_ContextArgs.template GetTypeAtIndex<T>(*this, index); }
-        Detail::FormatIndex GetIndexOfCurrentNameArg()                                          { return m_ContextArgs.GetIndexOfCurrentNameArg(*this, 0); }
+        const Detail::GetBaseType<T>& GetTypeAtIndexThrow(const Detail::FormatIndex& index) {
+            const T* value = m_ContextArgs.template GetTypeAtIndex<T>(*this, index);
+            if (value == nullptr)
+                throw Detail::FormatGivenTypeError{};
+            return *value;
+        }
 
         template <typename T>
 		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void (const T&)> func)

@@ -33,7 +33,8 @@ namespace EngineCore::Instrumentation::FMT::Context {
 			if (m_Format.IsEqualForward('='))
 			{
 				m_Format.IgnoreSpace();
-				Detail::DataType value = FormatReadParameterThrow();
+				Detail::DataType value;
+				FormatReadParameterThrow(value);
 				BufferOut().SetIndent(value);
 			}
 			else

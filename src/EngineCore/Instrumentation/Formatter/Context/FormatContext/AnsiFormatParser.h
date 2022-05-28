@@ -4,10 +4,10 @@
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 	template<typename FormatContext, typename Format>
-	struct AnsiFormatParser : BasicAnsiParseur<Format> {
+	struct AnsiFormatParser : BasicAnsiParseur<Format, FormatContext> {
 	
 	public:
-		using Base = BasicAnsiParseur<Format>;
+		using Base = BasicAnsiParseur<Format, FormatContext>;
 		using ContextPackageSaving = Detail::AnsiTextData;
 
 	public:

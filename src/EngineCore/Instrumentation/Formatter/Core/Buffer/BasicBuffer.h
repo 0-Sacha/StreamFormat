@@ -8,7 +8,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	class BasicFormatterMemoryBuffer {
 
 	public:
-		using StringView = std::basic_string_view<CharBuffer>;
+		using CharBufferType = Detail::GetBaseType<CharBuffer>;
+		using StringView = std::basic_string_view<CharBufferType>;
 
 	protected:
 		CharBuffer*			m_Buffer;
@@ -33,7 +34,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		inline void					SetChildBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* childBuffer)	{ m_ChildBuffer = childBuffer; }
 
 	public:
-		BasicFormatterMemoryBuffer(const std::basic_string_view<typename std::remove_const<CharBuffer>::type>& buffer)
+		BasicFormatterMemoryBuffer(const std::basic_string_view<CharBufferType>& buffer)
 			: m_Buffer(buffer.data())
 			, m_CurrentPos(buffer.data())
 			, m_BufferEnd(buffer.data() + buffer.size())

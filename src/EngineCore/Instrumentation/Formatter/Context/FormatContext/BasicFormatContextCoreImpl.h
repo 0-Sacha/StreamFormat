@@ -31,7 +31,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename ParentCharFormat, typename ...ParentContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, BasicFormatContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
-		: Base(format, parentContext)
+		: Base(format, parentContext, sizeof...(ContextArgs))
 		, m_BufferOut(parentContext.BufferOut())
 		, m_AnsiManager(parentContext.GetAnsiManager())
 		, m_ContextArgs(std::forward<ContextArgs>(args)...)
@@ -57,7 +57,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	template<typename NewCharFormat, typename ...Args>
-	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleFormat(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
+	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::LittleFormatImpl(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
 		BasicFormatContext<NewCharFormat, CharBuffer, Args...> child(format, *this, std::forward<Args>(args)...);
 		child.Run();
 	}

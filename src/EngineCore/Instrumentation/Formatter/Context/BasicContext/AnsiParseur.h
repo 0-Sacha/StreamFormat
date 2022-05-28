@@ -5,7 +5,7 @@
 #include "EngineCore/Instrumentation/Formatter/Core/AnsiFormat/AnsiHandler.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
-	template<typename FormatBuffer>
+	template<typename FormatBuffer, typename Master>
 	struct BasicAnsiParseur {
 
 	public:
@@ -14,7 +14,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		{}
 
 	public:
-		Detail::FormatIndex GetFormatIndexThrow();
+		Detail::FormatIndex GetFormatIndexThrow() { return reinterpret_cast<Master*>(this)->GetFormatIndexThrow(); }
 		
 	public:
 		void ColorRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
@@ -49,8 +49,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 
 namespace EngineCore::Instrumentation::FMT::Detail {
-	template<typename FormatBuffer>
-	void BasicAnsiParseur<FormatBuffer>::ParseColor() {
+	template<typename FormatBuffer, typename Master>
+	void BasicAnsiParseur<FormatBuffer, Master>::ParseColor() {
 		if (Format.IsEqualForward(':')) {
 			Format.IgnoreSpace();
 			if (Format.IsEqualForward('{'))
@@ -78,8 +78,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	}
 
 
-	template<typename FormatBuffer>
-	std::size_t BasicAnsiParseur<FormatBuffer>::GetColorCode() {
+	template<typename FormatBuffer, typename Master>
+	std::size_t BasicAnsiParseur<FormatBuffer, Master>::GetColorCode() {
 		static constexpr std::string_view colorCode[] = {
 			"black",
 			"red",
@@ -96,17 +96,17 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		return Format.GetWordFromList(colorCode);
 	}
 
-	template<typename FormatBuffer>
+	template<typename FormatBuffer, typename Master>
 	template<typename T>
-	T BasicAnsiParseur<FormatBuffer>::GetColorCodeAuto() {
+	T BasicAnsiParseur<FormatBuffer, Master>::GetColorCodeAuto() {
 		std::size_t step = static_cast<std::size_t>(Format.IsEqualForward('+') ? T::BaseBStep : T::BaseStep);
 		std::size_t code = GetColorCode();
 		if (code == Format.GET_WORD_FROM_LIST_NOT_FOUND) 	return T::Default;
 		return static_cast<T>(code + step);
 	}
 
-	template<typename FormatBuffer>
-	void BasicAnsiParseur<FormatBuffer>::ParseStyle() {
+	template<typename FormatBuffer, typename Master>
+	void BasicAnsiParseur<FormatBuffer, Master>::ParseStyle() {
 		if (Format.IsEqualForward(':')) {
 			if (!Format.IsEqualTo('}', ',')) {
 				bool l = true;
@@ -141,8 +141,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			StyleRun(Detail::RESET_ANSI_STYLE);
 	}
 
-	template <typename FormatBuffer>
-	Detail::AnsiBasicTextStyle BasicAnsiParseur<FormatBuffer>::GetStyleCode() {
+	template<typename FormatBuffer, typename Master>
+	Detail::AnsiBasicTextStyle BasicAnsiParseur<FormatBuffer, Master>::GetStyleCode() {
 		static constexpr typename FormatBuffer::template TextTo<Detail::AnsiBasicTextStyle> styleCode[] = {
 			{ "bold",			Detail::AnsiBasicTextStyle::Intensity_Bold				},
 			{ "dim",			Detail::AnsiBasicTextStyle::Intensity_Dim				},
@@ -172,8 +172,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		return Format.GetWordFromList(styleCode);
 	}
 
-	template<typename FormatBuffer>
-	Detail::AnsiNColorUnderline BasicAnsiParseur<FormatBuffer>::SelectUnderlinedColorStyle() {
+	template<typename FormatBuffer, typename Master>
+	Detail::AnsiNColorUnderline BasicAnsiParseur<FormatBuffer, Master>::SelectUnderlinedColorStyle() {
 		Format.ParamGoTo(':');
 		Format.IsEqualForward(':');
 		Format.IgnoreSpace();
@@ -182,18 +182,18 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 
 
-	template<typename FormatBuffer>
-	void BasicAnsiParseur<FormatBuffer>::ParseFront() {
+	template<typename FormatBuffer, typename Master>
+	void BasicAnsiParseur<FormatBuffer, Master>::ParseFront() {
 		if (Format.IsEqualForward(':')) {
 			Format.IgnoreSpace();
-			WriteType(GetFrontCode());
+			FrontRun(GetFrontCode());
 		}
 		else
 			FrontRun(RESET_ANSI_FRONT);
 	}
 
-	template<typename FormatBuffer>
-	Detail::AnsiFront BasicAnsiParseur<FormatBuffer>::GetFrontCode() {
+	template<typename FormatBuffer, typename Master>
+	Detail::AnsiFront BasicAnsiParseur<FormatBuffer, Master>::GetFrontCode() {
 		// TODO : change to specific os
 		static constexpr std::string_view frontCode[] = {
 			"default",

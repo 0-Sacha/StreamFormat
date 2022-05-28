@@ -57,16 +57,16 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		template <typename Char>
 		inline RestoreIndentFunction(FormatContext& context, const std::basic_string_view<Char>& txt, bool addIndentEnd = true)
 			: Context(context)
-			, OldIndent(context.GetIndent())
+			, OldIndent(context.BufferOut().GetIndent())
 			, GetIndentInfo(txt)
 			, AddIndentEnd(addIndentEnd)
 		{}
 
 		~RestoreIndentFunction() {
 			if (GetIndentInfo.Restore)
-				Context.SetIndent(OldIndent);
+				Context.BufferOut().SetIndent(OldIndent);
 			if (AddIndentEnd)
-				Context.AddIndent(GetIndentInfo.AddIndent);
+				Context.BufferOut().AddIndent(GetIndentInfo.AddIndent);
 		}
 
 		FormatContext&											Context;

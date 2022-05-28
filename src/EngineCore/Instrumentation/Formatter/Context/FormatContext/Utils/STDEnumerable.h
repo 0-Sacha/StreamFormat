@@ -58,7 +58,7 @@ namespace EngineCore::Instrumentation::FMT {
 
 				context.PrintIndent(enumerable.GetStrBegin());
 
-				context.AddIndent(enumerable.GetStrBegin().size());
+				context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
 
 				bool first = true;
 				std::size_t addindent = 0;
@@ -73,8 +73,8 @@ namespace EngineCore::Instrumentation::FMT {
 				});
 
 				Detail::GetIndentInfo info(enumerable.GetStrJoin());
-				context.AddIndent(info.AddIndent);
-				context.AddIndent(addindent);
+				context.BufferOut().AddIndent(info.AddIndent);
+				context.BufferOut().AddIndent(addindent);
 			}
 
 			context.PrintIndent(enumerable.GetStrEnd());
