@@ -21,12 +21,12 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static inline constexpr DataType FORMAT_INDEX_NOT_SET	= -1;
 
 	public:
-		explicit FormatIndex(const BaseType index = FORMAT_INDEX_NOT_SET)
+		explicit constexpr FormatIndex(const BaseType index = FORMAT_INDEX_NOT_SET)
 			: Index(index)
 			, MaxValue((std::numeric_limits<BaseType>::max)())
 		{}
 
-		FormatIndex(const BaseType index, const BaseType maxValue)
+		constexpr FormatIndex(const BaseType index, const BaseType maxValue)
 			: Index(index)
 			, MaxValue(maxValue)
 		{}
@@ -36,18 +36,18 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		BaseType MaxValue;
 
 	public:
-		bool IsValid() 	const		{ return Index >= 0 && Index < MaxValue; }
-		bool Is0() 		const		{ return Index == 0; }
+		constexpr bool IsValid() 	const		{ return Index >= 0 && Index < MaxValue; }
+		constexpr bool Is0() 		const		{ return Index == 0; }
 
 	public:
-		FormatIndex Get() const		{ return *this; }
-		FormatIndex GetAndNext() 	{ FormatIndex old = *this; ++Index; return old; }
-		FormatIndex NextAndGet() 	{ ++Index; return *this; }
-		FormatIndex GetNext() const	{ FormatIndex res = *this; ++res.Index; return res; }
+		constexpr FormatIndex Get() const		{ return *this; }
+		constexpr FormatIndex GetAndNext() 		{ FormatIndex old = *this; ++Index; return old; }
+		constexpr FormatIndex NextAndGet() 		{ ++Index; return *this; }
+		constexpr FormatIndex GetNext() const	{ FormatIndex res = *this; ++res.Index; return res; }
 
-		FormatIndex GetAndPrev() 	{ FormatIndex old = *this; --Index; return old; }
-		FormatIndex PrevAndGet() 	{ --Index; return *this; }
-		FormatIndex GetPrev() const	{ FormatIndex res = *this; --res.Index; return res; }
+		constexpr FormatIndex GetAndPrev() 		{ FormatIndex old = *this; --Index; return old; }
+		constexpr FormatIndex PrevAndGet() 		{ --Index; return *this; }
+		constexpr FormatIndex GetPrev() const	{ FormatIndex res = *this; --res.Index; return res; }
 
 		void SetContext(FormatIndex sameContext)
 		{

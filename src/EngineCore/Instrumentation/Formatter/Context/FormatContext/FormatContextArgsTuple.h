@@ -5,7 +5,8 @@
 
 #include "Utils/FormatType.h"
 #include "Utils/NamedArgs.h"
-#include "Utils/FormatArgs.h"
+#include "Utils/IndexArgs.h"
+#include "Utils/FormatContextTemplate.h"
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 
@@ -26,7 +27,10 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         inline void RunTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                                          { throw Detail::FormatBufferWrongIndex(); }
 
         template <typename T, typename FormatContext>
-        inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                 { throw Detail::FormatGivenTypeError(); }
+        inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)                 { throw Detail::FormatGivenTypeError(); return nullptr; }
+        
+        template <typename T, typename FormatContext>
+        inline T GetTypeAtIndexConvertThrow(FormatContext &context, const Detail::FormatIndex& idx)                                 { throw Detail::FormatGivenTypeError(); return T{}; }
 
         template <typename FormatContext>
         inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatContext& context, const Detail::FormatIndex& beginSearchIndex)    { return Detail::FormatIndex(); }
@@ -59,7 +63,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 
         template <typename T, typename FormatContext, class KType = TypeWithoutRef>
-        requires (std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
+        requires (Context::FormatContextArgsTupleSameAs<T, KType>::SameAs)
         inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)
         {
             if (idx.Is0())
@@ -68,12 +72,30 @@ namespace EngineCore::Instrumentation::FMT::Detail {
         }
 
         template <typename T, typename FormatContext, class KType = TypeWithoutRef>
-        requires (!std::is_same_v<Detail::GetBaseType<T>, Detail::GetBaseType<KType>>)
+        requires (!Context::FormatContextArgsTupleSameAs<T, KType>::SameAs)
         inline const Detail::GetBaseType<T>* GetTypeAtIndex(FormatContext &context, const Detail::FormatIndex& idx)
         {
             if (idx.Is0())
                 return nullptr;
             return FormatContextArgsTuple<Rest...>::template GetTypeAtIndex<T>(context, idx.GetPrev());
+        }
+
+        template <typename T, typename FormatContext, class KType = TypeWithoutRef>
+        requires (Context::FormatContextArgsTupleConvertFunc<T, KType>::IsConvertible)
+        inline T GetTypeAtIndexConvertThrow(FormatContext &context, const Detail::FormatIndex& idx)
+        {
+            if (idx.Is0())
+                return Context::FormatContextArgsTupleConvertFunc<T, KType>::Convert(m_Value);
+            return FormatContextArgsTuple<Rest...>::template GetTypeAtIndexConvertThrow<T>(context, idx.GetPrev());
+        }
+
+        template <typename T, typename FormatContext, class KType = TypeWithoutRef>
+        requires (!Context::FormatContextArgsTupleConvertFunc<T, KType>::IsConvertible)
+        inline T GetTypeAtIndexConvertThrow(FormatContext &context, const Detail::FormatIndex& idx)
+        {
+            if (idx.Is0())
+                return T{};
+            return FormatContextArgsTuple<Rest...>::template GetTypeAtIndexConvertThrow<T>(context, idx.GetPrev());
         }
 
         /////---------- GetNamedArgsIdx ----------/////

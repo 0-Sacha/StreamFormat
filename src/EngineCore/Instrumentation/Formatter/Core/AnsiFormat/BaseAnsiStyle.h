@@ -87,64 +87,11 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Script_AllDisable			= static_cast<std::uint8_t>(AnsiTFSScript::AllDisable)
 	};
 
-	inline void AnsiBasicTextStyleDispatch(const AnsiBasicTextStyle& style, const std::function<void (const AnsiTFSIntensity&)>& 	funcIntensity
-																   		  , const std::function<void (const AnsiTFSItalic&)>& 		funcItalic
-																   		  , const std::function<void (const AnsiTFSUnderline&)>& 	funcUnderline
-																   		  , const std::function<void (const AnsiTFSBlink&)>& 		funcBlink
-																   		  , const std::function<void (const AnsiTFSInverted&)>& 	funcInverted
-																   		  , const std::function<void (const AnsiTFSIdeogram&)>& 	funcIdeogram
-																   		  , const std::function<void (const AnsiTFSScript&)>& 		funcScript)
-	{
-		switch(style)
-		{
-			case AnsiBasicTextStyle::Intensity_Bold:
-			case AnsiBasicTextStyle::Intensity_Dim:
-			case AnsiBasicTextStyle::Intensity_Normal:
-				return funcIntensity(static_cast<AnsiTFSIntensity>(style));
-
-			case AnsiBasicTextStyle::Italic_Enable:
-			case AnsiBasicTextStyle::Italic_Disable:
-				return funcItalic(static_cast<AnsiTFSItalic>(style));
-
-			case AnsiBasicTextStyle::Underline_Underlined:
-			case AnsiBasicTextStyle::Underline_DoubleUnerlined:
-			case AnsiBasicTextStyle::Underline_Disable:
-				return funcUnderline(static_cast<AnsiTFSUnderline>(style));
-
-			case AnsiBasicTextStyle::Underline_SelectColor:
-				return;
-
-			case AnsiBasicTextStyle::Blink_SlowBlink:
-			case AnsiBasicTextStyle::Blink_FastBlink:
-			case AnsiBasicTextStyle::Blink_Disable:
-				return funcBlink(static_cast<AnsiTFSBlink>(style));
-
-			case AnsiBasicTextStyle::Inverted_Enable:
-			case AnsiBasicTextStyle::Inverted_Disable:
-				return funcInverted(static_cast<AnsiTFSInverted>(style));
-
-			case AnsiBasicTextStyle::Ideogram_Underlined:
-			case AnsiBasicTextStyle::Ideogram_DoubleUnderlined:
-			case AnsiBasicTextStyle::Ideogram_Overlined:
-			case AnsiBasicTextStyle::Ideogram_DoubleOverlined:
-			case AnsiBasicTextStyle::Ideogram_StressMarking:
-			case AnsiBasicTextStyle::Ideogram_AllDisable:
-				return funcIdeogram(static_cast<AnsiTFSIdeogram>(style));
-
-			case AnsiBasicTextStyle::Script_Superscript:
-			case AnsiBasicTextStyle::Script_Subscript:
-			case AnsiBasicTextStyle::Script_AllDisable:
-				return funcScript(static_cast<AnsiTFSScript>(style));
-		}
-	}
-
 	struct ResetAnsiUnderlineColor {};
 
 	struct AnsiUnderlineColor24b : public AnsiColor24bType {
 		AnsiUnderlineColor24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: AnsiColor24bType(r, g, b) {};
-	public:
-		bool operator==(const AnsiColor24bType& other) const { return R == other.R && R == other.G && R == other.B; }
 	};
 
 	struct AnsiNColorUnderline : public AnsiNColorType {
@@ -176,9 +123,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static AnsiNColorUnderline MakeGrayscaleColor24(const std::uint8_t value) {
 			return static_cast<AnsiNColorUnderline>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
-	
-	public:
-		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 
 	enum class AnsiUnderlineColorType : std::uint8_t {

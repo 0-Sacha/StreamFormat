@@ -29,7 +29,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		if (m_Format.IsEqualForward('{'))
 		{
 			Detail::FormatIndex formatIndex = GetFormatIndexThrow();
-			m_FormatData.ModifyThrow(GetTypeAtIndexThrow<FormatDataType>(formatIndex));
+			m_FormatData.ModifyThrow(GetTypeAtIndex<FormatDataType>(formatIndex));
 			m_Format.IsEqualForwardThrow('}');
 		}
 		else if (m_Format.IsEqualForward('=')) { m_FormatData.TrueValue = true; }
@@ -50,7 +50,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		m_Format.IgnoreSpace();
 
 		if (m_Format.IsEqualForward('\'')) {
-			StringViewFormat value = GetStringViewParamUntil('\'');
+			StringViewFormat value = GetStringViewUntil('\'');
 			m_FormatData.AddSpecifier(name, value);
 		}
 		else if (m_Format.IsADigit()) {
@@ -106,7 +106,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 		// III : A name
 		Detail::FormatIndex index = GetIndexOfCurrentNameArg();
-		if(m_ValuesIndex.IsValid())
+		if(index.IsValid())
 			return index;
 
 		m_Format.SetBufferCurrentPos(mainSubFormat);
@@ -115,16 +115,19 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		if (m_Format.IsEqualForward('{'))
 		{
 			try {
-
 				Detail::FormatIndex recIndex = GetFormatIndexThrow();
-				if(m_ValuesIndex.IsValid())
+				recIndex.SetContext(m_ValuesIndex);
+
+				if(recIndex.IsValid())
 				{
-					Detail::FormatIndex finalRecIndex = GetTypeAtIndexThrow<Detail::FormatIndex>(recIndex);
 					m_Format.IsEqualForwardThrow('}');
-					return finalRecIndex;
+					Detail::FormatIndex finalRecIndex = GetTypeAtIndexConvertThrow<Detail::FormatIndex>(recIndex);
+					finalRecIndex.SetContext(m_ValuesIndex);
+					if(finalRecIndex.IsValid())
+						return finalRecIndex;
 				}
-				else
-					throw Detail::FormatParseError();
+				
+				throw Detail::FormatParseError();
 
 			} catch (const Detail::FormatError&)
 			{}
@@ -167,8 +170,15 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		if (m_Format.IsUpperCase())
 			ParseSpecial();
 		else {
-			Detail::FormatIndex formatIdx = GetFormatIndexThrow();
-			ParseVariable(formatIdx);
+			try
+			{
+				Detail::FormatIndex formatIdx = GetFormatIndexThrow();
+				ParseVariable(formatIdx);
+			}
+			catch(const FormatNotFoundException&)
+			{
+				return false;
+			}
 		}
 
 		m_Format.GoOutOfParameter();		// Skip}

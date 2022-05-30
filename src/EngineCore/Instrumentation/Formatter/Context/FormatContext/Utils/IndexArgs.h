@@ -4,9 +4,9 @@
 
 namespace EngineCore::Instrumentation::FMT {
 	template<typename T, typename FormatContext>
-	struct FCFormatArgs {
+	struct FCIndexArgs {
 
-		FCFormatArgs(const std::uint8_t idx, const T& t)
+		FCIndexArgs(const std::uint8_t idx, const T& t)
 			: m_Value(t), m_Idx(idx) {}
 
 	public:
@@ -21,10 +21,10 @@ namespace EngineCore::Instrumentation::FMT {
 	};
 
 	template<typename T, typename FormatContext>
-	struct FormatType<FCFormatArgs<T, FormatContext>, FormatContext>
+	struct FormatType<FCIndexArgs<T, FormatContext>, FormatContext>
 	{
 		template<typename Char>
-		inline static void Write(const FCFormatArgs<T, FormatContext>& t, FormatContext& context) {
+		inline static void Write(const FCIndexArgs<T, FormatContext>& t, FormatContext& context) {
 			FormatType<Detail::GetBaseType<T>>::Write(t.GetValue(), context);
 		}
 	};

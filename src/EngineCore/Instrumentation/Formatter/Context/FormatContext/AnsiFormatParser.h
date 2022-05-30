@@ -4,15 +4,23 @@
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 	template<typename FormatContext, typename Format>
-	struct AnsiFormatParser : BasicAnsiParseur<Format, FormatContext> {
+	struct AnsiFormatParser : BasicAnsiParseur<Format, AnsiFormatParser<FormatContext, Format>> {
 	
 	public:
-		using Base = BasicAnsiParseur<Format, FormatContext>;
+		using Base = BasicAnsiParseur<Format, AnsiFormatParser<FormatContext, Format>>;
 		using ContextPackageSaving = Detail::AnsiTextData;
 
 	public:
 		explicit AnsiFormatParser(FormatContext& context)
 			: Base(context.Format())
+			, CurrentContext{}
+			, Context(context)
+		{}
+
+		template<typename ParentAnsiParser>
+		explicit AnsiFormatParser(FormatContext& context, ParentAnsiParser& parent)
+			: Base(context.Format())
+			, CurrentContext(parent.CurrentContext)
 			, Context(context)
 		{}
 
@@ -20,6 +28,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Detail::AnsiTextData 	CurrentContext;
 		FormatContext& 			Context;
 	
+	public:
+		Detail::FormatIndex GetFormatIndexThrow() { return Context.GetFormatIndexThrow(); }
+
 	public:
 		template <typename T>
 		void ColorModif(const T& modif) 	{ CurrentContext.Color.ModifyThrow(modif); }
@@ -38,54 +49,51 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		template <typename T>
 		void ColorRun(const T& modif)
 		{
-			CurrentContext.Color.ModifyThrow(modif);
 			Context.RunType(modif);
 		}
 
 		void ColorRunOnIndex(const Detail::FormatIndex& index)
 		{
-			Context.template RunFuncFromTypeAtIndex<AnsiColor>(			index, [this](const AnsiColor& data) 		{ this->Context.ColorRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTextColorFG>(	index, [this](const AnsiTextColorFG& data) 	{ this->Context.ColorRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTextColorBG>(	index, [this](const AnsiTextColorBG& data) 	{ this->Context.ColorRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiNColorFg>(		index, [this](const AnsiNColorFg& data) 	{ this->Context.ColorRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiNColorBg>(		index, [this](const AnsiNColorBg& data) 	{ this->Context.ColorRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiColor24bFg>(	index, [this](const AnsiColor24bFg& data) 	{ this->Context.ColorRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiColor24bBg>(	index, [this](const AnsiColor24bBg& data) 	{ this->Context.ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiColor>(			index, [this](const AnsiColor& data) 		{ this->ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTextColorFG>(	index, [this](const AnsiTextColorFG& data) 	{ this->ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTextColorBG>(	index, [this](const AnsiTextColorBG& data) 	{ this->ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiNColorFg>(		index, [this](const AnsiNColorFg& data) 	{ this->ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiNColorBg>(		index, [this](const AnsiNColorBg& data) 	{ this->ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiColor24bFg>(	index, [this](const AnsiColor24bFg& data) 	{ this->ColorRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiColor24bBg>(	index, [this](const AnsiColor24bBg& data) 	{ this->ColorRun(data); } );
 		}
 
 
 		template <typename T>
 		void StyleRun(const T& modif)
 		{
-			CurrentContext.Style.ModifyThrow(modif);
 			Context.RunType(modif);
 		}
 
 		void StyleRunOnIndex(const Detail::FormatIndex& index)
 		{
-			Context.template RunFuncFromTypeAtIndex<AnsiStyle>(				index, [this](const AnsiStyle& data) 				{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSIntensity>(		index, [this](const AnsiTFSIntensity& data) 		{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSItalic>(			index, [this](const AnsiTFSItalic& data) 			{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSUnderline>(		index, [this](const AnsiTFSUnderline& data) 		{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiNColorUnderline>(	index, [this](const AnsiNColorUnderline& data) 		{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiUnderlineColor24b>(	index, [this](const AnsiUnderlineColor24b& data) 	{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSBlink>(			index, [this](const AnsiTFSBlink& data) 			{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSInverted>(		index, [this](const AnsiTFSInverted& data) 			{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSIdeogram>(		index, [this](const AnsiTFSIdeogram& data) 			{ this->Context.StyleRun(data); } );
-			Context.template RunFuncFromTypeAtIndex<AnsiTFSScript>(			index, [this](const AnsiTFSScript& data) 			{ this->Context.StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiStyle>(				index, [this](const AnsiStyle& data) 				{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSIntensity>(		index, [this](const AnsiTFSIntensity& data) 		{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSItalic>(			index, [this](const AnsiTFSItalic& data) 			{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSUnderline>(		index, [this](const AnsiTFSUnderline& data) 		{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiNColorUnderline>(	index, [this](const AnsiNColorUnderline& data) 		{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiUnderlineColor24b>(	index, [this](const AnsiUnderlineColor24b& data) 	{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSBlink>(			index, [this](const AnsiTFSBlink& data) 			{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSInverted>(		index, [this](const AnsiTFSInverted& data) 			{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSIdeogram>(		index, [this](const AnsiTFSIdeogram& data) 			{ this->StyleRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiTFSScript>(			index, [this](const AnsiTFSScript& data) 			{ this->StyleRun(data); } );
 		}
 
 
 		template <typename T>
 		void FrontRun(const T& modif)
 		{
-			CurrentContext.Front.ModifyThrow(modif);
 			Context.RunType(modif);
 		}
 		
 		void FrontRunOnIndex(const Detail::FormatIndex& index)
 		{
-			Context.template RunFuncFromTypeAtIndex<AnsiFront>(index, [this](const AnsiFront& data) { this->Context.FrontRun(data); } );
+			Context.template RunFuncFromTypeAtIndex<AnsiFront>(index, [this](const AnsiFront& data) { this->FrontRun(data); } );
 		}
 
 	public:

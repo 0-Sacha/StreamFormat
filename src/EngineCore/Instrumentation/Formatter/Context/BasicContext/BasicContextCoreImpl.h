@@ -31,12 +31,12 @@ namespace EngineCore::Instrumentation::FMT::Context {
 	template<typename T>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::FormatReadParameterThrow(T& i) {
 		if (!m_Format.IsEqualTo('{'))
-			if (!m_Format.ReadUInt(i))
-				throw Detail::FormatParseError{};
+			if (m_Format.ReadUInt(i))
+				return;
 
 		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
 		m_Format.IsEqualForwardThrow('}');
-		i = GetTypeAtIndexThrow<T>(formatIdx);
+		i = GetTypeAtIndex<T>(formatIdx);
 		// TRY 		const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();
 		// CATCH 	m_Format.SetBufferCurrentPos(mainSubFormat);
 	}

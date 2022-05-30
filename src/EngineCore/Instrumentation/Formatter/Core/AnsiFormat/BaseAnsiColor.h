@@ -168,9 +168,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			if (value > 24) value = 24;
 			return AnsiNColorType(MinGrayscale + value);
 		}
-
-	public:
-		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 
 	struct AnsiNColorFg	: public AnsiNColorType {
@@ -203,9 +200,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static AnsiNColorFg MakeGrayscaleColor24(const std::uint8_t value) {
 			return static_cast<AnsiNColorFg>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
-
-	public:
-		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
 	
 	struct AnsiNColorBg	: public AnsiNColorType {
@@ -237,10 +231,12 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		static AnsiNColorBg MakeGrayscaleColor24(const std::uint8_t value) {
 			return static_cast<AnsiNColorBg>(AnsiNColorType::MakeGrayscaleColor24(value));
 		}
-
-	public:
-		bool operator==(const AnsiNColorType& other) const { return Color == other.Color; }
 	};
+
+	inline bool operator==(const AnsiNColorType& lhs, const AnsiNColorType& rhs)
+	{
+		return lhs.Color == rhs.Color;
+	}
 
 	struct AnsiNColor {
 		AnsiNColor()
@@ -267,23 +263,21 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		AnsiColor24bType(std::uint8_t r, std::uint8_t g, std::uint8_t b)
 			: R(r), G(g), B(b) { }
 		std::uint8_t R, G, B;
-
-	public:
-		bool operator==(const AnsiColor24bType& other) { return R == other.R && R == other.G && R == other.B; }
 	};
+
+	inline bool operator==(const AnsiColor24bType& lhs, const AnsiColor24bType& rhs)
+	{
+		return lhs.R == rhs.R && lhs.G == rhs.G && lhs.B == rhs.B;
+	}
 
 	struct AnsiColor24bFg : public AnsiColor24bType {
 		AnsiColor24bFg(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
 			: AnsiColor24bType(r, g, b) {};
-	public:
-		bool operator==(const AnsiColor24bType& other) { return R == other.R && R == other.G && R == other.B; }
 	};
 
 	struct AnsiColor24bBg : public AnsiColor24bType {
 		AnsiColor24bBg(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: AnsiColor24bType(r, g, b) {};
-	public:
-		bool operator==(const AnsiColor24bType& other) { return R == other.R && R == other.G && R == other.B; }
 	};
 
 

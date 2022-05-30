@@ -14,20 +14,20 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		{}
 
 	public:
-		Detail::FormatIndex GetFormatIndexThrow() { return reinterpret_cast<Master*>(this)->GetFormatIndexThrow(); }
+		Detail::FormatIndex GetFormatIndexThrow() 				{ return reinterpret_cast<Master*>(this)->GetFormatIndexThrow(); }
 		
 	public:
-		void ColorRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
+		void ColorRunOnIndex(const Detail::FormatIndex& index) 	{ return reinterpret_cast<Master*>(this)->ColorRunOnIndex(index); throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
-		void ColorRun(const T& modif) 							{ throw Detail::FormatShouldNotEndHere(); }
+		void ColorRun(const T& modif) 							{ return (*reinterpret_cast<Master*>(this)).template ColorRun<T>(modif); throw Detail::FormatShouldNotEndHere(); }
 
-		void StyleRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
+		void StyleRunOnIndex(const Detail::FormatIndex& index) 	{ return reinterpret_cast<Master*>(this)->StyleRunOnIndex(index); throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
-		void StyleRun(const T& modif) 							{ throw Detail::FormatShouldNotEndHere(); }
+		void StyleRun(const T& modif) 							{ return (*reinterpret_cast<Master*>(this)).template StyleRun<T>(modif); throw Detail::FormatShouldNotEndHere(); }
 
-		void FrontRunOnIndex(const Detail::FormatIndex& index) 	{ throw Detail::FormatShouldNotEndHere(); }
+		void FrontRunOnIndex(const Detail::FormatIndex& index) 	{ return reinterpret_cast<Master*>(this)->FrontRunOnIndex(index); throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
-		void FrontRun(const T& modif) 							{ throw Detail::FormatShouldNotEndHere(); }
+		void FrontRun(const T& modif) 							{ return (*reinterpret_cast<Master*>(this)).template FrontRun<T>(modif); throw Detail::FormatShouldNotEndHere(); }
 
 	public:
 		void 						ParseColor();

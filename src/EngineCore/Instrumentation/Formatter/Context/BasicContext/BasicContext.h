@@ -44,7 +44,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 	public:
 		void Run() 																							{ reinterpret_cast<Master*>(this)->Run(); 				return; throw Detail::FormatShouldNotEndHere(); }
 		template<typename NewCharFormat, typename ...NewContextArgs>
-		void LittleFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args) 	{ reinterpret_cast<Master*>(this)->LittleFormatImpl(); 	return; throw Detail::FormatShouldNotEndHere(); }
+		void LittleFormat(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args) 	{ reinterpret_cast<Master*>(this)->LittleFormat(format, std::forward<NewContextArgs>(args)...); 	return; throw Detail::FormatShouldNotEndHere(); }
 
 		void SafeRun();
 		template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
@@ -57,12 +57,14 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 	public:
 		template <typename T>
-		const T& GetTypeAtIndexThrow(const Detail::FormatIndex& index) 		{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndexThrow<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
-		Detail::FormatIndex GetIndexOfCurrentNameArg() 						{ return reinterpret_cast<Master*>(this)->GetIndexOfCurrentNameArg(); 		throw Detail::FormatShouldNotEndHere(); }
-		void RunTypeAtIndex(const Detail::FormatIndex& index) 				{ return reinterpret_cast<Master*>(this)->RunTypeAtIndex(index); 			throw Detail::FormatShouldNotEndHere(); }
+		const T& GetTypeAtIndex(const Detail::FormatIndex& index) 				{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndex<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
+		template <typename T>
+		T GetTypeAtIndexConvertThrow(const Detail::FormatIndex& index) 			{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndexConvertThrow<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
+		Detail::FormatIndex GetIndexOfCurrentNameArg() 							{ return reinterpret_cast<Master*>(this)->GetIndexOfCurrentNameArg(); 		throw Detail::FormatShouldNotEndHere(); }
+		void RunTypeAtIndex(const Detail::FormatIndex& index) 					{ return reinterpret_cast<Master*>(this)->RunTypeAtIndex(index); 			throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
 		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void (const T&)> func)
-																			{ return (*reinterpret_cast<Master*>(this)).template RunFuncFromTypeAtIndex<T>(index, func); 	throw Detail::FormatShouldNotEndHere(); }
+																				{ return (*reinterpret_cast<Master*>(this)).template RunFuncFromTypeAtIndex<T>(index, func); 	throw Detail::FormatShouldNotEndHere(); }
 
 	protected:
 		void ParseFormatDataBase();
