@@ -40,6 +40,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		constexpr bool Is0() 		const		{ return Index == 0; }
 
 	public:
+		constexpr FormatIndex& Next()			{ ++Index; return *this; }
+		constexpr FormatIndex& Prev()			{ --Index; return *this; }
+
 		constexpr FormatIndex Get() const		{ return *this; }
 		constexpr FormatIndex GetAndNext() 		{ FormatIndex old = *this; ++Index; return old; }
 		constexpr FormatIndex NextAndGet() 		{ ++Index; return *this; }
@@ -54,29 +57,4 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			MaxValue = sameContext.MaxValue;
 		}
 	};
-} // namespace EngineCore::Instrumentation::FMT::Detail
-
-
-namespace EngineCore::Instrumentation::FMT::Detail {
-
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE>
-	struct BasicCustomDataType {
-	public:
-		static constexpr T DEFAULT		= DEFAULT_VALUE;
-		static constexpr T NON_VALID	= NON_VALID_VALUE;
-
-	public:
-		T Value;
-
-	public:
-		BasicCustomDataType(const T& value = DEFAULT_VALUE)
-			: Value(value)
-		{}
-
-	public:
-		bool IsValid() { return Value != NON_VALID; };
-	};
-
-	template <typename T>
-	using FormatString		= BasicCustomDataType<std::basic_string_view<T>, "", nullptr>;
 } // namespace EngineCore::Instrumentation::FMT::Detail

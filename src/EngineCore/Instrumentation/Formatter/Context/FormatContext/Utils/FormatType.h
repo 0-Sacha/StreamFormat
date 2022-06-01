@@ -12,7 +12,7 @@ namespace EngineCore::Instrumentation::FMT {
 	struct FormatType {
 		template<class K = T>
 		static inline void Write(const K& t, FormatContext& context) {
-			// ENGINECORE_IF_MSVC(static_assert(false, __FUNCSIG__));
+			throw Detail::FormatShouldNotEndHere{};
 		}
 	};
 }

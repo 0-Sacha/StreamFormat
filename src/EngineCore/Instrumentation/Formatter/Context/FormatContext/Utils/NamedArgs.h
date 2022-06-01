@@ -31,11 +31,11 @@ namespace EngineCore::Instrumentation::FMT {
 		T& value;
 	};
 
-	template<typename T, typename CharName, typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	struct FormatType<StringViewNamedArgs<T, CharName>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>
+	template<typename T, typename CharName, typename FormatContext>
+	struct FormatType<StringViewNamedArgs<T, CharName>, FormatContext>
 	{
-		inline static void Write(const StringViewNamedArgs<T, CharName>& t, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context) {
-			FormatType<Detail::GetBaseType<T>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Write(t.GetValue(), context);
+		inline static void Write(const StringViewNamedArgs<T, CharName>& t, FormatContext& context) {
+			context.RunType(t.GetValue());
 		}
 	};
 
@@ -68,11 +68,11 @@ namespace EngineCore::Instrumentation::FMT {
 		T& value;
 	};
 
-	template<typename T, typename CharName, typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	struct FormatType<StringNamedArgs<T, CharName>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>
+	template<typename T, typename CharName, typename FormatContext>
+	struct FormatType<StringNamedArgs<T, CharName>, FormatContext>
 	{
-		inline static void Write(const StringNamedArgs<T, CharName>& t, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context) {
-			FormatType<Detail::GetBaseType<T>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Write(t.GetValue(), context);
+		inline static void Write(const StringNamedArgs<T, CharName>& t, FormatContext& context) {
+			context.RunType(t.GetValue());
 		}
 	};
 

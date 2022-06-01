@@ -25,7 +25,7 @@ namespace EngineCore::Instrumentation::FMT {
 	{
 		template<typename Char>
 		inline static void Write(const FCIndexArgs<T, FormatContext>& t, FormatContext& context) {
-			FormatType<Detail::GetBaseType<T>>::Write(t.GetValue(), context);
+			context.RunType(t.GetValue());
 		}
 	};
 }

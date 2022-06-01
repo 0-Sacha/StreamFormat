@@ -4,7 +4,9 @@
 
 namespace EngineCore::Instrumentation::FMT::Detail {
 
-	class FormatError {};
+	class FormatExecption {};
+	class FormatError				: public FormatExecption {};
+	class FormatUtilityExecption	: public FormatExecption {};
 
 	class FormatBufferError	: public FormatError {};
 	class FormatBufferFull	: public FormatBufferError {};
@@ -22,5 +24,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	class FormatShouldNotEndHere 	: public FormatImplError {};
 	class FormatNotImplYet 			: public FormatImplError {};
 
+
+
+	class FormatIndexNotFoundException 	: public FormatUtilityExecption{};
 
 }

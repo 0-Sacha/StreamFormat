@@ -52,7 +52,6 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		{ LittleFormat(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
 
 	public:
-		class FormatNotFoundException{};
 		Detail::FormatIndex GetFormatIndexThrow();
 
 	public:

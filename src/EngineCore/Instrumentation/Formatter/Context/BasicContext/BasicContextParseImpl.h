@@ -95,19 +95,20 @@ namespace EngineCore::Instrumentation::FMT::Context {
 				return m_ValuesIndex.GetAndNext();
 
 		// II: A number(idx)
-		Detail::FormatIndex idxGet;
-		idxGet.SetContext(m_ValuesIndex);
-		if (m_Format.ReadUInt(idxGet.Index))
+		Detail::FormatIndex subIndex;
+		subIndex.SetContext(m_ValuesIndex);
+		if (m_Format.ReadUInt(subIndex.Index))
 			if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('}'))
-				if (idxGet.IsValid())
-					return idxGet;
+				if (subIndex.IsValid())
+					return subIndex;
 
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
 		// III : A name
-		Detail::FormatIndex index = GetIndexOfCurrentNameArg();
-		if(index.IsValid())
-			return index;
+		Detail::FormatIndex indexOfNamedArg = GetIndexOfCurrentNameArg();
+		indexOfNamedArg.SetContext(m_ValuesIndex);
+		if(indexOfNamedArg.IsValid())
+			return indexOfNamedArg;
 
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
@@ -134,7 +135,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		}
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
-		throw FormatNotFoundException();
+		throw Detail::FormatIndexNotFoundException();
 		return Detail::FormatIndex();
 	}
 
@@ -175,7 +176,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 				Detail::FormatIndex formatIdx = GetFormatIndexThrow();
 				ParseVariable(formatIdx);
 			}
-			catch(const FormatNotFoundException&)
+			catch(const Detail::FormatIndexNotFoundException&)
 			{
 				return false;
 			}

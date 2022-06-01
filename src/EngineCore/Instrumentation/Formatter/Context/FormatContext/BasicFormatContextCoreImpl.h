@@ -1,14 +1,6 @@
 #pragma once
 
 #include "BasicFormatContext.h"
-#include "BasicFormatContextCoreImpl.h"
-
-#include "BaseFormat\BaseAnsiTextColor.h"
-#include "BaseFormat\BaseAnsiTextFront.h"
-#include "BaseFormat\BaseAnsiTextStyle.h"
-#include "BaseFormat\BaseFormat.h"
-#include "BaseFormat\BaseSTDLib.h"
-#include "BaseFormat\Chrono.h"
 
 namespace EngineCore::Instrumentation::FMT::Context {
 

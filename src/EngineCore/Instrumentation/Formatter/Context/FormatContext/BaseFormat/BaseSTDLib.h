@@ -12,31 +12,27 @@ namespace EngineCore::Instrumentation::FMT {
 	//----------------- String -----------------//
 	//------------------------------------------//
 
-	// String
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	struct FormatType<std::basic_string<CharBuffer>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>> {
-		inline static void Write(const std::basic_string<CharBuffer>& t, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context) {
-			context.BufferOut().WriteCharPt(t.c_str(), t.size());
-		}
-	};
-
-	// StringView
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	struct FormatType<std::basic_string_view<CharBuffer>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>> {
-		inline static void Write(const std::basic_string_view<CharBuffer>& t, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context) {
+	template<typename FormatContext, typename Char>
+	struct FormatType<std::basic_string<Char>, FormatContext> {
+		inline static void Write(const std::basic_string<Char>& t, FormatContext& context) {
 			context.BufferOut().WriteCharPt(t.data(), t.size());
 		}
 	};
 
-	// StringStream
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	struct FormatType<std::basic_stringstream<CharBuffer>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>> {
-		inline static void Write(const std::basic_stringstream<CharBuffer>& t, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>& context) {
-			FormatType<std::basic_string<CharBuffer>, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>::Write(t.str(), context);
+	template<typename FormatContext, typename Char>
+	struct FormatType<std::basic_string_view<Char>, FormatContext> {
+		inline static void Write(const std::basic_string_view<Char>& t, FormatContext& context) {
+			context.BufferOut().WriteCharPt(t.data(), t.size());
 		}
 	};
 
 
+	template<typename FormatContext, typename Char>
+	struct FormatType<std::basic_stringstream<Char>, FormatContext> {
+		inline static void Write(const std::basic_stringstream<Char>& t, FormatContext& context) {
+			context.BufferOut().WriteCharPt(t.str(), t.size());
+		}
+	};
 
 	//------------------------------------------//
 	//----------------- Memory -----------------//

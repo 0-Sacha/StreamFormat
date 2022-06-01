@@ -85,7 +85,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
         using Base::RunTypeAtIndex;
         
         void RunTypeAtIndex(const Detail::FormatIndex& index)                                   { m_ContextArgs.RunTypeAtIndex(*this, index); }
-        Detail::FormatIndex GetIndexOfCurrentNameArg()                                          { return m_ContextArgs.GetIndexOfCurrentNameArg(*this, Detail::FormatIndex()); }
+        Detail::FormatIndex GetIndexOfCurrentNameArg()                                          { return m_ContextArgs.GetIndexOfCurrentNameArg(*this, Detail::FormatIndex(0, m_ValuesIndex.MaxValue)); }
 
         template <typename T>
         const Detail::GetBaseType<T>& GetTypeAtIndex(const Detail::FormatIndex& index) {
@@ -206,3 +206,10 @@ namespace EngineCore::Instrumentation::FMT::Context {
         template<typename ...CharToTest> inline void WriteUntilEndOfParameter(const CharToTest ...ele)	{ while (m_Format.IsNotEqualTo('}', ele...) && m_Format.CanMoveForward())	CopyFormatToBuffer(); }
     };
 }
+
+#include "BaseFormat\BaseAnsiTextColor.h"
+#include "BaseFormat\BaseAnsiTextFront.h"
+#include "BaseFormat\BaseAnsiTextStyle.h"
+#include "BaseFormat\BaseFormat.h"
+#include "BaseFormat\BaseSTDLib.h"
+#include "BaseFormat\Chrono.h"

@@ -161,13 +161,14 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
 
-		void ModifyThrow(const AnsiStyle& given) { *this = given; }
+		void ModifyThrow(const AnsiStyle& given)				{ *this = given; }
 
 		void ModifyThrow(const AnsiTFSIntensity& given) 		{ Intensity = given; 	}
 		void ModifyThrow(const AnsiTFSItalic& given) 			{ Italic = given; 		}
-		void ModifyThrow(const AnsiTFSUnderline& given) 		{ Underline = given; 	}
-		void ModifyThrow(const AnsiNColorUnderline& given) 		{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiNColor; 	UnderlineColor.Data.NColor = given; }
-		void ModifyThrow(const AnsiUnderlineColor24b& given) 	{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiColor24b; 	UnderlineColor.Data.Color24b = given; }
+		void ModifyThrow(const AnsiTFSUnderline& given)			{ Underline = given;	}
+		void ModifyThrow(const ResetAnsiUnderlineColor& given)	{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiNColor; 	UnderlineColor.Data.NColor = AnsiNColorUnderline();  }
+		void ModifyThrow(const AnsiNColorUnderline& given) 		{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiNColor; 	UnderlineColor.Data.NColor = given;		}
+		void ModifyThrow(const AnsiUnderlineColor24b& given) 	{ UnderlineColor.Type = AnsiUnderlineColorType::AnsiColor24b; 	UnderlineColor.Data.Color24b = given;	}
 
 		void ModifyThrow(const AnsiTFSBlink& given) 			{ Blink = given; 	}
 		void ModifyThrow(const AnsiTFSInverted& given) 			{ Inverted = given; }
