@@ -4,7 +4,7 @@
 #include "BaseFormat/UnFormatType.h"
 #include "UnFormatContextArgsTuple.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	struct UnFormatContextError
 	{
 		bool Error					{false};
@@ -19,7 +19,7 @@ namespace EngineCore::Instrumentation::FMT {
 
 }
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	class BasicUnFormatContext

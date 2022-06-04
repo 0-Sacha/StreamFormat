@@ -11,7 +11,7 @@ namespace EngineCore::Test {
 		static MasterTestSuite& GetInstance();
 
 	public:
-		static inline Instrumentation::LogSystem& GetLogger()			{ return GetInstance().Logger; }
+		static inline LogSystem& GetLogger()			{ return GetInstance().Logger; }
 		static inline std::vector<TestSuite*>& GetTestSuitesList()	{ return GetInstance().TestSuitesList; }
 		static inline void ExecAllTestSuites()						{ GetInstance().ExecAllTestSuitesImpl(); }
 
@@ -22,7 +22,7 @@ namespace EngineCore::Test {
 		void ExecAllTestSuitesImpl();
 	
 	private:
-		Instrumentation::LogSystem Logger;
+		LogSystem Logger;
 		std::vector<TestSuite*> TestSuitesList;
 
 		std::uint32_t TestDone = 0;
@@ -138,7 +138,7 @@ namespace EngineCore::Test {
 }
 
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	template<typename FormatContext>
 	struct FormatType<EngineCore::Test::TestSuite, FormatContext>
 	{

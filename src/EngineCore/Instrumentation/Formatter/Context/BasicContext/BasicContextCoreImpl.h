@@ -2,7 +2,7 @@
 
 #include "BasicContext.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	BasicContext<CharFormat, ContextPackageSaving, Master>::BasicContext(const std::basic_string_view<CharFormat>& format, const std::size_t maxIndex)
@@ -36,7 +36,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
 		m_Format.IsEqualForwardThrow('}');
-		i = GetTypeAtIndex<T>(formatIdx);
+		i = GetTypeAtIndexThrow<T>(formatIdx);
 		// TRY 		const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();
 		// CATCH 	m_Format.SetBufferCurrentPos(mainSubFormat);
 	}

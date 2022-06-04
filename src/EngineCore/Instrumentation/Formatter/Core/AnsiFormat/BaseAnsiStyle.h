@@ -3,7 +3,7 @@
 #include "EngineCore/Core.h"
 #include "BaseAnsiColor.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	// According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 

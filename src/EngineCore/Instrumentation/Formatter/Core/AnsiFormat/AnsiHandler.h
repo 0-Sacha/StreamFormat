@@ -5,7 +5,7 @@
 #include "BaseAnsiStyle.h"
 
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	struct AnsiTextData {
 		Detail::AnsiColor	Color;
@@ -13,4 +13,4 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		Detail::AnsiFront	Front;
 	};
 
-} // EngineCore::Instrumentation::FMT::Detail
+} // EngineCore::FMT::Detail

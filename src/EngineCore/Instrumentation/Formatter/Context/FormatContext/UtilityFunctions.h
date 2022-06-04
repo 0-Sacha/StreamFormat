@@ -4,7 +4,7 @@
 #include "BasicFormatContextCoreImpl.h"
 #include "BasicFormatContextParseImpl.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	/////---------- Impl with as Format ----------//////
 

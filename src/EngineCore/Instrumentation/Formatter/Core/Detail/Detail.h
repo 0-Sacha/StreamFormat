@@ -31,7 +31,7 @@
 //
 
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
 	class BasicFormatContext;
 

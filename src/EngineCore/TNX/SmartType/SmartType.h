@@ -30,7 +30,7 @@ namespace EngineCore::TNX {
 		static inline constexpr ValueType MaxValue() { return std::numeric_limits<ValueType>::max(); }
 		static inline constexpr ValueType MinValue() { return std::numeric_limits<ValueType>::min(); }
 
-		inline constexpr void PrintFile() { EngineCore::Instrumentation::FMT::FilePrintLn(std::cout, Value); }
+		inline constexpr void PrintFile() { EngineCore::FMT::FilePrintLn(std::cout, Value); }
 
 
 		//************* Base Function *************//
@@ -45,8 +45,12 @@ namespace EngineCore::TNX {
 		//------------------------------------//
 		//------------- Operator -------------//
 		//------------------------------------//
-		inline constexpr bool operator==(const SmartTypeConvertible<ValueType> auto rhs) { return Value == (ValueType)rhs; }
-		inline constexpr bool operator!=(const SmartTypeConvertible<ValueType> auto rhs) { return Value != (ValueType)rhs; }
+		inline constexpr bool operator==(const SmartTypeConvertible<ValueType> auto rhs) 	{ return Value == static_cast<ValueType>(rhs); }
+		inline constexpr bool operator!=(const SmartTypeConvertible<ValueType> auto rhs) 	{ return Value != static_cast<ValueType>(rhs); }
+		inline constexpr bool operator<(const SmartTypeConvertible<ValueType> auto rhs) 	{ return Value < static_cast<ValueType>(rhs); }
+		inline constexpr bool operator>(const SmartTypeConvertible<ValueType> auto rhs) 	{ return Value > static_cast<ValueType>(rhs); }
+		inline constexpr bool operator<=(const SmartTypeConvertible<ValueType> auto rhs) 	{ return Value <= static_cast<ValueType>(rhs); }
+		inline constexpr bool operator>=(const SmartTypeConvertible<ValueType> auto rhs) 	{ return Value >= static_cast<ValueType>(rhs); }
 
 		inline constexpr SmartType<ValueType> operator&&(const SmartTypeConvertible<ValueType> auto rhs) { return SmartType<ValueType>(Value && (ValueType)rhs); }
 		inline constexpr SmartType<ValueType> operator||(const SmartTypeConvertible<ValueType> auto rhs) { return SmartType<ValueType>(Value || (ValueType)rhs); }
@@ -74,7 +78,7 @@ namespace EngineCore::TNX {
 		inline constexpr auto& operator+=(const SmartTypeConvertible<ValueType> auto i)	{ Value += static_cast<ValueType>(i); return *this; }
 
 		// operator -=
-		inline constexpr auto& operator-=(const SmartTypeConvertible<ValueType> auto i)	{ Value *= static_cast<ValueType>(i); return *this; }
+		inline constexpr auto& operator-=(const SmartTypeConvertible<ValueType> auto i)	{ Value -= static_cast<ValueType>(i); return *this; }
 
 		// operator *=
 		inline constexpr auto& operator*=(const SmartTypeConvertible<ValueType> auto i)	{ Value *= static_cast<ValueType>(i); return *this; }
@@ -154,7 +158,7 @@ namespace EngineCore::TNX {
 }
 
 
-namespace EngineCore {
+namespace EngineCore::TNX::SmartTypeDefault {
 	using Float		= SmartType<float>;
 	using Double	= SmartType<double>;
 	using Int		= SmartType<int>;
@@ -173,8 +177,8 @@ namespace EngineCore {
 
 #include "EngineCore/Instrumentation/Formatter/Formatter.h"
 template <typename T, typename FormatContext>
-struct EngineCore::Instrumentation::FMT::FormatType<EngineCore::SmartType<T>, FormatContext> {
+struct EngineCore::FMT::FormatType<EngineCore::SmartType<T>, FormatContext> {
 	inline static void Write(const EngineCore::SmartType<T>& i, FormatContext& context) {
-		EngineCore::Instrumentation::FMT::FormatType<T, FormatContext>::Write(i.Value, context);
+		EngineCore::FMT::FormatType<T, FormatContext>::Write(i.Value, context);
 	}
 };

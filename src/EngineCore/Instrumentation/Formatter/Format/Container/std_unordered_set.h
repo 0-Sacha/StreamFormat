@@ -3,7 +3,7 @@
 #include "../../Formatter.h"
 #include <unordered_set>
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	template<typename T, typename FormatContext>
 	struct FormatType<std::unordered_set<T>, FormatContext>
 	{

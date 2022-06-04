@@ -2,7 +2,7 @@
 
 #include "FormatType.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	template<typename T, typename FormatContext>
 	struct FCIndexArgs {
 

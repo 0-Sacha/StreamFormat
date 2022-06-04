@@ -3,7 +3,7 @@
 #include "EngineCore/Core.h"
 #include "EngineCore/Instrumentation/Formatter/Core/Detail/Exception.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	// According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 

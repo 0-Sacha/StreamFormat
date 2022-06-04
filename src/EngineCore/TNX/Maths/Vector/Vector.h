@@ -26,7 +26,7 @@ namespace EngineCore::TNX {
 
 #include "EngineCore/Instrumentation/Formatter/Formatter.h"
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename FormatContext>
-struct EngineCore::Instrumentation::FMT::FormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
+struct EngineCore::FMT::FormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
 {
 	static void Write(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, FormatContext& context) {
 		context.BufferOut().PushBack('{');
@@ -41,7 +41,7 @@ struct EngineCore::Instrumentation::FMT::FormatType<EngineCore::TNX::Vector<COUN
 };
 
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename UnFormatContext>
-struct EngineCore::Instrumentation::FMT::UnFormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, UnFormatContext>
+struct EngineCore::FMT::UnFormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, UnFormatContext>
 {
 	static void Read(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, UnFormatContext& context) {
 		context.BufferOut().IsEqualForwardThrow('{');

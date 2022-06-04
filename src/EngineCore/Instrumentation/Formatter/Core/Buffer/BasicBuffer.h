@@ -2,7 +2,7 @@
 
 #include "../Detail/Detail.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	template <typename CharBuffer>
 	class BasicFormatterMemoryBuffer {
@@ -89,8 +89,8 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		inline void ForwardNoCheck()								{ ++m_CurrentPos; }
 		inline void Backward()										{ if (CanMoveBackward()) --m_CurrentPos; }
 		inline void BackwardNoCheck()								{ --m_CurrentPos; }
-		template<typename Int> inline void Forward(const Int size)	{ m_CurrentPos += size; if (!CanMoveForward()) m_CurrentPos = m_BufferEnd; }
-		template<typename Int> inline void Backward(const Int size) { m_CurrentPos -= size; if (!CanMoveBackward()) m_CurrentPos = m_Buffer; }
+		inline void Forward(const std::size_t size)					{ m_CurrentPos += size; if (!CanMoveForward()) m_CurrentPos = m_BufferEnd; }
+		inline void Backward(const std::size_t size)				{ m_CurrentPos -= size; if (!CanMoveBackward()) m_CurrentPos = m_Buffer; }
 
 		inline CharBuffer Get() const								{ return *m_CurrentPos; }
 		inline CharBuffer GetAndForward()							{ return CanMoveForward() ? *m_CurrentPos++ : '\0'; }

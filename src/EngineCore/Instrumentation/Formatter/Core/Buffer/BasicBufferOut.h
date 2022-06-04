@@ -2,7 +2,7 @@
 
 #include "BasicBuffer.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	template <typename CharBuffer>
 	class BasicFormatterMemoryBufferOutCopy;
@@ -139,15 +139,15 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 	public:
 		template<typename T> void FastWriteInt	(T i);
 		template<typename T> void FastWriteUInt	(T i);
-		template<typename T> void FastWriteFloat(T i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
+		template<typename T> void FastWriteFloat(T i, FloatPrecision floatPrecision = FloatPrecision{});
 
-		template<typename T> void BasicWriteInt		(T i, ShiftType st = ShiftType::Default, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Default);
-		template<typename T> void BasicWriteUInt	(T i, ShiftType st = ShiftType::Default, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Default);
-		template<typename T> void BasicWriteFloat	(T i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+		template<typename T> void BasicWriteInt		(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+		template<typename T> void BasicWriteUInt	(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+		template<typename T> void BasicWriteFloat	(T i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
 
-		template<typename T> void BasicWriteIntAsBin	(T i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
-		template<typename T> void BasicWriteIntAsHex	(T i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-		template<typename T> void BasicWriteIntAsOct	(T i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+		template<typename T> void BasicWriteIntAsBin	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+		template<typename T> void BasicWriteIntAsHex	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+		template<typename T> void BasicWriteIntAsOct	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
 
 
 	public:
@@ -302,17 +302,11 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		
 		// Shift
 		template<typename T>
-		inline void PrintShift(Detail::ShiftPrint sp, T shift) {
-			if (sp == Detail::ShiftPrint::Space)		{ while (shift-- > 0) PushBack(' '); }
-			else if (sp == Detail::ShiftPrint::Zeros)	{ while (shift-- > 0) PushBack('0'); }
-		}
-
-		template<typename T>
 		inline void PrintShiftCenterBegin(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
 			if(st == Detail::ShiftType::Center)
 			{
 				DataType shift_ = shift / 2;
-				PrintShift(Detail::ShiftPrint::Space, shift - shift_);
+				PushBack(sp.Before, shift - shift_);
 				shift = shift_;
 			}
 		}
@@ -320,30 +314,30 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		template<typename T>
 		inline void PrintShiftCenterEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, const T shift) {
 			if (st == Detail::ShiftType::Center)
-				PrintShift(Detail::ShiftPrint::Space, shift);
+				PushBack(sp.After, shift);
 		}
 
 		template<typename T>
-		inline void PrintShiftRight(const Detail::ShiftType st, const Detail::ShiftPrint sp, const T shift) {
+		inline void PrintShiftRightAll(const Detail::ShiftType st, const Detail::ShiftPrint sp, const T shift) {
 			if (st == Detail::ShiftType::Right)
-				PrintShift(sp, shift);
+				PushBack(sp.Before, shift);
 		}
 
 		template<typename T>
-		inline void PrintShiftLeft(const Detail::ShiftType st, const Detail::ShiftPrint sp, const T shift) {
+		inline void PrintShiftLeftAll(const Detail::ShiftType st, const Detail::ShiftPrint sp, const T shift) {
 			if (st == Detail::ShiftType::Left)
-				PrintShift(sp, shift);
+				PushBack(sp.After, shift);
 		}
 
 		template<typename T>
 		inline void PrintShiftBegin(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
 			PrintShiftCenterBegin(st, sp, shift);
-			PrintShiftRight(st, sp, shift);
+			PrintShiftRightAll(st, sp, shift);
 		}
 
 		template<typename T>
 		inline void PrintShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-			PrintShiftLeft(st, sp, shift);
+			PrintShiftLeftAll(st, sp, shift);
 			PrintShiftCenterEnd(st, sp, shift);
 		}
 	};

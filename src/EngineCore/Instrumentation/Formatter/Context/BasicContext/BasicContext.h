@@ -4,7 +4,7 @@
 #include "EngineCore/Instrumentation/Formatter/Core/Buffer/Buffer.h"
 #include "EngineCore/Instrumentation/Formatter/Core/FormatterHandler/FormatterHandler.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	class BasicContext {
 	public:
@@ -56,14 +56,23 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
 	public:
 		template <typename T>
-		const T& GetTypeAtIndex(const Detail::FormatIndex& index) 				{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndex<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
+		const Detail::GetBaseType<T>* GetTypeAtIndex(const Detail::FormatIndex& index) 				{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndex<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
 		T GetTypeAtIndexConvertThrow(const Detail::FormatIndex& index) 			{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndexConvertThrow<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
 		Detail::FormatIndex GetIndexOfCurrentNameArg() 							{ return reinterpret_cast<Master*>(this)->GetIndexOfCurrentNameArg(); 		throw Detail::FormatShouldNotEndHere(); }
 		void RunTypeAtIndex(const Detail::FormatIndex& index) 					{ return reinterpret_cast<Master*>(this)->RunTypeAtIndex(index); 			throw Detail::FormatShouldNotEndHere(); }
+
 		template <typename T>
 		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void (const T&)> func)
 																				{ return (*reinterpret_cast<Master*>(this)).template RunFuncFromTypeAtIndex<T>(index, func); 	throw Detail::FormatShouldNotEndHere(); }
+
+		template <typename T>
+		const Detail::GetBaseType<T>& GetTypeAtIndexThrow(const Detail::FormatIndex& index) {
+            const Detail::GetBaseType<T>* value = GetTypeAtIndex<T>(index);
+            if (value == nullptr)
+                throw Detail::FormatGivenTypeError{};
+            return *value;
+        }
 
 	protected:
 		void ParseFormatDataBase();

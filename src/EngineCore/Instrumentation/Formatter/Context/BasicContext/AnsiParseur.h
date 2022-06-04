@@ -4,7 +4,7 @@
 #include "EngineCore/Instrumentation/Formatter/Core/Buffer/Buffer.h"
 #include "EngineCore/Instrumentation/Formatter/Core/AnsiFormat/AnsiHandler.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 	template<typename FormatBuffer, typename Master>
 	struct BasicAnsiParseur {
 
@@ -48,7 +48,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 }
 
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 	template<typename FormatBuffer, typename Master>
 	void BasicAnsiParseur<FormatBuffer, Master>::ParseColor() {
 		if (Format.IsEqualForward(':')) {

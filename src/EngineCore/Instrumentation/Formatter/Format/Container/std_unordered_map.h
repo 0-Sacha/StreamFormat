@@ -7,7 +7,7 @@
 
 #include "std_tuple.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename T1, typename T2, typename FormatContext>
 	struct FormatType<std::unordered_map<T1, T2>, FormatContext>

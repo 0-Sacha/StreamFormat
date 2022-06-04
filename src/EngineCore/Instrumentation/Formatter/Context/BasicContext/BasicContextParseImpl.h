@@ -3,7 +3,7 @@
 #include "BasicContext.h"
 #include "BasicContextCoreImpl.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataBase() {
@@ -12,10 +12,10 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		else if (m_Format.IsEqualForward('S')) { ParseFormatDataStyle(); }
 		else if (m_Format.IsEqualForward('F')) { ParseFormatDataFront(); }
 
-		else if (m_Format.IsEqualForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameterThrow(m_FormatData.DigitSize); }
-		else if (m_Format.IsEqualForward('X')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Hex;	FormatReadParameterThrow(m_FormatData.DigitSize); }
-		else if (m_Format.IsEqualForward('O')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Oct;	FormatReadParameterThrow(m_FormatData.DigitSize); }
-		else if (m_Format.IsEqualForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Int;	FormatReadParameterThrow(m_FormatData.DigitSize); }
+		else if (m_Format.IsEqualForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualForward('X')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Hex;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualForward('O')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Oct;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Int;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
 
 		else if (m_Format.IsEqualForward('L')) { m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase; }
 		else if (m_Format.IsEqualForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
@@ -29,17 +29,29 @@ namespace EngineCore::Instrumentation::FMT::Context {
 		if (m_Format.IsEqualForward('{'))
 		{
 			Detail::FormatIndex formatIndex = GetFormatIndexThrow();
-			m_FormatData.ModifyThrow(GetTypeAtIndex<FormatDataType>(formatIndex));
+			try
+			{
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<FormatDataType>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ValueIntPrint>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::PrintStyle>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::DigitSize>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ShiftSize>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::FloatPrecision>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ShiftPrint>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ShiftType>(formatIndex));
+				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::FormatSpecifier<CharFormat>>(formatIndex));
+			} catch(const Detail::FormatGetTypeAtIndexTypeOK&)
+			{}
 			m_Format.IsEqualForwardThrow('}');
 		}
 		else if (m_Format.IsEqualForward('=')) { m_FormatData.TrueValue = true; }
 
-		else if (m_Format.IsEqualForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision); }
+		else if (m_Format.IsEqualForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision.Value); }
 
-		else if (m_Format.IsEqualForward('>')) { m_FormatData.ShiftType = Detail::ShiftType::Right;		FormatReadParameterThrow(m_FormatData.ShiftValue); }
-		else if (m_Format.IsEqualForward('<')) { m_FormatData.ShiftType = Detail::ShiftType::Left;		FormatReadParameterThrow(m_FormatData.ShiftValue); }
-		else if (m_Format.IsEqualForward('^')) { m_FormatData.ShiftType = Detail::ShiftType::Center;	FormatReadParameterThrow(m_FormatData.ShiftValue); }
-		else if (m_Format.IsEqualForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint::Zeros; }
+		else if (m_Format.IsEqualForward('>')) { m_FormatData.ShiftType = Detail::ShiftType::Right;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
+		else if (m_Format.IsEqualForward('<')) { m_FormatData.ShiftType = Detail::ShiftType::Left;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
+		else if (m_Format.IsEqualForward('^')) { m_FormatData.ShiftType = Detail::ShiftType::Center;	FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
+		else if (m_Format.IsEqualForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint_Zeros; }
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>

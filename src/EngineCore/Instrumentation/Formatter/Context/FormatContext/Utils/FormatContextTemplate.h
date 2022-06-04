@@ -2,7 +2,7 @@
 
 #include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 
     template <typename T>
     struct FormatTypeForwardAs

@@ -5,7 +5,7 @@
 #include <tuple>
 #include <utility>
 
-namespace EngineCore::Instrumentation::FMT::TupleDetail {
+namespace EngineCore::FMT::TupleDetail {
 
 	template<uint32_t N, typename ...Args> using NthTypeOf =
 		typename std::tuple_element<N, std::tuple<Args...>>::type;
@@ -34,7 +34,7 @@ namespace EngineCore::Instrumentation::FMT::TupleDetail {
 
 }
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename ...T, typename FormatContext>
 	struct FormatType<std::tuple<T...>, FormatContext>

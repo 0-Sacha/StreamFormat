@@ -2,7 +2,7 @@
 
 #include "BasicUnFormatContextParseImpl.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	template<typename Format = std::string_view, typename BufferStr = Format, typename ...Args>
 	requires Detail::IsFmtConvertible<Format>::Value&& Detail::IsFmtConvertible<BufferStr>::Value
 	UnFormatContextError UnFormat(const BufferStr& buffer, const Format& format, Args&& ...args) {

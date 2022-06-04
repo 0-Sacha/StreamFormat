@@ -6,7 +6,7 @@
 #include <string_view>
 #include <sstream>
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	//------------------------------------------//
 	//----------------- String -----------------//

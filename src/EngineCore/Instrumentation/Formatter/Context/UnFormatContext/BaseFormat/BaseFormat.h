@@ -2,7 +2,7 @@
 
 #include "../BasicUnFormatContext.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename UnFormatContext>
 	struct UnFormatType<typename UnFormatContext::DataType, UnFormatContext> {

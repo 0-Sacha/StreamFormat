@@ -2,7 +2,7 @@
 
 #include "../BasicFormatContext.h"
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<typename FormatContext::FormatSpecifierType, FormatContext> {

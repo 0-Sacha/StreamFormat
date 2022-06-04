@@ -4,7 +4,7 @@
 #include "BasicUnFormatContextCoreImpl.h"
 
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename FormatContext>
 	struct FormatType<UnFormatContextError, FormatContext>

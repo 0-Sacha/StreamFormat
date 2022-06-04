@@ -2,7 +2,7 @@
 
 #include "EngineCore/Core.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	/////---------- Const PT ----------/////
 

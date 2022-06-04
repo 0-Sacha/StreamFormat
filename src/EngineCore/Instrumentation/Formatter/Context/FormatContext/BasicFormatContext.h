@@ -12,7 +12,7 @@
 
 #include "FormatContextArgsTuple.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 
     template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
     class BasicFormatContext : public BasicContext<CharFormat, Detail::AnsiTextData, BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>>
@@ -79,7 +79,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
 
     public:
         // TupleInterface
-        using Base::GetTypeAtIndex;
+        using Base::GetTypeAtIndexThrow;
         using Base::GetTypeAtIndexConvertThrow;
         using Base::GetIndexOfCurrentNameArg;
         using Base::RunTypeAtIndex;
@@ -88,12 +88,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
         Detail::FormatIndex GetIndexOfCurrentNameArg()                                          { return m_ContextArgs.GetIndexOfCurrentNameArg(*this, Detail::FormatIndex(0, m_ValuesIndex.MaxValue)); }
 
         template <typename T>
-        const Detail::GetBaseType<T>& GetTypeAtIndex(const Detail::FormatIndex& index) {
-            const T* value = m_ContextArgs.template GetTypeAtIndex<T>(*this, index);
-            if (value == nullptr)
-                throw Detail::FormatGivenTypeError{};
-            return *value;
-        }
+        const Detail::GetBaseType<T>* GetTypeAtIndex(const Detail::FormatIndex& index)          { return m_ContextArgs.template GetTypeAtIndexThrow<T>(*this, index); }
 
         template <typename T>
         T GetTypeAtIndexConvertThrow(const Detail::FormatIndex& index) {
@@ -103,7 +98,7 @@ namespace EngineCore::Instrumentation::FMT::Context {
         template <typename T>
 		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void (const T&)> func)
         {
-            const T* value = m_ContextArgs.template GetTypeAtIndex<T>(*this, index);
+            const T* value = m_ContextArgs.template GetTypeAtIndexThrow<T>(*this, index);
             if (value != nullptr)
             {
                 func(*value);

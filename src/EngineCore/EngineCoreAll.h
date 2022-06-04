@@ -12,16 +12,16 @@
 // #include "Maths/Maths.h"
 
 #ifdef ENGINECORE_LOGGER_ENABLE
-#define ENGINECORE_TRACE(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
-#define ENGINECORE_INFO(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
-#define ENGINECORE_WARN(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
-#define ENGINECORE_ERROR(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
-#define ENGINECORE_FATAL(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
+#define ENGINECORE_TRACE(...)	EngineCore::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
+#define ENGINECORE_INFO(...)	EngineCore::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
+#define ENGINECORE_WARN(...)	EngineCore::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
+#define ENGINECORE_ERROR(...)	EngineCore::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
+#define ENGINECORE_FATAL(...)	EngineCore::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
 
-#define ENGINECORE_OK(...)		EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
-#define ENGINECORE_FAIL(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
+#define ENGINECORE_OK(...)		EngineCore::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
+#define ENGINECORE_FAIL(...)	EngineCore::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
 
-#define ENGINECORE_BASIC(...)	EngineCore::Instrumentation::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
+#define ENGINECORE_BASIC(...)	EngineCore::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
 #else /* ENGINECORE_LOGGER_ENABLE */
 #define ENGINECORE_TRACE(...)
 #define ENGINECORE_INFO(...)

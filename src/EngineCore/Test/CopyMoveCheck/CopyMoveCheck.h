@@ -5,7 +5,7 @@ namespace EngineCore::Test {
 
     class CopyMoveCheck {
 	public:
-		static Instrumentation::LogSystem Logger;
+		static LogSystem Logger;
 
     public:
         CopyMoveCheck(const std::string& name) 

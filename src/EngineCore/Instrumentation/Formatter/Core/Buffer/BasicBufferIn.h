@@ -2,7 +2,7 @@
 
 #include "BasicBuffer.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
     template<typename CharBuffer>
     class BasicFormatterMemoryBufferIn : public BasicFormatterMemoryBuffer<const CharBuffer> {
@@ -57,15 +57,15 @@ namespace EngineCore::Instrumentation::FMT::Detail {
     public:
         template<typename T> void FastReadInt	(T& i);
         template<typename T> void FastReadUInt	(T& i);
-        template<typename T> void FastReadFloat	(T& i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED);
+        template<typename T> void FastReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{});
         
-        template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
-        template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
-        template<typename T> void BasicReadFloat	(T& i, DataType floatPrecision = Detail::FLOAT_PRECISION_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space);
+        template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template<typename T> void BasicReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
         
-        template<typename T> void BasicReadIntAsBin	(T& i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
-        template<typename T> void BasicReadIntAsHex	(T& i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-        template<typename T> void BasicReadIntAsOct	(T& i, DataType digitSize = Detail::DIGIT_SIZE_NOT_SPECIFIED, ShiftType st = ShiftType::Nothing, DataType shift = Detail::SHIFT_NOT_SPECIFIED, ShiftPrint sp = ShiftPrint::Space, bool trueValue = false);
+        template<typename T> void BasicReadIntAsBin	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+        template<typename T> void BasicReadIntAsHex	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+        template<typename T> void BasicReadIntAsOct	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
 
 
     public:
@@ -202,7 +202,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
     protected:
         template<typename T>
         void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-            if ((st == ShiftType::Right || st == ShiftType::Center) && sp == ShiftPrint::Space)
+            if ((st == ShiftType::Right || st == ShiftType::Center) && sp.BeforeIsDigitValid())
                 while (Base::Get() == ' ') {
                     Base::Forward();
                     --shift;

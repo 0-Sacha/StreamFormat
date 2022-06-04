@@ -3,7 +3,7 @@
 #include "BasicFormatContext.h"
 #include "BasicFormatContextCoreImpl.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 
 	/////---------- AAHHHHHHHHH ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>

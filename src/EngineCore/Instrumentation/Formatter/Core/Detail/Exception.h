@@ -2,7 +2,7 @@
 
 #include "Base.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	class FormatExecption {};
 	class FormatError				: public FormatExecption {};
@@ -27,5 +27,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 
 	class FormatIndexNotFoundException 	: public FormatUtilityExecption{};
+	class FormatGetTypeAtIndexTypeOK 	: public FormatUtilityExecption{};
 
 }

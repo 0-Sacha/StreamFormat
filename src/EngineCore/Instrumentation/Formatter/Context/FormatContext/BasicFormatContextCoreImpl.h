@@ -2,7 +2,7 @@
 
 #include "BasicFormatContext.h"
 
-namespace EngineCore::Instrumentation::FMT::Context {
+namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)

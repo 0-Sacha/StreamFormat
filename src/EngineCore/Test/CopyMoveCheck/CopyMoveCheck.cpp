@@ -3,7 +3,7 @@
 
 namespace EngineCore::Test {
 
-	Instrumentation::LogSystem CopyMoveCheck::Logger;
+	LogSystem CopyMoveCheck::Logger;
 
 }
 

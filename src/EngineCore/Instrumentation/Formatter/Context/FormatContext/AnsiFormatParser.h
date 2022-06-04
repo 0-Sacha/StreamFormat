@@ -2,7 +2,7 @@
 
 #include "../BasicContext/AnsiParseur.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 	template<typename FormatContext, typename Format>
 	struct AnsiFormatParser : BasicAnsiParseur<Format, AnsiFormatParser<FormatContext, Format>> {
 	

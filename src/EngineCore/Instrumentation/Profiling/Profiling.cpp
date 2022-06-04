@@ -3,7 +3,7 @@
 #include "Profiling.h"
 #include <thread>
 
-namespace EngineCore::Instrumentation {
+namespace EngineCore {
 
 	ProfileResult::ProfileResult(Profiler& link, const std::string& name)
 		: m_Link(link), m_Name(name), m_Start(0), m_End(0)

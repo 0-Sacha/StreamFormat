@@ -2,7 +2,7 @@
 
 #include "../BasicBufferOut.h"
 
-namespace EngineCore::Instrumentation::FMT::Detail {
+namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
@@ -29,7 +29,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::FastWriteFloat(T i, DataType nbDecimal) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::FastWriteFloat(T i, FloatPrecision nbDecimal) {
 		FastWriteInt<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(static_cast<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(i));
 		PushBack('.');
 		if (i < 0)	i = -i;
@@ -47,16 +47,16 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, DataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 
 		DataType nbDigit = GetNumberOfDigitDec(i);
 
 		shift -= nbDigit;
 		if (i < 0) --shift;
 
-		if(sp == ShiftPrint::Space)		PrintShiftBegin(st, ShiftPrint::Space, shift);
-		if (i < 0) { PushBack('-'); i = -i; }
-		if (sp == ShiftPrint::Zeros)	PrintShiftRight(st, ShiftPrint::Zeros, shift);
+		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if (i < 0) 						{ PushBack('-'); i = -i; }
+		if (sp.BeforeIsDigitValid())	PrintShiftRightAll(st, sp, shift);
 
 		if (i == 0)		PushBack('0');
 		else {
@@ -65,13 +65,13 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			Forward(nbDigit + 1);
 		}
 
-		PrintShiftEnd(st, ShiftPrint::Space, shift);
+		PrintShiftEnd(st, sp, shift);
 	}
 
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteUInt(T i, ShiftType st, DataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteUInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		DataType nbDigit = GetNumberOfDigitDec(i);
 		shift -= nbDigit;
 
@@ -84,12 +84,12 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			Forward(nbDigit + 1);
 		}
 
-		PrintShiftEnd(st, ShiftPrint::Space, shift);
+		PrintShiftEnd(st, sp, shift);
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteFloat(T i, DataType nbDecimal, ShiftType st, DataType shift, ShiftPrint sp) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteFloat(T i, FloatPrecision nbDecimal, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 
 		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt = static_cast<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(i);
 
@@ -98,9 +98,9 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		shift -= nbDigit + nbDecimal + 1;
 		if (iInt < 0) --shift;
 
-		if (sp == ShiftPrint::Space)	PrintShiftBegin(st, ShiftPrint::Space, shift);
-		if (iInt < 0) { PushBack('-'); iInt = -iInt; }
-		if (sp == ShiftPrint::Zeros)	PrintShiftRight(st, ShiftPrint::Zeros, shift);
+		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if (iInt < 0) 					{ PushBack('-'); iInt = -iInt; }
+		if (sp.BeforeIsDigitValid())	PrintShiftRightAll(st, sp, shift);
 
 		if (iInt == 0)		PushBack('0');
 		else {
@@ -118,7 +118,7 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			i -= intPart;
 		}
 		
-		PrintShiftEnd(st, ShiftPrint::Space, shift);
+		PrintShiftEnd(st, sp, shift);
 	}
 
 
@@ -128,18 +128,20 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsBin(T i, DataType digitSize, ShiftType st, DataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsBin(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
 		// Compute shift and "TureValue" print
-		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 8;
+		if (digitSize.IsDefault())
+			digitSize = sizeof(T) * 8;
 		shift -= digitSize;
+
 		if (trueValue) shift -= 2;
 
-		if (sp == ShiftPrint::Space) PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
 		if (trueValue) {
 			PushBack('0');
 			PushBack('b');
 		}
-		if (sp == ShiftPrint::Zeros) PrintShiftBegin(st, sp, shift);
+		if (sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
 		Forward(digitSize - 1);
@@ -151,23 +153,25 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		}
 		Forward(digitSize + 1);
 
-		PrintShiftEnd(st, ShiftPrint::Space, shift);
+		PrintShiftEnd(st, sp, shift);
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsHex(T i, DataType digitSize, ShiftType st, DataType shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsHex(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
 		// Compute shift and "TureValue" print
-		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = sizeof(T) * 2;
+		if (digitSize.IsDefault())
+			digitSize = sizeof(T) * 2;
+			
 		shift -= digitSize;
 		if (trueValue) shift -= 2;
 
-		if (sp == ShiftPrint::Space) PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
 		if (trueValue) {
 			PushBack('0');
 			PushBack('x');
 		}
-		if (sp == ShiftPrint::Zeros) PrintShiftBegin(st, sp, shift);
+		if (sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
 		Forward(digitSize - 1);
@@ -178,23 +182,25 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 			while (--k != 0) { PushReverseNoCheck(UPPER_HEX[i & 0b1111]); i = i >> 4; }
 		Forward(digitSize + 1);
 
-		PrintShiftEnd(st, ShiftPrint::Space, shift);
+		PrintShiftEnd(st, sp, shift);
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsOct(T i, DataType digitSize, ShiftType st, DataType shift, ShiftPrint sp, bool trueValue) {
+	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteIntAsOct(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
 		// Compute shift and "TureValue" print
-		if (digitSize == Detail::DIGIT_SIZE_NOT_SPECIFIED) digitSize = static_cast<DataType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
+		if (digitSize.IsDefault())
+			digitSize = std::ceil(static_cast<float>(sizeof(T) * 8) / 3);
+
 		shift -= digitSize;
 		if (trueValue) shift -= 2;
 
-		if (sp == ShiftPrint::Space) PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
 		if (trueValue) {
 			PushBack('0');
 			PushBack('o');
 		}
-		if (sp == ShiftPrint::Zeros) PrintShiftBegin(st, sp, shift);
+		if (sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
 		Forward(digitSize - 1);
@@ -202,6 +208,6 @@ namespace EngineCore::Instrumentation::FMT::Detail {
 		while (--k != 0) { PushReverseNoCheck((i & 0b111) + '0'); i = i >> 3; }
 		Forward(digitSize + 1);
 
-		PrintShiftEnd(st, ShiftPrint::Space, shift);
+		PrintShiftEnd(st, sp, shift);
 	}
 }

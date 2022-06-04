@@ -16,7 +16,7 @@ namespace EngineCore::Test {
 	class TestCore
 	{
 	public:
-		static Instrumentation::LogSystem& GetLogger() { static Instrumentation::LogSystem instance("EngineCore-Test", "{name} {color} -> {data}"); return instance; }
+		static LogSystem& GetLogger() { static LogSystem instance("EngineCore-Test", "{name} {color} -> {data}"); return instance; }
 	};
 
 }

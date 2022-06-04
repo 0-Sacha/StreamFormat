@@ -3,7 +3,7 @@
 #include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
 
 #define ENGINECORE_UNFORMAT_DECLARED
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	class BasicUnFormatContext;
@@ -20,7 +20,7 @@ namespace EngineCore::Instrumentation::FMT {
 }
 
 #define ENGINECORE_AUTO_UNFORMAT(Type, fmt, ...)	template<typename UnFormatContext>\
-													struct EngineCore::Instrumentation::FMT::UnFormatType<Type, UnFormatContext> {\
+													struct EngineCore::FMT::UnFormatType<Type, UnFormatContext> {\
 														static bool Read(Type& value, UnFormatContext& context) {\
 															return context.LittleUnFormat(fmt, __VA_ARGS__);\
 														}\

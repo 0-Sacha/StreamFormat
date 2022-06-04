@@ -6,7 +6,7 @@
 	#define ENGINECORE_BASE_LOGGER_NAME "APP"
 #endif
 
-namespace EngineCore::Instrumentation {
+namespace EngineCore {
 
 	class LogSystem {
 	public:
@@ -131,7 +131,7 @@ namespace EngineCore::Instrumentation {
 }
 
 
-namespace EngineCore::Instrumentation::FMT {
+namespace EngineCore::FMT {
 	template<typename FormatContext>
 	struct FormatType<LogSystem::LogSeverity, FormatContext>
 	{
@@ -168,7 +168,7 @@ namespace EngineCore::Instrumentation::FMT {
 }
 
 
-namespace EngineCore::Instrumentation {
+namespace EngineCore {
 
 	/////---------- Logger Severity with format ----------/////
 	template<typename Format, typename ...Args>
@@ -244,7 +244,7 @@ namespace EngineCore::Instrumentation {
 
 }
 
-namespace EngineCore::Instrumentation {
+namespace EngineCore {
 
 	/////---------- Logger Status with format ----------/////
 	template<typename Format, typename ...Args>
@@ -285,7 +285,7 @@ namespace EngineCore::Instrumentation {
 }
 
 
-namespace EngineCore::Instrumentation {
+namespace EngineCore {
 
 	template<typename Format, typename ...Args>
 	requires FMT::Detail::IsFmtConvertible<Format>::Value
