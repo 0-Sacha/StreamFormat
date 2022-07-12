@@ -80,11 +80,11 @@ namespace EngineCore::FMT::Context {
 		void ParseFormatDataCustom();
 		void ParseFormatData();
 
-		void ParseFormatDataColor() 									{ return reinterpret_cast<Master*>(this)->ParseFormatDataColor(); 	throw Detail::FormatShouldNotEndHere(); }
-		void ParseFormatDataStyle() 									{ return reinterpret_cast<Master*>(this)->ParseFormatDataStyle(); 	throw Detail::FormatShouldNotEndHere(); }
-		void ParseFormatDataFront() 									{ return reinterpret_cast<Master*>(this)->ParseFormatDataFront(); 	throw Detail::FormatShouldNotEndHere(); }
-		ContextPackageSaving ContextStyleSave() 						{ return reinterpret_cast<Master*>(this)->ContextStyleSave(); 		throw Detail::FormatShouldNotEndHere(); }
-		void ContextStyleRestore(const ContextPackageSaving& package) 	{ return reinterpret_cast<Master*>(this)->ContextStyleRestore(package); 	throw Detail::FormatShouldNotEndHere(); }
+		void ParseFormatDataColor() 									{ return reinterpret_cast<Master*>(this)->ParseFormatDataColor(); 		throw Detail::FormatShouldNotEndHere(); }
+		void ParseFormatDataStyle() 									{ return reinterpret_cast<Master*>(this)->ParseFormatDataStyle(); 		throw Detail::FormatShouldNotEndHere(); }
+		void ParseFormatDataFront() 									{ return reinterpret_cast<Master*>(this)->ParseFormatDataFront(); 		throw Detail::FormatShouldNotEndHere(); }
+		ContextPackageSaving ContextStyleSave() 						{ return reinterpret_cast<Master*>(this)->ContextStyleSave(); 			throw Detail::FormatShouldNotEndHere(); }
+		void ContextStyleRestore(const ContextPackageSaving& package) 	{ return reinterpret_cast<Master*>(this)->ContextStyleRestore(package); throw Detail::FormatShouldNotEndHere(); }
 
 		void ParseSpecial();
 		void ParseVariable(Detail::FormatIndex formatIdx);

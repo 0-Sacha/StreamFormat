@@ -54,7 +54,7 @@ namespace EngineCore::FMT::Detail {
 		shift -= nbDigit;
 		if (i < 0) --shift;
 
-		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
 		if (i < 0) 						{ PushBack('-'); i = -i; }
 		if (sp.BeforeIsDigitValid())	PrintShiftRightAll(st, sp, shift);
 

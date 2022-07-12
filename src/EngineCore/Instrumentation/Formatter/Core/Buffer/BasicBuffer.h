@@ -18,7 +18,7 @@ namespace EngineCore::FMT::Detail {
 		std::size_t			m_BufferSize;			// Do not count the end char
 		
 	private:
-		BasicFormatterMemoryBuffer<CharBuffer>* m_ChildBuffer;
+		BasicFormatterMemoryBuffer<CharBuffer>* m_ParentBuffer;
 
 	protected:
 		inline CharBuffer*			GetBuffer()											{ return m_Buffer; }
@@ -31,7 +31,9 @@ namespace EngineCore::FMT::Detail {
 		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
 
-		inline void					SetChildBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* childBuffer)	{ m_ChildBuffer = childBuffer; }
+		inline void					SetParentBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* parentBuffer)	{
+			m_ParentBuffer = parentBuffer;
+		}
 
 	public:
 		BasicFormatterMemoryBuffer(const std::basic_string_view<CharBufferType>& buffer)
@@ -39,7 +41,7 @@ namespace EngineCore::FMT::Detail {
 			, m_CurrentPos(buffer.data())
 			, m_BufferEnd(buffer.data() + buffer.size())
 			, m_BufferSize(buffer.size())
-			, m_ChildBuffer(nullptr)
+			, m_ParentBuffer(nullptr)
 		{}
 
 		explicit BasicFormatterMemoryBuffer(CharBuffer *const buffer, const std::size_t size)
@@ -47,7 +49,7 @@ namespace EngineCore::FMT::Detail {
 			, m_CurrentPos(m_Buffer)
 			, m_BufferEnd(m_Buffer + size)
 			, m_BufferSize(size)
-			, m_ChildBuffer(nullptr)
+			, m_ParentBuffer(nullptr)
 		{}
 
 		// Used for LittleFormat
@@ -56,6 +58,7 @@ namespace EngineCore::FMT::Detail {
 			, m_CurrentPos(bufferCurrentPos)
 			, m_BufferEnd(m_Buffer + size)
 			, m_BufferSize(size)
+			, m_ParentBuffer(nullptr)
 		{}
 
 		~BasicFormatterMemoryBuffer() {
@@ -64,8 +67,8 @@ namespace EngineCore::FMT::Detail {
 
 	protected:
 		inline void UpdateFromChlid() {
-			if (m_ChildBuffer != nullptr)
-				SetBufferCurrentPos(m_ChildBuffer->GetBufferCurrentPos());
+			if (m_ParentBuffer != nullptr)
+				m_ParentBuffer->SetBufferCurrentPos(GetBufferCurrentPos());
 		}
 
 	public:

@@ -24,9 +24,4 @@ namespace EngineCore::FMT::Detail {
 	class FormatShouldNotEndHere 	: public FormatImplError {};
 	class FormatNotImplYet 			: public FormatImplError {};
 
-
-
-	class FormatIndexNotFoundException 	: public FormatUtilityExecption{};
-	class FormatGetTypeAtIndexTypeOK 	: public FormatUtilityExecption{};
-
 }

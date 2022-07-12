@@ -18,12 +18,15 @@ namespace EngineCore::FMT::Detail {
         using typename Base::StringView;
 
     public:
+        using CharBufferType = CharBuffer;
+
         using Base::GetBuffer;
         using Base::GetBufferCurrentPos;
         using Base::GetBufferEnd;
         using Base::GetBufferSize;
         using Base::GetBufferCurrentSize;
         using Base::SetBufferCurrentPos;
+        using Base::SetParentBufferForUpdate;
 
     public:
         using Base::CanMoveForward;
@@ -50,9 +53,28 @@ namespace EngineCore::FMT::Detail {
         using Base::GetNext;
         using Base::GetNextNoCheck;
 
+        using Base::UpdateFromChlid;
+
     public:
-        explicit BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer>& format)
-            : Base(format) {}
+        explicit BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer>& buffer)
+            : Base(buffer)
+        {}
+
+        BasicFormatterMemoryBufferIn(CharBuffer* const buffer, const std::size_t bufferSize)
+            : Base(buffer, bufferSize)
+        {}
+
+        template <typename ParentBuffer>
+        explicit BasicFormatterMemoryBufferIn(ParentBuffer& parentBuffer)
+            : Base(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
+        {
+            SetParentBufferForUpdate(&parentBuffer);
+        }
+
+        ~BasicFormatterMemoryBufferIn() {
+            // Should call the destructo but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
+            UpdateFromChlid();
+        }
 
     public:
         template<typename T> void FastReadInt	(T& i);

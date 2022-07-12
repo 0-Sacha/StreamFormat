@@ -29,19 +29,16 @@ namespace EngineCore::FMT::Context {
 		if (m_Format.IsEqualForward('{'))
 		{
 			Detail::FormatIndex formatIndex = GetFormatIndexThrow();
-			try
-			{
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<FormatDataType>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ValueIntPrint>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::PrintStyle>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::DigitSize>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ShiftSize>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::FloatPrecision>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ShiftPrint>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::ShiftType>(formatIndex));
-				m_FormatData.ModifyTestThrowOnOK(GetTypeAtIndex<Detail::FormatSpecifier<CharFormat>>(formatIndex));
-			} catch(const Detail::FormatGetTypeAtIndexTypeOK&)
-			{}
+			if ((m_FormatData.ModifyTestThrow(GetTypeAtIndex<FormatDataType>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ValueIntPrint>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::PrintStyle>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::DigitSize>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftSize>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::FloatPrecision>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftPrint>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftType>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::FormatSpecifier<CharFormat>>(formatIndex))) == false)
+			throw Detail::FormatGivenTypeError{};
 			m_Format.IsEqualForwardThrow('}');
 		}
 		else if (m_Format.IsEqualForward('=')) { m_FormatData.TrueValue = true; }
@@ -147,7 +144,6 @@ namespace EngineCore::FMT::Context {
 		}
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
-		throw Detail::FormatIndexNotFoundException();
 		return Detail::FormatIndex();
 	}
 
@@ -183,15 +179,9 @@ namespace EngineCore::FMT::Context {
 		if (m_Format.IsUpperCase())
 			ParseSpecial();
 		else {
-			try
-			{
-				Detail::FormatIndex formatIdx = GetFormatIndexThrow();
+			Detail::FormatIndex formatIdx = GetFormatIndexThrow();
+			if (formatIdx.IsValid())
 				ParseVariable(formatIdx);
-			}
-			catch(const Detail::FormatIndexNotFoundException&)
-			{
-				return false;
-			}
 		}
 
 		m_Format.GoOutOfParameter();		// Skip}

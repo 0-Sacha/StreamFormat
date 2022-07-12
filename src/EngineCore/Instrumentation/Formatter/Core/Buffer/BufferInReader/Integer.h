@@ -9,12 +9,12 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadInt(T& i) {
 		T res = 0;
 
-		bool sign = Base::IsEqualForward('-');
-		if (!Base::IsADigit())
+		bool sign = IsEqualForward('-');
+		if (!IsADigit())
 			throw FormatParseError();
 
-		while (Base::IsADigit())
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit())
+			res = res * 10 + (GetAndForward() - '0');
 
 		i = sign ? -res : res;
 	}
@@ -24,11 +24,11 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadUInt(T& i) {
 		T res = (T)0;
 
-		if(!Base::IsADigit())
+		if(!IsADigit())
 			throw FormatParseError();
 
-		while (Base::IsADigit())
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit())
+			res = res * 10 + (GetAndForward() - '0');
 
 		i = res;
 	}
@@ -42,11 +42,11 @@ namespace EngineCore::FMT::Detail {
 		T res = 0;
 		T dec = 0.1f;
 
-		Base::IsEqualForwardThrow('.');
+		IsEqualForwardThrow('.');
 		
 		++floatPrecision;
-		while (Base::IsADigit() && --floatPrecision != 0) {
-			res += (Base::GetAndForward() - '0') * dec;
+		while (IsADigit() && --floatPrecision != 0) {
+			res += (GetAndForward() - '0') * dec;
 			dec *= 0.1f;
 		}
 
@@ -65,13 +65,13 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		bool sign = Base::IsEqualForward('-'); 
+		bool sign = IsEqualForward('-'); 
 		if (sign) --shift;
 	
-		Base::IsADigitThrow();
+		IsADigitThrow();
 
-		while (Base::IsADigit()) {
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit()) {
+			res = res * 10 + (GetAndForward() - '0');
 			--shift;
 		}
 
@@ -89,10 +89,10 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		Base::IsADigitThrow();
+		IsADigitThrow();
 
-		while (Base::IsADigit()) {
-			res = res * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit()) {
+			res = res * 10 + (GetAndForward() - '0');
 			--shift;
 		}
 
@@ -110,25 +110,25 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		bool sign = Base::IsEqualForward('-');
+		bool sign = IsEqualForward('-');
 		if (sign) --shift;
 
-		Base::IsADigitThrow();
+		IsADigitThrow();
 
-		while (Base::IsADigit()) {
-			iInt = iInt * 10 + (Base::GetAndForward() - '0');
+		while (IsADigit()) {
+			iInt = iInt * 10 + (GetAndForward() - '0');
 			--shift;
 		}
 
 		T res = 0;
 		T dec = 0.1f;
 
-		Base::IsEqualForwardThrow('.');
+		IsEqualForwardThrow('.');
 		--shift;
 			
 		++floatPrecision;
-		while (Base::IsADigit() && --floatPrecision != 0) {
-			res += (Base::GetAndForward() - '0') * dec;
+		while (IsADigit() && --floatPrecision != 0) {
+			res += (GetAndForward() - '0') * dec;
 			dec *= 0.1f;
 			--shift;
 		}
@@ -156,16 +156,16 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 		
 		if (trueValue) {
-			Base::IsEqualForwardThrow('0');
-			Base::IsEqualForwardThrow('b');
+			IsEqualForwardThrow('0');
+			IsEqualForwardThrow('b');
 		}
 
 		T res = 0;
 
-		while (Base::IsEqualTo('0', '1')) {
+		while (IsEqualTo('0', '1')) {
 			res = res << 1;
-			res += Base::Get() - '0';
-			Base::Forward();
+			res += Get() - '0';
+			Forward();
 		}
 
 		SkipShiftEnd(st, sp, shift);
@@ -187,18 +187,18 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 
 		if (trueValue) {
-			Base::IsEqualForwardThrow('0');
-			Base::IsEqualForwardThrow('x');
+			IsEqualForwardThrow('0');
+			IsEqualForwardThrow('x');
 		}
 
 		T res = 0;
 
-		while (Base::IsADigit() || (Base::Get() >= 'A' && Base::Get() <= 'F') || (Base::Get() >= 'a' && Base::Get() <= 'f')) {
+		while (IsADigit() || (Get() >= 'A' && Get() <= 'F') || (Get() >= 'a' && Get() <= 'f')) {
 			res = res << 4;
-			if (Base::IsADigit())								res += Base::Get() - '0';
-			else if (Base::Get() >= 'A' && Base::Get() <= 'F')	res += Base::Get() - 'A' + 10;
-			else if (Base::Get() >= 'a' && Base::Get() <= 'f')	res += Base::Get() - 'a' + 10;
-			Base::Forward();
+			if (IsADigit())								res += Get() - '0';
+			else if (Get() >= 'A' && Get() <= 'F')	res += Get() - 'A' + 10;
+			else if (Get() >= 'a' && Get() <= 'f')	res += Get() - 'a' + 10;
+			Forward();
 		}
 
 		SkipShiftEnd(st, sp, shift);
@@ -220,16 +220,16 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 
 		if (trueValue) {
-			Base::IsEqualForwardThrow('0');
-			Base::IsEqualForwardThrow('o');
+			IsEqualForwardThrow('0');
+			IsEqualForwardThrow('o');
 		}
 
 		T res = 0;
 
-		while (Base::Get() >= '0' && Base::Get() <= '8') {
+		while (Get() >= '0' && Get() <= '8') {
 			res = res << 3;
-			res += Base::Get() - '0';
-			Base::Forward();
+			res += Get() - '0';
+			Forward();
 		}
 
 		SkipShiftEnd(st, sp, shift);

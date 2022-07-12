@@ -14,6 +14,7 @@ namespace EngineCore::FMT::Detail {
 		explicit AnsiFormatParser(FormatContext& context)
 			: Base(context.Format())
 			, CurrentContext{}
+			, PreviousContext{}
 			, Context(context)
 		{}
 
@@ -21,11 +22,13 @@ namespace EngineCore::FMT::Detail {
 		explicit AnsiFormatParser(FormatContext& context, ParentAnsiParser& parent)
 			: Base(context.Format())
 			, CurrentContext(parent.CurrentContext)
+			, PreviousContext(parent.CurrentContext)
 			, Context(context)
 		{}
 
 	public:
 		Detail::AnsiTextData 	CurrentContext;
+		Detail::AnsiTextData 	PreviousContext;
 		FormatContext& 			Context;
 	
 	public:
@@ -44,6 +47,8 @@ namespace EngineCore::FMT::Detail {
 		void ColorModifReset() 				{ CurrentContext.Color.ModifyThrow(Detail::AnsiColor{}); }
 		void StyleModifReset() 				{ CurrentContext.Style.ModifyThrow(Detail::AnsiStyle{}); }
 		void FrontModifReset() 				{ CurrentContext.Front.ModifyThrow(Detail::AnsiFront{}); }
+
+		void RestorePrevious()				{ Reload(PreviousContext); }
 
 	public:
 		template <typename T>

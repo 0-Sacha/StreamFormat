@@ -188,7 +188,7 @@ namespace EngineCore::FMT::Detail {
 
 		Detail::PrintStyle PrintStyle			= Detail::PrintStyle::Default;		// U  - L
 
-		Detail::ShiftPrint ShiftPrint			= Detail::ShiftPrint{};		// <  - >  - ^
+		Detail::ShiftPrint ShiftPrint			= Detail::ShiftPrint{};				// <  - >  - ^
 		Detail::ShiftSize ShiftSize				= Detail::ShiftSize{};				// <? - >? - ^?
 		Detail::ShiftType ShiftType				= Detail::ShiftType::Default;	 	// 0 - ' '
 
@@ -313,11 +313,11 @@ namespace EngineCore::FMT::Detail {
 		void ModifyThrow(const Detail::ShiftType& given) 			{ ShiftType = given; }
 		void ModifyThrow(const FormatSpecifier<CharFormat>& given) 	{ AddSpecifier(given); }
 
-		template <typename T> void ModifyTestThrowOnOK(const T* given) {
+		template <typename T> bool ModifyTestThrow(const T* given) {
 			if (given == nullptr)
-				return;
+				return false;
 			ModifyThrow(*given);
-			throw Detail::FormatGetTypeAtIndexTypeOK{};
+			return true;
 		}
 	};
 }

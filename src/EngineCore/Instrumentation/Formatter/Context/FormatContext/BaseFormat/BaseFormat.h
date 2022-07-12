@@ -290,10 +290,8 @@ namespace EngineCore::FMT {
 	{
 		static void Write(const T* const t, FormatContext& context) {
 
-			if (t == nullptr) {
-				context.Print("nullptr");
-				return;
-			}
+			if (t == nullptr)
+				return context.Print(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 
 			auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
@@ -304,7 +302,6 @@ namespace EngineCore::FMT {
 					context.WriteType(*t);
 				return;
 			}
-
 
 			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 

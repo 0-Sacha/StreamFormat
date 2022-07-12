@@ -10,7 +10,7 @@ namespace EngineCore::FMT::Detail {
 	template <typename CharBuffer>
 	class BasicFormatterMemoryBufferOut : public BasicFormatterMemoryBuffer<CharBuffer> {
 
-	private:
+	protected:
 		using Base = BasicFormatterMemoryBuffer<CharBuffer>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
@@ -29,6 +29,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
+		using Base::SetParentBufferForUpdate;
 
 	public:
 		using Base::CanMoveForward;
@@ -122,11 +123,9 @@ namespace EngineCore::FMT::Detail {
 		template <typename ParentBuffer>
 		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
 			: Base(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
-			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
-			, m_FreeOnDestructor(false)
-			, m_NoStride(parentBuffer.GetNoStride())
-			, m_Indent(parentBuffer.GetIndent())
-		{}
+		{
+			SetParentBufferForUpdate(&parentBuffer);
+		}
 
 		~BasicFormatterMemoryBufferOut() {
 			// Should call the destructo but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
