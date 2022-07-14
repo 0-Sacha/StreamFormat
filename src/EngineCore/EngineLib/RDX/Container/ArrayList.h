@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EngineCorepch.h"
 
 template<typename T>
 class ArrayList
