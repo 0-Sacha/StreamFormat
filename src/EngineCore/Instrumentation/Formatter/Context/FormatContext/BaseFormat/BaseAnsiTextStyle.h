@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BasicFormatContext.h"
+#include "Formatter/Context/FormatContext/BasicFormatContext.h"
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
@@ -13,9 +13,7 @@ namespace EngineCore::FMT {
 			context.BasicWriteType('\033', '[', 'm');
 			context.BufferOut().AddNoStride(3);
 
-			context.GetAnsiManager().StyleModifReset();
-			context.GetAnsiManager().StyleModifReset();
-			context.GetAnsiManager().FrontModifReset();
+			context.GetAnsiManager().AllModifReset();
 		}
 	};
 

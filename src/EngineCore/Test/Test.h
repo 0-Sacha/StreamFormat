@@ -22,8 +22,8 @@
 #include "TestSuite/TestSuite.h"
 #endif
 
-#ifdef ENGINE_CORE_ASSERT_ENABLE
-	#define ENGINE_CORE_ASSERT(x)	if(!(x)) ENGINE_CORE_FATAL("ASSERT FAILED! : {}", #x)
+#ifdef ENGINECORE_ASSERT_ENABLE
+	#define ENGINECORE_ASSERT(x)	if(!(x)) ENGINECORE_FATAL("ASSERT FAILED! : {}", #x)
 #else
-	#define ENGINE_CORE_ASSERT(x)
+	#define ENGINECORE_ASSERT(x)
 #endif

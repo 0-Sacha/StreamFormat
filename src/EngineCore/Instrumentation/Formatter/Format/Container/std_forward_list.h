@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Formatter.h"
+#include "Formatter/Context/FormatContext/Utils/FormatType.h"
 #include <forward_list>
 
 namespace EngineCore::FMT {

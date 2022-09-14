@@ -22,6 +22,8 @@ namespace EngineCore::FMT::Context {
 
 		else if (m_Format.IsEqualForward('A')) { m_FormatData.Safe = true; }
 
+		else if (m_Format.IsEqualForward('W')) { m_FormatData.KeepNewStyle = true; }
+
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
@@ -168,7 +170,9 @@ namespace EngineCore::FMT::Context {
 
 		RunTypeAtIndex(formatIdx);
 
-		ContextStyleRestore(savePackage);
+		if (m_FormatData.KeepNewStyle == false)
+			ContextStyleRestore(savePackage);
+
 		m_FormatData = saveFormatData;
 	}
 
@@ -176,16 +180,20 @@ namespace EngineCore::FMT::Context {
 	bool BasicContext<CharFormat, ContextPackageSaving, Master>::Parse() {
 		m_Format.Forward();					// Skip {
 
-		if (m_Format.IsUpperCase())
+		if (m_Format.IsUpperCase()) {
 			ParseSpecial();
-		else {
-			Detail::FormatIndex formatIdx = GetFormatIndexThrow();
-			if (formatIdx.IsValid())
-				ParseVariable(formatIdx);
+			m_Format.GoOutOfParameter();		// Skip }
+			return true;
 		}
 
-		m_Format.GoOutOfParameter();		// Skip}
-		return true;
+		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
+		if (formatIdx.IsValid()) {
+			ParseVariable(formatIdx);
+			m_Format.GoOutOfParameter();		// Skip }
+			return true;
+		}
+
+		return false;
 	}
 }
 

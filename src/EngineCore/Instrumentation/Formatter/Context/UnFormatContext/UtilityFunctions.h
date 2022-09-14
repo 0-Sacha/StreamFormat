@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "BasicUnFormatContext.h"
 #include "BasicUnFormatContextCoreImpl.h"
 #include "BasicUnFormatContextParseImpl.h"

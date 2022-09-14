@@ -179,6 +179,8 @@ namespace EngineCore::FMT::Detail {
 		bool IsInit								= false;
 		bool HasSpec							= false;
 
+		bool KeepNewStyle						= false;
+
 		bool TrueValue							= false;	// = 
 		bool Safe								= false;	// Safe 
 

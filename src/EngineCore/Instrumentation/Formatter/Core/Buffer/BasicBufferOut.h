@@ -122,13 +122,17 @@ namespace EngineCore::FMT::Detail {
 
 		template <typename ParentBuffer>
 		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
-			: Base(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferEnd(), parentBuffer.GetBufferSize())
+			: Base(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferSize())
+			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
+			, m_FreeOnDestructor(false)
+			, m_NoStride(parentBuffer.GetNoStride())
+			, m_Indent(parentBuffer.GetIndent())
 		{
 			SetParentBufferForUpdate(&parentBuffer);
 		}
 
 		~BasicFormatterMemoryBufferOut() {
-			// Should call the destructo but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
+			// Should call the destructor but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
 			UpdateFromChlid();
 
 			if (m_FreeOnDestructor)

@@ -1,41 +1,47 @@
 #pragma once
 
-#include "../BasicFormatContext.h"
+#include "Formatter/Context/FormatContext/BasicFormatContext.h"
 #include <chrono>
 
 namespace EngineCore::FMT::ChronoDetail {
 
 	template<typename Clock, typename Duration, typename FormatContext>
 	void WriteSubTimeFull(const std::chrono::time_point<Clock, Duration>& value, FormatContext& context) {
-		if (context.Format().NextIsSame("ns"))		context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count());
-		else if (context.Format().NextIsSame("us"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count());
-		else if (context.Format().NextIsSame("ms"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count());
-		else if (context.Format().NextIsSame("s"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count());
-		else if (context.Format().NextIsSame("m"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count());
-		else if (context.Format().NextIsSame("h"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count());
+		if (context.Format().NextIsSame("ns"))		context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()));
+		else if (context.Format().NextIsSame("us"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count()));
+		else if (context.Format().NextIsSame("ms"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()));
+		else if (context.Format().NextIsSame("s"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()));
+		else if (context.Format().NextIsSame("m"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()));
+		else if (context.Format().NextIsSame("h"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()));
 	}
 
 	template<typename Clock, typename Duration, typename FormatContext>
 	void WriteSubTimeMod(const std::chrono::time_point<Clock, Duration>& value, FormatContext& context) {
-		if (context.Format().NextIsSame("ns"))		context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()	% 1000, Detail::ShiftType::Right, Detail::ShiftSize(3), Detail::ShiftPrint_Zeros);
-		else if (context.Format().NextIsSame("us"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count()	% 1000, Detail::ShiftType::Right, Detail::ShiftSize(3), Detail::ShiftPrint_Zeros);
-		else if (context.Format().NextIsSame("ms"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()	% 1000, Detail::ShiftType::Right, Detail::ShiftSize(3), Detail::ShiftPrint_Zeros);
-		else if (context.Format().NextIsSame("s"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()		% 60,	Detail::ShiftType::Right, Detail::ShiftSize(2), Detail::ShiftPrint_Zeros);
-		else if (context.Format().NextIsSame("m"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()		% 60,	Detail::ShiftType::Right, Detail::ShiftSize(2), Detail::ShiftPrint_Zeros);
-		else if (context.Format().NextIsSame("h"))	context.BufferOut().BasicWriteUInt((uint32_t)std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()			% 24,	Detail::ShiftType::Right, Detail::ShiftSize(2), Detail::ShiftPrint_Zeros);
+		if (context.Format().NextIsSame("ns"))		context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, Detail::ShiftSize(3), Detail::ShiftPrint_Zeros);
+		else if (context.Format().NextIsSame("us"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, Detail::ShiftSize(3), Detail::ShiftPrint_Zeros);
+		else if (context.Format().NextIsSame("ms"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, Detail::ShiftSize(3), Detail::ShiftPrint_Zeros);
+		else if (context.Format().NextIsSame("s"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()		% 60),		Detail::ShiftType::Right, Detail::ShiftSize(2), Detail::ShiftPrint_Zeros);
+		else if (context.Format().NextIsSame("m"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()		% 60),		Detail::ShiftType::Right, Detail::ShiftSize(2), Detail::ShiftPrint_Zeros);
+		else if (context.Format().NextIsSame("h"))	context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()			% 24),		Detail::ShiftType::Right, Detail::ShiftSize(2), Detail::ShiftPrint_Zeros);
 	}
+
+	template<typename Clock, typename Duration, typename FormatContext>
+	void WriteSubTimeSub([[maybe_unused]] const std::chrono::time_point<Clock, Duration>& value, [[maybe_unused]] FormatContext& context)  {}
 
 	template<typename Clock, typename Duration, typename FormatContext>
 	bool WriteTime(const std::chrono::time_point<Clock, Duration>& value, FormatContext& context) {
 		bool isSpecified = false;
 		if (context.Format().IsEqualForward(':')) {
 			isSpecified = true;
-			context.WriteUntilEndOfParameter('%', '#');
+			context.WriteUntilEndOfParameter('%', '#', '/');
 			while (!context.Format().IsEndOfParameter()) {
+
 				if (context.Format().IsEqualForward('%'))		WriteSubTimeMod(value, context);
 				else if (context.Format().IsEqualForward('#'))	WriteSubTimeFull(value, context);
+				else if (context.Format().IsEqualForward('/'))	WriteSubTimeSub(value, context);
+				
 				else											context.Format().GoToEndOfParameter();
-				context.WriteUntilEndOfParameter('%', '#');
+				context.WriteUntilEndOfParameter('%', '#', '/');
 			}
 		}
 		return isSpecified;

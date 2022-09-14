@@ -1,5 +1,5 @@
+#include "EngineCore/Core/Core.h"
 #include "EngineCorepch.h"
-#include "EngineCore/Core.h"
 #include "FormatterHandler.h"
 
 namespace EngineCore::FMT {

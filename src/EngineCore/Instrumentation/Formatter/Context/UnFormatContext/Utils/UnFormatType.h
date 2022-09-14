@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
+#include "Formatter/Core/Detail/Detail.h"
 
 #define ENGINECORE_UNFORMAT_DECLARED
 namespace EngineCore::FMT {

@@ -1,4 +1,6 @@
+#include "EngineCore/Core/Core.h"
 #include "EngineCorepch.h"
+
 #include "TestSuiteImpl.h"
 
 namespace EngineCore::Test {

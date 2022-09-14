@@ -9,6 +9,7 @@ namespace EngineCore::FMT::Context {
 		: m_Format(format)
 		, m_ValuesIndex(0, maxIndex)
 		, m_FormatData()
+		, m_IsChild(false)
 	{}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
@@ -17,6 +18,7 @@ namespace EngineCore::FMT::Context {
 		: m_Format(format)
 		, m_ValuesIndex(0, maxIndex)
 		, m_FormatData()
+		, m_IsChild(true)
 	{}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>

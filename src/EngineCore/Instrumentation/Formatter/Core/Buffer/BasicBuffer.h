@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Detail/Detail.h"
+#include "Formatter/Core/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
 
@@ -53,10 +53,10 @@ namespace EngineCore::FMT::Detail {
 		{}
 
 		// Used for LittleFormat
-		BasicFormatterMemoryBuffer(CharBuffer* const buffer, CharBuffer* const bufferCurrentPos, CharBuffer* const bufferEnd, const std::size_t size)
+		BasicFormatterMemoryBuffer(CharBuffer* const buffer, CharBuffer* const bufferCurrentPos, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(bufferCurrentPos)
-			, m_BufferEnd(m_Buffer + size)
+			, m_BufferEnd(buffer + size)
 			, m_BufferSize(size)
 			, m_ParentBuffer(nullptr)
 		{}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Instrumentation/Formatter/Formatter.h"
+#include "Formatter/Formatter.h"
 
 #ifndef ENGINECORE_BASE_LOGGER_NAME
 	#define ENGINECORE_BASE_LOGGER_NAME "APP"
@@ -34,7 +34,7 @@ namespace EngineCore {
 		explicit LogSystem(const std::string_view& name, const std::string_view& format, LogSeverity severityMin = LogSeverity::Trace, std::ostream& stream = std::cout)
 			: m_Name(name), m_SeverityMin(severityMin), m_Stream(stream)
 		{
-			SetFormat(format);
+			SetBaseFormat(format);
 		}
 		~LogSystem() = default;
 
@@ -46,10 +46,8 @@ namespace EngineCore {
 		void SetSeverity(LogSeverity severityMin)		{ m_SeverityMin = severityMin; }
 		void SetName(const std::string& name)			{ m_Name = name; }
 		void SetName(std::string&& name)				{ m_Name = std::move(name); }
-		void SetBaseFormat(std::string_view basetFmt)	{ FMT::FormatInChar(m_FmtBuffer, "{color}{}", basetFmt); ComputeBufferInstant(); }
-		// You need to put {color} flag to have color ; use SetBaseColor instead
-		void SetFormat(std::string_view basetFmt)		{ FMT::FormatInChar(m_FmtBuffer, basetFmt); ComputeBufferInstant(); }
-		void ResetFormat()								{ SetBaseFormat("[{T:%h:%m:%s:%ms}] {name} >> {setindent}{data}"); }
+		void SetBaseFormat(std::string_view basetFmt)	{ m_FmtBuffer = "{color:W}" + FMT::FormatString(basetFmt, FORMAT_SV("data", "{setindent}{data}")); ComputeBufferInstant(); }
+		void ResetFormat()								{ SetBaseFormat("[{T:%h:%m:%s:%ms}] {name} >> {data}"); }
 
 	public:
 		/////---------- Logger Severity with array as format ----------/////
@@ -117,7 +115,7 @@ namespace EngineCore {
 	private:
 		inline void ComputeBufferInstant()
 		{
-			FMT::FormatInChar(m_FmtBufferInstant, m_FmtBuffer, FORMAT_SV("setindent", "{K:indent}"));
+			m_FmtBufferInstant = FMT::FormatString(m_FmtBuffer, FORMAT_SV("setindent", "{K:indent}"));
 		}
 
 	private:
@@ -125,8 +123,8 @@ namespace EngineCore {
 		LogSeverity m_SeverityMin;
 		std::ostream& m_Stream;
 
-		char m_FmtBuffer[64];
-		char m_FmtBufferInstant[64];
+		std::string m_FmtBuffer;
+		std::string m_FmtBufferInstant;
 	};
 }
 
@@ -176,7 +174,7 @@ namespace EngineCore {
 	void LogSystem::Log(LogSeverity severity, const Format& format, Args&& ...args) const {
 		if (severity >= m_SeverityMin) {
 			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_FmtBuffer), FORMAT_SV("name", m_Name), FORMAT_SV("data", format), FORMAT_SV("setindent", "{K:indent}"));
-			FMT::FilePrintLn(m_Stream, (std::string_view)formatBuffer, std::forward<Args>(args)..., FORMAT_SV("color", severity));
+			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 		}
 	}
 
@@ -304,26 +302,26 @@ namespace EngineCore {
 
 
 // Logger define
-#ifdef ENGINE_CORE_LOGGER_ENABLE
-#define ENGINE_CORE_TRACE(...)	EngineCore::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
-#define ENGINE_CORE_INFO(...)	EngineCore::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
-#define ENGINE_CORE_WARN(...)	EngineCore::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
-#define ENGINE_CORE_ERROR(...)	EngineCore::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
-#define ENGINE_CORE_FATAL(...)	EngineCore::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
+#ifdef ENGINECORE_LOGGER_ENABLE
+#define ENGINECORE_TRACE(...)	EngineCore::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
+#define ENGINECORE_INFO(...)	EngineCore::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
+#define ENGINECORE_WARN(...)	EngineCore::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
+#define ENGINECORE_ERROR(...)	EngineCore::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
+#define ENGINECORE_FATAL(...)	EngineCore::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
 
-#define ENGINE_CORE_OK(...)		EngineCore::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
-#define ENGINE_CORE_FAIL(...)	EngineCore::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
+#define ENGINECORE_OK(...)		EngineCore::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
+#define ENGINECORE_FAIL(...)	EngineCore::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
 
-#define ENGINE_CORE_BASIC(...)	EngineCore::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
+#define ENGINECORE_BASIC(...)	EngineCore::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
 #else
-#define ENGINE_CORE_TRACE(...)
-#define ENGINE_CORE_INFO(...)
-#define ENGINE_CORE_WARN(...)
-#define ENGINE_CORE_ERROR(...)
-#define ENGINE_CORE_FATAL(...)
+#define ENGINECORE_TRACE(...)
+#define ENGINECORE_INFO(...)
+#define ENGINECORE_WARN(...)
+#define ENGINECORE_ERROR(...)
+#define ENGINECORE_FATAL(...)
 
-#define ENGINE_CORE_OK(...)
-#define ENGINE_CORE_FAIL(...)
+#define ENGINECORE_OK(...)
+#define ENGINECORE_FAIL(...)
 
-#define ENGINE_CORE_BASIC(...)
+#define ENGINECORE_BASIC(...)
 #endif

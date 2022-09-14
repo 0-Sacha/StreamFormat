@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "EngineCore/Core/Core.h"
 
 #include "Instrumentation/Formatter/Formatter.h"
 #include "Instrumentation/LogSystem/LogSystem.h"

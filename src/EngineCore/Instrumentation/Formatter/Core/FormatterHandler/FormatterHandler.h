@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core.h"
+#include "EngineCore/Core/Core.h"
 #include <chrono>
 
 namespace EngineCore::FMT {
@@ -32,6 +32,6 @@ namespace EngineCore::FMT {
 	};
 }
 
-#define ENGINECORE_FORMATTER_TIME_BEGIN()	EngineCore::FMT::FormatterHandler::SetBeginTime()
+#define ENGINECORE_FORMATTER_TIME_BEGIN()		EngineCore::FMT::FormatterHandler::SetBeginTime()
 
-#define ENGINECORE_FORMATTER_SET_TIME_GTM(i) EngineCore::FMT::FormatterHandler::SetHoursShift(std::chrono::hours(i))
+#define ENGINECORE_FORMATTER_SET_TIME_GTM(i) 	EngineCore::FMT::FormatterHandler::SetHoursShift(std::chrono::hours(i))

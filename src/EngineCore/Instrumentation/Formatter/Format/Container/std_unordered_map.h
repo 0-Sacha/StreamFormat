@@ -1,10 +1,8 @@
 #pragma once
 
-
-#include "../../Formatter.h"
+#include "Formatter/Context/FormatContext/Utils/FormatType.h"
 
 #include <unordered_map>
-
 #include "std_tuple.h"
 
 namespace EngineCore::FMT {

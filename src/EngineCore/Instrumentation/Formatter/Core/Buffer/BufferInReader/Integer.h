@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BasicBufferIn.h"
+#include "Formatter/Core/Buffer/BasicBufferIn.h"
 
 namespace EngineCore::FMT::Detail {
 

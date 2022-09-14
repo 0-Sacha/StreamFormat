@@ -31,8 +31,7 @@ namespace EngineCore::FMT::Context {
 	{}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::~BasicFormatContext()
-	{ }
+	BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::~BasicFormatContext() {}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::Run() {
@@ -45,7 +44,7 @@ namespace EngineCore::FMT::Context {
 					m_BufferOut.PushBack('{');
 		}
 
-		m_AnsiManager.RestorePrevious();
+		m_AnsiManager.Kill();
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>

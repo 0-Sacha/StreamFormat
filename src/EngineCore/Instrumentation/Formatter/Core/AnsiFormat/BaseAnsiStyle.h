@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core.h"
+#include "EngineCore/Core/Core.h"
 #include "BaseAnsiColor.h"
 
 namespace EngineCore::FMT::Detail {
@@ -142,7 +142,7 @@ namespace EngineCore::FMT::Detail {
 
 	struct AnsiUnderlineColor {
 		AnsiUnderlineColorUnion Data;
-		AnsiUnderlineColorType	Type;
+		AnsiUnderlineColorType	Type = AnsiUnderlineColorType::Default;
 	};
 
 	struct AnsiStyle {

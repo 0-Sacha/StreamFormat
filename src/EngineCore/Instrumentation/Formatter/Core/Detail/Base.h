@@ -1,7 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core.h"
-
+#include "EngineCore/Core/Core.h"
 
 namespace EngineCore::FMT::Detail {
 

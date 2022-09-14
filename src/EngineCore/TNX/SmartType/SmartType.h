@@ -175,7 +175,7 @@ namespace EngineCore::TNX::SmartTypeDefault {
 }
 
 
-#include "EngineCore/Instrumentation/Formatter/Formatter.h"
+#include "Formatter/Formatter.h"
 template <typename T, typename FormatContext>
 struct EngineCore::FMT::FormatType<EngineCore::SmartType<T>, FormatContext> {
 	inline static void Write(const EngineCore::SmartType<T>& i, FormatContext& context) {

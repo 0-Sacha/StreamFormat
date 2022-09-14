@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core.h"
+#include "EngineCore/Core/Core.h"
 #include "EngineCore/TNX/Detail/TNXType.h"
 
 // A Vector must have the "constexpr Count()" function and the "using ValueType" define to the used Type
@@ -24,7 +24,7 @@ namespace EngineCore::TNX {
 
 
 
-#include "EngineCore/Instrumentation/Formatter/Formatter.h"
+#include "Formatter/Formatter.h"
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename FormatContext>
 struct EngineCore::FMT::FormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
 {

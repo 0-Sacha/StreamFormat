@@ -1,8 +1,8 @@
 #pragma once
 
-#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
-#include "EngineCore/Instrumentation/Formatter/Core/Buffer/Buffer.h"
-#include "EngineCore/Instrumentation/Formatter/Core/FormatterHandler/FormatterHandler.h"
+#include "Formatter/Core/Detail/Detail.h"
+#include "Formatter/Core/Buffer/Buffer.h"
+#include "Formatter/Core/FormatterHandler/FormatterHandler.h"
 
 namespace EngineCore::FMT::Context {
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
@@ -29,6 +29,7 @@ namespace EngineCore::FMT::Context {
 		FormatBufferType		m_Format;
 		Detail::FormatIndex		m_ValuesIndex;
 		FormatDataType			m_FormatData;
+		bool 					m_IsChild;
 
 	public:
 		inline FormatBufferType&		Format()					{ return m_Format; }
@@ -37,6 +38,8 @@ namespace EngineCore::FMT::Context {
 		inline FormatDataType&			GetFormatData()				{ return m_FormatData; }
 		inline const FormatDataType&	GetFormatData() const		{ return m_FormatData; }
 		inline FormatDataType			ForwardFormatData() const	{ return m_FormatData; }
+
+		inline bool						IsChild() const				{ return m_IsChild; }
 
 	public:
 		inline static FormatterHandler& GetAPI()					{ return FormatterHandler::GetInstance(); }

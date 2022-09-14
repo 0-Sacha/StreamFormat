@@ -1,8 +1,8 @@
 #pragma once
 
-#include "EngineCore/Core.h"
+#include "EngineCore/Core/Core.h"
 
-#include "../AnsiFormat/AnsiHandler.h"
+#include "Formatter/Core/AnsiFormat/AnsiHandler.h"
 
 #include "Base.h"
 #include "Exception.h"
@@ -13,10 +13,14 @@
 
 // TODO :
 //
+//		FIX COLOR ISSUE ; / same as # % ; Macro PackSave
+//
+//		-- NOT POSSIBLE -- => FAST compile
+// 
 //		TOKEN bufferIn
 //		Auto bufferRestore
 // 
-//		JSON	
+//		JSON
 // 
 //		GLOBBER
 // 

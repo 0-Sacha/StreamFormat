@@ -1,6 +1,7 @@
 #pragma once
 
-#include "EngineCore/Instrumentation/Formatter/Core/Detail/Detail.h"
+#include "Formatter/Core/Detail/Detail.h"
+#include "EngineCore/Core/MapMacro.h"
 
 #define ENGINECORE_FORMAT_DECLARED
 namespace EngineCore::FMT {
@@ -17,10 +18,11 @@ namespace EngineCore::FMT {
 	};
 }
 
+
+#define ENGINECORE_INTERNAL_ADDVALUE(x) value.##x
 #define ENGINECORE_AUTO_FORMAT(Type, fmt, ...)	template<typename FormatContext>\
 													struct EngineCore::FMT::FormatType<Type, FormatContext> {\
 														static void Write(const Type& value, FormatContext& context) {\
 															context.LittleFormat(fmt, __VA_ARGS__);\
 														}\
-													};\
-												}
+													};

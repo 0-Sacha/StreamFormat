@@ -1,3 +1,4 @@
+#include "EngineCore/Core/Core.h"
 #include "EngineCorepch.h"
 
 #include "Profiling.h"

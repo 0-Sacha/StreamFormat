@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BasicContext/AnsiParseur.h"
+#include "Formatter/Context/BasicContext/AnsiParseur.h"
 
 namespace EngineCore::FMT::Detail {
 	template<typename FormatContext, typename Format>
@@ -12,23 +12,23 @@ namespace EngineCore::FMT::Detail {
 
 	public:
 		explicit AnsiFormatParser(FormatContext& context)
-			: Base(context.Format())
+			: Base{context.Format()}
+			, ParentCurrentContext{nullptr}
 			, CurrentContext{}
-			, PreviousContext{}
-			, Context(context)
+			, Context{context}
 		{}
 
 		template<typename ParentAnsiParser>
 		explicit AnsiFormatParser(FormatContext& context, ParentAnsiParser& parent)
-			: Base(context.Format())
-			, CurrentContext(parent.CurrentContext)
-			, PreviousContext(parent.CurrentContext)
-			, Context(context)
+			: Base{context.Format()}
+			, ParentCurrentContext{&(parent.CurrentContext)}
+			, CurrentContext{parent.CurrentContext}
+			, Context{context}
 		{}
 
 	public:
+		Detail::AnsiTextData* 	ParentCurrentContext;
 		Detail::AnsiTextData 	CurrentContext;
-		Detail::AnsiTextData 	PreviousContext;
 		FormatContext& 			Context;
 	
 	public:
@@ -48,14 +48,23 @@ namespace EngineCore::FMT::Detail {
 		void StyleModifReset() 				{ CurrentContext.Style.ModifyThrow(Detail::AnsiStyle{}); }
 		void FrontModifReset() 				{ CurrentContext.Front.ModifyThrow(Detail::AnsiFront{}); }
 
-		void RestorePrevious()				{ Reload(PreviousContext); }
+		void AllModifReset() 				{ ColorModifReset(); StyleModifReset(); FrontModifReset(); }
+
+	public:
+		void AllReset() 					{ AllModifReset(); Context.RunType(Detail::ResetAnsiAllParameters{}); }
+
+	public:
+		void Kill()
+		{
+			if (ParentCurrentContext != nullptr)
+				*ParentCurrentContext = CurrentContext;
+			else
+				AllReset();
+		}
 
 	public:
 		template <typename T>
-		void ColorRun(const T& modif)
-		{
-			Context.RunType(modif);
-		}
+		void ColorRun(const T& modif)		{ Context.RunType(modif); }
 
 		void ColorRunOnIndex(const Detail::FormatIndex& index)
 		{
@@ -70,10 +79,7 @@ namespace EngineCore::FMT::Detail {
 
 
 		template <typename T>
-		void StyleRun(const T& modif)
-		{
-			Context.RunType(modif);
-		}
+		void StyleRun(const T& modif) 		{ Context.RunType(modif); }
 
 		void StyleRunOnIndex(const Detail::FormatIndex& index)
 		{
@@ -91,10 +97,7 @@ namespace EngineCore::FMT::Detail {
 
 
 		template <typename T>
-		void FrontRun(const T& modif)
-		{
-			Context.RunType(modif);
-		}
+		void FrontRun(const T& modif) 		{ Context.RunType(modif); }
 		
 		void FrontRunOnIndex(const Detail::FormatIndex& index)
 		{
