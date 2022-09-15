@@ -61,7 +61,6 @@ namespace EngineCore::FMT::Detail {
             return FormatContextArgsTuple<Rest...>::RunTypeAtIndex(context, idx.GetPrev());
         }
 
-
         template <typename T, typename FormatContext, class KType = TypeWithoutRef>
         requires (Context::FormatContextArgsTupleSameAs<T, KType>::SameAs)
         inline const Detail::GetBaseType<T>* GetTypeAtIndexThrow(FormatContext &context, const Detail::FormatIndex& idx)

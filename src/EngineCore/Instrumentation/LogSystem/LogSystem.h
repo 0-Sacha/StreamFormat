@@ -46,7 +46,7 @@ namespace EngineCore {
 		void SetSeverity(LogSeverity severityMin)		{ m_SeverityMin = severityMin; }
 		void SetName(const std::string& name)			{ m_Name = name; }
 		void SetName(std::string&& name)				{ m_Name = std::move(name); }
-		void SetBaseFormat(std::string_view basetFmt)	{ m_FmtBuffer = "{color:W}" + FMT::FormatString(basetFmt, FORMAT_SV("data", "{setindent}{data}")); ComputeBufferInstant(); }
+		void SetBaseFormat(std::string_view basetFmt)	{ m_FmtBuffer = "{color:W}"; m_FmtBuffer += basetFmt; }
 		void ResetFormat()								{ SetBaseFormat("[{T:%h:%m:%s:%ms}] {name} >> {data}"); }
 
 	public:
@@ -113,18 +113,21 @@ namespace EngineCore {
 		inline void LogBasic(T&& t) const;
 
 	private:
-		inline void ComputeBufferInstant()
-		{
-			m_FmtBufferInstant = FMT::FormatString(m_FmtBuffer, FORMAT_SV("setindent", "{K:indent}"));
-		}
-
-	private:
 		std::string m_Name;
 		LogSeverity m_SeverityMin;
 		std::ostream& m_Stream;
 
 		std::string m_FmtBuffer;
-		std::string m_FmtBufferInstant;
+
+	public:
+		template<typename FormatStr>
+		struct AddIndentInFormat
+		{
+			AddIndentInFormat(const FormatStr& format)
+			 : Format(format)
+			{}
+			const FormatStr& Format;
+		};
 	};
 }
 
@@ -163,7 +166,16 @@ namespace EngineCore::FMT {
 			else if (status == LogSystem::LogStatus::FAIL)	context.LittleFormat("[{:C:red}]", "FAIL");
 		}
 	};
+template<typename FormatContext, typename FormatStr>
+	struct FormatType<LogSystem::AddIndentInFormat<FormatStr>, FormatContext>
+	{
+		static void Write(const LogSystem::AddIndentInFormat<FormatStr>& format, FormatContext& context) {
+			context.Print("{K:indent}");
+			context.RunType(format.Format);
+		}
+	};
 }
+
 
 
 namespace EngineCore {
@@ -173,7 +185,7 @@ namespace EngineCore {
 	requires FMT::Detail::IsFmtConvertible<Format>::Value
 	void LogSystem::Log(LogSeverity severity, const Format& format, Args&& ...args) const {
 		if (severity >= m_SeverityMin) {
-			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_FmtBuffer), FORMAT_SV("name", m_Name), FORMAT_SV("data", format), FORMAT_SV("setindent", "{K:indent}"));
+			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_FmtBuffer), FORMAT_SV("name", m_Name), FORMAT_SV("data", LogSystem::AddIndentInFormat(format)), FORMAT_SV("setindent", "{K:indent}"));
 			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 		}
 	}
@@ -212,7 +224,7 @@ namespace EngineCore {
 	template<typename T>
 	void LogSystem::Log(LogSeverity severity, T&& t) const {
 		if (severity >= m_SeverityMin)
-			FMT::FilePrintLn(m_Stream, m_FmtBufferInstant, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
+			FMT::FilePrintLn(m_Stream, m_FmtBuffer, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
 	}
 
 	template<typename T>
@@ -268,7 +280,7 @@ namespace EngineCore {
 	/////---------- NO-FORMAT Logger Status ----------/////
 	template<typename T>
 	void LogSystem::Log(LogStatus status, T&& t) const {
-		FMT::FilePrintLn(m_Stream, m_FmtBufferInstant, FORMAT_SV("data", t), FORMAT_SV("color", status), FORMAT_SV("name", m_Name));
+		FMT::FilePrintLn(m_Stream, m_FmtBuffer, FORMAT_SV("data", t), FORMAT_SV("color", status), FORMAT_SV("name", m_Name));
 	}
 
 	template<typename T>
