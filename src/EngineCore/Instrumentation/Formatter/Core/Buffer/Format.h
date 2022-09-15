@@ -123,8 +123,35 @@ namespace EngineCore::FMT::Detail {
 		template<typename ...CharToTest> inline void ParamGoTo(const CharToTest ...ele)			{ GoTo(ele..., '}'); }
 		template<typename ...CharToTest> inline void ParamGoToForward(const CharToTest ...ele)	{ GoToForward(ele..., '}'); }
 
+		template<typename ...CharToTest> inline void GoToNextParamOr(const CharToTest ...ele)			{ GoTo(ele..., '{'); }
+		template<typename ...CharToTest> inline void GoToNextParamOrForward(const CharToTest ...ele)	{ GoToForward(ele..., '{'); }
+
+		inline bool IsBeginOfParameter()		{ return IsEqualTo('{'); }
+		inline void GoToBeginOfParameter()		{ while (IsNotEqualTo('{') && CanMoveForward()) ForwardNoCheck(); }
+		inline void GoAfterBeginOfParameter()	{ while (IsNotEqualTo('{') && CanMoveForward()) ForwardNoCheck(); Forward(); }
+
 		inline bool IsEndOfParameter()		{ return IsEqualTo('}'); }
 		inline void GoToEndOfParameter()	{ while (IsNotEqualTo('}') && CanMoveForward()) ForwardNoCheck(); }
 		inline void GoOutOfParameter()		{ while (IsNotEqualTo('}') && CanMoveForward()) ForwardNoCheck(); Forward(); }
+
+	public:
+		// TODO Better way || way to verbous
+		template<typename ...CharToTest>
+        StringView ParamGoToAndGetStr(const CharToTest ...args)
+        {
+            const CharFormat* begin = GetBufferCurrentPos();
+            ParamGoTo(args...);
+            const CharFormat* end = GetBufferCurrentPos();
+            return StringView(begin, end); 
+        }
+
+		template<typename ...CharToTest>
+        StringView ParamGoToForwardAndGetStr(const CharToTest ...args)
+        {
+            const CharFormat* begin = GetBufferCurrentPos();
+            ParamGoToForward(args...);
+            const CharFormat* end = GetBufferCurrentPos();
+            return StringView(begin, end); 
+        }
 	};
 }

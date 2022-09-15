@@ -12,11 +12,11 @@ namespace EngineCore::FMT::Detail {
 	template<typename CharType> struct ForwardAsCharPt {};
 
 	enum class ValueIntPrint : DataType {
-		Int,
+		Dec,
 		Bin,
 		Hex,
 		Oct,
-		Default = Int
+		Default = Dec
 	};
 
 	enum class ShiftType : DataType {
@@ -122,6 +122,14 @@ namespace EngineCore::FMT::Detail {
 	struct FormatSpecifier {
 		FormatSpecifier()
 			: Name(nullptr, 0)
+			, ValueAsText(nullptr, 0)
+			, ValueAsNumber(0)
+			, ValueHasText(false)
+			, ValueHasNumber(false)
+		{}
+
+		FormatSpecifier(const std::basic_string_view<CharFormat>& name)
+			: Name(name)
 			, ValueAsText(nullptr, 0)
 			, ValueAsNumber(0)
 			, ValueHasText(false)
@@ -262,11 +270,11 @@ namespace EngineCore::FMT::Detail {
 				Specifier[SpecifierCount++] = specifier;
 		}
 
-		void AddSpecifier(const FormatSpecifierType& specifier) {
+		void AddSpecifier(const FormatSpecifierType& specifier, bool dontOverride = false) {
 			FormatSpecifierType* formatSpecifier = GetSpecifier(specifier.Name);
 			if (formatSpecifier == nullptr)
 				AddSpecifierForce(specifier);
-			else
+			else if (dontOverride == false)
 			{
 				if (specifier.ValueHasText) {
 					formatSpecifier->ValueHasText = true;
@@ -279,26 +287,32 @@ namespace EngineCore::FMT::Detail {
 			}
 		}
 
-		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value) {
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value, bool dontOverride = false) {
 			FormatSpecifierType* formatSpecifier = GetSpecifier(name);
 			if (formatSpecifier == nullptr)
 				AddSpecifierForce(FormatSpecifierType(name, value));
-			else
+			else if (dontOverride == false)
 			{
 				formatSpecifier->ValueHasText = true;
 				formatSpecifier->ValueAsText = value;
 			}
 		}
 		
-		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value) {
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value, bool dontOverride = false) {
 			FormatSpecifierType* formatSpecifier = GetSpecifier(name);
 			if (formatSpecifier == nullptr)
 				AddSpecifierForce(FormatSpecifierType(name, value));
-			else
+			else if (dontOverride == false)
 			{
 				formatSpecifier->ValueHasNumber = true;
 				formatSpecifier->ValueAsNumber = value;
 			}
+		}
+
+		void AddSpecifier(const std::basic_string_view<CharFormat>& name) {
+			FormatSpecifierType* formatSpecifier = GetSpecifier(name);
+			if (formatSpecifier == nullptr)
+				AddSpecifierForce(FormatSpecifierType(name));
 		}
 
 	public:

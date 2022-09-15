@@ -37,7 +37,7 @@ namespace EngineCore::FMT::Context {
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::Run() {
 		while (!m_Format.IsEnd()) {
 
-			WriteUntilNextParameter();
+			WriteUntilNextParameterOr();
 
 			if (m_Format.IsEqualTo('{'))
 				if (!Parse())

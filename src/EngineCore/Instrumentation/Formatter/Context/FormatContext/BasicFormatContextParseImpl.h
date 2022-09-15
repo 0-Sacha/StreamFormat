@@ -8,38 +8,34 @@ namespace EngineCore::FMT::Context {
 	/////---------- AAHHHHHHHHH ----------/////
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParseTimer() {
+		ParseFormatData();
 		std::chrono::nanoseconds ns = std::chrono::high_resolution_clock::now() - GetAPI().GetTimeShift();
+		m_FormatData.AddSpecifier("pattern", "%h:%m:%s.%ms", true);
 		WriteType(ns);
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParseDate() {
+		ParseFormatData();
 		std::chrono::nanoseconds ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()) + GetAPI().GetHoursShift();
+		m_FormatData.AddSpecifier("pattern", "%h:%m:%s.%ms", true);
 		WriteType(ns);
 	}
 
 	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	void BasicFormatContext<CharFormat, CharBuffer, ContextArgs...>::ParseSetter() {
-		static constexpr std::string_view keys[] = {
-			"indent"
-		};
-		m_Format.ParamGoTo(':');
-		m_Format.IsEqualForward(':');
-		m_Format.IgnoreSpace();
-		auto idx = m_Format.GetWordFromList(keys);
-		if (idx == 0)
+		ParseFormatData();
+
+		// Indent
+		auto indent = m_FormatData.GetSpecifier("indent");
+		if (indent != nullptr)
 		{
-			m_Format.ParamGoTo('=');
-			if (m_Format.IsEqualForward('='))
-			{
-				m_Format.IgnoreSpace();
-				Detail::DataType value;
-				FormatReadParameterThrow(value);
-				BufferOut().SetIndent(value);
-			}
+			if (indent->ValueHasNumber == true)
+				BufferOut().SetIndent(indent->ValueAsNumber);
 			else
 				BufferOut().SetIndent();
 		}
+	
 	}
 
 }

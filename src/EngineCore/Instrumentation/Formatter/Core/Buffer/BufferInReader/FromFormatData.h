@@ -11,7 +11,7 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferIn<CharBuffer>::ReadIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
-			case ValueIntPrint::Int:
+			case ValueIntPrint::Dec:
 				if (formatData.ShiftType == ShiftType::Nothing) FastReadInt(i);
 				else											BasicReadInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
@@ -31,7 +31,7 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferIn<CharBuffer>::ReadUIntFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
-			case ValueIntPrint::Int:
+			case ValueIntPrint::Dec:
 				if (formatData.ShiftType == ShiftType::Nothing) FastReadUInt(i);
 				else											BasicReadUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:

@@ -217,10 +217,39 @@ namespace EngineCore::FMT::Detail {
     public:
         inline void IgnoreSpace()															{ while (IsEqualTo(' ') && CanMoveForward()) ForwardNoCheck(); }
         template<typename ...CharToTest> inline void GoTo(const CharToTest ...ele)			{ while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); }
-        template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele)	{ while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); Forward(); }
+        template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele)	{ GoTo(ele...); Forward(); }
 
+    public:
+        // TODO Better way
+        template<typename ...CharToTest>
+        StringView GoToAndGetStr(const CharToTest ...args)
+        {
+            const CharBuffer* begin = GetBufferCurrentPos();
+            GoTo(args...);
+            const CharBuffer* end = GetBufferCurrentPos();
+            return StringView(begin, end); 
+        }
 
-        // Utils
+        template<typename ...CharToTest>
+        StringView GoToForwardAndGetStr(const CharToTest ...args)
+        {
+            const CharBuffer* begin = GetBufferCurrentPos();
+            GoToForward(args...);
+            const CharBuffer* end = GetBufferCurrentPos();
+            return StringView(begin, end); 
+        }
+    
+        // FIXME
+        template <typename Func, typename... Args>
+        StringView ExecAndGetStr(const Args& ...args)
+        {
+            const CharBuffer* begin = GetBufferCurrentPos();
+            Func(std::forward<Args>(args)...);
+            const CharBuffer* end = GetBufferCurrentPos();
+            return StringView(begin, end); 
+        }
+
+    // Utils
     protected:
         template<typename T>
         void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {

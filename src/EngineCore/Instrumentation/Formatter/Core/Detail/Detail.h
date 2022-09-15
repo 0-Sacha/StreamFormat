@@ -13,13 +13,13 @@
 
 // TODO :
 //
-//		FIX COLOR ISSUE ; / same as # % ; Macro PackSave
+//		/ same as # % ; Macro PackSave
+//		PackSave (foreshadowing for constexpr)
 //
 //		-- NOT POSSIBLE -- => FAST compile
 // 
 //		TOKEN bufferIn
-//		Auto bufferRestore
-// 
+//
 //		JSON
 // 
 //		GLOBBER
@@ -31,9 +31,6 @@
 //
 //		End writing all writer and reader (string / char pt)
 //		
-//		PackSave (foreshadowing for constexpr)
-//
-
 
 namespace EngineCore::FMT {
 	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>

@@ -9,7 +9,7 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferOut<CharBuffer>::WriteIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
-			case ValueIntPrint::Int:
+			case ValueIntPrint::Dec:
 				if (formatData.ShiftType == ShiftType::Nothing) return FastWriteInt(i);
 				else											return BasicWriteInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
@@ -28,7 +28,7 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferOut<CharBuffer>::WriteUIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
-			case ValueIntPrint::Int:
+			case ValueIntPrint::Dec:
 				if (formatData.ShiftType == ShiftType::Nothing) return FastWriteUInt(i);
 				else											return BasicWriteUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:

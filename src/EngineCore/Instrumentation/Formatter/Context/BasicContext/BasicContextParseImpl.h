@@ -15,7 +15,7 @@ namespace EngineCore::FMT::Context {
 		else if (m_Format.IsEqualForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
 		else if (m_Format.IsEqualForward('X')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Hex;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
 		else if (m_Format.IsEqualForward('O')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Oct;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Int;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Dec;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
 
 		else if (m_Format.IsEqualForward('L')) { m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase; }
 		else if (m_Format.IsEqualForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
@@ -55,8 +55,8 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataCustom() {
-		StringViewFormat name = GetStringViewParamUntil(' ', '=');
-		m_Format.ParamGoTo('=', '\'');
+		StringViewFormat name = GetStringViewParamUntil(' ', '=', '\'', '{', ',');
+		m_Format.ParamGoTo('=', '\'', '{', ',');
 		m_Format.IsEqualForward('=');
 		m_Format.IgnoreSpace();
 
@@ -70,8 +70,12 @@ namespace EngineCore::FMT::Context {
 		}
 		else if (m_Format.IsEqualForward('{')) {
 			Detail::FormatIndex idx = GetFormatIndexThrow();
+			// FIXME
 			// m_FormatData.AddSpecifier(name, GetTypeAtIndexAuto(idx));
 			m_Format.IsEqualForward('}');
+		}
+		else if (m_Format.IsEqualTo(',', '}')) {
+			m_FormatData.AddSpecifier(name);
 		}
 	}
 

@@ -13,16 +13,17 @@ namespace EngineCore::FMT {
 	struct FormatType {
 		template<class K = T>
 		static inline void Write(const K& t, FormatContext& context) {
+			context.LittleFormat("{C:red}FMT unknow type - {}{C}", typeid(T).name());
 			throw Detail::FormatShouldNotEndHere{};
 		}
 	};
 }
 
 
-#define ENGINECORE_INTERNAL_ADDVALUE(x) value.##x
+#define ENGINECORE_INTERNAL_ADDVALUE(x) value.x
 #define ENGINECORE_AUTO_FORMAT(Type, fmt, ...)	template<typename FormatContext>\
 													struct EngineCore::FMT::FormatType<Type, FormatContext> {\
 														static void Write(const Type& value, FormatContext& context) {\
-															context.LittleFormat(fmt, __VA_ARGS__);\
+															context.LittleFormat(fmt, FOR_EACH(ENGINECORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
 														}\
 													};

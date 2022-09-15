@@ -90,8 +90,8 @@ namespace EngineCore::FMT {
 
 			if (data.TrueValue)										context.BufferOut().PushBack('\"');
 
-			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-			auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
+			auto begin = data.GetSpecifierAsNumber("begin", 0);
+			auto size = data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
 			if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.PrintCharPt(t + begin, size);
 			else											context.PrintCharPt(t + begin);
