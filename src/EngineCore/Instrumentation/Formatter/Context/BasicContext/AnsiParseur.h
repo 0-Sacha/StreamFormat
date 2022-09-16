@@ -51,20 +51,20 @@ namespace EngineCore::FMT::Detail {
 namespace EngineCore::FMT::Detail {
 	template<typename FormatBuffer, typename Master>
 	void BasicAnsiParseur<FormatBuffer, Master>::ParseColor() {
-		if (Format.IsEqualForward(':')) {
+		if (Format.IsEqualToForward(':')) {
 			Format.IgnoreSpace();
-			if (Format.IsEqualForward('{'))
+			if (Format.IsEqualToForward('{'))
 			{
 				Detail::FormatIndex idx = GetFormatIndexThrow();
 				ColorRunOnIndex(idx);
-				Format.IsEqualForward('}');
+				Format.IsEqualToForward('}');
 			}
 			else
 			{
 				Detail::AnsiTextColorFG colorFg = GetColorCodeAuto<Detail::AnsiTextColorFG>();
 
 				Format.ParamGoTo('-', ',');
-				if (Format.IsEqualForward('-')) {
+				if (Format.IsEqualToForward('-')) {
 					Format.IgnoreSpace();
 					Detail::AnsiTextColorBG colorBg = GetColorCodeAuto<Detail::AnsiTextColorBG>();
 					ColorRun(Detail::AnsiTextColor{ colorFg, colorBg });
@@ -99,7 +99,7 @@ namespace EngineCore::FMT::Detail {
 	template<typename FormatBuffer, typename Master>
 	template<typename T>
 	T BasicAnsiParseur<FormatBuffer, Master>::GetColorCodeAuto() {
-		std::size_t step = static_cast<std::size_t>(Format.IsEqualForward('+') ? T::BaseBStep : T::BaseStep);
+		std::size_t step = static_cast<std::size_t>(Format.IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
 		std::size_t code = GetColorCode();
 		if (code == Format.GET_WORD_FROM_LIST_NOT_FOUND) 	return T::Default;
 		return static_cast<T>(code + step);
@@ -107,16 +107,16 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename FormatBuffer, typename Master>
 	void BasicAnsiParseur<FormatBuffer, Master>::ParseStyle() {
-		if (Format.IsEqualForward(':')) {
+		if (Format.IsEqualToForward(':')) {
 			if (!Format.IsEqualTo('}', ',')) {
 				bool l = true;
 				while (l) {
 					Format.IgnoreSpace();
-					if (Format.IsEqualForward('{'))
+					if (Format.IsEqualToForward('{'))
 					{
 						Detail::FormatIndex idx = GetFormatIndexThrow();
 						StyleRunOnIndex(idx);
-						Format.IsEqualForward('}');
+						Format.IsEqualToForward('}');
 					}
 					else
 					{
@@ -130,7 +130,7 @@ namespace EngineCore::FMT::Detail {
 							StyleRun(style);
 					}
 					Format.ParamGoTo('|', ',');
-					l = Format.IsEqualForward('|');
+					l = Format.IsEqualToForward('|');
 					Format.IgnoreSpace();
 				}
 			}
@@ -175,7 +175,7 @@ namespace EngineCore::FMT::Detail {
 	template<typename FormatBuffer, typename Master>
 	Detail::AnsiNColorUnderline BasicAnsiParseur<FormatBuffer, Master>::SelectUnderlinedColorStyle() {
 		Format.ParamGoTo(':');
-		Format.IsEqualForward(':');
+		Format.IsEqualToForward(':');
 		Format.IgnoreSpace();
 		return GetColorCodeAuto<Detail::AnsiNColorUnderline>();
 	}
@@ -184,7 +184,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename FormatBuffer, typename Master>
 	void BasicAnsiParseur<FormatBuffer, Master>::ParseFront() {
-		if (Format.IsEqualForward(':')) {
+		if (Format.IsEqualToForward(':')) {
 			Format.IgnoreSpace();
 			FrontRun(GetFrontCode());
 		}

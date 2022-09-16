@@ -13,8 +13,11 @@
 
 // TODO :
 //
-//		/ same as # % ; Macro PackSave
-//		PackSave (foreshadowing for constexpr)
+// 		Check for escape char
+//
+//		/ same as # % 
+//
+//		Macro PackSave ; PackSave (foreshadowing for constexpr)
 //
 //		-- NOT POSSIBLE -- => FAST compile
 // 

@@ -288,6 +288,11 @@ namespace EngineCore::FMT::Detail {
 		AnsiColor24bBg Bg;
 	};
 
+	inline bool operator==(const AnsiColor24b& lhs, const AnsiColor24b& rhs)
+	{
+		return lhs.Fg == rhs.Fg && lhs.Bg == rhs.Bg;
+	}
+
 	enum class AnsiColorDataType : std::uint8_t {
 		Default,
 		AnsiTextColor,
@@ -325,6 +330,31 @@ namespace EngineCore::FMT::Detail {
 		AnsiColorDataType 	Type {AnsiColorDataType::Default};
 	};
 
+	inline bool operator==(const AnsiColorFG& lhs, const AnsiColorFG& rhs)
+	{
+		if (lhs.Type != rhs.Type)
+			return false;
+		switch(lhs.Type)
+		{
+			case AnsiColorDataType::Default:		return true;
+			case AnsiColorDataType::AnsiTextColor: 	return lhs.Data.Text == rhs.Data.Text;
+			case AnsiColorDataType::AnsiNColor: 	return lhs.Data.NColor == rhs.Data.NColor;
+			case AnsiColorDataType::AnsiColor24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
+		}
+	}
+
+	inline bool operator==(const AnsiColorBG& lhs, const AnsiColorBG& rhs)
+	{
+		if (lhs.Type != rhs.Type)
+			return false;
+		switch(lhs.Type)
+		{
+			case AnsiColorDataType::Default:		return true;
+			case AnsiColorDataType::AnsiTextColor: 	return lhs.Data.Text == rhs.Data.Text;
+			case AnsiColorDataType::AnsiNColor: 	return lhs.Data.NColor == rhs.Data.NColor;
+			case AnsiColorDataType::AnsiColor24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
+		}
+	}
 
 	// Manage only the text color / the underline color will be manage by the AnsiTextFormatStyle
 	struct AnsiColor
@@ -375,5 +405,10 @@ namespace EngineCore::FMT::Detail {
 		}
 	};
 	
+	inline bool operator==(const AnsiColor& lhs, const AnsiColor& rhs)
+	{
+		return lhs.Fg == rhs.Fg && lhs.Bg == rhs.Bg;
+	}
+
 	const static inline AnsiTextColor RESET_ANSI_COLOR;
 }

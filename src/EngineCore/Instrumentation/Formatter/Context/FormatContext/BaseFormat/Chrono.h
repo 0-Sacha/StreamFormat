@@ -43,9 +43,9 @@ namespace EngineCore::FMT::ChronoDetail {
 		context.Print(pattern.ParamGoToAndGetStr('%', '#', '/'));
 		while (!pattern.IsEnd()) {
 
-			if (pattern.IsEqualForward('%'))		WriteSubTimeMod(value, pattern, context);
-			else if (pattern.IsEqualForward('#'))	WriteSubTimeFull(value, pattern, context);
-			else if (pattern.IsEqualForward('/'))	WriteSubTimeSub(value, pattern, context);
+			if (pattern.IsEqualToForward('%'))		WriteSubTimeMod(value, pattern, context);
+			else if (pattern.IsEqualToForward('#'))	WriteSubTimeFull(value, pattern, context);
+			else if (pattern.IsEqualToForward('/'))	WriteSubTimeSub(value, pattern, context);
 
 			context.Print(pattern.ParamGoToAndGetStr('%', '#', '/'));
 		}

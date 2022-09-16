@@ -7,7 +7,7 @@ namespace EngineCore::FMT::Detail {
 	template<typename T>
 	bool FormatterMemoryFormat<CharFormat>::ReadInt(T& i) {
 		T res{};
-		bool sign		= IsEqualForward('-');
+		bool sign		= IsEqualToForward('-');
 		bool isValid	= IsADigit();
 
 		while (IsADigit())

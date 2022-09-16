@@ -9,7 +9,7 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadInt(T& i) {
 		T res = 0;
 
-		bool sign = IsEqualForward('-');
+		bool sign = IsEqualToForward('-');
 		if (!IsADigit())
 			throw FormatParseError();
 
@@ -42,7 +42,7 @@ namespace EngineCore::FMT::Detail {
 		T res = 0;
 		T dec = 0.1f;
 
-		IsEqualForwardThrow('.');
+		IsEqualToForwardThrow('.');
 		
 		++floatPrecision;
 		while (IsADigit() && --floatPrecision != 0) {
@@ -65,7 +65,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		bool sign = IsEqualForward('-'); 
+		bool sign = IsEqualToForward('-'); 
 		if (sign) --shift;
 	
 		IsADigitThrow();
@@ -110,7 +110,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftBeginSpace(st, sp, shift);
 
-		bool sign = IsEqualForward('-');
+		bool sign = IsEqualToForward('-');
 		if (sign) --shift;
 
 		IsADigitThrow();
@@ -123,7 +123,7 @@ namespace EngineCore::FMT::Detail {
 		T res = 0;
 		T dec = 0.1f;
 
-		IsEqualForwardThrow('.');
+		IsEqualToForwardThrow('.');
 		--shift;
 			
 		++floatPrecision;
@@ -156,8 +156,8 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 		
 		if (trueValue) {
-			IsEqualForwardThrow('0');
-			IsEqualForwardThrow('b');
+			IsEqualToForwardThrow('0');
+			IsEqualToForwardThrow('b');
 		}
 
 		T res = 0;
@@ -187,8 +187,8 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 
 		if (trueValue) {
-			IsEqualForwardThrow('0');
-			IsEqualForwardThrow('x');
+			IsEqualToForwardThrow('0');
+			IsEqualToForwardThrow('x');
 		}
 
 		T res = 0;
@@ -220,8 +220,8 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 
 		if (trueValue) {
-			IsEqualForwardThrow('0');
-			IsEqualForwardThrow('o');
+			IsEqualToForwardThrow('0');
+			IsEqualToForwardThrow('o');
 		}
 
 		T res = 0;

@@ -37,10 +37,17 @@ namespace EngineCore::FMT::Context {
 				return;
 
 		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
-		m_Format.IsEqualForwardThrow('}');
+		m_Format.IsEqualToForwardThrow('}');
 		i = GetTypeAtIndexThrow<T>(formatIdx);
+
+		// FIXME WTF
 		// TRY 		const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();
 		// CATCH 	m_Format.SetBufferCurrentPos(mainSubFormat);
+	}
+
+	template<typename CharFormat, typename ContextPackageSaving, typename Master>
+	void BasicContext<CharFormat, ContextPackageSaving, Master>::FormatDataApplyNextOverride() {
+
 	}
 
 }

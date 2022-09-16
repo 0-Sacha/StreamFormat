@@ -44,13 +44,13 @@ template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename 
 struct EngineCore::FMT::UnFormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, UnFormatContext>
 {
 	static void Read(const EngineCore::Vector<COUNT, Type, ComputeAlgorithm>& vec, UnFormatContext& context) {
-		context.BufferOut().IsEqualForwardThrow('{');
+		context.BufferOut().IsEqualToForwardThrow('{');
 		bool first = true;
 		for (auto i = 0; i < COUNT; ++i) {
 			if (first)	first = false;
 			else		{ context.BufferOut().PushBack(','); context.BufferOut().PushBack(' '); }
 			context.ReadType(vec.data[i]);
 		}
-		context.BufferOut().IsEqualForwardThrow('}');
+		context.BufferOut().IsEqualToForwardThrow('}');
 	}
 };

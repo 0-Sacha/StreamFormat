@@ -47,6 +47,10 @@ namespace EngineCore::FMT::Detail {
 		using Base::ForwardNoCheck;
 		using Base::Backward;
 		using Base::BackwardNoCheck;
+		using Base::ForwardNoThrow;
+		using Base::ForwardNoCheckNoThrow;
+		using Base::BackwardNoThrow;
+		using Base::BackwardNoCheckNoThrow;
 
 		using Base::Get;
 		using Base::GetAndForward;

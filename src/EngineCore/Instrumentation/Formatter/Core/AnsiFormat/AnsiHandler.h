@@ -13,4 +13,8 @@ namespace EngineCore::FMT::Detail {
 		Detail::AnsiFront	Front;
 	};
 
+	inline bool operator==(const AnsiTextData& lhs, const AnsiTextData& rhs)
+	{
+		return lhs.Color == rhs.Color && lhs.Style == rhs.Style && lhs.Front == rhs.Front;
+	}
 } // EngineCore::FMT::Detail

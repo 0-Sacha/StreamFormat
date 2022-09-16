@@ -41,6 +41,10 @@ namespace EngineCore::FMT::Detail {
 		using Base::ForwardNoCheck;
 		using Base::Backward;
 		using Base::BackwardNoCheck;
+		using Base::ForwardNoThrow;
+		using Base::ForwardNoCheckNoThrow;
+		using Base::BackwardNoThrow;
+		using Base::BackwardNoCheckNoThrow;
 
 		using Base::Get;
 		using Base::GetAndForward;
@@ -71,20 +75,20 @@ namespace EngineCore::FMT::Detail {
 
 		using Base::IsEqualTo;
 		using Base::IsNotEqualTo;
-		using Base::IsEqualForward;
+		using Base::IsEqualToForward;
 		using Base::IsNotEqualForward;
 		using Base::IsEqualToThrow;
 		using Base::IsNotEqualToThrow;
-		using Base::IsEqualForwardThrow;
+		using Base::IsEqualToForwardThrow;
 		using Base::IsNotEqualForwardThrow;
 
 		using Base::NextIsEqualTo;
 		using Base::NextIsNotEqualTo;
-		using Base::NextIsEqualForward;
+		using Base::NextIsEqualToForward;
 		using Base::NextIsNotEqualForward;
 		using Base::NextIsEqualToThrow;
 		using Base::NextIsNotEqualToThrow;
-		using Base::NextIsEqualForwardThrow;
+		using Base::NextIsEqualToForwardThrow;
 		using Base::NextIsNotEqualForwardThrow;
 
 		using Base::IsLowerCase;

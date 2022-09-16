@@ -34,8 +34,8 @@ namespace EngineCore::FMT {
 				}
 				return;
 			} else {
-				if (context.BufferIn().IsEqualForward('0'))			{ t = false;	return; }
-				else if (context.BufferIn().IsEqualForward('1'))	{ t = true;		return; }
+				if (context.BufferIn().IsEqualToForward('0'))			{ t = false;	return; }
+				else if (context.BufferIn().IsEqualToForward('1'))	{ t = true;		return; }
 			}
 
 			throw Detail::FormatParseError();

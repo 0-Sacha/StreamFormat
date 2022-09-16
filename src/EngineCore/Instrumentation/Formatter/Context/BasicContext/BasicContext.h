@@ -58,6 +58,9 @@ namespace EngineCore::FMT::Context {
 		Detail::FormatIndex GetFormatIndexThrow();
 
 	public:
+		void FormatDataApplyNextOverride();
+
+	public:
 		template <typename T>
 		const Detail::GetBaseType<T>* GetTypeAtIndex(const Detail::FormatIndex& index) 				{ return (*reinterpret_cast<Master*>(this)).template GetTypeAtIndex<T>(index); 	throw Detail::FormatShouldNotEndHere(); }
 		template <typename T>
@@ -78,6 +81,8 @@ namespace EngineCore::FMT::Context {
         }
 
 	protected:
+		std::basic_string_view<CharFormat> ParseNextOverrideFormatData();
+
 		void ParseFormatDataBase();
 		void ParseFormatDataSpecial();
 		void ParseFormatDataCustom();

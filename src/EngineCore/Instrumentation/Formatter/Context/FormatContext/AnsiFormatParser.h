@@ -52,6 +52,10 @@ namespace EngineCore::FMT::Detail {
 
 	public:
 		void AllReset() 					{ AllModifReset(); Context.RunType(Detail::ResetAnsiAllParameters{}); }
+		void AllResetIfNeeded() 			{
+			if (CurrentContext != Detail::AnsiTextData{})
+				AllReset();
+		}
 
 	public:
 		void Kill()
@@ -59,7 +63,7 @@ namespace EngineCore::FMT::Detail {
 			if (ParentCurrentContext != nullptr)
 				*ParentCurrentContext = CurrentContext;
 			else
-				AllReset();
+				AllResetIfNeeded();
 		}
 
 	public:

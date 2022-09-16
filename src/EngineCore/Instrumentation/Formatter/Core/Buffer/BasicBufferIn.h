@@ -44,6 +44,10 @@ namespace EngineCore::FMT::Detail {
         using Base::ForwardNoCheck;
         using Base::Backward;
         using Base::BackwardNoCheck;
+        using Base::ForwardNoThrow;
+        using Base::ForwardNoCheckNoThrow;
+        using Base::BackwardNoThrow;
+        using Base::BackwardNoCheckNoThrow;
 
         using Base::Get;
         using Base::GetAndForward;
@@ -128,15 +132,15 @@ namespace EngineCore::FMT::Detail {
         // Format check
         inline bool IsEqualTo(const CharBuffer c) const				{ return Get() == c; }
         inline bool IsNotEqualTo(const CharBuffer c) const			{ return Get() != c; }
-        inline bool IsEqualForward(const CharBuffer c)				{ if (IsEqualTo(c)) { Forward(); return true; } return false; }
+        inline bool IsEqualToForward(const CharBuffer c)				{ if (IsEqualTo(c)) { Forward(); return true; } return false; }
         inline bool IsNotEqualForward(const CharBuffer c)			{ if (IsNotEqualTo(c)) { Forward(); return true; } return false; }
         template<typename ...CharToTest> inline bool IsEqualTo(const CharBuffer c, const CharToTest ...ele) const		{ return IsEqualTo(c) || IsEqualTo(ele...); }
-        template<typename ...CharToTest> inline bool IsEqualForward(const CharToTest ...ele)							{ if (IsEqualTo(ele...)) { Forward(); return true; } return false; }
+        template<typename ...CharToTest> inline bool IsEqualToForward(const CharToTest ...ele)							{ if (IsEqualTo(ele...)) { Forward(); return true; } return false; }
         template<typename ...CharToTest> inline bool IsNotEqualTo(const CharBuffer c, const CharToTest ...ele) const	{ return IsNotEqualTo(c) && IsNotEqualTo(ele...); }
         template<typename ...CharToTest> inline bool IsNotEqualForward(const CharToTest ...ele)							{ if (IsNotEqualTo(ele...)) { Forward(); return true; } return false; }
         // Auto throw variant
         template<typename ...CharToTest> inline void IsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (IsEqualTo(c, ele...)) return; throw FormatParseError(); }
-        template<typename ...CharToTest> inline void IsEqualForwardThrow(const CharToTest ...ele)							{ if (IsEqualForward(ele...)) return; throw FormatParseError(); }
+        template<typename ...CharToTest> inline void IsEqualToForwardThrow(const CharToTest ...ele)							{ if (IsEqualToForward(ele...)) return; throw FormatParseError(); }
         template<typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (IsNotEqualTo(c, ele...)) return; throw FormatParseError(); }
         template<typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)						{ if (IsNotEqualForward(ele...)) return; throw FormatParseError(); }
         
@@ -144,15 +148,15 @@ namespace EngineCore::FMT::Detail {
         // Format Next check
         inline bool NextIsEqualTo(const CharBuffer c) const			{ return GetNext() == c; }
         inline bool NextIsNotEqualTo(const CharBuffer c) const		{ return GetNext() != c; }
-        inline bool NextIsEqualForward(const CharBuffer c)			{ Forward(); if (!IsEqualTo(c)) { BackwardNoCheck(); return false; } return true; }
+        inline bool NextIsEqualToForward(const CharBuffer c)			{ Forward(); if (!IsEqualTo(c)) { BackwardNoCheck(); return false; } return true; }
         inline bool NextIsNotEqualForward(const CharBuffer c)		{ Forward(); if (!IsNotEqualTo(c)) { BackwardNoCheck(); return false; } return true; }
-        template<typename ...CharToTest> inline bool NextIsEqualForward(const CharToTest ...ele)		{ Forward(); if (IsEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
+        template<typename ...CharToTest> inline bool NextIsEqualToForward(const CharToTest ...ele)		{ Forward(); if (IsEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
         template<typename ...CharToTest> inline bool NextIsEqualTo(const CharToTest ...ele) const		{ Forward(); if (IsEqualTo(ele...)) { BackwardNoCheck(); return true; } BackwardNoCheck(); return false; }
         template<typename ...CharToTest> inline bool NextIsNotEqualForward(const CharToTest ...ele)		{ Forward(); if (IsNotEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
         template<typename ...CharToTest> inline bool NextIsNotEqualTo(const CharToTest ...ele) const	{ Forward(); if (IsNotEqualTo(ele...)) { BackwardNoCheck(); return true; } BackwardNoCheck(); return false; }
         // Auto throw variant
         template<typename ...CharToTest> inline void NextIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const		{ if (NextIsEqualTo(c, ele...)) return; throw FormatParseError(); }
-        template<typename ...CharToTest> inline void NextIsEqualForwardThrow(const CharToTest ...ele)							{ if (NextIsEqualForward(ele...)) return; throw FormatParseError(); }
+        template<typename ...CharToTest> inline void NextIsEqualToForwardThrow(const CharToTest ...ele)							{ if (NextIsEqualToForward(ele...)) return; throw FormatParseError(); }
         template<typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (NextIsNotEqualTo(c, ele...)) return; throw FormatParseError(); }
         template<typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)						{ if (NextIsNotEqualForward(ele...)) return; throw FormatParseError(); }
 

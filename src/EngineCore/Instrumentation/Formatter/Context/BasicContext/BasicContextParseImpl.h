@@ -6,29 +6,52 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
+	std::basic_string_view<CharFormat> BasicContext<CharFormat, ContextPackageSaving, Master>::ParseNextOverrideFormatData() {
+		m_Format.IgnoreSpace();
+		m_Format.ParamGoTo('{', '=', ':');
+		m_Format.IgnoreSpace();
+		m_Format.IsEqualToForward('=', ':');
+		m_Format.IgnoreSpace();
+		m_Format.ParamGoTo('{');
+
+		const CharFormat* begin = m_Format.GetBufferCurrentPos();
+		m_Format.IsEqualToForwardThrow('{');
+		while (!m_Format.IsEndOfParameter())
+		{
+			m_Format.GoTo('\'', '}');
+			if (m_Format.IsEqualToForward('\''))
+				m_Format.GoToForward('\'');
+		}
+		m_Format.IsEqualToForwardThrow('}');
+		const CharFormat* end = m_Format.GetBufferCurrentPos();
+		return std::basic_string_view<CharFormat>(begin, end);
+	}
+
+	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataBase() {
 
-			 if (m_Format.IsEqualForward('C')) { ParseFormatDataColor(); }
-		else if (m_Format.IsEqualForward('S')) { ParseFormatDataStyle(); }
-		else if (m_Format.IsEqualForward('F')) { ParseFormatDataFront(); }
+			 if (m_Format.IsEqualToForward('C')) { ParseFormatDataColor(); }
+		else if (m_Format.IsEqualToForward('S')) { ParseFormatDataStyle(); }
+		else if (m_Format.IsEqualToForward('F')) { ParseFormatDataFront(); }
 
-		else if (m_Format.IsEqualForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualForward('X')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Hex;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualForward('O')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Oct;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Dec;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualToForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualToForward('X')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Hex;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualToForward('O')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Oct;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualToForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Dec;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
 
-		else if (m_Format.IsEqualForward('L')) { m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase; }
-		else if (m_Format.IsEqualForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
+		else if (m_Format.IsEqualToForward('L')) { m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase; }
+		else if (m_Format.IsEqualToForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
 
-		else if (m_Format.IsEqualForward('A')) { m_FormatData.Safe = true; }
+		else if (m_Format.IsEqualToForward('A')) { m_FormatData.Safe = true; }
 
-		else if (m_Format.IsEqualForward('W')) { m_FormatData.KeepNewStyle = true; }
+		else if (m_Format.IsEqualToForward('W')) { m_FormatData.KeepNewStyle = true; }
 
+		else if (m_Format.IsEqualToForward('N')) { m_FormatData.NextOverride = ParseNextOverrideFormatData(); }
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataSpecial() {
-		if (m_Format.IsEqualForward('{'))
+		if (m_Format.IsEqualToForward('{'))
 		{
 			Detail::FormatIndex formatIndex = GetFormatIndexThrow();
 			if ((m_FormatData.ModifyTestThrow(GetTypeAtIndex<FormatDataType>(formatIndex))
@@ -41,26 +64,26 @@ namespace EngineCore::FMT::Context {
 			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftType>(formatIndex))
 			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::FormatSpecifier<CharFormat>>(formatIndex))) == false)
 			throw Detail::FormatGivenTypeError{};
-			m_Format.IsEqualForwardThrow('}');
+			m_Format.IsEqualToForwardThrow('}');
 		}
-		else if (m_Format.IsEqualForward('=')) { m_FormatData.TrueValue = true; }
+		else if (m_Format.IsEqualToForward('=')) { m_FormatData.TrueValue = true; }
 
-		else if (m_Format.IsEqualForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision.Value); }
+		else if (m_Format.IsEqualToForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision.Value); }
 
-		else if (m_Format.IsEqualForward('>')) { m_FormatData.ShiftType = Detail::ShiftType::Right;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
-		else if (m_Format.IsEqualForward('<')) { m_FormatData.ShiftType = Detail::ShiftType::Left;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
-		else if (m_Format.IsEqualForward('^')) { m_FormatData.ShiftType = Detail::ShiftType::Center;	FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
-		else if (m_Format.IsEqualForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint_Zeros; }
+		else if (m_Format.IsEqualToForward('>')) { m_FormatData.ShiftType = Detail::ShiftType::Right;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
+		else if (m_Format.IsEqualToForward('<')) { m_FormatData.ShiftType = Detail::ShiftType::Left;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
+		else if (m_Format.IsEqualToForward('^')) { m_FormatData.ShiftType = Detail::ShiftType::Center;	FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
+		else if (m_Format.IsEqualToForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint_Zeros; }
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataCustom() {
 		StringViewFormat name = GetStringViewParamUntil(' ', '=', '\'', '{', ',');
 		m_Format.ParamGoTo('=', '\'', '{', ',');
-		m_Format.IsEqualForward('=');
+		m_Format.IsEqualToForward('=');
 		m_Format.IgnoreSpace();
 
-		if (m_Format.IsEqualForward('\'')) {
+		if (m_Format.IsEqualToForward('\'')) {
 			StringViewFormat value = GetStringViewUntil('\'');
 			m_FormatData.AddSpecifier(name, value);
 		}
@@ -68,11 +91,11 @@ namespace EngineCore::FMT::Context {
 			Detail::DataType value = ReadDataType();
 			m_FormatData.AddSpecifier(name, value);
 		}
-		else if (m_Format.IsEqualForward('{')) {
+		else if (m_Format.IsEqualToForward('{')) {
 			Detail::FormatIndex idx = GetFormatIndexThrow();
 			// FIXME
 			// m_FormatData.AddSpecifier(name, GetTypeAtIndexAuto(idx));
-			m_Format.IsEqualForward('}');
+			m_Format.IsEqualToForward('}');
 		}
 		else if (m_Format.IsEqualTo(',', '}')) {
 			m_FormatData.AddSpecifier(name);
@@ -128,7 +151,7 @@ namespace EngineCore::FMT::Context {
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
 		// VI : { which is a idx to a number
-		if (m_Format.IsEqualForward('{'))
+		if (m_Format.IsEqualToForward('{'))
 		{
 			try {
 				Detail::FormatIndex recIndex = GetFormatIndexThrow();
@@ -136,7 +159,7 @@ namespace EngineCore::FMT::Context {
 
 				if(recIndex.IsValid())
 				{
-					m_Format.IsEqualForwardThrow('}');
+					m_Format.IsEqualToForwardThrow('}');
 					Detail::FormatIndex finalRecIndex = GetTypeAtIndexConvertThrow<Detail::FormatIndex>(recIndex);
 					finalRecIndex.SetContext(m_ValuesIndex);
 					if(finalRecIndex.IsValid())
@@ -155,12 +178,12 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseSpecial() {
-			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualForward(':', '}'))		{ ParseColor(); 	}
-		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualForward(':', '}'))		{ ParseStyle(); 	}
-		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualForward(':', '}'))		{ ParseFront(); 	}
-		else if (m_Format.IsEqualTo('T') && m_Format.NextIsEqualForward(':', '}'))		{ ParseTimer(); 	}
-		else if (m_Format.IsEqualTo('D') && m_Format.NextIsEqualForward(':', '}'))		{ ParseDate(); 		}
-		else if (m_Format.IsEqualTo('K') && m_Format.NextIsEqualForward(':'))			{ ParseSetter();	}
+			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseColor(); 	}
+		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseStyle(); 	}
+		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseFront(); 	}
+		else if (m_Format.IsEqualTo('T') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseTimer(); 	}
+		else if (m_Format.IsEqualTo('D') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseDate(); 		}
+		else if (m_Format.IsEqualTo('K') && m_Format.NextIsEqualToForward(':'))			{ ParseSetter();	}
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>

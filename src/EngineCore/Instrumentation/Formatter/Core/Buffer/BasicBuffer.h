@@ -88,19 +88,26 @@ namespace EngineCore::FMT::Detail {
 		inline void IsEndThrow() const									{ if (IsEnd())				return; throw FormatBufferEnd(); }
 
 		// Format base commands
-		inline void Forward()										{ if (CanMoveForward()) ++m_CurrentPos; }
+		inline void Forward()										{ CanMoveForwardThrow(); ++m_CurrentPos; }
 		inline void ForwardNoCheck()								{ ++m_CurrentPos; }
-		inline void Backward()										{ if (CanMoveBackward()) --m_CurrentPos; }
+		inline void Backward()										{ CanMoveBackwardThrow(); --m_CurrentPos; }
 		inline void BackwardNoCheck()								{ --m_CurrentPos; }
-		inline void Forward(const std::size_t size)					{ m_CurrentPos += size; if (!CanMoveForward()) m_CurrentPos = m_BufferEnd; }
-		inline void Backward(const std::size_t size)				{ m_CurrentPos -= size; if (!CanMoveBackward()) m_CurrentPos = m_Buffer; }
+		inline void Forward(const std::size_t size)					{ CanMoveForwardThrow(size); m_CurrentPos += size; }
+		inline void Backward(const std::size_t size)				{ CanMoveBackwardThrow(size); m_CurrentPos -= size; }
+
+		inline void ForwardNoThrow()								{ if (CanMoveForward()) ++m_CurrentPos; }
+		inline void ForwardNoCheckNoThrow()							{ ++m_CurrentPos; }
+		inline void BackwardNoThrow()								{ if (CanMoveBackward()) --m_CurrentPos; }
+		inline void BackwardNoCheckNoThrow()						{ --m_CurrentPos; }
+		inline void ForwardNoThrow(const std::size_t size)			{  if (CanMoveForward(size)) m_CurrentPos += size; }
+		inline void BackwardNoThrow(const std::size_t size)			{  if (CanMoveBackward(size)) m_CurrentPos -= size; }
 
 		inline CharBuffer Get() const								{ return *m_CurrentPos; }
-		inline CharBuffer GetAndForward()							{ return CanMoveForward() ? *m_CurrentPos++ : '\0'; }
+		inline CharBuffer GetAndForward()							{ CanMoveForwardThrow();return *m_CurrentPos++; }
 		inline CharBuffer GetAndForwardNoCheck()					{ return *m_CurrentPos++; }
-		inline CharBuffer GetAndBackward()							{ return CanMoveBackward() ? *m_CurrentPos-- : '\0'; }
+		inline CharBuffer GetAndBackward()							{ CanMoveBackwardThrow(); return *m_CurrentPos--; }
 		inline CharBuffer GetAndBackwardNoCheck()					{ return *m_CurrentPos--; }
-		inline CharBuffer GetNext() const							{ return CanMoveForward() ? *(m_CurrentPos + 1) : '\0'; }
+		inline CharBuffer GetNext() const							{ CanMoveForwardThrow(); return *(m_CurrentPos + 1); }
 		inline CharBuffer GetNextNoCheck() const					{ return *(m_CurrentPos + 1); }
 	};
 }

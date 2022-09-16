@@ -187,7 +187,7 @@ namespace EngineCore::FMT::Detail {
 		bool IsInit								= false;
 		bool HasSpec							= false;
 
-		bool KeepNewStyle						= false;
+		bool KeepNewStyle						= false; 	// W
 
 		bool TrueValue							= false;	// = 
 		bool Safe								= false;	// Safe 
@@ -201,6 +201,8 @@ namespace EngineCore::FMT::Detail {
 		Detail::ShiftPrint ShiftPrint			= Detail::ShiftPrint{};				// <  - >  - ^
 		Detail::ShiftSize ShiftSize				= Detail::ShiftSize{};				// <? - >? - ^?
 		Detail::ShiftType ShiftType				= Detail::ShiftType::Default;	 	// 0 - ' '
+
+		std::basic_string_view<CharFormat> NextOverride 		= std::basic_string_view<CharFormat>(nullptr, 0);
 
 		std::uint8_t SpecifierCount								= 0;
 		std::array<FormatSpecifier<CharFormat>, 10> Specifier	{};

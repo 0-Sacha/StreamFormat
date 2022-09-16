@@ -145,6 +145,18 @@ namespace EngineCore::FMT::Detail {
 		AnsiUnderlineColorType	Type = AnsiUnderlineColorType::Default;
 	};
 
+	inline bool operator==(const AnsiUnderlineColor& lhs, const AnsiUnderlineColor& rhs)
+	{
+		if (lhs.Type != rhs.Type)
+			return false;
+		switch(lhs.Type)
+		{
+			case AnsiUnderlineColorType::Default:		return true;
+			case AnsiUnderlineColorType::AnsiNColor: 	return lhs.Data.NColor == rhs.Data.NColor;
+			case AnsiUnderlineColorType::AnsiColor24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
+		}
+	}
+
 	struct AnsiStyle {
 	public:
 		AnsiStyle() {}
@@ -176,6 +188,18 @@ namespace EngineCore::FMT::Detail {
 		void ModifyThrow(const AnsiTFSScript& given) 			{ Script = given; 	}
 
 	};
+
+	inline bool operator==(const AnsiStyle& lhs, const AnsiStyle& rhs)
+	{
+		return lhs.Intensity == rhs.Intensity
+			&& lhs.Italic == rhs.Italic
+			&& lhs.Underline == rhs.Underline
+			&& lhs.UnderlineColor == rhs.UnderlineColor
+			&& lhs.Blink == rhs.Blink
+			&& lhs.Inverted == rhs.Inverted
+			&& lhs.Ideogram == rhs.Ideogram
+			&& lhs.Script == rhs.Script;
+	}
 
 	const static inline ResetAnsiAllParameters	RESET_ANSI_ALL_PARAMETERS;
 	const static inline ResetAnsiStyle			RESET_ANSI_STYLE;
