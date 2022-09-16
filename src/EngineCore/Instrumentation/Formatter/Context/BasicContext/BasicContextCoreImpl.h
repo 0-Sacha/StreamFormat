@@ -47,7 +47,13 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::FormatDataApplyNextOverride() {
-
+		if (m_FormatData.NextOverride.size() == 0)
+			return;
+	
+		FormatBufferType overrideAsFormat(m_FormatData.NextOverride);
+		FormatBufferType formatCopy = m_Format;
+		m_Format = overrideAsFormat;
+		ParseFormatData();
+		m_Format = formatCopy;
 	}
-
 }

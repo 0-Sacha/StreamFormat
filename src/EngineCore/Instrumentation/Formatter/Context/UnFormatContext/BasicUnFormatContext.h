@@ -149,19 +149,25 @@ namespace EngineCore::FMT::Context {
 
 	public:
 		using Base::RunType;
+		using Base::RunSubType;
 		using Base::BasicRunType;
+		using Base::BasicRunSubType;
 
 		// Type formating from UnFormatType<>
 		template<typename Type>
 		inline void RunType(Type&& type)						{ UnFormatType<typename FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Read(type, *this); }
 		template<typename Type, typename ...Rest>
 		inline void ReadType(Type&& type, Rest&& ...rest)		{ RunType(type, std::forward<Rest>(rest)...); }
+		template<typename Type, typename ...Rest>
+		inline void ReadSubType(Type&& type, Rest&& ...rest)	{ RunSubType(type, std::forward<Rest>(rest)...); }
 
 		// Only support basic type that are considered as basic by Buffer class
 		template<typename Type>
-		inline void BasicRunType(Type&& type)					{ m_BufferIn.BasicReadType(type); }
+		inline void BasicRunType(Type&& type)						{ m_BufferIn.BasicReadType(type); }
 		template<typename Type, typename ...Rest>
-		inline void BasicReadType(Type&& type, Rest&& ...rest)	{ BasicRunType(type, std::forward<Rest>(rest)...); }
+		inline void BasicReadType(Type&& type, Rest&& ...rest)		{ BasicRunType(type, std::forward<Rest>(rest)...); }
+		template<typename Type, typename ...Rest>
+		inline void BasicSubReadType(Type&& type, Rest&& ...rest)	{ BasicSubRunType(type, std::forward<Rest>(rest)...); }
 
 	public:
 		using Base::GetStringViewParamUntil;

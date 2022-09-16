@@ -105,7 +105,8 @@ namespace EngineCore::FMT::Context {
 	/////---------- Impl ----------/////
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatData() {
-		if (m_Format.IsEqualTo(':')) {
+		// ':' for classic use ; '{' for NextOverride
+		if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('{')) {
 			m_FormatData.HasSpec = true;
 			while (!m_Format.IsEndOfParameter()) {
 				m_Format.Forward();

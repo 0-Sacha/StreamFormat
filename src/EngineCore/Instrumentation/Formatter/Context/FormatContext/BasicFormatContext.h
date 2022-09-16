@@ -160,7 +160,9 @@ namespace EngineCore::FMT::Context {
 
     public:
         using Base::RunType;
+        using Base::RunSubType;
         using Base::BasicRunType;
+        using Base::BasicRunSubType;
 
 
         // Type formating from FormatType<>
@@ -168,12 +170,16 @@ namespace EngineCore::FMT::Context {
         inline void RunType(Type&& type)                        { FormatType<typename FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Write(type, *this); }
         template<typename Type, typename ...Rest>
         inline void WriteType(Type&& type, Rest&& ...rest)		{ RunType(type, std::forward<Rest>(rest)...); }
+        template<typename Type, typename ...Rest>
+        inline void WriteSubType(Type&& type, Rest&& ...rest)	{ RunSubType(type, std::forward<Rest>(rest)...); }
 
         // Only support basic type that are considered as basic by Buffer class
         template<typename Type>
-        inline void BasicRunType(Type&& type)                   { m_BufferOut.BasicWriteType(type); }
+        inline void BasicRunType(Type&& type)                       { m_BufferOut.BasicWriteType(type); }
         template<typename Type, typename ...Rest>
-        inline void BasicWriteType(Type&& type, Rest&& ...rest)	{ BasicRunType(type, std::forward<Rest>(rest)...); }
+        inline void BasicWriteType(Type&& type, Rest&& ...rest)	    { BasicRunType(type, std::forward<Rest>(rest)...); }
+        template<typename Type, typename ...Rest>
+        inline void BasicSubWriteType(Type&& type, Rest&& ...rest)	{ BasicSubRunType(type, std::forward<Rest>(rest)...); }
 
     public:
         using Base::GetStringViewParamUntil;

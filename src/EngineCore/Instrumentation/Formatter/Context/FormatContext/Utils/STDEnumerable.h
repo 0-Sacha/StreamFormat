@@ -67,7 +67,7 @@ namespace EngineCore::FMT {
 					else 		context.PrintIndent(enumerable.GetStrJoin());
 					{
 						Detail::GetIndentFunction getindent(context);
-						context.WriteType(element);
+						context.WriteSubType(element);
 						addindent = getindent.GetIndent();
 					}
 				});

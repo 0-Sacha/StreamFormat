@@ -119,10 +119,37 @@ namespace EngineCore::FMT::Context {
 		inline void RunType(Type&& type, const Rest&& ...rest) 			{ RunType(type); RunType(std::forward<Rest>(rest)...); }
 		template<typename Type> inline void RunType(Type&& type) 		{ return reinterpret_cast<Master*>(this)->RunType(type); 		throw Detail::FormatShouldNotEndHere(); }
 
+		template<typename Type, typename ...Rest>
+		inline void RunSubType(Type&& type, const Rest&& ...rest) 		{ RunSubType(type); RunSubType(std::forward<Rest>(rest)...); }
+		template<typename Type> inline void RunSubType(Type&& type) 	{
+			if (m_FormatData.NextOverride.size() == 0)
+				return reinterpret_cast<Master*>(this)->RunType(type);
+			FormatDataType formatDataCopy = m_FormatData;
+			FormatDataApplyNextOverride();
+			reinterpret_cast<Master*>(this)->RunType(type); 
+			m_FormatData = formatDataCopy;
+			return;
+			throw Detail::FormatShouldNotEndHere();
+		}
+
 		// Only support basic type that are considered as basic by Buffer class
 		template<typename Type, typename ...Rest>
 		inline void BasicRunType(Type&& type, Rest&& ...rest) 			{ BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); };
 		template<typename Type> inline void BasicRunType(Type&& type)	{ return reinterpret_cast<Master*>(this)->BasicRunType(type); 	throw Detail::FormatShouldNotEndHere(); }
+
+		template<typename Type, typename ...Rest>
+		inline void BasicRunSubType(Type&& type, Rest&& ...rest) 		 	{ BasicRunSubType(type); BasicRunSubType(std::forward<Rest>(rest)...); };
+
+		template<typename Type> inline void BasicRunSubType(Type&& type) 	{
+			if (m_FormatData.NextOverride.size() == 0)
+				return reinterpret_cast<Master*>(this)->BasicRunType(type);
+			FormatDataType formatDataCopy = m_FormatData;
+			FormatDataApplyNextOverride();
+			reinterpret_cast<Master*>(this)->BasicRunType(type); 
+			m_FormatData = formatDataCopy;
+			return;
+			throw Detail::FormatShouldNotEndHere();
+		}
 
 	public:
 		template <typename ...CharToTest>
