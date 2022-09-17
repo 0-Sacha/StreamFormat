@@ -53,30 +53,23 @@ namespace EngineCore::FMT {
 	template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatContext>
 	struct FormatType<STDEnumerable<T, CharBegin, CharJoin, CharEnd>, FormatContext> {
 		static void Write(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatContext& context) {
-			{
-				Detail::RestoreIndentFunction restoreIndent(context, enumerable.GetStrEnd(), false);
+			context.PrintIndent(enumerable.GetStrBegin());
+			context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
 
-				context.PrintIndent(enumerable.GetStrBegin());
+			typename FormatContext::FormatDataType oldFormatData = context.GetFormatData();
+			context.FormatDataApplyNextOverride();
 
-				context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
+			bool first = true;
+			std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
+				if (first)	first = false;
+				else 		context.PrintIndent(enumerable.GetStrJoin());
+				
+				context.WriteType(element);
+			});
 
-				bool first = true;
-				std::size_t addindent = 0;
-				std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
-					if (first)	first = false;
-					else 		context.PrintIndent(enumerable.GetStrJoin());
-					{
-						Detail::GetIndentFunction getindent(context);
-						context.WriteSubType(element);
-						addindent = getindent.GetIndent();
-					}
-				});
+			context.SetFormatData(oldFormatData);
 
-				Detail::GetIndentInfo info(enumerable.GetStrJoin());
-				context.BufferOut().AddIndent(info.AddIndent);
-				context.BufferOut().AddIndent(addindent);
-			}
-
+			context.BufferOut().RemoveIndent(enumerable.GetStrBegin().size());
 			context.PrintIndent(enumerable.GetStrEnd());
 		}
 	};

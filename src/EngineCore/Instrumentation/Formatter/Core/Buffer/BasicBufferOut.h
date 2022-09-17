@@ -97,6 +97,7 @@ namespace EngineCore::FMT::Detail {
 		inline std::size_t GetIndent() const					{ return m_Indent; }
 		inline void SetIndent(const std::size_t indent) 		{ m_Indent = indent; }
 		inline void AddIndent(const std::size_t indent) 		{ m_Indent += indent; }
+		inline void RemoveIndent(const std::size_t indent) 		{ m_Indent -= indent; }
 		void SetIndent() 										{ m_Indent = GetBufferCurrentSize() - GetNoStride(); }
 
 	private:

@@ -49,6 +49,7 @@ namespace EngineCore::FMT::Context {
 		using Base::Format;
 		using Base::GetFormatData;
 		using Base::ForwardFormatData;
+		using Base::SetFormatData;
 		using Base::GetAPI;
 
 		inline BufferInType& BufferIn()					{ return m_BufferIn; }

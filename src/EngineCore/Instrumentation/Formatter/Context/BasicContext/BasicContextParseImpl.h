@@ -16,11 +16,16 @@ namespace EngineCore::FMT::Context {
 
 		const CharFormat* begin = m_Format.GetBufferCurrentPos();
 		m_Format.IsEqualToForwardThrow('{');
-		while (!m_Format.IsEndOfParameter())
+		int scopes = 0;
+		while (m_Format.IsEndOfParameter() == false || scopes > 0)
 		{
-			m_Format.GoTo('\'', '}');
+			m_Format.GoTo('\'', '}', '{');
 			if (m_Format.IsEqualToForward('\''))
 				m_Format.GoToForward('\'');
+			else if (m_Format.IsEqualToForward('{'))
+				scopes++;
+			else if (scopes > 0 && m_Format.IsEqualToForward('}'))
+				scopes--;
 		}
 		m_Format.IsEqualToForwardThrow('}');
 		const CharFormat* end = m_Format.GetBufferCurrentPos();

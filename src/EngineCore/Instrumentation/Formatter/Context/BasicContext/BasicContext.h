@@ -35,9 +35,10 @@ namespace EngineCore::FMT::Context {
 		inline FormatBufferType&		Format()					{ return m_Format; }
 		inline const FormatBufferType&	Format() const				{ return m_Format; }
 
-		inline FormatDataType&			GetFormatData()				{ return m_FormatData; }
-		inline const FormatDataType&	GetFormatData() const		{ return m_FormatData; }
-		inline FormatDataType			ForwardFormatData() const	{ return m_FormatData; }
+		inline FormatDataType&			GetFormatData()										{ return m_FormatData; }
+		inline const FormatDataType&	GetFormatData() const								{ return m_FormatData; }
+		inline FormatDataType			ForwardFormatData() const							{ return m_FormatData; }
+		inline void						SetFormatData(const FormatDataType& formatData)		{ m_FormatData = formatData; }
 
 		inline bool						IsChild() const				{ return m_IsChild; }
 
