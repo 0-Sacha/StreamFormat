@@ -85,7 +85,9 @@ namespace EngineCore::FMT::Context {
 		std::basic_string_view<CharFormat> ParseNextOverrideFormatData();
 
 		void ParseFormatDataBase();
+		void ParseFormatDataBase_ValueIntPrint(const Detail::ValueIntPrint type);
 		void ParseFormatDataSpecial();
+		void ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type);
 		void ParseFormatDataCustom();
 		void ParseFormatData();
 

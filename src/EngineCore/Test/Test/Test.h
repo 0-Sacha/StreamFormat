@@ -2,21 +2,21 @@
 
 #include "../TestCore.h"
 
-#define ENGINECORE_TEST_TRACE(...)	EngineCore::Test::TestCore::GetLogger().LogTrace(__VA_ARGS__)
-#define ENGINECORE_TEST_INFO(...)	EngineCore::Test::TestCore::GetLogger().LogInfo(__VA_ARGS__)
-#define ENGINECORE_TEST_WARN(...)	EngineCore::Test::TestCore::GetLogger().LogWarn(__VA_ARGS__)
-#define ENGINECORE_TEST_ERROR(...)	EngineCore::Test::TestCore::GetLogger().LogError(__VA_ARGS__)
-#define ENGINECORE_TEST_FATAL(...)	EngineCore::Test::TestCore::GetLogger().LogFatal(__VA_ARGS__)
-#define ENGINECORE_TEST_OK(...)		EngineCore::Test::TestCore::GetLogger().LogOk(__VA_ARGS__)
-#define ENGINECORE_TEST_FAIL(...)	EngineCore::Test::TestCore::GetLogger().LogFail(__VA_ARGS__)
-#define ENGINECORE_TEST_BASIC(...)	EngineCore::Test::TestCore::GetLogger().LogBasic(__VA_ARGS__)
+#define ENGINECORE_TEST_TRACE(...)	EngineCore::Test::TestCore::GetLogger().Trace(__VA_ARGS__)
+#define ENGINECORE_TEST_INFO(...)	EngineCore::Test::TestCore::GetLogger().Info(__VA_ARGS__)
+#define ENGINECORE_TEST_WARN(...)	EngineCore::Test::TestCore::GetLogger().Warn(__VA_ARGS__)
+#define ENGINECORE_TEST_ERROR(...)	EngineCore::Test::TestCore::GetLogger().Error(__VA_ARGS__)
+#define ENGINECORE_TEST_FATAL(...)	EngineCore::Test::TestCore::GetLogger().Fatal(__VA_ARGS__)
+#define ENGINECORE_TEST_OK(...)		EngineCore::Test::TestCore::GetLogger().Ok(__VA_ARGS__)
+#define ENGINECORE_TEST_FAIL(...)	EngineCore::Test::TestCore::GetLogger().Fail(__VA_ARGS__)
+#define ENGINECORE_TEST_BASIC(...)	EngineCore::Test::TestCore::GetLogger().Basic(__VA_ARGS__)
 
 namespace EngineCore::Test {
 
 	class TestCore
 	{
 	public:
-		static LogSystem& GetLogger() { static LogSystem instance("EngineCore-Test", "{name} {color} -> {data}"); return instance; }
+		static LogManager::BasicLogger& GetLogger() { static LogManager::BasicLogger instance("EngineCore-Test", "{name} {color} -> {data}"); return instance; }
 	};
 
 }

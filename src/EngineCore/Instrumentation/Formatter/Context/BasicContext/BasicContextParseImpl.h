@@ -33,16 +33,23 @@ namespace EngineCore::FMT::Context {
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
+	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataBase_ValueIntPrint(const Detail::ValueIntPrint type) {
+		m_FormatData.IntPrint = type;
+		if (m_Format.IsEqualToForward('#')) m_FormatData.TrueValue = true;
+		FormatReadParameterThrow(m_FormatData.DigitSize.Value);
+	}
+
+	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataBase() {
 
 			 if (m_Format.IsEqualToForward('C')) { ParseFormatDataColor(); }
 		else if (m_Format.IsEqualToForward('S')) { ParseFormatDataStyle(); }
 		else if (m_Format.IsEqualToForward('F')) { ParseFormatDataFront(); }
 
-		else if (m_Format.IsEqualToForward('B')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Bin;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualToForward('X')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Hex;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualToForward('O')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Oct;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
-		else if (m_Format.IsEqualToForward('D')) { m_FormatData.IntPrint = Detail::ValueIntPrint::Dec;	FormatReadParameterThrow(m_FormatData.DigitSize.Value); }
+		else if (m_Format.IsEqualToForward('B')) { ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Bin); }
+		else if (m_Format.IsEqualToForward('X')) { ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Hex); }
+		else if (m_Format.IsEqualToForward('O')) { ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Oct); }
+		else if (m_Format.IsEqualToForward('D')) { ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Dec); }
 
 		else if (m_Format.IsEqualToForward('L')) { m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase; }
 		else if (m_Format.IsEqualToForward('U')) { m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase; }
@@ -52,6 +59,20 @@ namespace EngineCore::FMT::Context {
 		else if (m_Format.IsEqualToForward('W')) { m_FormatData.KeepNewStyle = true; }
 
 		else if (m_Format.IsEqualToForward('N')) { m_FormatData.NextOverride = ParseNextOverrideFormatData(); }
+	}
+
+	template<typename CharFormat, typename ContextPackageSaving, typename Master>
+	void BasicContext<CharFormat, ContextPackageSaving, Master>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type) {
+		m_FormatData.ShiftType = type;
+		FormatReadParameterThrow(m_FormatData.ShiftSize.Value);
+		if (m_Format.IsEqualToForward(':'))
+		{
+			m_FormatData.ShiftPrint.Before = m_Format.GetAndForward();
+			m_FormatData.ShiftPrint.After = m_FormatData.ShiftPrint.Before;
+			if (m_Format.IsEqualToForward('|'))
+				m_FormatData.ShiftPrint.After = m_Format.GetAndForward();
+			m_FormatData.ShiftPrint.Validate();
+		}
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
@@ -75,10 +96,9 @@ namespace EngineCore::FMT::Context {
 
 		else if (m_Format.IsEqualToForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision.Value); }
 
-		else if (m_Format.IsEqualToForward('>')) { m_FormatData.ShiftType = Detail::ShiftType::Right;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
-		else if (m_Format.IsEqualToForward('<')) { m_FormatData.ShiftType = Detail::ShiftType::Left;		FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
-		else if (m_Format.IsEqualToForward('^')) { m_FormatData.ShiftType = Detail::ShiftType::Center;	FormatReadParameterThrow(m_FormatData.ShiftSize.Value); }
-		else if (m_Format.IsEqualToForward('0')) { m_FormatData.ShiftPrint = Detail::ShiftPrint_Zeros; }
+		else if (m_Format.IsEqualToForward('>')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Right); 	}
+		else if (m_Format.IsEqualToForward('<')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Left); 	}
+		else if (m_Format.IsEqualToForward('^')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Center); }
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
@@ -211,7 +231,7 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
 	bool BasicContext<CharFormat, ContextPackageSaving, Master>::Parse() {
-		m_Format.Forward();					// Skip {
+		m_Format.Forward();						// Skip {
 
 		if (m_Format.IsUpperCase()) {
 			ParseSpecial();

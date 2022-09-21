@@ -56,18 +56,17 @@ namespace EngineCore::FMT {
 			context.PrintIndent(enumerable.GetStrBegin());
 			context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
 
-			typename FormatContext::FormatDataType oldFormatData = context.GetFormatData();
-			context.FormatDataApplyNextOverride();
+			{
+				Detail::ApplyNextOverrideForThisFunction anoftf(context);
 
-			bool first = true;
-			std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
-				if (first)	first = false;
-				else 		context.PrintIndent(enumerable.GetStrJoin());
-				
-				context.WriteType(element);
-			});
-
-			context.SetFormatData(oldFormatData);
+				bool first = true;
+				std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
+					if (first)	first = false;
+					else 		context.PrintIndent(enumerable.GetStrJoin());
+					
+					context.WriteType(element);
+				});
+			}
 
 			context.BufferOut().RemoveIndent(enumerable.GetStrBegin().size());
 			context.PrintIndent(enumerable.GetStrEnd());

@@ -11,7 +11,7 @@ namespace EngineCore::Test {
 		static MasterTestSuite& GetInstance();
 
 	public:
-		static inline LogSystem& GetLogger()			{ return GetInstance().Logger; }
+		static inline LogManager::BasicLogger& GetLogger()			{ return GetInstance().Logger; }
 		static inline std::vector<TestSuite*>& GetTestSuitesList()	{ return GetInstance().TestSuitesList; }
 		static inline void ExecAllTestSuites()						{ GetInstance().ExecAllTestSuitesImpl(); }
 
@@ -22,7 +22,7 @@ namespace EngineCore::Test {
 		void ExecAllTestSuitesImpl();
 	
 	private:
-		LogSystem Logger;
+		LogManager::BasicLogger Logger;
 		std::vector<TestSuite*> TestSuitesList;
 
 		std::uint32_t TestDone = 0;
@@ -109,12 +109,12 @@ namespace EngineCore::Test {
 		++Link.TestDone;
 		if (result == expected)
 		{
-			MasterTestSuite::GetLogger().LogOk("{C:green}{} return {} ; Expected was : {}", resultView, result, expectedView, FORMAT_SV("test_name", *this));
+			MasterTestSuite::GetLogger().Ok("{C:green}{} return {} ; Expected was : {}", resultView, result, expectedView, FORMAT_SV("test_name", *this));
 			++Link.TestCheck;
 		}
 		else
 		{
-			MasterTestSuite::GetLogger().LogFail("{C:red}{} return {} instead of {} ; Expected was : {}", resultView, result, expected, expectedView, FORMAT_SV("test_name", *this));
+			MasterTestSuite::GetLogger().Fail("{C:red}{} return {} instead of {} ; Expected was : {}", resultView, result, expected, expectedView, FORMAT_SV("test_name", *this));
 			++Link.TestFail;
 		}
 	}
@@ -125,12 +125,12 @@ namespace EngineCore::Test {
 		++Link.TestDone;
 		if (result == notExpected)
 		{
-			MasterTestSuite::GetLogger().LogOk("{C:green}{} return {} and {} was prohibited ; Expected was : {}", resultView, result, notExpected, notExpectedView, FORMAT_SV("test_name", *this));
+			MasterTestSuite::GetLogger().Ok("{C:green}{} return {} and {} was prohibited ; Expected was : {}", resultView, result, notExpected, notExpectedView, FORMAT_SV("test_name", *this));
 			++Link.TestCheck;
 		}
 		else
 		{
-			MasterTestSuite::GetLogger().LogFail("{C:red}{} return {} but this result was prohibited ; Expected was : {}", resultView, result, notExpected, notExpectedView, FORMAT_SV("test_name", *this));
+			MasterTestSuite::GetLogger().Fail("{C:red}{} return {} but this result was prohibited ; Expected was : {}", resultView, result, notExpected, notExpectedView, FORMAT_SV("test_name", *this));
 			++Link.TestFail;
 		}
 	}

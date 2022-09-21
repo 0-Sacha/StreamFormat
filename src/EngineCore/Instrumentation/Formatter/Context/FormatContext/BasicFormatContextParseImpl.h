@@ -35,7 +35,6 @@ namespace EngineCore::FMT::Context {
 			else
 				BufferOut().SetIndent();
 		}
-	
 	}
 
 }

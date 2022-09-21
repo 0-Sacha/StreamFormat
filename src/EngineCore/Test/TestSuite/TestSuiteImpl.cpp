@@ -19,18 +19,18 @@ namespace EngineCore::Test {
 	{
 		for (auto i : TestSuitesList)
 		{
-			Logger.LogBasic("{C:+black}----- {:C:white} -------------------------", i, FORMAT_SV("test_name", "BEGIN"));
+			Logger.Basic("{C:+black}----- {:C:white} -------------------------", i, FORMAT_SV("test_name", "BEGIN"));
 
 			i->ExecAllFunctions();
 			
-			Logger.LogBasic("{C:+black}----- {:C:white} => TestDone {:C:white} | TestCheck {:C:green} | TestFail {:C:red} | TestCrash {:C:magenta} -------------------", i, i->TestDone, i->TestCheck, i->TestFail, i->TestCrash, FORMAT_SV("test_name", " END "));
+			Logger.Basic("{C:+black}----- {:C:white} => TestDone {:C:white} | TestCheck {:C:green} | TestFail {:C:red} | TestCrash {:C:magenta} -------------------", i, i->TestDone, i->TestCheck, i->TestFail, i->TestCrash, FORMAT_SV("test_name", " END "));
 
 			TestDone += i->TestDone;
 			TestCheck += i->TestCheck;
 			TestFail += i->TestFail;
 			TestCrash += i->TestCrash;
 		}
-		Logger.LogBasic("{C:+black}----- TestDone {:C:white} | TestCheck {:C:green} | TestFail {:C:red} | TestCrash {:C:magenta} -------------------", TestDone, TestCheck, TestFail, TestCrash, FORMAT_SV("test_name", "TOTAL"));
+		Logger.Basic("{C:+black}----- TestDone {:C:white} | TestCheck {:C:green} | TestFail {:C:red} | TestCrash {:C:magenta} -------------------", TestDone, TestCheck, TestFail, TestCrash, FORMAT_SV("test_name", "TOTAL"));
 	}
 
 	void TestSuite::ExecAllFunctions()
@@ -44,12 +44,12 @@ namespace EngineCore::Test {
 		++Link.TestDone;
 		if (assert == true)
 		{
-			MasterTestSuite::GetLogger().LogOk("{:C:green}", assertView, FORMAT_SV("test_name", *this));
+			MasterTestSuite::GetLogger().Ok("{:C:green}", assertView, FORMAT_SV("test_name", *this));
 			++Link.TestCheck;
 		}
 		else
 		{
-			MasterTestSuite::GetLogger().LogFail("{:C:red}", assertView, FORMAT_SV("test_name", *this));
+			MasterTestSuite::GetLogger().Fail("{:C:red}", assertView, FORMAT_SV("test_name", *this));
 			++Link.TestFail;
 		}
 	}

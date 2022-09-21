@@ -56,10 +56,9 @@ namespace EngineCore::FMT::Detail {
 		char After;
 
 	public:
-		bool BeforeIsDigitValid() const
-		{
-			return Before != '0';
-		}
+		constexpr bool BeforeIsADigit() const 	{ return Before >= '0' && Before <= '9'; }
+
+		constexpr void Validate()  				{ if (After >= '0' && After <= '9') After = ' '; }
 	};
 
 	static constexpr ShiftPrint ShiftPrint_Space = ShiftPrint(' ');
@@ -198,9 +197,9 @@ namespace EngineCore::FMT::Detail {
 
 		Detail::PrintStyle PrintStyle			= Detail::PrintStyle::Default;		// U  - L
 
-		Detail::ShiftPrint ShiftPrint			= Detail::ShiftPrint{};				// <  - >  - ^
+		Detail::ShiftPrint ShiftPrint			= Detail::ShiftPrint{};				// 0 - ' ' - * .....
 		Detail::ShiftSize ShiftSize				= Detail::ShiftSize{};				// <? - >? - ^?
-		Detail::ShiftType ShiftType				= Detail::ShiftType::Default;	 	// 0 - ' '
+		Detail::ShiftType ShiftType				= Detail::ShiftType::Default;	 	// <  - >  - ^
 
 		std::basic_string_view<CharFormat> NextOverride 		= std::basic_string_view<CharFormat>(nullptr, 0);
 

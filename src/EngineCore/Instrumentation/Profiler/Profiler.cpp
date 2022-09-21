@@ -1,7 +1,7 @@
 #include "EngineCore/Core/Core.h"
 #include "EngineCorepch.h"
 
-#include "Profiling.h"
+#include "Profiler.h"
 #include <thread>
 
 namespace EngineCore {
@@ -34,9 +34,9 @@ namespace EngineCore {
 		double millis = micro / 1000;
 		double sec = millis / 1000;
 
-		if (sec > 1.5f)				m_Link.GetLogger().LogTrace("{} : {} seconds", m_Name, sec);
-		else if (millis > 5.0f)		m_Link.GetLogger().LogTrace("{} : {} ms", m_Name, millis);
-		else						m_Link.GetLogger().LogTrace("{} : {} us", m_Name, micro);
+		if (sec > 1.5f)				m_Link.GetLogger().Trace("{} : {} seconds", m_Name, sec);
+		else if (millis > 5.0f)		m_Link.GetLogger().Trace("{} : {} ms", m_Name, millis);
+		else						m_Link.GetLogger().Trace("{} : {} us", m_Name, micro);
 
 		m_Link.WriteProfile(this);
 		m_IsStoped = true;

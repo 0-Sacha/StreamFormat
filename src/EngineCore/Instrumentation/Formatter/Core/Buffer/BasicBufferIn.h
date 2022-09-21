@@ -257,7 +257,7 @@ namespace EngineCore::FMT::Detail {
     protected:
         template<typename T>
         void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-            if ((st == ShiftType::Right || st == ShiftType::Center) && sp.BeforeIsDigitValid())
+            if ((st == ShiftType::Right || st == ShiftType::Center) && sp.BeforeIsADigit())
                 while (Base::Get() == ' ') {
                     Base::Forward();
                     --shift;

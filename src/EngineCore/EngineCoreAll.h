@@ -3,25 +3,25 @@
 #include "EngineCore/Core/Core.h"
 
 #include "Instrumentation/Formatter/Formatter.h"
-#include "Instrumentation/LogSystem/LogSystem.h"
+#include "Instrumentation/LogManager/LogManager.h"
 #include "Instrumentation/Formatter/Format/Container/AllContainer.h"
-#include "Instrumentation/Profiling/Profiling.h"
+#include "Instrumentation/Profiler/Profiler.h"
 
 #include "Test/Test.h"
 
 // #include "Maths/Maths.h"
 
 #ifdef ENGINECORE_LOGGER_ENABLE
-#define ENGINECORE_TRACE(...)	EngineCore::LogSystem::GetCoreInstance().LogTrace(__VA_ARGS__)
-#define ENGINECORE_INFO(...)	EngineCore::LogSystem::GetCoreInstance().LogInfo(__VA_ARGS__)
-#define ENGINECORE_WARN(...)	EngineCore::LogSystem::GetCoreInstance().LogWarn(__VA_ARGS__)
-#define ENGINECORE_ERROR(...)	EngineCore::LogSystem::GetCoreInstance().LogError(__VA_ARGS__)
-#define ENGINECORE_FATAL(...)	EngineCore::LogSystem::GetCoreInstance().LogFatal(__VA_ARGS__)
+#define ENGINECORE_TRACE(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Trace(__VA_ARGS__)
+#define ENGINECORE_INFO(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Info(__VA_ARGS__)
+#define ENGINECORE_WARN(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Warn(__VA_ARGS__)
+#define ENGINECORE_ERROR(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Error(__VA_ARGS__)
+#define ENGINECORE_FATAL(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Fatal(__VA_ARGS__)
 
-#define ENGINECORE_OK(...)		EngineCore::LogSystem::GetCoreInstance().LogOk(__VA_ARGS__)
-#define ENGINECORE_FAIL(...)	EngineCore::LogSystem::GetCoreInstance().LogFail(__VA_ARGS__)
+#define ENGINECORE_OK(...)		EngineCore::LogManager::BasicLogger::GetCoreInstance().Ok(__VA_ARGS__)
+#define ENGINECORE_FAIL(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Fail(__VA_ARGS__)
 
-#define ENGINECORE_BASIC(...)	EngineCore::LogSystem::GetCoreInstance().LogBasic(__VA_ARGS__)
+#define ENGINECORE_BASIC(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Basic(__VA_ARGS__)
 #else /* ENGINECORE_LOGGER_ENABLE */
 #define ENGINECORE_TRACE(...)
 #define ENGINECORE_INFO(...)

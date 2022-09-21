@@ -50,13 +50,14 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 
 		DataType nbDigit = GetNumberOfDigitDec(i);
-
 		shift -= nbDigit;
 		if (i < 0) --shift;
 
-		if(!sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
+		if (shift < 0) return FastWriteInt(i);
+
+		if(!sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 		if (i < 0) 						{ PushBack('-'); i = -i; }
-		if (sp.BeforeIsDigitValid())	PrintShiftRightAll(st, sp, shift);
+		if (sp.BeforeIsADigit())	PrintShiftRightAll(st, sp, shift);
 
 		if (i == 0)		PushBack('0');
 		else {
@@ -74,6 +75,8 @@ namespace EngineCore::FMT::Detail {
 	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteUInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		DataType nbDigit = GetNumberOfDigitDec(i);
 		shift -= nbDigit;
+
+		if (shift < 0) return FastWriteUInt(i);
 
 		PrintShiftBegin(st, sp, shift);
 
@@ -98,9 +101,11 @@ namespace EngineCore::FMT::Detail {
 		shift -= nbDigit + nbDecimal + 1;
 		if (iInt < 0) --shift;
 
-		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if (shift < 0) return FastWriteFloat(i, nbDecimal);
+
+		if(!sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 		if (iInt < 0) 					{ PushBack('-'); iInt = -iInt; }
-		if (sp.BeforeIsDigitValid())	PrintShiftRightAll(st, sp, shift);
+		if (sp.BeforeIsADigit())	PrintShiftRightAll(st, sp, shift);
 
 		if (iInt == 0)		PushBack('0');
 		else {
@@ -135,13 +140,14 @@ namespace EngineCore::FMT::Detail {
 		shift -= digitSize;
 
 		if (trueValue) shift -= 2;
+		if (shift < 0) shift = 0;
 
-		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 		if (trueValue) {
 			PushBack('0');
 			PushBack('b');
 		}
-		if (sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
+		if (sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
 		Forward(digitSize - 1);
@@ -165,13 +171,14 @@ namespace EngineCore::FMT::Detail {
 			
 		shift -= digitSize;
 		if (trueValue) shift -= 2;
+		if (shift < 0) shift = 0;
 
-		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsADigit())		PrintShiftBegin(st, sp, shift);
 		if (trueValue) {
 			PushBack('0');
 			PushBack('x');
 		}
-		if (sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
+		if (sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
 		Forward(digitSize - 1);
@@ -194,13 +201,14 @@ namespace EngineCore::FMT::Detail {
 
 		shift -= digitSize;
 		if (trueValue) shift -= 2;
+		if (shift < 0) shift = 0;
 
-		if(!sp.BeforeIsDigitValid())		PrintShiftBegin(st, sp, shift);
+		if(!sp.BeforeIsADigit())		PrintShiftBegin(st, sp, shift);
 		if (trueValue) {
 			PushBack('0');
 			PushBack('o');
 		}
-		if (sp.BeforeIsDigitValid())	PrintShiftBegin(st, sp, shift);
+		if (sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
 		Forward(digitSize - 1);

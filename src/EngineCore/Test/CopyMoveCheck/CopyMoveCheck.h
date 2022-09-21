@@ -5,44 +5,44 @@ namespace EngineCore::Test {
 
     class CopyMoveCheck {
 	public:
-		static LogSystem Logger;
+		static LogManager::BasicLogger Logger;
 
     public:
         CopyMoveCheck(const std::string& name) 
             : m_Name(name)
         {
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
         }
 
 		CopyMoveCheck(std::string&& name)
 			: m_Name(std::move(name))
 		{
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Default (move string) Constructor", "TestCopy(std::string&& name)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Default (move string) Constructor", "TestCopy(std::string&& name)");
 		}
 
 
 		CopyMoveCheck(CopyMoveCheck& other)
 			: m_Name("Copy of " + other.m_Name)
 		{
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Copy Constructor", "TestCopy(TestCopy&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Copy Constructor", "TestCopy(TestCopy&)");
 		}
 
         CopyMoveCheck(const CopyMoveCheck& other)
 			: m_Name("Copy of " + other.m_Name) 
 		{
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Constructor", "TestCopy(const TestCopy&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Constructor", "TestCopy(const TestCopy&)");
         }
 
         CopyMoveCheck(CopyMoveCheck&& other) noexcept
 			: m_Name("Move of " + other.m_Name) 
 		{
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Move Constructor", "TestCopy(TestCopy&&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Move Constructor", "TestCopy(TestCopy&&)");
 		}
 
 		CopyMoveCheck(const CopyMoveCheck&& other) noexcept
 			: m_Name("Move of " + other.m_Name) 
 		{
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Constructor", "TestCopy(const TestCopy&&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Constructor", "TestCopy(const TestCopy&&)");
 		}
 
 
@@ -50,7 +50,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Copy Of " + other.m_Name;
 
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Copy Assignment", "TestCopy& operator=(TestCopy&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Copy Assignment", "TestCopy& operator=(TestCopy&)");
 			return *this;
         }
 
@@ -58,7 +58,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Copy Of " + other.m_Name;
 
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Assignment", "TestCopy& operator=(const TestCopy&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Assignment", "TestCopy& operator=(const TestCopy&)");
 			return *this;
 		}
 
@@ -66,7 +66,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Move Of " + other.m_Name;
 
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
 			return *this;
 		}
 
@@ -74,7 +74,7 @@ namespace EngineCore::Test {
 
 			m_Name = "Move Of " + other.m_Name;
 
-			Logger.LogInfo("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");
+			Logger.Info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");
 			return *this;
 		}
 

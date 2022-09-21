@@ -10,14 +10,15 @@
 #include "GetBaseType.h"
 #include "NumberDetail.h"
 #include "IndentFunction.h"
+#include "UtilsFunction.h"
 
 // TODO :
 //
-// 		Reformat Profiler
-//
-// 		Check for escape char
+// 		Reformat Profiler / LogManager
 //
 //		/ same as # % 
+//
+// 		Check for escape char
 //
 //		Macro PackSave ; PackSave (foreshadowing for constexpr)
 //
