@@ -144,7 +144,9 @@ namespace EngineCore::FMT::Detail {
         template<typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const	{ if (IsNotEqualTo(c, ele...)) return; throw FormatParseError(); }
         template<typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)						{ if (IsNotEqualForward(ele...)) return; throw FormatParseError(); }
         
-        
+        template<typename ...CharToTest> inline bool IsSeqOrderEqualToImpl(const CharBuffer* buffer, const CharBuffer c, const CharToTest ...ele) const	{ if (*buffer != c) return false; return IsSeqOrderEqualToImpl(++buffer, ele...); }
+        template<typename ...CharToTest> inline bool IsSeqOrderEqualTo(const CharToTest ...ele) const	                                                { if (CanMoveForward(sizeof...(ele)) == false) return false; return IsSeqOrderEqualToImpl(m_Buffer, ele...); }
+
         // Format Next check
         inline bool NextIsEqualTo(const CharBuffer c) const			{ return GetNext() == c; }
         inline bool NextIsNotEqualTo(const CharBuffer c) const		{ return GetNext() != c; }
@@ -257,7 +259,9 @@ namespace EngineCore::FMT::Detail {
     protected:
         template<typename T>
         void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-            if ((st == ShiftType::Right || st == ShiftType::Center) && sp.BeforeIsADigit())
+            if (sp.BeforeIsADigit() == false)
+                return;
+            if (st == ShiftType::Right || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
                 while (Base::Get() == ' ') {
                     Base::Forward();
                     --shift;
@@ -266,7 +270,7 @@ namespace EngineCore::FMT::Detail {
 
         template<typename T>
         void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-            if (st == ShiftType::Left || st == ShiftType::Center)
+            if (st == ShiftType::Left || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
                 while (Base::Get() == ' ' && shift > 0) {
                     Base::Forward();
                     --shift;

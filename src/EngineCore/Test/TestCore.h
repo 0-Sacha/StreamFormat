@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
-#include "LogManager/LogManager.h"
+#include "LoggerManager/LoggerManager.h"
 
 namespace EngineCore::Test {
 

@@ -3,7 +3,7 @@
 #include "EngineCore/Core/Core.h"
 
 #include "Instrumentation/Formatter/Formatter.h"
-#include "Instrumentation/LogManager/LogManager.h"
+#include "Instrumentation/LoggerManager/LoggerManager.h"
 #include "Instrumentation/Formatter/Format/Container/AllContainer.h"
 #include "Instrumentation/Profiler/Profiler.h"
 
@@ -12,16 +12,16 @@
 // #include "Maths/Maths.h"
 
 #ifdef ENGINECORE_LOGGER_ENABLE
-#define ENGINECORE_TRACE(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Trace(__VA_ARGS__)
-#define ENGINECORE_INFO(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Info(__VA_ARGS__)
-#define ENGINECORE_WARN(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Warn(__VA_ARGS__)
-#define ENGINECORE_ERROR(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Error(__VA_ARGS__)
-#define ENGINECORE_FATAL(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Fatal(__VA_ARGS__)
+#define ENGINECORE_TRACE(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Trace(__VA_ARGS__)
+#define ENGINECORE_INFO(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Info(__VA_ARGS__)
+#define ENGINECORE_WARN(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Warn(__VA_ARGS__)
+#define ENGINECORE_ERROR(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Error(__VA_ARGS__)
+#define ENGINECORE_FATAL(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Fatal(__VA_ARGS__)
 
-#define ENGINECORE_OK(...)		EngineCore::LogManager::BasicLogger::GetCoreInstance().Ok(__VA_ARGS__)
-#define ENGINECORE_FAIL(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Fail(__VA_ARGS__)
+#define ENGINECORE_OK(...)		EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Ok(__VA_ARGS__)
+#define ENGINECORE_FAIL(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Fail(__VA_ARGS__)
 
-#define ENGINECORE_BASIC(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Basic(__VA_ARGS__)
+#define ENGINECORE_BASIC(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Basic(__VA_ARGS__)
 #else /* ENGINECORE_LOGGER_ENABLE */
 #define ENGINECORE_TRACE(...)
 #define ENGINECORE_INFO(...)

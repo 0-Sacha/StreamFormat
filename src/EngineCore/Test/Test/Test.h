@@ -16,7 +16,7 @@ namespace EngineCore::Test {
 	class TestCore
 	{
 	public:
-		static LogManager::BasicLogger& GetLogger() { static LogManager::BasicLogger instance("EngineCore-Test", "{name} {color} -> {data}"); return instance; }
+		static LoggerManager::BasicLogger& GetLogger() { static LoggerManager::BasicLogger instance("EngineCore-Test", "{name} {color} -> {data}"); return instance; }
 	};
 
 }

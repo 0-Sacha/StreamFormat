@@ -14,7 +14,7 @@
 
 // TODO :
 //
-// 		Reformat Profiler / LogManager
+// 		Reformat Profiler / LoggerManager
 //
 //		/ same as # % 
 //

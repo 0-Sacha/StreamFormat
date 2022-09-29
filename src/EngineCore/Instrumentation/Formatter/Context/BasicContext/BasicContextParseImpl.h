@@ -98,7 +98,13 @@ namespace EngineCore::FMT::Context {
 
 		else if (m_Format.IsEqualToForward('>')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Right); 	}
 		else if (m_Format.IsEqualToForward('<')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Left); 	}
-		else if (m_Format.IsEqualToForward('^')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Center); }
+		else if (m_Format.IsEqualToForward('^')) {
+			if (m_Format.IsEqualToForward('<'))
+				ParseFormatDataSpecial_ShiftType(Detail::ShiftType::CenterLeft);
+			else {
+				m_Format.IsEqualToForward('>');
+				ParseFormatDataSpecial_ShiftType(Detail::ShiftType::CenterRight);
+			} }
 	}
 
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>

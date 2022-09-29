@@ -311,9 +311,11 @@ namespace EngineCore::FMT::Detail {
 		// Shift
 		template<typename T>
 		inline void PrintShiftCenterBegin(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-			if(st == Detail::ShiftType::Center)
+			if(st == Detail::ShiftType::CenterRight || st == Detail::ShiftType::CenterLeft)
 			{
 				DataType shift_ = shift / 2;
+				if (st == Detail::ShiftType::CenterLeft)
+					shift_ = (shift + 1) / 2;
 				PushBack(sp.Before, shift - shift_);
 				shift = shift_;
 			}
@@ -321,7 +323,7 @@ namespace EngineCore::FMT::Detail {
 
 		template<typename T>
 		inline void PrintShiftCenterEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, const T shift) {
-			if (st == Detail::ShiftType::Center)
+			if (st == Detail::ShiftType::CenterRight || st == Detail::ShiftType::CenterLeft)
 				PushBack(sp.After, shift);
 		}
 

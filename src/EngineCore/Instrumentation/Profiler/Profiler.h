@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
-#include "LogManager/LogManager.h"
+#include "LoggerManager/LoggerManager.h"
 
 namespace EngineCore {
 
@@ -41,7 +41,7 @@ namespace EngineCore {
 		void WriteProfile(const std::string& name, const double start, const double dur, const std::size_t tid);
 		void EndSession();
 
-		inline const EngineCore::LogManager::BasicLogger& GetLogger() const		{ return m_Logger; }
+		inline const EngineCore::LoggerManager::BasicLogger& GetLogger() const		{ return m_Logger; }
 
 	public:
 		static Profiler& GetInstance()		{ static Profiler profiler("Profiler"); return profiler; }
@@ -54,7 +54,7 @@ namespace EngineCore {
 	private:
 		std::string m_Name;
 		std::ofstream m_File;
-		EngineCore::LogManager::BasicLogger m_Logger;
+		EngineCore::LoggerManager::BasicLogger m_Logger;
 		double m_Start;
 		bool m_IsEnd;
 		size_t m_ProfilesCount;

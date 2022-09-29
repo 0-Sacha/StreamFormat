@@ -6,34 +6,32 @@
 	#define ENGINECORE_BASE_LOGGER_NAME "APP"
 #endif
 
-namespace EngineCore::LogManager {
+namespace EngineCore::LoggerManager {
 
-		enum class LogSeverity : int {
-			Trace,
-			Debug,
-			Info,
-			Warn,
-			Error,
-			Fatal
-		};
+	enum class LogSeverity : int {
+		Trace,
+		Debug,
+		Info,
+		Warn,
+		Error,
+		Fatal
+	};
 
-		enum class LogStatus : int {
-			OK,
-			FAIL
-		};
+	enum class LogStatus : int {
+		OK,
+		FAIL
+	};
 
-		template<typename FormatStr>
-		struct AddIndentInFormat
-		{
-			AddIndentInFormat(const FormatStr& format)
-			 : Format(format)
-			{}
-			const FormatStr& Format;
-		};
+	template<typename FormatStr>
+	struct AddIndentInFormat
+	{
+		AddIndentInFormat(const FormatStr& format)
+			: Format(format)
+		{}
+		const FormatStr& Format;
+	};
 
 	class BasicLogger {
-	public:
-
 	public:
 		BasicLogger() : m_Name("Logger"), m_SeverityMin(LogSeverity::Trace), m_Stream(std::cout) { ResetPattern(); }
 		
@@ -141,27 +139,27 @@ namespace EngineCore::LogManager {
 
 namespace EngineCore::FMT {
 	template<typename FormatContext>
-	struct FormatType<EngineCore::LogManager::LogSeverity, FormatContext>
+	struct FormatType<EngineCore::LoggerManager::LogSeverity, FormatContext>
 	{
-		static void Write(const EngineCore::LogManager::LogSeverity t, FormatContext& context) {
+		static void Write(const EngineCore::LoggerManager::LogSeverity t, FormatContext& context) {
 			switch (t)
 			{
-			case EngineCore::LogManager::LogSeverity::Trace:
+			case EngineCore::LoggerManager::LogSeverity::Trace:
 				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::BrightBlack, context);
 				break;
-			case EngineCore::LogManager::LogSeverity::Debug:
+			case EngineCore::LoggerManager::LogSeverity::Debug:
 				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Blue, context);
 				break;
-			case EngineCore::LogManager::LogSeverity::Info:
+			case EngineCore::LoggerManager::LogSeverity::Info:
 				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Green, context);
 				break;
-			case EngineCore::LogManager::LogSeverity::Warn:
+			case EngineCore::LoggerManager::LogSeverity::Warn:
 				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Yellow, context);
 				break;
-			case EngineCore::LogManager::LogSeverity::Error:
+			case EngineCore::LoggerManager::LogSeverity::Error:
 				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Red, context);
 				break;
-			case EngineCore::LogManager::LogSeverity::Fatal:
+			case EngineCore::LoggerManager::LogSeverity::Fatal:
 				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::BrightMagenta, context);
 				break;
 			}
@@ -169,18 +167,18 @@ namespace EngineCore::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatType<EngineCore::LogManager::LogStatus, FormatContext>
+	struct FormatType<EngineCore::LoggerManager::LogStatus, FormatContext>
 	{
-		static void Write(const EngineCore::LogManager::LogStatus status, FormatContext& context) {
-			if (status == EngineCore::LogManager::LogStatus::OK)			context.LittleFormat("[{:C:green}]", " OK ");
-			else if (status == EngineCore::LogManager::LogStatus::FAIL)	context.LittleFormat("[{:C:red}]", "FAIL");
+		static void Write(const EngineCore::LoggerManager::LogStatus status, FormatContext& context) {
+			if (status == EngineCore::LoggerManager::LogStatus::OK)			context.LittleFormat("[{:C:green}]", " OK ");
+			else if (status == EngineCore::LoggerManager::LogStatus::FAIL)	context.LittleFormat("[{:C:red}]", "FAIL");
 		}
 	};
 
 	template<typename FormatContext, typename FormatStr>
-	struct FormatType<EngineCore::LogManager::AddIndentInFormat<FormatStr>, FormatContext>
+	struct FormatType<EngineCore::LoggerManager::AddIndentInFormat<FormatStr>, FormatContext>
 	{
-		static void Write(const EngineCore::LogManager::AddIndentInFormat<FormatStr>& format, FormatContext& context) {
+		static void Write(const EngineCore::LoggerManager::AddIndentInFormat<FormatStr>& format, FormatContext& context) {
 			context.Print("{K:indent}");
 			context.RunType(format.Format);
 		}
@@ -189,14 +187,14 @@ namespace EngineCore::FMT {
 
 
 
-namespace EngineCore::LogManager {
+namespace EngineCore::LoggerManager {
 
 	/////---------- Logger Severity with format ----------/////
 	template<typename Format, typename ...Args>
 	requires FMT::Detail::IsFmtConvertible<Format>::Value
 	void BasicLogger::Log(LogSeverity severity, const Format& format, Args&& ...args) const {
 		if (severity >= m_SeverityMin) {
-			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LogManager::AddIndentInFormat(format)), FORMAT_SV("setindent", "{K:indent}"));
+			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)), FORMAT_SV("setindent", "{K:indent}"));
 			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 		}
 	}
@@ -276,7 +274,7 @@ namespace EngineCore::LogManager {
 
 }
 
-namespace EngineCore::LogManager {
+namespace EngineCore::LoggerManager {
 
 	/////---------- Logger Status with format ----------/////
 	template<typename Format, typename ...Args>
@@ -317,7 +315,7 @@ namespace EngineCore::LogManager {
 }
 
 
-namespace EngineCore::LogManager {
+namespace EngineCore::LoggerManager {
 
 	template<typename Format, typename ...Args>
 	requires FMT::Detail::IsFmtConvertible<Format>::Value
@@ -337,16 +335,16 @@ namespace EngineCore::LogManager {
 
 // Logger define
 #ifdef ENGINECORE_LOGGER_ENABLE
-#define ENGINECORE_TRACE(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Trace(__VA_ARGS__)
-#define ENGINECORE_INFO(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Info(__VA_ARGS__)
-#define ENGINECORE_WARN(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Warn(__VA_ARGS__)
-#define ENGINECORE_ERROR(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Error(__VA_ARGS__)
-#define ENGINECORE_FATAL(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Fatal(__VA_ARGS__)
+#define ENGINECORE_TRACE(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Trace(__VA_ARGS__)
+#define ENGINECORE_INFO(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Info(__VA_ARGS__)
+#define ENGINECORE_WARN(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Warn(__VA_ARGS__)
+#define ENGINECORE_ERROR(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Error(__VA_ARGS__)
+#define ENGINECORE_FATAL(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Fatal(__VA_ARGS__)
 
-#define ENGINECORE_OK(...)		EngineCore::LogManager::BasicLogger::GetCoreInstance().Ok(__VA_ARGS__)
-#define ENGINECORE_FAIL(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Fail(__VA_ARGS__)
+#define ENGINECORE_OK(...)		EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Ok(__VA_ARGS__)
+#define ENGINECORE_FAIL(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Fail(__VA_ARGS__)
 
-#define ENGINECORE_BASIC(...)	EngineCore::LogManager::BasicLogger::GetCoreInstance().Basic(__VA_ARGS__)
+#define ENGINECORE_BASIC(...)	EngineCore::LoggerManager::BasicLogger::GetCoreInstance().Basic(__VA_ARGS__)
 #else
 #define ENGINECORE_TRACE(...)
 #define ENGINECORE_INFO(...)

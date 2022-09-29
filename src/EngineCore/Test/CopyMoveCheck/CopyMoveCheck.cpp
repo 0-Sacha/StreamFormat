@@ -4,5 +4,5 @@
 #include "CopyMoveCheck.h"
 
 namespace EngineCore::Test {
-	LogManager::BasicLogger CopyMoveCheck::Logger;
+	LoggerManager::BasicLogger CopyMoveCheck::Logger;
 }

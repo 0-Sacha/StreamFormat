@@ -23,7 +23,8 @@ namespace EngineCore::FMT::Detail {
 		Nothing,
 		Right,
 		Left,
-		Center,
+		CenterRight,
+		CenterLeft,
 		Default = Nothing
 	};
 

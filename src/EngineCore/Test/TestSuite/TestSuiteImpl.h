@@ -11,7 +11,7 @@ namespace EngineCore::Test {
 		static MasterTestSuite& GetInstance();
 
 	public:
-		static inline LogManager::BasicLogger& GetLogger()			{ return GetInstance().Logger; }
+		static inline LoggerManager::BasicLogger& GetLogger()			{ return GetInstance().Logger; }
 		static inline std::vector<TestSuite*>& GetTestSuitesList()	{ return GetInstance().TestSuitesList; }
 		static inline void ExecAllTestSuites()						{ GetInstance().ExecAllTestSuitesImpl(); }
 
@@ -22,7 +22,7 @@ namespace EngineCore::Test {
 		void ExecAllTestSuitesImpl();
 	
 	private:
-		LogManager::BasicLogger Logger;
+		LoggerManager::BasicLogger Logger;
 		std::vector<TestSuite*> TestSuitesList;
 
 		std::uint32_t TestDone = 0;
