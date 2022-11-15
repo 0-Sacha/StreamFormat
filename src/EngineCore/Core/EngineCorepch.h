@@ -1,5 +1,3 @@
-#pragma once
-
 // Target Define
 #ifdef BASE_TARGET_DEBUG
 #define ENGINECORE_DEBUG

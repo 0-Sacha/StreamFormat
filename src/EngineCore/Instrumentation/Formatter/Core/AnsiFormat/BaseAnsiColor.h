@@ -341,6 +341,7 @@ namespace EngineCore::FMT::Detail {
 			case AnsiColorDataType::AnsiNColor: 	return lhs.Data.NColor == rhs.Data.NColor;
 			case AnsiColorDataType::AnsiColor24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
 		}
+		return false;
 	}
 
 	inline bool operator==(const AnsiColorBG& lhs, const AnsiColorBG& rhs)
@@ -354,6 +355,7 @@ namespace EngineCore::FMT::Detail {
 			case AnsiColorDataType::AnsiNColor: 	return lhs.Data.NColor == rhs.Data.NColor;
 			case AnsiColorDataType::AnsiColor24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
 		}
+		return false;
 	}
 
 	// Manage only the text color / the underline color will be manage by the AnsiTextFormatStyle

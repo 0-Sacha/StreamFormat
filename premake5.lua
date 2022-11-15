@@ -17,8 +17,8 @@ project "EngineCore"
 	pchheader "EngineCorepch.h"
 	pchsource "src/EngineCore/Core/EngineCorepch.cpp"
 
-	targetdir 	("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir 		("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir 	(project_targetdir .. "/%{prj.name}")
+	objdir 		(project_objdir .. "/%{prj.name}")
 
 	files {
 		"src/**.h",

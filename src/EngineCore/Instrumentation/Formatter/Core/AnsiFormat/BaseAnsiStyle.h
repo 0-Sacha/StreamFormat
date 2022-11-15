@@ -155,6 +155,7 @@ namespace EngineCore::FMT::Detail {
 			case AnsiUnderlineColorType::AnsiNColor: 	return lhs.Data.NColor == rhs.Data.NColor;
 			case AnsiUnderlineColorType::AnsiColor24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
 		}
+		return false;
 	}
 
 	struct AnsiStyle {
