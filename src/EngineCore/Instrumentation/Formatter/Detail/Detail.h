@@ -4,7 +4,7 @@
 
 #include "Formatter/Core/AnsiFormat/AnsiHandler.h"
 
-#include "Base.h"
+#include "Types.h"
 #include "Exception.h"
 #include "FormatTypes.h"
 #include "GetBaseType.h"

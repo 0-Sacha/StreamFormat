@@ -2,7 +2,7 @@
 
 #include "EngineCore/Core/Core.h"
 
-namespace EngineCore::FMT::Detail::ValuesDetail {
+namespace EngineCore::FMT::Detail::TypesInfo {
 	
 	template<typename T>
 	struct NumberDetail {

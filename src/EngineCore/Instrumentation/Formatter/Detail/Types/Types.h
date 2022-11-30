@@ -52,9 +52,6 @@ namespace EngineCore::FMT::Detail {
 			MaxValue = sameContext.MaxValue;
 		}		
 	};
-} // namespace EngineCore::FMT::Detail
-
-namespace EngineCore::FMT::Detail {
 
 	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE>
 	struct BasicCustomDataType {

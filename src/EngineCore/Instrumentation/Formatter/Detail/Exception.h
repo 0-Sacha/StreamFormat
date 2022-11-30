@@ -4,9 +4,9 @@
 
 namespace EngineCore::FMT::Detail {
 
-	class FormatExecption {};
-	class FormatError				: public FormatExecption {};
-	class FormatUtilityExecption	: public FormatExecption {};
+	class FormatException {};
+	class FormatError				: public FormatException {};
+	class FormatUtilityExecption	: public FormatException {};
 
 	class FormatBufferError	: public FormatError {};
 	class FormatBufferFull	: public FormatBufferError {};

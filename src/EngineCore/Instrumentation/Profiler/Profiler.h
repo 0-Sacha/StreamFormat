@@ -29,8 +29,6 @@ namespace EngineCore {
 		bool m_IsStoped = false;
 	};
 
-
-
 	class Profiler {
 	public:
 		explicit Profiler(const std::string& name);
