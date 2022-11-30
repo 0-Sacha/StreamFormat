@@ -1,6 +1,6 @@
 #pragma once
 
-namespace EngineCore::EngineLib::Detail {
+namespace EngineCore::LIB::Detail {
 
 	template <typename T>
 	class STDWrapperInfo {

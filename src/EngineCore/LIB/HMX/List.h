@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/EngineLib/RDX/RDXCore.h"
+#include "EngineCore/LIB/RDX/RDXCore.h"
 
 namespace EngineCore::RDX {
 

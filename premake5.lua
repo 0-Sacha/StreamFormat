@@ -1,7 +1,7 @@
 
 ProjectPublicIncludes["EngineCore"] = {
 	"%{Project.EngineCore}/src/",
-	"%{Project.EngineCore}/src/EngineCore/EngineLib",
+	"%{Project.EngineCore}/src/EngineCore/LIB",
 	"%{Project.EngineCore}/src/EngineCore/Instrumentation",
 	"%{Project.EngineCore}/src/EngineCore/TNX",
 	"%{Project.EngineCore}/src/EngineCore/Test",

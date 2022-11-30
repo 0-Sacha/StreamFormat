@@ -26,11 +26,11 @@ namespace EngineCore::Test {
 
 // Check if false
 #define ENGINECORE_TEST_TEST(x)	if(x)	ENGINECORE_TEST_OK("TEST OK : {:C:green}", #x);\
-									else	ENGINECORE_TEST_FAIL("TEST FAIL : {:C:red}", #x)
+								else	ENGINECORE_TEST_FAIL("TEST FAIL : {:C:red}", #x)
 
 // Check if equal with file printed
 #define ENGINECORE_TEST_EQ(x, y) if(x == y)	ENGINECORE_TEST_OK("{C:green}{} == {}", #x, #y);\
-								  else			ENGINECORE_TEST_FAIL("{C:red}{} == {}", #x, #y)
+								  else		ENGINECORE_TEST_FAIL("{C:red}{} == {}", #x, #y)
 
 // Check if not equal with file printed
 #define ENGINECORE_TEST_NEQ(x, y)	if(x != y)	ENGINECORE_TEST_OK("{C:green}{} != {}", #x, #y);\
