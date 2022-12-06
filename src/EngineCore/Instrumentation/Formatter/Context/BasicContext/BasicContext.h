@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Formatter/Core/Detail/Detail.h"
-#include "Formatter/Core/Buffer/Buffer.h"
-#include "Formatter/Core/FormatterHandler/FormatterHandler.h"
+#include "Formatter/Detail/Detail.h"
+#include "Formatter/Detail/Buffer/BasicBufferIn.h"
+#include "Formatter/Detail/Buffer/Format.h"
+
+#include "Formatter/Detail/FormatterHandler/FormatterHandler.h"
 
 namespace EngineCore::FMT::Context {
 	template<typename CharFormat, typename ContextPackageSaving, typename Master>
@@ -43,7 +45,7 @@ namespace EngineCore::FMT::Context {
 		inline bool						IsChild() const				{ return m_IsChild; }
 
 	public:
-		inline static FormatterHandler& GetAPI()					{ return FormatterHandler::GetInstance(); }
+		inline static Detail::FormatterHandler& GetAPI()			{ return Detail::FormatterHandler::GetInstance(); }
 
 	public:
 		void Run() 																							{ reinterpret_cast<Master*>(this)->Run(); 				return; throw Detail::FormatShouldNotEndHere(); }

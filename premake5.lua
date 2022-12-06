@@ -26,7 +26,7 @@ project "EngineCore"
 		"src/**.inl",
 		"src/**.cpp",
 	}
-
+	
 	IncludeProject("EngineCore")
 
 	defines {

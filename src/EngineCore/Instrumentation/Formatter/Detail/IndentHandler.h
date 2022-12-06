@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.h"
+#include "EngineCore/Instrumentation/Formatter/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
 	template<typename T, typename CharFormat>	struct CopyFormatData										{ static void Copy(FormatData<CharFormat>& data, const T& t) { } };

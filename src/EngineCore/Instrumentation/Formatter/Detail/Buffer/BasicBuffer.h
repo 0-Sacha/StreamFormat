@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Formatter/Core/Detail/Detail.h"
+#include "Formatter/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
 

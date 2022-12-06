@@ -1,16 +1,18 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
+#include "EngineCore/Detail/Detail.h"
 
-#include "Formatter/Core/AnsiFormat/AnsiHandler.h"
+#include "Types/Types.h"
+#include "Types/TypesInfo.h"
+#include "Types/TypesTraits.h"
 
-#include "Types.h"
 #include "Exception.h"
-#include "FormatTypes.h"
-#include "GetBaseType.h"
-#include "NumberDetail.h"
-#include "IndentFunction.h"
-#include "UtilsFunction.h"
+#include "Specifiers.h"
+#include "IndentHandler.h"
+#include "UtilsContextsFunctions.h"
+
+#include "AnsiFormat/AnsiHandler.h"
 
 // TODO :
 //

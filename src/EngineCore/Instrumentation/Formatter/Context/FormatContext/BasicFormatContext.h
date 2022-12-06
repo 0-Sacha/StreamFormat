@@ -12,6 +12,8 @@
 
 #include "FormatContextArgsTuple.h"
 
+#include "Formatter/Detail/Buffer/BasicBufferOut.h"
+
 namespace EngineCore::FMT::Context {
 
     template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>

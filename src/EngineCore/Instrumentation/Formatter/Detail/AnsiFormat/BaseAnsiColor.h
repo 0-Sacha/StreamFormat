@@ -1,7 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core/Core.h"
-#include "Formatter/Core/Detail/Exception.h"
+#include "EngineCore/Instrumentation/Formatter/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
 

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Formatter/Core/Detail/Detail.h"
+#include "EngineCore/Instrumentation/Formatter/Detail/Detail.h"
 
 #include "Utils/UnFormatType.h"
 

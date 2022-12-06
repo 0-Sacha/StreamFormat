@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Formatter/Core/Buffer/Format.h"
+#include "Formatter/Detail/Buffer/Format.h"
 
 namespace EngineCore::FMT::Detail {
 	template<typename CharFormat>

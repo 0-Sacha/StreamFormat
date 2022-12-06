@@ -277,5 +277,7 @@ namespace EngineCore::FMT::Detail {
                 }
         }
     };
-
 }
+
+#include "BufferInReader/Integer.h"
+#include "BufferInReader/FromFormatData.h"

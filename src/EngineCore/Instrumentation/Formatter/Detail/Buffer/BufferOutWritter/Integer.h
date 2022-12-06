@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Formatter/Core/Buffer/BasicBufferOut.h"
+#include "Formatter/Detail/Buffer/BasicBufferOut.h"
 
 namespace EngineCore::FMT::Detail {
 

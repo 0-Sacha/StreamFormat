@@ -4,15 +4,17 @@
 #include "BasicFormatContextCoreImpl.h"
 #include "BasicFormatContextParseImpl.h"
 
+#include "Formatter/Detail/Buffer/BasicBufferOut.h"
+
 namespace EngineCore::FMT {
 
 	/////---------- Impl with as Format ----------//////
 
 	namespace Detail {
-		template<typename Format = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<Format>::Type, typename ...Args>
-		requires Detail::IsFmtConvertible<Format>::Value && Detail::IsCharType<CharBuffer>::Value
-		Detail::BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const Format& format, Args&& ...args) {
-			Context::BasicFormatContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
+		template<typename Format = std::string_view, typename CharBuffer = typename GetFmtBaseType<Format>::Type, typename ...Args>
+		requires IsFmtConvertible<Format>::Value && IsCharType<CharBuffer>::Value
+		BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const Format& format, Args&& ...args) {
+			Context::BasicFormatContext<typename GetFmtBaseType<Format>::Type, CharBuffer, Args...> context(true, format, std::forward<Args>(args)...);
 			context.SafeRun();
 			context.BufferOut().PushEndChar();
 			return context.BufferOut();

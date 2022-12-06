@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FormatType.h"
+#include "Formatter/Detail/Detail.h"
 
 namespace EngineCore::FMT {
 
@@ -57,7 +58,7 @@ namespace EngineCore::FMT {
 			context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
 
 			{
-				Detail::ApplyNextOverrideForThisFunction anoftf(context);
+				Detail::ApplyNextOverrideForThisFunction applNextOverride(context);
 
 				bool first = true;
 				std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
