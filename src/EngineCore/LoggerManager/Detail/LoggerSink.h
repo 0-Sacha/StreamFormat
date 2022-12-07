@@ -22,7 +22,12 @@ template<typename CharType>
 class BasicLoggerSink
 {
     public:
-        virtual void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) = 0;
+        BasicLoggerSink(std::basic_string<CharType>&& name)
+                : m_Name(std::forward<std::basic_string<CharType>>(name))
+            {}
+
+    public:
+        virtual void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) {};
 
     public:
         std::basic_string<CharType>& GetName() { return m_Name; }
@@ -36,17 +41,25 @@ class BasicLoggerSink
         LogSeverity m_Severity = LogSeverity::Trace;
 
     public:
+        void FormatAndPrintToSink(const std::basic_string<CharType>& pattern, const std::basic_string<CharType>& loggerName, const std::basic_string_view<CharType>& formatBuffer)
+        {
+            auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(pattern,
+                                                                       FORMAT_SV("name", ConcateNameAndSinkName(loggerName, m_Name)),
+                                                                       FORMAT_SV("data", formatBuffer));
+	        PrintToSink(formatPatternStr);
+        }
+
+    public:
         bool NeedToLog(const LogSeverity& severity) const   { return severity >= m_Severity; }
         bool NeedToLog(const LogStatus& status) const       { return true; }
         bool NeedToLog(const LogBasic&) const               { return true; }
 
-        
     public:
         template<typename T>
-        void PrintToSink(const T& severity, const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) { if (NeedToLog(severity)) PrintToSink(bufferToPrint); }
+        void PrintToSink(const T& severity, const std::basic_string_view<CharType>& bufferToPrint) { if (NeedToLog(severity)) PrintToSink(bufferToPrint); }
 
     public:
-        const std::basic_string_view<CharType>& GetPattern() const { return m_Pattern; }
+        const std::basic_string<CharType>& GetPattern() const { return m_Pattern; }
 
         const std::basic_string<CharType>& GetPattern(const LogSeverity& severity) const 
         {

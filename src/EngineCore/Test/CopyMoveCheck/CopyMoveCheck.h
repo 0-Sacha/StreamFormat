@@ -5,7 +5,7 @@ namespace EngineCore::Test {
 
     class CopyMoveCheck {
 	public:
-		static LoggerManager::BasicLogger Logger;
+		static inline LoggerManager::BasicLogger Logger();
 
     public:
         CopyMoveCheck(const std::string& name) 

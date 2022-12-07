@@ -8,18 +8,31 @@ namespace EngineCore::LoggerManager::Detail {
     template <typename CharType>
 	class BasicLoggerMultiSinkSafeImpl {
 	public:
-		BasicLoggerMultiSinkSafeImpl() : m_Name("Logger") {}
-		BasicLoggerMultiSinkSafeImpl(std::basic_string_view<CharType>&& name) : m_Name(std::forward<std::basic_string_view<CharType>>(name)) {}
+		BasicLoggerMultiSinkSafeImpl() : m_Name("Logger:{sink}") {}
+		BasicLoggerMultiSinkSafeImpl(std::basic_string<CharType>&& name) : m_Name(std::forward<std::basic_string<CharType>>(name)) {}
 
 	public:
-		void SetName(std::basic_string_view<CharType>&& name)	{ m_Name = std::forward<std::basic_string_view<CharType>>(name); }
+		void SetName(std::basic_string<CharType>&& name)	{ m_Name = std::forward<std::basic_string<CharType>>(name); }
 
-		std::basic_string_view<CharType>& GetName() 					{ return m_Name; }
+		std::basic_string<CharType>& GetName() 								{ return m_Name; }
 		std::vector<std::shared_ptr<BasicLoggerSink<CharType>>>& GetSinks()	{ return m_Sinks; }
 
 	private:
-		std::basic_string_view<CharType> m_Name;
+		std::basic_string<CharType> m_Name;
         std::vector<std::shared_ptr<BasicLoggerSink<CharType>>> m_Sinks;
+
+	public:
+		void AddSink(std::shared_ptr<BasicLoggerSink<CharType>>& sink)
+		{
+			m_Sinks.push_back(sink);
+		}
+
+		template<typename T, typename... Args>
+		void AddSink(Args&&... args)
+		{
+			std::shared_ptr<BasicLoggerSink<CharType>> sink(static_cast<BasicLoggerSink<CharType>*>(new T(std::forward<Args>(args)...)));
+			AddSink(sink);
+		}
 
 	public:
 		template<typename Severity, typename Format = std::string_view, typename ...Args>
@@ -28,11 +41,11 @@ namespace EngineCore::LoggerManager::Detail {
             // FIXME maybe add : name ; indent ???
             for (auto& sink : m_Sinks)
             {
-				if (sink.NeedToLog(severity))
+				if (sink->NeedToLog(severity))
 				{
-					auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink.GetPattern(severity)), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
-					auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(static_cast<std::string_view>(formatPatternStr), std::forward<Args>(args)..., FORMAT_SV("sink", sink.GetName()), FORMAT_SV("color", severity));
-					sink.PrintToSink(severity, formatFormatStr);
+					auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
+					auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(static_cast<std::string_view>(formatPatternStr), std::forward<Args>(args)..., FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity));
+					sink->PrintToSink(static_cast<std::basic_string_view<CharType>>(formatFormatStr));
 				}
             }
 	    }
@@ -41,10 +54,10 @@ namespace EngineCore::LoggerManager::Detail {
 		void Log(const Severity& severity, T&& t) {
             for (auto& sink : m_Sinks)
             {
-				if (sink.NeedToLog(severity))
+				if (sink->NeedToLog(severity))
 				{
-					auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink.GetPattern(severity)), FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink.GetName())), FORMAT_SV("data", t));
-					sink.PrintToSink(formatBuffer);
+					auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t));
+					sink->PrintToSink(static_cast<std::basic_string_view<CharType>>(formatBuffer));
 				}
             }
 	    }

@@ -32,12 +32,12 @@ namespace EngineCore::LoggerManager {
  template<typename CharType>
 	struct ConcateNameAndSinkName
 	{
-		ConcateNameAndSinkName(const std::string& loggerName, const std::string& sinkName)
+		ConcateNameAndSinkName(const std::basic_string<CharType>& loggerName, const std::basic_string<CharType>& sinkName)
 			: LoggerName(loggerName)
 			, SinkName(sinkName)
 		{}
-		const std::string& LoggerName;
-		const std::string& SinkName;
+		const std::basic_string<CharType>& LoggerName;
+		const std::basic_string<CharType>& SinkName;
 	};
 
 }

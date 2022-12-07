@@ -22,7 +22,7 @@ namespace EngineCore::FMT {
 
 		template<typename Format = std::string_view, typename CharBuffer = typename Detail::GetFmtBaseType<Format>::Type, typename T>
 		requires Detail::IsFmtConvertible<Format>::Value && Detail::IsCharType<CharBuffer>::Value
-		Detail::BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const Format& format, T&& t) {
+		Detail::BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(T&& t) {
 			Context::BasicFormatContext<char, CharBuffer> context(true, std::basic_string_view<char>(nullptr, 0));
 			context.WriteType(t);
 			context.BufferOut().PushEndChar();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <fstream>
 #include <filesystem>
 
 #include "LoggerManager/Detail/LoggerSink.h"
@@ -8,11 +9,12 @@
 namespace EngineCore::LoggerManager::Sinks
 {
     template <typename CharType>
-    class BasicConsoleSink : Detail::BasicLoggerSink<CharType>
+    class BasicConsoleSink : public Detail::BasicLoggerSink<CharType>
     {
         public:
-            BasicConsoleSink(std::basic_ostream<CharType>& stream)
-                : m_Stream(stream)
+            BasicConsoleSink(std::basic_ostream<CharType>& stream, std::basic_string<CharType>&& name)
+                : Detail::BasicLoggerSink<CharType>(std::forward<std::basic_string<CharType>>(name))
+                , m_Stream(stream)
             {}
 
         public:
@@ -21,8 +23,9 @@ namespace EngineCore::LoggerManager::Sinks
         public:
             void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) override
             {
-                m_Stream.write(static_cast<std::basic_string_view<CharType>>(bufferToPrint));
-                m_Stream.write("\n");
+                m_Stream.write(bufferToPrint.GetBuffer(), bufferToPrint.GetSize());
+                m_Stream.write("\n", 1);
+                m_Stream.flush();
             }
 
         private:
@@ -30,11 +33,12 @@ namespace EngineCore::LoggerManager::Sinks
     };
 
     template <typename CharType>
-    class BasicFileSink : Detail::BasicLoggerSink<CharType>
+    class BasicFileSink : public Detail::BasicLoggerSink<CharType>
     {
         public:
-            BasicFileSink(const std::filesystem::path& filePath)
-                : m_Stream(filePath)
+            BasicFileSink(const std::filesystem::path& filePath, std::basic_string<CharType>&& name)
+                : Detail::BasicLoggerSink<CharType>(std::forward<std::basic_string<CharType>>(name))
+                , m_Stream(filePath, std::ios::out)
             {}
 
         public:
@@ -43,12 +47,13 @@ namespace EngineCore::LoggerManager::Sinks
         public:
             void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) override
             {
-                m_Stream.write(static_cast<std::basic_string_view<CharType>>(bufferToPrint));
-                m_Stream.write("\n");
+                m_Stream.write(bufferToPrint.GetBuffer(), bufferToPrint.GetSize());
+                m_Stream.write("\n", 1);
+                m_Stream.flush();
             }
 
         private:
-            std::basic_ostream<CharType> m_Stream;
+            std::basic_ofstream<CharType> m_Stream;
     };
 }
 

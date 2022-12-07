@@ -39,7 +39,7 @@ namespace EngineCore::Instrumentation
 		void WriteProfile(const std::string& name, const double start, const double dur, const std::size_t tid);
 		void EndSession();
 
-		inline const EngineCore::LoggerManager::BasicLogger& GetLogger() const		{ return m_Logger; }
+		inline EngineCore::LoggerManager::BasicLogger& GetLogger() { return m_Logger; }
 
 	public:
 		static Profiler& GetInstance()		{ static Profiler profiler("Profiler"); return profiler; }
