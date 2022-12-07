@@ -4,7 +4,7 @@
 #include "BasicFormatContextCoreImpl.h"
 #include "BasicFormatContextParseImpl.h"
 
-#include "Formatter/Detail/Buffer/BasicBufferOut.h"
+#include "FMT/Detail/Buffer/BasicBufferOut.h"
 
 namespace EngineCore::FMT {
 

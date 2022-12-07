@@ -14,7 +14,7 @@ namespace EngineCore::LoggerManager::Detail {
 	public:
 		void SetName(std::basic_string_view<CharType>&& name)	{ m_Name = std::forward<std::basic_string_view<CharType>>(name); }
 
-		std::basic_string_view<CharType>& GetName()						{ return m_Name; }
+		std::basic_string_view<CharType>& GetName()							{ return m_Name; }
 		std::vector<std::shared_ptr<BasicLoggerSink<CharType>>>& GetSinks()	{ return m_Sinks; }
 
 	private:
@@ -22,9 +22,21 @@ namespace EngineCore::LoggerManager::Detail {
         std::vector<std::shared_ptr<BasicLoggerSink<CharType>>> m_Sinks;
 
 	public:
+		void AddSink(std::shared_ptr<BasicLoggerSink<CharType>>& sink)
+		{
+			m_Sinks.push_back(sink);
+		}
+
+		template<typename T, typename... Args>
+		void AddSink(Args&&... args)
+		{
+			m_Sinks.push_back(std::make_shared<T>(std::forward(args)...));
+		}
+
+	public:
 		template<typename Severity, typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void Log(const Severity& severity, const Format& format, Args&& ...args) const {
+		void Log(const Severity& severity, const Format& format, Args&& ...args) {
             auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(format, std::forward<Args>(args)...);
             for (auto& sink : m_Sinks)
 			{
@@ -39,7 +51,7 @@ namespace EngineCore::LoggerManager::Detail {
 	    }
 
 		template<typename Severity, typename T>
-		void Log(const Severity& severity, T&& t) const {
+		void Log(const Severity& severity, T&& t) {
             auto formatType = FMT::Detail::FormatAndGetBufferOut(std::forward<T>(t));
             for (auto& sink : m_Sinks)
 			{

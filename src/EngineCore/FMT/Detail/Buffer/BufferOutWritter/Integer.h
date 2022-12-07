@@ -1,10 +1,6 @@
 #pragma once
 
-<<<<<<<< HEAD:src/EngineCore/FMT/Core/Buffer/BufferOutWritter/Integer.h
-#include "FMT/Core/Buffer/BasicBufferOut.h"
-========
 #include "FMT/Detail/Buffer/BasicBufferOut.h"
->>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Detail/Buffer/BufferOutWritter/Integer.h
 
 namespace EngineCore::FMT::Detail {
 

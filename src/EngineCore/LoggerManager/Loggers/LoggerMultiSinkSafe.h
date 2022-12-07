@@ -24,7 +24,7 @@ namespace EngineCore::LoggerManager::Detail {
 	public:
 		template<typename Severity, typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void Log(const Severity& severity, const Format& format, Args&& ...args) const {
+		void Log(const Severity& severity, const Format& format, Args&& ...args) {
             // FIXME maybe add : name ; indent ???
             for (auto& sink : m_Sinks)
             {
@@ -38,7 +38,7 @@ namespace EngineCore::LoggerManager::Detail {
 	    }
 
 		template<typename Severity, typename T>
-		void Log(const Severity& severity, T&& t) const {
+		void Log(const Severity& severity, T&& t) {
             for (auto& sink : m_Sinks)
             {
 				if (sink.NeedToLog(severity))

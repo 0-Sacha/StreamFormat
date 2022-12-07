@@ -1,10 +1,6 @@
 #pragma once
 
-<<<<<<< HEAD:src/EngineCore/FMT/Context/UnFormatContext/Utils/UnFormatType.h
-#include "FMT/Core/Detail/Detail.h"
-=======
 #include "FMT/Detail/Detail.h"
->>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Context/UnFormatContext/Utils/UnFormatType.h
 
 #define ENGINECORE_UNFORMAT_DECLARED
 namespace EngineCore::FMT {

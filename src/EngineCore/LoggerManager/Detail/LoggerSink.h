@@ -30,25 +30,25 @@ class BasicLoggerSink
         PatternOverride<CharType>& GetPatternOverride() { return m_PatternOverride; }
 
     public:
-        std::basic_string<CharType> m_Name;
-        std::basic_string<CharType> m_Pattern;
+        std::basic_string<CharType> m_Name = "";
+        std::basic_string<CharType> m_Pattern = "{name} >> {data}";
         PatternOverride<CharType> m_PatternOverride;
-        LogSeverity m_Severity;
+        LogSeverity m_Severity = LogSeverity::Trace;
 
     public:
-        bool NeedToLog(const LogSeverity& severity) { return severity >= m_Severity; }
-        bool NeedToLog(const LogStatus& status)     { return true; }
-        bool NeedToLog(const LogBasic&)             { return true; }
+        bool NeedToLog(const LogSeverity& severity) const   { return severity >= m_Severity; }
+        bool NeedToLog(const LogStatus& status) const       { return true; }
+        bool NeedToLog(const LogBasic&) const               { return true; }
 
         
     public:
         template<typename T>
-        void PrintToSink(const T& severity, const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint)   { if (NeedToLog(severity)) PrintToSink(bufferToPrint); }
+        void PrintToSink(const T& severity, const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) { if (NeedToLog(severity)) PrintToSink(bufferToPrint); }
 
     public:
-        const std::basic_string_view<CharType>& GetPattern() { return m_Pattern; }
+        const std::basic_string_view<CharType>& GetPattern() const { return m_Pattern; }
 
-        const std::basic_string<CharType>& GetPattern(const LogSeverity& severity)
+        const std::basic_string<CharType>& GetPattern(const LogSeverity& severity) const 
         {
             switch(severity)
             {
@@ -63,7 +63,7 @@ class BasicLoggerSink
             return m_Pattern;
         }
 
-        const std::basic_string<CharType>& GetPattern(const LogStatus& status)
+        const std::basic_string<CharType>& GetPattern(const LogStatus& status) const 
         {
             switch(status)
             {
@@ -74,7 +74,7 @@ class BasicLoggerSink
             return m_Pattern;
         }
 
-        const std::basic_string<CharType>& GetPattern(const LogBasic&)
+        const std::basic_string<CharType>& GetPattern(const LogBasic&) const 
         {
             if (m_PatternOverride.BasicPattern.empty() == false)
                 return m_PatternOverride.BasicPattern;

@@ -36,7 +36,7 @@ namespace EngineCore::LoggerManager::Detail {
 	public:
 		template<typename Severity, typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void LogImpl(Severity severity, const Format& format, Args&& ...args) const {
+		void LogImpl(Severity severity, const Format& format, Args&& ...args) {
 			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
 			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 		}
@@ -48,23 +48,23 @@ namespace EngineCore::LoggerManager::Detail {
 	public:
 		template<typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void Log(LogSeverity severity, const Format& format, Args&& ...args) const 	{ if (severity < m_SeverityMin) return; return LogImpl(severity, format, std::forward<Args>(args)...); }
+		void Log(LogSeverity severity, const Format& format, Args&& ...args) 	{ if (severity < m_SeverityMin) return; return LogImpl(severity, format, std::forward<Args>(args)...); }
 		template<typename T>
-		void Log(LogSeverity severity, T&& t) const 								{ if (severity < m_SeverityMin) return; return LogImpl(severity, std::forward<T>(t)); }
+		void Log(LogSeverity severity, T&& t)  									{ if (severity < m_SeverityMin) return; return LogImpl(severity, std::forward<T>(t)); }
 
 	public:
 		template<typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void Log(LogStatus status, const Format& format, Args&& ...args) const 	{ return LogImpl(status, format, std::forward<Args>(args)...); }
+		void Log(LogStatus status, const Format& format, Args&& ...args) 	{ return LogImpl(status, format, std::forward<Args>(args)...); }
 		template<typename T>
-		void Log(LogStatus status, T&& t) const 								{ return LogImpl(status, std::forward<T>(t)); }
+		void Log(LogStatus status, T&& t)  									{ return LogImpl(status, std::forward<T>(t)); }
 
 	public:
 		template<typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void Log(LogBasic basic, const Format& format, Args&& ...args) const 	{ return LogImpl(basic, format, std::forward<Args>(args)...); }
+		void Log(LogBasic basic, const Format& format, Args&& ...args)  	{ return LogImpl(basic, format, std::forward<Args>(args)...); }
 		template<typename T>
-		void Log(LogBasic basic, T&& t) const 									{ return LogImpl(basic, std::forward<T>(t)); }
+		void Log(LogBasic basic, T&& t)  									{ return LogImpl(basic, std::forward<T>(t)); }
 	};
 }
 
