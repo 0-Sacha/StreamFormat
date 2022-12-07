@@ -1,7 +1,7 @@
 #pragma once
 
-#include "FMT/Core/Detail/Detail.h"
-#include "EngineCore/Core/MapMacro.h"
+#include "FMT/Detail/Detail.h"
+#include "EngineCore/Detail/MapMacro.h"
 
 #define ENGINECORE_FORMAT_DECLARED
 namespace EngineCore::FMT {

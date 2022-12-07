@@ -1,7 +1,11 @@
 #pragma once
 
+<<<<<<<< HEAD:src/EngineCore/FMT/Core/AnsiFormat/BaseAnsiColor.h
 #include "EngineCore/Core/Core.h"
 #include "FMT/Core/Detail/Exception.h"
+========
+#include "FMT/Detail/Detail.h"
+>>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Detail/AnsiFormat/BaseAnsiColor.h
 
 namespace EngineCore::FMT::Detail {
 

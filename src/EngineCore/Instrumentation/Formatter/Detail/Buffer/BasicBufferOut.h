@@ -398,3 +398,5 @@ namespace EngineCore::FMT::Detail {
 	};
 }
 
+#include "BufferOutWritter/Integer.h"
+#include "BufferOutWritter/FromFormatData.h"

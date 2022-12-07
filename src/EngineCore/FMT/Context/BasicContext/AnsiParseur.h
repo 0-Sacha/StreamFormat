@@ -1,8 +1,6 @@
 #pragma once
 
-#include "FMT/Core/Detail/Detail.h"
-#include "FMT/Core/Buffer/Buffer.h"
-#include "FMT/Core/AnsiFormat/AnsiHandler.h"
+#include "FMT/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
 	template<typename FormatBuffer, typename Master>

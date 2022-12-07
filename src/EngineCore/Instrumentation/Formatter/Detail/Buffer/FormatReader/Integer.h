@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<<< HEAD:src/EngineCore/FMT/Core/Buffer/FormatReader/Integer.h
 #include "FMT/Core/Buffer/Format.h"
+========
+#include "Formatter/Detail/Buffer/Format.h"
+>>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Detail/Buffer/FormatReader/Integer.h
 
 namespace EngineCore::FMT::Detail {
 	template<typename CharFormat>

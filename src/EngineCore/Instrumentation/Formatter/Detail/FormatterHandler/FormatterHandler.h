@@ -3,7 +3,7 @@
 #include "EngineCore/Core/Core.h"
 #include <chrono>
 
-namespace EngineCore::FMT {
+namespace EngineCore::FMT::Detail {
 
 	class FormatterHandler {
 

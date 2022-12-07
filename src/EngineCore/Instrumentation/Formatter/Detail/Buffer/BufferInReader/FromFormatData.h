@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<<< HEAD:src/EngineCore/FMT/Core/Buffer/BufferInReader/FromFormatData.h
 #include "FMT/Core/Buffer/BasicBufferIn.h"
+========
+#include "Formatter/Detail/Buffer/BasicBufferIn.h"
+>>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Detail/Buffer/BufferInReader/FromFormatData.h
 #include "Integer.h"
 
 namespace EngineCore::FMT::Detail {

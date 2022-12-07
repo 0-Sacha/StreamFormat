@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<<< HEAD:src/EngineCore/FMT/Core/Buffer/BufferInReader/Integer.h
 #include "FMT/Core/Buffer/BasicBufferIn.h"
+========
+#include "Formatter/Detail/Buffer/BasicBufferIn.h"
+>>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Detail/Buffer/BufferInReader/Integer.h
 
 namespace EngineCore::FMT::Detail {
 
@@ -36,7 +40,7 @@ namespace EngineCore::FMT::Detail {
 	template<typename CharBuffer>
 	template<typename T>
 	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision) {
-		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt;
+		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt;
 		FastReadInt(iInt);
 
 		T res = 0;
@@ -106,7 +110,7 @@ namespace EngineCore::FMT::Detail {
 	template<typename CharBuffer>
 	template<typename T>
 	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadFloat(T& i, FloatPrecision floatPrecision, ShiftType st, ShiftSize shift, ShiftPrint sp) {
-		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt = 0;
+		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
 

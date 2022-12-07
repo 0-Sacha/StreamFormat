@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "FMT/Core/Detail/Detail.h"
+#include "FMT/Detail/Detail.h"
 
 #include "Utils/FormatType.h"
 #include "Utils/NamedArgs.h"

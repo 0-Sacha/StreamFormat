@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<<< HEAD:src/EngineCore/FMT/Core/Buffer/BufferOutWritter/Integer.h
 #include "FMT/Core/Buffer/BasicBufferOut.h"
+========
+#include "Formatter/Detail/Buffer/BasicBufferOut.h"
+>>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Detail/Buffer/BufferOutWritter/Integer.h
 
 namespace EngineCore::FMT::Detail {
 
@@ -30,10 +34,10 @@ namespace EngineCore::FMT::Detail {
 	template<typename CharBuffer>
 	template<typename T>
 	void BasicFormatterMemoryBufferOut<CharBuffer>::FastWriteFloat(T i, FloatPrecision nbDecimal) {
-		FastWriteInt<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(static_cast<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(i));
+		FastWriteInt<typename Detail::TypesInfo::FloatDetail<T>::IntType>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
 		PushBack('.');
 		if (i < 0)	i = -i;
-		i = i - (typename Detail::ValuesDetail::FloatDetail<T>::IntType)i;
+		i = i - (typename Detail::TypesInfo::FloatDetail<T>::IntType)i;
 		while (nbDecimal-- != 0) {
 			char intPart = static_cast<char>(i *= 10);
 			PushBack(intPart + '0');
@@ -94,7 +98,7 @@ namespace EngineCore::FMT::Detail {
 	template<typename T>
 	void BasicFormatterMemoryBufferOut<CharBuffer>::BasicWriteFloat(T i, FloatPrecision nbDecimal, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 
-		typename Detail::ValuesDetail::FloatDetail<T>::IntType iInt = static_cast<typename Detail::ValuesDetail::FloatDetail<T>::IntType>(i);
+		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i);
 
 		DataType nbDigit = GetNumberOfDigitDec(iInt);
 
@@ -116,7 +120,7 @@ namespace EngineCore::FMT::Detail {
 
 		PushBack('.');
 		if (i < 0)	i = -i;
-		i = i - (typename Detail::ValuesDetail::FloatDetail<T>::IntType)i;
+		i = i - (typename Detail::TypesInfo::FloatDetail<T>::IntType)i;
 		while (nbDecimal-- != 0) {
 			const char intPart = static_cast<const char>(i *= 10);
 			PushBack(intPart + '0');

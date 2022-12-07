@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<< HEAD:src/EngineCore/FMT/Context/FormatContext/Utils/FormatContextTemplate.h
 #include "FMT/Core/Detail/Detail.h"
+=======
+#include "FMT/Detail/Detail.h"
+>>>>>>> 040fab10b4777918832b29a04b07add2d411d3ab:src/EngineCore/Instrumentation/Formatter/Context/FormatContext/Utils/FormatContextTemplate.h
 
 namespace EngineCore::FMT::Context {
 
