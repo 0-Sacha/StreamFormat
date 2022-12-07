@@ -28,14 +28,6 @@ namespace EngineCore::Test {
 
 }
 
-#ifndef __FUNCSIG__
-#define __FUNCSIG__ __PRETTY_FUNCTION__
-#endif
-
-#ifndef __FUNCDNAME__
-#define __FUNCDNAME__ __PRETTY_FUNCTION__
-#endif
-
 #define ENGINECORE_GET_COMPILER_DATA() EngineCore::Test::CompilerDataPack(__FILE__, __LINE__, __FUNCTION__, __FUNCSIG__, __FUNCDNAME__)
 
 #define ENGINECORE_FUNC() ENGINECORE_INFO("function : {:C:+black} @ {C:+black}{}:{}{C}", __FUNCSIG__, __FILE__, __LINE__)

@@ -1,11 +1,11 @@
 
 ProjectPublicIncludes["EngineCore"] = {
 	"%{Project.EngineCore}/src/",
-	"%{Project.EngineCore}/src/EngineCore/LIB",
-	"%{Project.EngineCore}/src/EngineCore/Instrumentation",
-	"%{Project.EngineCore}/src/EngineCore/TNX",
-	"%{Project.EngineCore}/src/EngineCore/Test",
+	"%{Project.EngineCore}/src/EngineCore",
 	"%{Project.EngineCore}/src/EngineCore/Core",
+	"%{Project.EngineCore}/src/EngineCore/LIB",
+	"%{Project.EngineCore}/src/EngineCore/TNX",
+	"%{Project.EngineCore}/src/EngineCore/Test"
 }
 
 project "EngineCore"

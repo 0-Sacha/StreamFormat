@@ -24,7 +24,7 @@ namespace EngineCore::TNX {
 
 
 
-#include "Formatter/Formatter.h"
+#include "FMT/Formatter.h"
 template <std::size_t COUNT, typename Type, typename ComputeAlgorithm, typename FormatContext>
 struct EngineCore::FMT::FormatType<EngineCore::TNX::Vector<COUNT, Type, ComputeAlgorithm>, FormatContext>
 {
