@@ -22,26 +22,32 @@ template<typename CharType>
 class BasicLoggerSink
 {
     public:
-        BasicLoggerSink(std::basic_string<CharType>&& name)
-                : m_Name(std::forward<std::basic_string<CharType>>(name))
+        using PatternType = std::basic_string<CharType>;
+        using NameType = std::basic_string<CharType>;
+        using BufferType = std::basic_string_view<CharType>;
+
+    public:
+        BasicLoggerSink(NameType&& name)
+                : m_Name(std::forward<NameType>(name))
             {}
 
     public:
-        virtual void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) {};
+        virtual void Write(const BufferType& bufferToPrint)    {}
+        void PrintToSink(const BufferType& bufferToPrint)      { Write(bufferToPrint); }
 
     public:
-        std::basic_string<CharType>& GetName() { return m_Name; }
+        NameType& GetName() { return m_Name; }
         LogSeverity& GetSeverity() { return m_Severity; }
         PatternOverride<CharType>& GetPatternOverride() { return m_PatternOverride; }
 
     public:
-        std::basic_string<CharType> m_Name = "";
-        std::basic_string<CharType> m_Pattern = "{name} >> {data}";
+        NameType m_Name = "";
+        PatternType m_Pattern = "{name} >> {data}";
         PatternOverride<CharType> m_PatternOverride;
         LogSeverity m_Severity = LogSeverity::Trace;
 
     public:
-        void FormatAndPrintToSink(const std::basic_string<CharType>& pattern, const std::basic_string<CharType>& loggerName, const std::basic_string_view<CharType>& formatBuffer)
+        void FormatAndPrintToSink(const PatternType& pattern, const NameType& loggerName, const BufferType& formatBuffer)
         {
             auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(pattern,
                                                                        FORMAT_SV("name", ConcateNameAndSinkName(loggerName, m_Name)),
@@ -56,12 +62,12 @@ class BasicLoggerSink
 
     public:
         template<typename T>
-        void PrintToSink(const T& severity, const std::basic_string_view<CharType>& bufferToPrint) { if (NeedToLog(severity)) PrintToSink(bufferToPrint); }
+        void PrintToSink(const T& severity, const BufferType& bufferToPrint) { if (NeedToLog(severity)) PrintToSink(bufferToPrint); }
 
     public:
-        const std::basic_string<CharType>& GetPattern() const { return m_Pattern; }
+        const PatternType& GetPattern() const { return m_Pattern; }
 
-        const std::basic_string<CharType>& GetPattern(const LogSeverity& severity) const 
+        const PatternType& GetPattern(const LogSeverity& severity) const 
         {
             switch(severity)
             {
@@ -76,7 +82,7 @@ class BasicLoggerSink
             return m_Pattern;
         }
 
-        const std::basic_string<CharType>& GetPattern(const LogStatus& status) const 
+        const PatternType& GetPattern(const LogStatus& status) const 
         {
             switch(status)
             {
@@ -87,7 +93,7 @@ class BasicLoggerSink
             return m_Pattern;
         }
 
-        const std::basic_string<CharType>& GetPattern(const LogBasic&) const 
+        const PatternType& GetPattern(const LogBasic&) const 
         {
             if (m_PatternOverride.BasicPattern.empty() == false)
                 return m_PatternOverride.BasicPattern;

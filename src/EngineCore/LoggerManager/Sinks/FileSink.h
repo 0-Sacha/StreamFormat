@@ -12,8 +12,13 @@ namespace EngineCore::LoggerManager::Sinks
     class BasicConsoleSink : public Detail::BasicLoggerSink<CharType>
     {
         public:
-            BasicConsoleSink(std::basic_ostream<CharType>& stream, std::basic_string<CharType>&& name)
-                : Detail::BasicLoggerSink<CharType>(std::forward<std::basic_string<CharType>>(name))
+            using typename Detail::BasicLoggerSink<CharType>::PatternType;
+            using typename Detail::BasicLoggerSink<CharType>::NameType;
+            using typename Detail::BasicLoggerSink<CharType>::BufferType;
+
+        public:
+            BasicConsoleSink(std::basic_ostream<CharType>& stream, NameType&& name)
+                : Detail::BasicLoggerSink<CharType>(std::forward<NameType>(name))
                 , m_Stream(stream)
             {}
 
@@ -21,13 +26,13 @@ namespace EngineCore::LoggerManager::Sinks
             std::basic_ostream<CharType>& GetStream() { return m_Stream; }
         
         public:
-            void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) override
+            void Write(const BufferType& bufferToPrint) override
             {
-                m_Stream.write(bufferToPrint.GetBuffer(), bufferToPrint.GetSize());
+                m_Stream.write(bufferToPrint.data(), bufferToPrint.size());
                 m_Stream.write("\n", 1);
                 m_Stream.flush();
             }
-
+            
         private:
             std::basic_ostream<CharType>& m_Stream;
     };
@@ -36,8 +41,13 @@ namespace EngineCore::LoggerManager::Sinks
     class BasicFileSink : public Detail::BasicLoggerSink<CharType>
     {
         public:
-            BasicFileSink(const std::filesystem::path& filePath, std::basic_string<CharType>&& name)
-                : Detail::BasicLoggerSink<CharType>(std::forward<std::basic_string<CharType>>(name))
+            using typename Detail::BasicLoggerSink<CharType>::PatternType;
+            using typename Detail::BasicLoggerSink<CharType>::NameType;
+            using typename Detail::BasicLoggerSink<CharType>::BufferType;
+
+        public:
+            BasicFileSink(const std::filesystem::path& filePath, NameType&& name)
+                : Detail::BasicLoggerSink<CharType>(std::forward<NameType>(name))
                 , m_Stream(filePath, std::ios::out)
             {}
 
@@ -45,9 +55,9 @@ namespace EngineCore::LoggerManager::Sinks
             std::basic_ostream<CharType>& GetStream() { return m_Stream; }
         
         public:
-            void PrintToSink(const FMT::Detail::BasicFormatterMemoryBufferOutCopy<CharType>& bufferToPrint) override
+            void Write(const BufferType& bufferToPrint) override
             {
-                m_Stream.write(bufferToPrint.GetBuffer(), bufferToPrint.GetSize());
+                m_Stream.write(bufferToPrint.data(), bufferToPrint.size());
                 m_Stream.write("\n", 1);
                 m_Stream.flush();
             }
