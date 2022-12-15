@@ -1,11 +1,11 @@
 
-ProjectPublicIncludes["EngineCore"] = {
-	"%{Project.EngineCore}/src/",
-	"%{Project.EngineCore}/src/EngineCore",
-	"%{Project.EngineCore}/src/EngineCore/Core",
-	"%{Project.EngineCore}/src/EngineCore/LIB",
-	"%{Project.EngineCore}/src/EngineCore/TNX",
-	"%{Project.EngineCore}/src/EngineCore/Test"
+Solution.ProjectsInfo.Includes["EngineCore"] = {
+	"%{Solution.Projects.EngineCore}/src/",
+	"%{Solution.Projects.EngineCore}/src/EngineCore",
+	"%{Solution.Projects.EngineCore}/src/EngineCore/Core",
+	"%{Solution.Projects.EngineCore}/src/EngineCore/LIB",
+	"%{Solution.Projects.EngineCore}/src/EngineCore/TNX",
+	"%{Solution.Projects.EngineCore}/src/EngineCore/Test"
 }
 
 project "EngineCore"
@@ -17,8 +17,8 @@ project "EngineCore"
 	pchheader "EngineCorepch.h"
 	pchsource "src/EngineCore/Core/EngineCorepch.cpp"
 
-	targetdir 	(project_targetdir .. "/%{prj.name}")
-	objdir 		(project_objdir .. "/%{prj.name}")
+	targetdir 	(Solution.Path.ProjectTargetDirectory)
+	objdir 		(Solution.Path.ProjectObjectDirectory)
 
 	files {
 		"src/**.h",
@@ -27,8 +27,8 @@ project "EngineCore"
 		"src/**.cpp",
 	}
 	
-	IncludeProject("EngineCore")
+	Solution.IncludeProject("EngineCore")
 
 	defines {
-		"ENGINECORE_BASE_LOGGER_NAME=\"%{ProjectName}\""
+		"ENGINECORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
 	}
