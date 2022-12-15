@@ -1,44 +1,44 @@
 // Target Define
-#ifdef BASE_TARGET_DEBUG
+#ifdef TARGET_DEBUG
 #define ENGINECORE_DEBUG
 #endif
 
-#ifdef BASE_TARGET_RELEASE
+#ifdef TARGET_RELEASE
 #define ENGINECORE_RELEASE
 #endif
 
-#ifdef BASE_TARGET_DIST
+#ifdef TARGET_DIST
 #define ENGINECORE_DIST
 #endif
 
 
 // Architecture Define
-#ifdef BASE_ARCHITECTURE_X86
+#ifdef ARCHITECTURE_X86
 #define ENGINECORE_X86
 #endif
 
-#ifdef BASE_ARCHITECTURE_X86_64
+#ifdef ARCHITECTURE_X64
 #define ENGINECORE_X64
 #endif
 
 
 // Platform Define 
-#ifdef BASE_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
 #define ENGINECORE_PLATFORM_WINDOWS
 #endif
 
-#ifdef BASE_PLATFORM_LINUX
+#ifdef PLATFORM_LINUX
 #define ENGINECORE_PLATFORM_LINUX
 #endif
 
 
 // Compiler Define
-#ifdef BASE_COMPILER_MSVC
-#define ENGINECORE_COMPILER_MSVC
+#ifdef COMPILER_VS
+#define ENGINECORE_COMPILER_VS
 #endif
 
-#ifdef BASE_COMPILER_GCC
-#define ENGINECORE_COMPILER_GCC
+#ifdef COMPILER_GMAKE
+#define ENGINECORE_COMPILER_GMAKE
 #endif
 
 
