@@ -28,7 +28,7 @@ namespace EngineCore::FMT::Detail {
 		inline CharBuffer*			GetBufferEnd()										{ return m_BufferEnd; }
 		inline const CharBuffer*	GetBufferEnd() const								{ return m_BufferEnd; }
 		inline std::size_t			GetBufferSize() const								{ return m_BufferSize; }
-		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer - 1; }
+		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
 
 		inline void					SetParentBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* parentBuffer)	{
