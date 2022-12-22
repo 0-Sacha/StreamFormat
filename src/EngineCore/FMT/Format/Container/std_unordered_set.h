@@ -1,22 +1,22 @@
 #pragma once
 
-#include "FMT/Context/FormatContext/Utils/FormatType.h"
+#include "FMT/Context/FormatterContext/Utils/FormatterType.h"
 #include <unordered_set>
 
 namespace EngineCore::FMT {
-	template<typename T, typename FormatContext>
-	struct FormatType<std::unordered_set<T>, FormatContext>
+	template<typename T, typename FormatterContext>
+	struct FormatterType<std::unordered_set<T>, FormatterContext>
 	{
-		static void Write(const std::unordered_set<T>& t, FormatContext& context) {
-			FormatType<ForwardAsSTDEnumerable<std::unordered_set<T>>, FormatContext>::Write(t, context);
+		static void Write(const std::unordered_set<T>& t, FormatterContext& context) {
+			FormatterType<ForwardAsSTDEnumerable<std::unordered_set<T>>, FormatterContext>::Write(t, context);
 		}
 	};
 
-	template<typename T, typename FormatContext>
-	struct FormatType<std::unordered_multiset<T>, FormatContext>
+	template<typename T, typename FormatterContext>
+	struct FormatterType<std::unordered_multiset<T>, FormatterContext>
 	{
-		static void Write(const std::unordered_multiset<T>& t, FormatContext& context) {
-			FormatType<ForwardAsSTDEnumerable<std::unordered_multiset<T>>, FormatContext>::Write(t, context);
+		static void Write(const std::unordered_multiset<T>& t, FormatterContext& context) {
+			FormatterType<ForwardAsSTDEnumerable<std::unordered_multiset<T>>, FormatterContext>::Write(t, context);
 		}
 	};
 }

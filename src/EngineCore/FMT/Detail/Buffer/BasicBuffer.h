@@ -52,7 +52,7 @@ namespace EngineCore::FMT::Detail {
 			, m_ParentBuffer(nullptr)
 		{}
 
-		// Used for LittleFormat
+		// Used for SubContext
 		BasicFormatterMemoryBuffer(CharBuffer* const buffer, CharBuffer* const bufferCurrentPos, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(bufferCurrentPos)

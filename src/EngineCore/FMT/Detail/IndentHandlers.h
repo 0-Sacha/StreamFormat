@@ -45,9 +45,9 @@ namespace EngineCore::FMT::Detail {
 		std::size_t AddIndent;
 	};
 
-	template <typename FormatContext>
+	template <typename FormatterContext>
 	struct RestoreIndentFunction {
-		inline explicit RestoreIndentFunction(FormatContext& context)
+		inline explicit RestoreIndentFunction(FormatterContext& context)
 			: Context(context)
 			, OldIndent(context.GetIndent())
 			, GetIndentInfo()
@@ -55,7 +55,7 @@ namespace EngineCore::FMT::Detail {
 		{}
 
 		template <typename Char>
-		inline RestoreIndentFunction(FormatContext& context, const std::basic_string_view<Char>& txt, bool addIndentEnd = true)
+		inline RestoreIndentFunction(FormatterContext& context, const std::basic_string_view<Char>& txt, bool addIndentEnd = true)
 			: Context(context)
 			, OldIndent(context.BufferOut().GetIndent())
 			, GetIndentInfo(txt)
@@ -69,15 +69,15 @@ namespace EngineCore::FMT::Detail {
 				Context.BufferOut().AddIndent(GetIndentInfo.AddIndent);
 		}
 
-		FormatContext&											Context;
+		FormatterContext&											Context;
 		std::size_t 											OldIndent;
-		GetIndentInfo<typename FormatContext::CharFormatType> 	GetIndentInfo;
+		GetIndentInfo<typename FormatterContext::CharFormatType> 	GetIndentInfo;
 		bool 													AddIndentEnd;
 	};
 
-	template <typename FormatContext>
+	template <typename FormatterContext>
 	struct GetIndentFunction {
-		inline explicit GetIndentFunction(FormatContext& context)
+		inline explicit GetIndentFunction(FormatterContext& context)
 			: Context(context)
 			, OldNoStride(context.BufferOut().GetNoStride())
 			, OldBufferSize(context.BufferOut().GetBufferCurrentSize())
@@ -88,14 +88,14 @@ namespace EngineCore::FMT::Detail {
 			return (Context.BufferOut().GetBufferCurrentSize() - OldBufferSize) - (Context.BufferOut().GetNoStride() - OldNoStride);
 		}
 
-		FormatContext&	Context;
+		FormatterContext&	Context;
 		std::size_t 	OldNoStride;
 		std::size_t 	OldBufferSize;
 	};
 	
-	template <typename FormatContext>
+	template <typename FormatterContext>
 	struct IndentFunction {
-		explicit inline IndentFunction(FormatContext& context)
+		explicit inline IndentFunction(FormatterContext& context)
 			: GetIndentFunction(context)
 		{}
 
@@ -103,6 +103,6 @@ namespace EngineCore::FMT::Detail {
 			GetIndentFunction.Context.AddIndent(GetIndentFunction.GetIndent());
 		}
 
-		GetIndentFunction<FormatContext>	GetIndentFunction;
+		GetIndentFunction<FormatterContext>	GetIndentFunction;
 	};
 }

@@ -1,15 +1,15 @@
 #pragma once
 
-#include "FMT/Context/FormatContext/Utils/FormatType.h"
+#include "FMT/Context/FormatterContext/Utils/FormatterType.h"
 #include <deque>
 
 namespace EngineCore::FMT {
 
-	template<typename T, typename FormatContext>
-	struct FormatType<std::deque<T>, FormatContext>
+	template<typename T, typename FormatterContext>
+	struct FormatterType<std::deque<T>, FormatterContext>
 	{
-		static void Write(const std::deque<T>& t, FormatContext& context) {
-			FormatType<ForwardAsSTDEnumerable<std::deque<T>>, FormatContext>::Write(t, context);
+		static void Write(const std::deque<T>& t, FormatterContext& context) {
+			FormatterType<ForwardAsSTDEnumerable<std::deque<T>>, FormatterContext>::Write(t, context);
 		}
 	};
 

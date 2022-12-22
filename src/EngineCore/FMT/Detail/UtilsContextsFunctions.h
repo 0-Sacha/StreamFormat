@@ -1,9 +1,9 @@
 #pragma once
 
 namespace EngineCore::FMT::Detail {
-	template <typename FormatContext>
+	template <typename FormatterContext>
 	struct ApplyNextOverrideForThisFunction {
-		inline explicit ApplyNextOverrideForThisFunction(FormatContext& context)
+		inline explicit ApplyNextOverrideForThisFunction(FormatterContext& context)
 			: Context(context)
 			, FormatData(context.GetFormatData())
 		{
@@ -15,7 +15,7 @@ namespace EngineCore::FMT::Detail {
             Context.SetFormatData(FormatData);
 		}
 
-		FormatContext&							Context;
-        typename FormatContext::FormatDataType  FormatData;
+		FormatterContext&							Context;
+        typename FormatterContext::FormatDataType  FormatData;
 	};
 }

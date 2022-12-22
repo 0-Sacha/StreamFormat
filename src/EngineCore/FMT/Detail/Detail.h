@@ -42,12 +42,12 @@
 
 namespace EngineCore::FMT {
 	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
-	class BasicFormatContext;
+	class BasicFormatterContext;
 
-	struct UnFormatContextError;
+	struct ParserContextError;
 
     template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
-	class BasicUnFormatContext;
+	class BasicParserContext;
 }
 
 
