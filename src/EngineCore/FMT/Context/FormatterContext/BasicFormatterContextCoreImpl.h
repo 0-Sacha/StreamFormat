@@ -4,37 +4,48 @@
 
 namespace EngineCore::FMT::Context {
 
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatterContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
+	template<typename CharFormat, typename CharBuffer>
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
 		: Base(format, sizeof...(ContextArgs))
 		, m_BufferOut(buffer, bufferSize)
 		, m_AnsiManager(*this)
-		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-	{}
+		, m_ContextArgsInterface(new Detail::FormatterContextArgsTupleInterface<M_Type>(std::forward<ContextArgs>(args)...))
+		, m_NeedToFreeContextArgsInterface(true)
+	{
+		m_ContextArgsInterface->SetContext(this);
+	}
 
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatterContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatterContext([[maybe_unused]] const bool bufferIsAutoResize, const std::basic_string_view<CharFormat>& format, ContextArgs &&...args)
+	template<typename CharFormat, typename CharBuffer>
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgsInterface* argsInterface)
 		: Base(format, sizeof...(ContextArgs))
-		, m_BufferOut()
+		, m_BufferOut(buffer, bufferSize)
 		, m_AnsiManager(*this)
-		, m_ContextArgs(std::forward<ContextArgs>(args)...)
-	{}
+		, m_ContextArgsInterface(argsInterface)
+		, m_NeedToFreeContextArgsInterface(false)
+	{
+		m_ContextArgsInterface->SetContext(this);
+	}
 
-	// Used for SubContext | Clone
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	template<typename ParentCharFormat, typename ...ParentContextArgs>
-	BasicFormatterContext<CharFormat, CharBuffer, ContextArgs...>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer, ParentContextArgs...>& parentContext, ContextArgs&& ...args)
-		: Base(format, parentContext, sizeof...(ContextArgs))
+// Used for SubContext | Clone
+	template<typename CharFormat, typename CharBuffer>
+	template<typename ParentCharFormat>
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext, ContextArgsInterface* argsInterface)
+		: Base(format, sizeof...(ContextArgs))
 		, m_BufferOut(parentContext.BufferOut())
 		, m_AnsiManager(*this, parentContext.GetAnsiManager())
-		, m_ContextArgs(std::forward<ContextArgs>(args)...)
+		, m_ContextArgsInterface(argsInterface)
+		, m_NeedToFreeContextArgsInterface(false)
 	{}
 
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	BasicFormatterContext<CharFormat, CharBuffer, ContextArgs...>::~BasicFormatterContext() {}
+	template<typename CharFormat, typename CharBuffer>
+	BasicFormatterContext<CharFormat, CharBuffer>::~BasicFormatterContext()
+	{
+		if (m_NeedToFreeContextArgsInterface)
+			delete m_ContextArgsInterface;
+	}
 
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-	void BasicFormatterContext<CharFormat, CharBuffer, ContextArgs...>::Run() {
+	template<typename CharFormat, typename CharBuffer>
+	void BasicFormatterContext<CharFormat, CharBuffer>::Run() {
 		while (!m_Format.IsEnd()) {
 
 			WriteUntilNextParameterOr();
@@ -47,10 +58,11 @@ namespace EngineCore::FMT::Context {
 		m_AnsiManager.Kill();
 	}
 
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
+	template<typename CharFormat, typename CharBuffer>
 	template<typename NewCharFormat, typename ...Args>
-	void BasicFormatterContext<CharFormat, CharBuffer, ContextArgs...>::SubContext(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
-		BasicFormatterContext<NewCharFormat, CharBuffer, Args...> child(format, *this, std::forward<Args>(args)...);
+	void BasicFormatterContext<CharFormat, CharBuffer>::SubContext(const std::basic_string_view<NewCharFormat>& format, Args&& ...args) {
+		auto childContextArgsInterface = Detail::FormatterContextArgsTupleInterface<NewCharFormat, CharBuffer>(std::forward<ContextArgs>(args)...);
+		BasicFormatterContext<NewCharFormat, CharBuffer> child(format, *this, childContextArgsInterface);
 		child.Run();
 	}
 }

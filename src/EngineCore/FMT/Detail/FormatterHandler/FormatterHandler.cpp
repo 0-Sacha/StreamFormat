@@ -3,7 +3,7 @@
 #include "FormatterHandler.h"
 
 namespace EngineCore::FMT::Detail {
-	FormatterHandler& FormatterHandler::GetInstance() {
+	FormatterHandler& Detail::FormatterHandler::GetInstance() {
         static FormatterHandler instance;
         return instance;
     }

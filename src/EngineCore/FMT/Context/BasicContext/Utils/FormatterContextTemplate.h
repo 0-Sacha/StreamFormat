@@ -38,11 +38,7 @@ namespace EngineCore::FMT::Context {
         static constexpr bool SameAs = true;
     };
 
-
-
-
     // Base Specializer
-
     template <typename From>
     requires (std::is_convertible_v<From, Detail::FormatIndex::BaseType>)
     struct FormatterContextArgsTupleConvertFunc<Detail::FormatIndex, From>
@@ -50,4 +46,14 @@ namespace EngineCore::FMT::Context {
         static constexpr bool IsConvertible = true;
         static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(from); }
     };
+
+
+    inline static int RUNTIME_TYPE_UID = 0;
+
+    template <typename Type>
+    struct RuntimeTypeUID
+    {
+        static constexpr int value = ++RUNTIME_TYPE_UID;
+    };
+
 }

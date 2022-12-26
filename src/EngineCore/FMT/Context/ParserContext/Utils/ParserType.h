@@ -5,7 +5,7 @@
 #define ENGINECORE_PARSER_DECLARED
 namespace EngineCore::FMT {
 
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
+	template<typename CharFormat, typename CharBuffer>
 	class BasicParserContext;
 
 	template<typename T, typename ParserContext = BasicParserContext<char, char>>

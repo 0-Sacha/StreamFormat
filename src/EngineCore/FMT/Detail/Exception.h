@@ -6,7 +6,7 @@ namespace EngineCore::FMT::Detail {
 
 	class FormatException {};
 	class FormatError				: public FormatException {};
-	class FormatUtilityExecption	: public FormatException {};
+	class FormatUtilityException	: public FormatException {};
 
 	class FormatBufferError	: public FormatError {};
 	class FormatBufferFull	: public FormatBufferError {};

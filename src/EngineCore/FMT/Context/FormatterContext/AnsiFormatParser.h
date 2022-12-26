@@ -10,6 +10,10 @@ namespace EngineCore::FMT::Detail {
 		using Base = BasicAnsiParser<Format, AnsiFormatParser<FormatterContext, Format>>;
 		using ContextPackageSaving = Detail::AnsiTextData;
 
+		using Base::ParseColor;
+		using Base::ParseStyle;
+		using Base::ParseFront;
+
 	public:
 		explicit AnsiFormatParser(FormatterContext& context)
 			: Base{context.Format()}

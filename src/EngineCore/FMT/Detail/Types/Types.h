@@ -4,13 +4,6 @@
 
 namespace EngineCore::FMT::Detail {
 
-	enum class TypeAtIndex
-	{
-		FormatIndex,
-		String,
-		CustomType
-	};
-
 	using DataType	= std::int32_t;
 	static inline constexpr DataType FORMAT_DATA_NOT_SPECIFIED = (std::numeric_limits<DataType>::max)();
 

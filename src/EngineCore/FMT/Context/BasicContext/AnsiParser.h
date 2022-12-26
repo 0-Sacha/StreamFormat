@@ -3,7 +3,7 @@
 #include "FMT/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	struct BasicAnsiParser {
 
 	public:
@@ -28,17 +28,17 @@ namespace EngineCore::FMT::Detail {
 		void FrontRun(const T& modif) 							{ return (*reinterpret_cast<Master*>(this)).template FrontRun<T>(modif); throw Detail::FormatShouldNotEndHere(); }
 
 	public:
-		void 						ParseColor();
-		std::size_t 				GetColorCode();
+		void ParseColor();
+		std::size_t GetColorCode();
 		template <typename T>
-		T 							GetColorCodeAuto();
+		T GetColorCodeAuto();
 
-		void 						ParseStyle();
-		Detail::AnsiBasicTextStyle 	GetStyleCode();
+		void ParseStyle();
+		Detail::AnsiBasicTextStyle GetStyleCode();
 		Detail::AnsiNColorUnderline SelectUnderlinedColorStyle();
 
-		void 						ParseFront();
-		Detail::AnsiFront 			GetFrontCode();
+		void ParseFront();
+		Detail::AnsiFront GetFrontCode();
 
 	public:
 		FormatBuffer& Format;
@@ -47,7 +47,7 @@ namespace EngineCore::FMT::Detail {
 
 
 namespace EngineCore::FMT::Detail {
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	void BasicAnsiParser<FormatBuffer, Master>::ParseColor() {
 		if (Format.IsEqualToForward(':')) {
 			Format.IgnoreSpace();
@@ -76,7 +76,7 @@ namespace EngineCore::FMT::Detail {
 	}
 
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	std::size_t BasicAnsiParser<FormatBuffer, Master>::GetColorCode() {
 		static constexpr std::string_view colorCode[] = {
 			"black",
@@ -94,7 +94,7 @@ namespace EngineCore::FMT::Detail {
 		return Format.GetWordFromList(colorCode);
 	}
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	template<typename T>
 	T BasicAnsiParser<FormatBuffer, Master>::GetColorCodeAuto() {
 		std::size_t step = static_cast<std::size_t>(Format.IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
@@ -103,7 +103,7 @@ namespace EngineCore::FMT::Detail {
 		return static_cast<T>(code + step);
 	}
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	void BasicAnsiParser<FormatBuffer, Master>::ParseStyle() {
 		if (Format.IsEqualToForward(':')) {
 			if (!Format.IsEqualTo('}', ',')) {
@@ -139,7 +139,7 @@ namespace EngineCore::FMT::Detail {
 			StyleRun(Detail::RESET_ANSI_STYLE);
 	}
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	Detail::AnsiBasicTextStyle BasicAnsiParser<FormatBuffer, Master>::GetStyleCode() {
 		static constexpr typename FormatBuffer::template TextTo<Detail::AnsiBasicTextStyle> styleCode[] = {
 			{ "bold",			Detail::AnsiBasicTextStyle::Intensity_Bold				},
@@ -170,7 +170,7 @@ namespace EngineCore::FMT::Detail {
 		return Format.GetWordFromList(styleCode);
 	}
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	Detail::AnsiNColorUnderline BasicAnsiParser<FormatBuffer, Master>::SelectUnderlinedColorStyle() {
 		Format.ParamGoTo(':');
 		Format.IsEqualToForward(':');
@@ -180,7 +180,7 @@ namespace EngineCore::FMT::Detail {
 
 
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	void BasicAnsiParser<FormatBuffer, Master>::ParseFront() {
 		if (Format.IsEqualToForward(':')) {
 			Format.IgnoreSpace();
@@ -190,7 +190,7 @@ namespace EngineCore::FMT::Detail {
 			FrontRun(RESET_ANSI_FRONT);
 	}
 
-	template<typename FormatBuffer, typename Master>
+	template<typename FormatBuffer>
 	Detail::AnsiFront BasicAnsiParser<FormatBuffer, Master>::GetFrontCode() {
 		// TODO : change to specific os
 		static constexpr std::string_view frontCode[] = {

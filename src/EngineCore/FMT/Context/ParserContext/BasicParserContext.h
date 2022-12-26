@@ -10,33 +10,6 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
-    class BasisCompressedParserContext : public BasisCompressedContext<CharFormat, CharBuffer>
-    {
-    public:
-        using Base = BasisCompressedContext<CharFormat, CharBuffer>;
-
-        using typename Base::FormatDataType;
-        using typename Base::FormatSpecifierType;
-        using typename Base::FormatBufferType;
-        using typename Base::StringViewFormat;
-
-        using Base::m_Format;
-        using Base::m_FormatData;
-
-    public:
-		using BufferInType		= Detail::BasicFormatterMemoryBufferIn<CharBuffer>;
-
-    public:
-		BasisCompressedParserContext(FormatBufferType& format, BufferInType& bufferIn, FormatDataType& formatData)
-			: Base(format, formatData)
-			, m_BufferIn(bufferIn)
-		{}
-
-	protected:
-		BufferInType& 		m_BufferIn;
-    };
-
-	template<typename CharFormat, typename CharBuffer, typename ...ContextArgs>
 	class BasicParserContext : public BasicContext<CharFormat, int, BasicParserContext<CharFormat, CharBuffer, ContextArgs...>>
 	{
 	public:
@@ -70,14 +43,14 @@ namespace EngineCore::FMT::Context {
 		using Base::m_FormatData;
 
 		BufferInType 		m_BufferIn;
-		ContextArgsType 	m_ContextArgs;
+		ContextArgsType 	m_ContextArgsInterface;
 
 	public:
 		using Base::Format;
 		using Base::GetFormatData;
 		using Base::ForwardFormatData;
 		using Base::SetFormatData;
-		using Base::GetAPI;
+		using Base::FormatterHandler::GetInstance;
 
 		inline BufferInType& BufferIn()					{ return m_BufferIn; }
 		inline const BufferInType& BufferIn() const		{ return m_BufferIn; }
@@ -104,23 +77,23 @@ namespace EngineCore::FMT::Context {
 		using Base::GetIndexOfCurrentNameArg;
 
 		Detail::FormatIndex GetIndexOfCurrentNameArg() override
-					{ return m_ContextArgs.GetIndexOfCurrentNameArg(*this, Detail::FormatIndex(0, m_ValuesIndex.MaxValue)); }
+					{ return m_ContextArgsInterface.GetIndexOfCurrentNameArg(*this, Detail::FormatIndex(0, m_ValuesIndex.MaxValue)); }
 
 		void RunTypeAtIndex(const Detail::FormatIndex& index)
-					{ m_ContextArgs.RunTypeAtIndex(*this, index); }
+					{ m_ContextArgsInterface.RunTypeAtIndex(*this, index); }
 
 		template <typename T>
 		const Detail::GetBaseType<T>* GetTypeAtIndex(const Detail::FormatIndex& index)
-					{ return m_ContextArgs.template GetTypeAtIndexThrow<T>(index); }
+					{ return m_ContextArgsInterface.template GetTypeAtIndexThrow<T>(index); }
 
 		template <typename T>
 		T GetTypeAtIndexConvertThrow(const Detail::FormatIndex& index)
-					{ return m_ContextArgs.template GetTypeAtIndexConvertThrow<T>(index); }
+					{ return m_ContextArgsInterface.template GetTypeAtIndexConvertThrow<T>(index); }
 
 		template <typename T>
 		bool RunFuncFromTypeAtIndex(const Detail::FormatIndex& index, std::function<void(const T&)> func)
 		{
-			const T* value = m_ContextArgs.template GetTypeAtIndexThrow<T>(index);
+			const T* value = m_ContextArgsInterface.template GetTypeAtIndexThrow<T>(index);
 			if (value != nullptr)
 			{
 				func(*value);
@@ -180,22 +153,46 @@ namespace EngineCore::FMT::Context {
 		using Base::FormatReadParameterThrow;
 
 	public:
-		using Base::RunType;
-		using Base::RunSubType;
-		using Base::BasicRunType;
-		using Base::BasicRunSubType;
+		// Type formating from FormatterType<>
+		template<typename Type, typename ...Rest>
+		inline void RunType(Type&& type, const Rest&& ...rest) 			{ RunType(type); RunType(std::forward<Rest>(rest)...); }
+		template<typename Type> inline void RunType(Type&& type) 		{ FormatterType<typename FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Write(type, *this); }
+
+		template<typename Type, typename ...Rest>
+		inline void RunSubType(Type&& type, const Rest&& ...rest) 		{ RunSubType(type); RunSubType(std::forward<Rest>(rest)...); }
+		template<typename Type> inline void RunSubType(Type&& type) 	{
+			if (m_FormatData.NextOverride.size() == 0)
+				return RunType(type);
+			FormatDataType formatDataCopy = m_FormatData;
+			FormatDataApplyNextOverride();
+			RunType(type); 
+			m_FormatData = formatDataCopy;
+		}
+
+		// Only support basic type that are considered as basic by Buffer class
+		template<typename Type, typename ...Rest>
+		inline void BasicRunType(Type&& type, Rest&& ...rest) 			{ BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); };
+		template<typename Type> inline void BasicRunType(Type&& type)	{ ParserType<typename FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Read(type, *this); }
+
+		template<typename Type, typename ...Rest>
+		inline void BasicRunSubType(Type&& type, Rest&& ...rest) 		 	{ m_BufferIn.BasicReadType(type); };
+
+		template<typename Type> inline void BasicRunSubType(Type&& type) 	{
+			if (m_FormatData.NextOverride.size() == 0)
+				return BasicRunType(type);
+			FormatDataType formatDataCopy = m_FormatData;
+			FormatDataApplyNextOverride();
+			BasicRunType(type); 
+			m_FormatData = formatDataCopy;
+		}
 
 		// Type formating from ParserType<>
-		template<typename Type>
-		inline void RunType(Type&& type)						{ ParserType<typename FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Read(type, *this); }
 		template<typename Type, typename ...Rest>
 		inline void ReadType(Type&& type, Rest&& ...rest)		{ RunType(type, std::forward<Rest>(rest)...); }
 		template<typename Type, typename ...Rest>
 		inline void ReadSubType(Type&& type, Rest&& ...rest)	{ RunSubType(type, std::forward<Rest>(rest)...); }
 
 		// Only support basic type that are considered as basic by Buffer class
-		template<typename Type>
-		inline void BasicRunType(Type&& type)						{ m_BufferIn.BasicReadType(type); }
 		template<typename Type, typename ...Rest>
 		inline void BasicReadType(Type&& type, Rest&& ...rest)		{ BasicRunType(type, std::forward<Rest>(rest)...); }
 		template<typename Type, typename ...Rest>

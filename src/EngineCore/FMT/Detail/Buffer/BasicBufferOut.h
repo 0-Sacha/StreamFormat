@@ -105,20 +105,10 @@ namespace EngineCore::FMT::Detail {
 		inline void					DoNotFreeOnDestructor()					{ m_FreeOnDestructor = false; }
 
 	public:
-		BasicFormatterMemoryBufferOut(CharBuffer* const buffer, const std::size_t bufferSize)
-			: Base(buffer, bufferSize)
+		BasicFormatterMemoryBufferOut(CharBuffer* const buffer, const std::size_t bufferSize = DEFAULT_BEGIN_SIZE)
+			: Base(buffer != nullptr ? buffer, new CharBuffer[bufferSize], bufferSize)
 			, m_BufferAutoResize(false)
 			, m_FreeOnDestructor(false)
-			, m_NoStride(0)
-			, m_Indent(0)
-		{
-			PushEndCharToTheEnd();
-		}
-
-		BasicFormatterMemoryBufferOut(const std::size_t beginSize = DEFAULT_BEGIN_SIZE)
-			: Base(new CharBuffer[beginSize], beginSize)
-			, m_BufferAutoResize(true)
-			, m_FreeOnDestructor(true)
 			, m_NoStride(0)
 			, m_Indent(0)
 		{
