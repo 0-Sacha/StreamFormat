@@ -9,6 +9,7 @@ namespace EngineCore::FMT::Context {
 		: m_Format(format)
 		, m_ValuesIndex(0, argsInterface->Size())
 		, m_FormatData()
+		, m_ContextArgsInterface(argsInterface)
 		, m_OwnArgsInterface(ownArgsInterface)
 	{}
 
@@ -17,12 +18,14 @@ namespace EngineCore::FMT::Context {
 		: m_Format(format)
 		, m_ValuesIndex(0, 0)
 		, m_FormatData()
+		, m_ContextArgsInterface(nullptr)
+		, m_OwnArgsInterface(false)
 	{}
 
 	template<typename CharFormat, typename ContextPackageSaving>
 	BasicContext<CharFormat, ContextPackageSaving>::~BasicContext()
 	{
-		if (m_OwnArgsInterface == false)
+		if (m_OwnArgsInterface)
 			delete m_ContextArgsInterface;
 	}
 

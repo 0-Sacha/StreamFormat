@@ -37,7 +37,7 @@ namespace EngineCore::FMT::Context {
 
     public:
 	    template<typename ...ContextArgs>
-        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&&...args);
+        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, [[maybe_unused]] bool k, ContextArgs&&...args);
         BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
 	    template<typename ParentCharFormat>
         BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);

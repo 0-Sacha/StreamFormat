@@ -25,7 +25,7 @@ namespace EngineCore::FMT::Context {
 
 		using StringViewFormat 		= std::basic_string_view<CharFormat>;
 
-        using ContextArgsInterface 	= Detail::BasicArgsTupleInterface<M_Type>;
+        using ContextArgsInterface 	= Detail::BasicArgsTupleInterface<CharFormatType>;
 
 	public:
 		explicit BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface, bool ownArgsInterface);

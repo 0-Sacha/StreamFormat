@@ -73,4 +73,26 @@ namespace EngineCore::FMT::Detail {
         protected:
             Context* m_Context;
     };
+
+    template<typename Context>
+    class EmptyContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
+    {
+        public:
+            EmptyContextArgsTupleInterface() {}
+
+        public:
+            int Size() override { return 0; }
+
+            void RunTypeAtIndex(const Detail::FormatIndex& idx) override { }
+
+            Detail::FormatIndex GetIndexOfCurrentNameArg() override { return Detail::FormatIndex{}; }
+
+            std::any GetTypeAtIndexImpl(const Detail::FormatIndex& idx) override { return {}; }
+
+            void RunFuncAtImpl(const Detail::FormatIndex& idx, std::function<void(std::any)> func) override { }
+
+            Detail::FormatIndex GetFormatIndexAt(const Detail::FormatIndex& idx) override { return Detail::FormatIndex{}; }
+            typename Context::StringViewFormat GetStringAt(const Detail::FormatIndex& idx) override { return ""; }
+            int64_t GetIntAt(const Detail::FormatIndex& idx) override { return 0; }
+    };
 }

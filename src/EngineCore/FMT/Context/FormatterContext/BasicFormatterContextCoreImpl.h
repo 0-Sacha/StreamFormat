@@ -6,30 +6,30 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
 	template<typename ...ContextArgs>
-	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, ContextArgs&& ...args)
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, [[maybe_unused]] bool k, ContextArgs&& ...args)
 		: Base(format)
 		, m_BufferOut(buffer, bufferSize)
 		, m_AnsiManager(*this)
 	{
 		auto argsInterface = new Detail::FormatterContextArgsTupleInterface<M_Type, ContextArgs...>(std::forward<ContextArgs>(args)...);
 		argsInterface->SetContext(this);
-		SetContextArgsInterface(reinterpret_cast<ContextArgsInterface*>(&argsInterface), true);
+		SetContextArgsInterface(static_cast<ContextArgsInterface*>(argsInterface), true);
 	}
 
 	template<typename CharFormat, typename CharBuffer>
 	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface)
-		: Base(format, reinterpret_cast<ContextArgsInterface*>(argsInterface), false)
+		: Base(format, static_cast<ContextArgsInterface*>(argsInterface), false)
 		, m_BufferOut(buffer, bufferSize)
 		, m_AnsiManager(*this)
 	{
 		argsInterface->SetContext(this);
 	}
 
-// Used for SubContext | Clone
+	// Used for SubContext | Clone
 	template<typename CharFormat, typename CharBuffer>
 	template<typename ParentCharFormat>
 	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface)
-		: Base(format, reinterpret_cast<ContextArgsInterface*>(argsInterface), false)
+		: Base(format, static_cast<ContextArgsInterface*>(argsInterface), false)
 		, m_BufferOut(parentContext.BufferOut())
 		, m_AnsiManager(*this, parentContext.GetAnsiManager())
 	{
