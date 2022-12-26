@@ -2,11 +2,9 @@
 #pragma once
 
 #include "FMT/Detail/Detail.h"
+#include "FMT/Context/BasicContext/Utils/BasicContextArgsTupleInterface.h"
 
 #include "Utils/FormatterType.h"
-#include "Utils/NamedArgs.h"
-#include "Utils/IndexArgs.h"
-#include "FMT/Context/BasicContext/Utils/TypeIndexHandler.h"
 
 namespace EngineCore::FMT::Detail {
 
@@ -31,12 +29,16 @@ namespace EngineCore::FMT::Detail {
         inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, const Detail::FormatIndex& beginSearchIndex)
                     { return Detail::FormatIndex(); }
 
-        inline void* GetTypeAtIndex(const Detail::FormatIndex& idx)
-                    { return nullptr; }
+        inline std::any GetTypeAtIndex(const Detail::FormatIndex& idx)
+                    { return {}; }
 
-        inline int GetRuntimeTypeUID()
-                    { return RuntimeTypeUID<void>::value; }
+        template <typename T>
+        inline void GetTypeAtIndexCast(T* value, const Detail::FormatIndex& idx)
+                    { }
 
+        template <typename T>
+        inline void GetTypeAtIndexConvert(T* value, const Detail::FormatIndex& idx)
+                    { }
     };
 
     template <typename Type, typename... Rest>
@@ -75,17 +77,90 @@ namespace EngineCore::FMT::Detail {
         }
 
     public:
-        // return Type : TypeWithoutRef* need to be recast
-        inline void* GetTypeAtIndex(const Detail::FormatIndex& idx)
+        inline std::any GetTypeAtIndex(const Detail::FormatIndex& idx)
         {
             if (idx.Is0())
-                return reinterpret_cast<void*>(&m_Value);
-            return FormatterContextArgsTuple<Rest...>::template GetTypeAtIndex(idx.GetPrev());
+                return std::any{&m_Value};
+            return FormatterContextArgsTuple<Rest...>::GetTypeAtIndex(idx.GetPrev());
         }
 
-        inline int GetRuntimeTypeUID()
+    public:
+        template <typename T>
+        inline void GetTypeAtIndexCast(T* value, const Detail::FormatIndex& idx)
         {
-            return RuntimeTypeUID<TypeWithoutRef>::value;
+            if (idx.Is0())
+            {
+                if constexpr (FormatterContextArgsTupleSameAs<T, T>::SameAs)
+                    return *value = m_Value;
+            }
+            return FormatterContextArgsTuple<Rest...>::template GetTypeAtIndexCast<T>(value, idx.GetPrev());
         }
+
+        template <typename T>
+        inline void GetTypeAtIndexConvert(T* value, const Detail::FormatIndex& idx)
+        {
+            if (idx.Is0())
+            {
+                if constexpr (FormatterContextArgsTupleConvertFunc<TypeWithoutRef, T>::IsConvertible)
+                    return *value = FormatterContextArgsTupleConvertFunc<TypeWithoutRef, T>::Convert(m_Value);;
+            }
+            return FormatterContextArgsTuple<Rest...>::template GetTypeAtIndexConvert<T>(value, idx.GetPrev());
+        }
+    };
+
+
+    template<typename Context, typename... Args>
+    class FormatterContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
+    {
+        public:
+            using Base 	            = BasicContextArgsTupleInterface<Context>;
+            using ContextArgsType 	= FormatterContextArgsTuple<Args...>;
+            
+            using Base::m_Context;
+            
+        public:
+            FormatterContextArgsTupleInterface(Args&&... args)
+                : Base()
+                , m_contextArgs(std::forward<Args>(args)...)
+            {}
+            
+        public:
+            int Size() override
+                    { return m_contextArgs.Size(); }
+
+            void RunTypeAtIndex(const Detail::FormatIndex& idx) override
+                    { return m_contextArgs.RunTypeAtIndex(*m_Context, idx); }
+
+            Detail::FormatIndex GetIndexOfCurrentNameArg() override
+                    { return m_contextArgs.GetIndexOfCurrentNameArg(*m_Context, Detail::FormatIndex{0}); }
+
+            std::any GetTypeAtIndexImpl(const Detail::FormatIndex& idx) override
+                    { return m_contextArgs.GetTypeAtIndex(idx); }
+
+            void RunFuncAtImpl(const Detail::FormatIndex& idx, std::function<void(std::any)> func) override
+            {
+                return func(m_contextArgs.GetTypeAtIndex(idx));
+            }
+
+        public:
+            template <typename T>
+            T GetTAtConvert(const Detail::FormatIndex& idx)
+            {
+                T res;
+                m_contextArgs.template GetTypeAtIndexConvert<T>(&res, idx);
+                return res;
+            }
+
+            Detail::FormatIndex GetFormatIndexAt(const Detail::FormatIndex& idx) override
+                    { return GetTAtConvert<Detail::FormatIndex>(idx); }
+
+            typename Context::StringViewFormat GetStringAt(const Detail::FormatIndex& idx) override
+                    { return GetTAtConvert<typename Context::StringViewFormat>(idx); }
+
+            int64_t GetIntAt(const Detail::FormatIndex& idx) override
+                    { return GetTAtConvert<int64_t>(idx); }
+
+        protected:
+            ContextArgsType m_contextArgs;
     };
 }

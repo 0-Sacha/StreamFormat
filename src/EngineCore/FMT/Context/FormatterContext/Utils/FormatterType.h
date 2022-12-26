@@ -11,8 +11,7 @@ namespace EngineCore::FMT {
 
 	template<typename T, typename FormatterContext = BasicFormatterContext<char, char>>
 	struct FormatterType {
-		template<class K = T>
-		static inline void Write(const K& t, FormatterContext& context) {
+		static inline void Write(const T& t, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {}{C})", typeid(T).name());
 			throw Detail::FormatShouldNotEndHere{};
 		}

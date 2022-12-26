@@ -80,15 +80,15 @@ namespace EngineCore::FMT::Context {
 		if (m_Format.IsEqualToForward('{'))
 		{
 			Detail::FormatIndex formatIndex = GetFormatIndexThrow();
-			if ((m_FormatData.ModifyTestThrow(GetTypeAtIndex<FormatDataType>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<FormatSpecifierType>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ValueIntPrint>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::PrintStyle>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::DigitSize>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftSize>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::FloatPrecision>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftPrint>(formatIndex))
-			 || m_FormatData.ModifyTestThrow(GetTypeAtIndex<Detail::ShiftType>(formatIndex))) == false)
+			if ((m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<FormatDataType>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<FormatSpecifierType>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ValueIntPrint>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::PrintStyle>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::DigitSize>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftSize>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::FloatPrecision>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftPrint>(formatIndex))
+			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftType>(formatIndex))) == false)
 			throw Detail::FormatGivenTypeError{};
 			m_Format.IsEqualToForwardThrow('}');
 		}
@@ -175,7 +175,7 @@ namespace EngineCore::FMT::Context {
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
 		// III : A name
-		Detail::FormatIndex indexOfNamedArg = GetIndexOfCurrentNameArg();
+		Detail::FormatIndex indexOfNamedArg = m_ContextArgsInterface->GetIndexOfCurrentNameArg();
 		indexOfNamedArg.SetContext(m_ValuesIndex);
 		if(indexOfNamedArg.IsValid())
 			return indexOfNamedArg;
@@ -192,7 +192,7 @@ namespace EngineCore::FMT::Context {
 				if(recIndex.IsValid())
 				{
 					m_Format.IsEqualToForwardThrow('}');
-					Detail::FormatIndex finalRecIndex = GetTypeAtIndexConvertThrow<Detail::FormatIndex>(recIndex);
+					Detail::FormatIndex finalRecIndex = m_ContextArgsInterface->GetFormatIndexAt(recIndex);
 					finalRecIndex.SetContext(m_ValuesIndex);
 					if(finalRecIndex.IsValid())
 						return finalRecIndex;
@@ -227,7 +227,7 @@ namespace EngineCore::FMT::Context {
 		if (!m_FormatData.IsInit)
 			ParseFormatData();
 
-		RunTypeAtIndex(formatIdx);
+		m_ContextArgsInterface->RunTypeAtIndex(formatIdx);
 
 		if (m_FormatData.KeepNewStyle == false)
 			ContextStyleRestore(savePackage);

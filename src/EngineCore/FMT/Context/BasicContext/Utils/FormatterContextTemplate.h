@@ -2,14 +2,13 @@
 
 #include "FMT/Detail/Detail.h"
 
-namespace EngineCore::FMT::Context {
+namespace EngineCore::FMT::Detail {
 
     template <typename T>
     struct FormatTypeForwardAs
     {
         using Type = T;
     };
-
 
     template <typename From, typename To>
     struct FormatterContextArgsTupleConvertFunc
@@ -45,15 +44,6 @@ namespace EngineCore::FMT::Context {
     {
         static constexpr bool IsConvertible = true;
         static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(from); }
-    };
-
-
-    inline static int RUNTIME_TYPE_UID = 0;
-
-    template <typename Type>
-    struct RuntimeTypeUID
-    {
-        static constexpr int value = ++RUNTIME_TYPE_UID;
     };
 
 }

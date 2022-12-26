@@ -5,11 +5,27 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, const std::size_t maxIndex)
+	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface, bool ownArgsInterface)
 		: m_Format(format)
-		, m_ValuesIndex(0, maxIndex)
+		, m_ValuesIndex(0, argsInterface->Size())
+		, m_FormatData()
+		, m_OwnArgsInterface(ownArgsInterface)
+	{}
+
+	template<typename CharFormat, typename ContextPackageSaving>
+	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format)
+		: m_Format(format)
+		, m_ValuesIndex(0, 0)
 		, m_FormatData()
 	{}
+
+	template<typename CharFormat, typename ContextPackageSaving>
+	BasicContext<CharFormat, ContextPackageSaving>::~BasicContext()
+	{
+		if (m_OwnArgsInterface == false)
+			delete m_ContextArgsInterface;
+	}
+
 
 	template<typename CharFormat, typename ContextPackageSaving>
 	void BasicContext<CharFormat, ContextPackageSaving>::SafeRun() {
@@ -28,7 +44,10 @@ namespace EngineCore::FMT::Context {
 
 		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
 		m_Format.IsEqualToForwardThrow('}');
-		i = GetTypeAtIndexThrow<T>(formatIdx);
+		if constexpr (std::is_convertible_v<T, int64_t>)
+			i = static_cast<T>(m_ContextArgsInterface->GetIntAt(formatIdx));
+		else if constexpr (std::is_convertible_v<T, StringViewFormat>)
+			i = static_cast<T>(m_ContextArgsInterface->GetStringAt(formatIdx));
 
 		// FIXME WTF
 		// TRY 		const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();

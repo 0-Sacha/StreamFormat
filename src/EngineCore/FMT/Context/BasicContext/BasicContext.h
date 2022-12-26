@@ -5,11 +5,16 @@
 #include "FMT/Detail/Buffer/Format.h"
 
 #include "FMT/Detail/FormatterHandler/FormatterHandler.h"
+#include "Utils/BasicContextArgsTupleInterface.h"
+#include "Utils/FormatterContextTemplate.h"
 
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving>
 	class BasicContext {
+	private:
+		using M_Type 				= BasicContext<CharFormat, ContextPackageSaving>;
+	
 	public:
 		using CharFormatType 		= CharFormat;
 
@@ -20,13 +25,20 @@ namespace EngineCore::FMT::Context {
 
 		using StringViewFormat 		= std::basic_string_view<CharFormat>;
 
+        using ContextArgsInterface 	= Detail::BasicArgsTupleInterface<M_Type>;
+
 	public:
-		explicit BasicContext(const std::basic_string_view<CharFormat>& format, const std::size_t maxIndex);
+		explicit BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface, bool ownArgsInterface);
+		BasicContext(const std::basic_string_view<CharFormat>& format);
+		
+		~BasicContext();
 
 	protected:
 		FormatBufferType		m_Format;
 		Detail::FormatIndex		m_ValuesIndex;
 		FormatDataType			m_FormatData;
+		ContextArgsInterface* 	m_ContextArgsInterface;
+        bool                    m_OwnArgsInterface;
 
 	public:
 		inline FormatBufferType&		Format()					{ return m_Format; }
@@ -37,8 +49,15 @@ namespace EngineCore::FMT::Context {
 		inline FormatDataType			ForwardFormatData() const							{ return m_FormatData; }
 		inline void						SetFormatData(const FormatDataType& formatData)		{ m_FormatData = formatData; }
 
-	public:
-		inline static Detail::FormatterHandler& Detail::FormatterHandler::GetInstance()			{ return Detail::Detail::FormatterHandler::GetInstance(); }
+		inline ContextArgsInterface&		GetContextArgsInterface()						{ return *m_ContextArgsInterface; }
+		inline const ContextArgsInterface&	GetContextArgsInterface() const					{ return *m_ContextArgsInterface; }
+
+		inline void SetContextArgsInterface(ContextArgsInterface* contextArgsInterface, bool own)
+		{
+			m_ValuesIndex = Detail::FormatIndex(0, contextArgsInterface->Size());
+			m_ContextArgsInterface = contextArgsInterface;
+			m_OwnArgsInterface = own;
+		}
 
 	public:
 		virtual void Run() = 0;
@@ -49,10 +68,6 @@ namespace EngineCore::FMT::Context {
 
 	public:
 		void FormatDataApplyNextOverride();
-
-	public:
-		virtual Detail::FormatIndex GetIndexOfCurrentNameArg() = 0;
-		virtual void RunTypeAtIndex(const Detail::FormatIndex& index) = 0;
 
 	protected:
 		std::basic_string_view<CharFormat> ParseNextOverrideFormatData();
