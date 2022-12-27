@@ -3,28 +3,6 @@
 #include "BasicParserContext.h"
 #include "BasicParserContextCoreImpl.h"
 
-
-namespace EngineCore::FMT {
-
-	template<typename T, typename CharName>
-	struct ParserType<StringViewNamedArgs<T, CharName>>
-	{
-		template <typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-		inline static void Read(StringViewNamedArgs<T, CharName>& t, BasicParserContext<CharFormat, CharBuffer, ContextArgs...>& context) {
-			ParserType<Detail::GetBaseType<T>, BasicParserContext<CharFormat, CharBuffer, ContextArgs...>>::Read(t.GetValue(), context);
-		}
-	};
-
-	template<typename T, typename CharName>
-	struct ParserType<StringNamedArgs<T, CharName>>
-	{
-		template <typename CharFormat, typename CharBuffer, typename ...ContextArgs>
-		inline static void Read(StringNamedArgs<T, CharName>& t, BasicParserContext<CharFormat, CharBuffer, ContextArgs...>& context) {
-			ParserType<Detail::GetBaseType<T>, BasicParserContext<CharFormat, CharBuffer, ContextArgs...>>::Read(t.GetValue(), context);
-		}
-	};
-}
-
 namespace EngineCore::FMT::Context {
 	/////---------- AAHHHHHHHHH ----------/////
 	template<typename CharFormat, typename CharBuffer>

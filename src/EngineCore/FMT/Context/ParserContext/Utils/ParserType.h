@@ -5,13 +5,9 @@
 #define ENGINECORE_PARSER_DECLARED
 namespace EngineCore::FMT {
 
-	template<typename CharFormat, typename CharBuffer>
-	class BasicParserContext;
-
-	template<typename T, typename ParserContext = BasicParserContext<char, char>>
+	template<typename T, typename ParserContext = Context::BasicParserContext<char, char>>
 	struct ParserType {
-		template<class K = T>
-		static inline auto Read(K& t, ParserContext& context) {
+		static inline auto Read(T& t, ParserContext& context) {
 			// ENGINECORE_IF_MSVC(static_assert(false, __FUNCSIG__));
 			return false;
 		}

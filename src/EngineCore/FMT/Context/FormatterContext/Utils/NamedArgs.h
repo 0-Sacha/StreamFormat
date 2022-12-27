@@ -8,17 +8,10 @@ namespace EngineCore::FMT {
 	struct StringViewNamedArgs
 	{
 		template<std::size_t SIZE>
-		StringViewNamedArgs(const CharName(&name)[SIZE], T&& t)
+		StringViewNamedArgs(const CharName(&name)[SIZE], const T& t)
 			: m_Name(name), value(t) {}
 
-		StringViewNamedArgs(const std::basic_string_view<CharName>& name, T&& t)
-			: m_Name(name), value(t) {}
-
-		template<std::size_t SIZE>
-		StringViewNamedArgs(const CharName(&name)[SIZE], T& t)
-			: m_Name(name), value(t) {}
-
-		StringViewNamedArgs(const std::basic_string_view<CharName>& name, T& t)
+		StringViewNamedArgs(const std::basic_string_view<CharName>& name, const T& t)
 			: m_Name(name), value(t) {}
 
 	public:
@@ -28,7 +21,7 @@ namespace EngineCore::FMT {
 
 	protected:
 		std::basic_string_view<CharName> m_Name;
-		T& value;
+		const T& value;
 	};
 
 	template<typename T, typename CharName, typename FormatterContext>
@@ -44,18 +37,10 @@ namespace EngineCore::FMT {
 	template<typename T, typename CharName = char>
 	struct StringNamedArgs
 	{
-
-		StringNamedArgs(const std::string& str, T&& t)
+		StringNamedArgs(const std::string& str, const T& t)
 			: m_Name(str), value(t) {}
 
-		StringNamedArgs(std::string&& str, T&& t)
-			: m_Name(std::move(str)), value(t) {}
-
-
-		StringNamedArgs(const std::string& str, T& t)
-			: m_Name(str), value(t) {}
-
-		StringNamedArgs(std::string&& str, T& t)
+		StringNamedArgs(std::string&& str, const T& t)
 			: m_Name(std::move(str)), value(t) {}
 
 	public:
@@ -65,7 +50,7 @@ namespace EngineCore::FMT {
 
 	protected:
 		std::basic_string<CharName> m_Name;
-		T& value;
+		const T& value;
 	};
 
 	template<typename T, typename CharName, typename FormatterContext>

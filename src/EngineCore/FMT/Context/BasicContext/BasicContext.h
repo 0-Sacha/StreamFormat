@@ -28,7 +28,7 @@ namespace EngineCore::FMT::Context {
         using ContextArgsInterface 	= Detail::BasicArgsTupleInterface<CharFormatType>;
 
 	public:
-		explicit BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface, bool ownArgsInterface);
+		explicit BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface);
 		BasicContext(const std::basic_string_view<CharFormat>& format);
 		
 		~BasicContext();
@@ -38,7 +38,6 @@ namespace EngineCore::FMT::Context {
 		Detail::FormatIndex		m_ValuesIndex;
 		FormatDataType			m_FormatData;
 		ContextArgsInterface* 	m_ContextArgsInterface;
-        bool                    m_OwnArgsInterface;
 
 	public:
 		inline FormatBufferType&		Format()					{ return m_Format; }
@@ -52,11 +51,10 @@ namespace EngineCore::FMT::Context {
 		inline ContextArgsInterface&		GetContextArgsInterface()						{ return *m_ContextArgsInterface; }
 		inline const ContextArgsInterface&	GetContextArgsInterface() const					{ return *m_ContextArgsInterface; }
 
-		inline void SetContextArgsInterface(ContextArgsInterface* contextArgsInterface, bool own)
+		inline void SetContextArgsInterface(ContextArgsInterface* contextArgsInterface)
 		{
 			m_ValuesIndex = Detail::FormatIndex(0, contextArgsInterface->Size());
 			m_ContextArgsInterface = contextArgsInterface;
-			m_OwnArgsInterface = own;
 		}
 
 	public:

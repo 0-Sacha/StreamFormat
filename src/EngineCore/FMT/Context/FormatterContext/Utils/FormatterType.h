@@ -6,10 +6,7 @@
 #define ENGINECORE_FORMATTER_DECLARED
 namespace EngineCore::FMT {
 
-	template<typename CharFormat, typename CharBuffer, typename ...Args>
-	class BasicFormatterContext;
-
-	template<typename T, typename FormatterContext = BasicFormatterContext<char, char>>
+	template<typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
 	struct FormatterType {
 		static inline void Write(const T& t, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {}{C})", typeid(T).name());

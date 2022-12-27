@@ -48,8 +48,7 @@ namespace EngineCore::FMT::Detail {
         using TypeWithoutRef = std::remove_reference_t<Type>;
 
     public:
-        FormatterContextArgsTuple(const TypeWithoutRef &t, Rest &&...rest)     : FormatterContextArgsTuple<Rest...>(std::forward<Rest>(rest)...), m_Value(t) {}
-        FormatterContextArgsTuple(const TypeWithoutRef &&t, Rest &&...rest)    : FormatterContextArgsTuple<Rest...>(std::forward<Rest>(rest)...), m_Value(t) {}
+        FormatterContextArgsTuple(const TypeWithoutRef& t, Rest&&... rest)    : FormatterContextArgsTuple<Rest...>(std::forward<Rest>(rest)...), m_Value(t) {}
 
     private:
         const TypeWithoutRef &m_Value;

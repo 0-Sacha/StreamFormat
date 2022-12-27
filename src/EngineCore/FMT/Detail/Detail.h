@@ -40,14 +40,12 @@
 //		End writing all writer and reader (string / char pt)
 //		
 
-namespace EngineCore::FMT {
-	template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
+namespace EngineCore::FMT::Context {
+	template<typename CharFormat = char, typename CharBuffer = CharFormat>
 	class BasicFormatterContext;
 
 	struct ParserContextError;
 
-    template<typename CharFormat = char, typename CharBuffer = CharFormat, typename ...ContextArgs>
+    template<typename CharFormat = char, typename CharBuffer = CharFormat>
 	class BasicParserContext;
 }
-
-

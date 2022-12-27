@@ -5,12 +5,11 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface, bool ownArgsInterface)
+	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface)
 		: m_Format(format)
 		, m_ValuesIndex(0, argsInterface->Size())
 		, m_FormatData()
 		, m_ContextArgsInterface(argsInterface)
-		, m_OwnArgsInterface(ownArgsInterface)
 	{}
 
 	template<typename CharFormat, typename ContextPackageSaving>
@@ -19,16 +18,10 @@ namespace EngineCore::FMT::Context {
 		, m_ValuesIndex(0, 0)
 		, m_FormatData()
 		, m_ContextArgsInterface(nullptr)
-		, m_OwnArgsInterface(false)
 	{}
 
 	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::~BasicContext()
-	{
-		if (m_OwnArgsInterface)
-			delete m_ContextArgsInterface;
-	}
-
+	BasicContext<CharFormat, ContextPackageSaving>::~BasicContext() { }
 
 	template<typename CharFormat, typename ContextPackageSaving>
 	void BasicContext<CharFormat, ContextPackageSaving>::SafeRun() {

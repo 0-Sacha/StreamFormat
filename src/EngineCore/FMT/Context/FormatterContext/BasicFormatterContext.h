@@ -36,9 +36,9 @@ namespace EngineCore::FMT::Context {
         using AnsiParserType 	    = Detail::AnsiFormatParser<M_Type, FormatBufferType>;
 
     public:
-	    template<typename ...ContextArgs>
-        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, [[maybe_unused]] bool k, ContextArgs&&...args);
         BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
+        
+		// Used for SubContext
 	    template<typename ParentCharFormat>
         BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
 
@@ -49,7 +49,6 @@ namespace EngineCore::FMT::Context {
         using Base::m_ValuesIndex;
         using Base::m_FormatData;
         using Base::m_ContextArgsInterface;
-        using Base::m_OwnArgsInterface;
 
         BufferOutType 		    m_BufferOut;
         AnsiParserType 		    m_AnsiManager;
@@ -152,12 +151,11 @@ namespace EngineCore::FMT::Context {
 
 		// Only support basic type that are considered as basic by Buffer class
 		template<typename Type, typename ...Rest>
-		inline void BasicRunType(Type&& type, Rest&& ...rest) 			{ BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); };
-		template<typename Type> inline void BasicRunType(Type&& type)	{ FormatterType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Write(type, *this); }
+		inline void BasicRunType(Type&& type, Rest&& ...rest) 			    { BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); };
+		template<typename Type> inline void BasicRunType(Type&& type)	    { m_BufferOut.BasicWriteType(type); }
 
-		template<typename Type, typename ...Rest>
-		inline void BasicRunSubType(Type&& type, Rest&& ...rest) 		 	{ m_BufferOut.BasicWriteType(type); };
-
+        template<typename Type, typename ...Rest>
+		inline void BasicRunSubType(Type&& type, const Rest&& ...rest)      { BasicRunSubType(type); BasicRunSubType(std::forward<Rest>(rest)...); }
 		template<typename Type> inline void BasicRunSubType(Type&& type) 	{
 			if (m_FormatData.NextOverride.size() == 0)
 				return BasicRunType(type);
