@@ -86,6 +86,9 @@ namespace EngineCore::FMT {
 	template<typename T, typename FormatterContext>
 	struct FormatterType<Detail::ForwardAsCharPt<T>, FormatterContext> {
 		static void Write(const T* t, FormatterContext& context) {
+			if (t == nullptr)
+				return context.Print(context.GetFormatData().GetSpecifierAsText("null", "[nullptr string]"));
+				
 			const auto& data = context.GetFormatData();
 
 			if (data.TrueValue)										context.BufferOut().PushBack('\"');
