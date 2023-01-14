@@ -88,7 +88,7 @@ namespace EngineCore::FMT {
 		static void Write(const T* t, FormatterContext& context) {
 			if (t == nullptr)
 				return context.Print(context.GetFormatData().GetSpecifierAsText("null", "[nullptr string]"));
-				
+
 			const auto& data = context.GetFormatData();
 
 			if (data.TrueValue)										context.BufferOut().PushBack('\"');
@@ -96,8 +96,8 @@ namespace EngineCore::FMT {
 			auto begin = data.GetSpecifierAsNumber("begin", 0);
 			auto size = data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
-			if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.PrintCharPt(t + begin, size);
-			else											context.PrintCharPt(t + begin);
+			if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.PrintCharPtr(t + begin, size);
+			else											context.PrintCharPtr(t + begin);
 
 			if (data.TrueValue)										context.BufferOut().PushBack('\"');
 		}

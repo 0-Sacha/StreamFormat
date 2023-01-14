@@ -185,14 +185,14 @@ namespace EngineCore::FMT::Context {
     public:
         void CheckEndStr();
 
-        template<typename CharStr>						inline void PrintCharPt(const CharStr* str)						{ m_BufferOut.WriteCharPt(str); }
-        template<typename CharStr>						inline void PrintCharPt(const CharStr* str, std::size_t size)	{ m_BufferOut.WriteCharPt(str, size); }
+        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str)						{ m_BufferOut.WriteCharPt(str); }
+        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str, std::size_t size)	{ m_BufferOut.WriteCharPt(str, size); }
         template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPt(str, SIZE); }
         template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr>& str)	{ m_BufferOut.WriteCharPt(str.data(), str.size()); }
         template<typename CharStr>						inline void Print(const std::basic_string<CharStr>& str)		{ Print(static_cast<std::basic_string_view<CharStr>>(str)); }
 
-        template<typename CharStr>						inline void PrintCharPtIndent(const CharStr* str)					{ m_BufferOut.WriteCharPtIndent(str); }
-        template<typename CharStr>						inline void PrintCharPtIndent(const CharStr* str, std::size_t size) { m_BufferOut.WriteCharPtIndent(str, size); }
+        template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str)					{ m_BufferOut.WriteCharPtIndent(str); }
+        template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str, std::size_t size) { m_BufferOut.WriteCharPtIndent(str, size); }
         template<typename CharStr, std::size_t SIZE>	inline void PrintIndent(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPtIndent(str, SIZE); }
         template<typename CharStr>						inline void PrintIndent(const std::basic_string_view<CharStr>& str) { m_BufferOut.WriteCharPtIndent(str.data(), str.size()); }
 
