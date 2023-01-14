@@ -43,64 +43,64 @@ namespace EngineCore::LoggerManager {
 }
 
 namespace EngineCore::FMT {
-	template<typename FormatContext>
-	struct FormatType<EngineCore::LoggerManager::LogSeverity, FormatContext>
+	template<typename FormatterContext>
+	struct FormatterType<EngineCore::LoggerManager::LogSeverity, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::LogSeverity t, FormatContext& context) {
+		static void Write(const EngineCore::LoggerManager::LogSeverity t, FormatterContext& context) {
 			switch (t)
 			{
 			case EngineCore::LoggerManager::LogSeverity::Trace:
-				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::BrightBlack, context);
+				FormatterType<Detail::AnsiTextColorFG, FormatterContext>::Write(Detail::AnsiTextColorFG::BrightBlack, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Debug:
-				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Blue, context);
+				FormatterType<Detail::AnsiTextColorFG, FormatterContext>::Write(Detail::AnsiTextColorFG::Blue, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Info:
-				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Green, context);
+				FormatterType<Detail::AnsiTextColorFG, FormatterContext>::Write(Detail::AnsiTextColorFG::Green, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Warn:
-				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Yellow, context);
+				FormatterType<Detail::AnsiTextColorFG, FormatterContext>::Write(Detail::AnsiTextColorFG::Yellow, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Error:
-				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::Red, context);
+				FormatterType<Detail::AnsiTextColorFG, FormatterContext>::Write(Detail::AnsiTextColorFG::Red, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Fatal:
-				FormatType<Detail::AnsiTextColorFG, FormatContext>::Write(Detail::AnsiTextColorFG::BrightMagenta, context);
+				FormatterType<Detail::AnsiTextColorFG, FormatterContext>::Write(Detail::AnsiTextColorFG::BrightMagenta, context);
 				break;
 			}
 		}
 	};
 
-	template<typename FormatContext>
-	struct FormatType<EngineCore::LoggerManager::LogStatus, FormatContext>
+	template<typename FormatterContext>
+	struct FormatterType<EngineCore::LoggerManager::LogStatus, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::LogStatus status, FormatContext& context) {
-			if (status == EngineCore::LoggerManager::LogStatus::OK)			context.LittleFormat("[{:C:green}]", " OK ");
-			else if (status == EngineCore::LoggerManager::LogStatus::FAIL)	context.LittleFormat("[{:C:red}]", "FAIL");
+		static void Write(const EngineCore::LoggerManager::LogStatus status, FormatterContext& context) {
+			if (status == EngineCore::LoggerManager::LogStatus::OK)			context.SubContext("[{:C:green}]", " OK ");
+			else if (status == EngineCore::LoggerManager::LogStatus::FAIL)	context.SubContext("[{:C:red}]", "FAIL");
 		}
 	};
 
-	template<typename FormatContext>
-	struct FormatType<EngineCore::LoggerManager::LogBasic, FormatContext>
+	template<typename FormatterContext>
+	struct FormatterType<EngineCore::LoggerManager::LogBasic, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::LogBasic, FormatContext& context) {}
+		static void Write(const EngineCore::LoggerManager::LogBasic, FormatterContext& context) {}
 	};
 
 
 
-	template<typename FormatContext, typename FormatStr>
-	struct FormatType<EngineCore::LoggerManager::AddIndentInFormat<FormatStr>, FormatContext>
+	template<typename FormatterContext, typename FormatStr>
+	struct FormatterType<EngineCore::LoggerManager::AddIndentInFormat<FormatStr>, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::AddIndentInFormat<FormatStr>& format, FormatContext& context) {
+		static void Write(const EngineCore::LoggerManager::AddIndentInFormat<FormatStr>& format, FormatterContext& context) {
 			context.Print("{K:indent}");
 			context.RunType(format.Format);
 		}
 	};
 
-	template<typename FormatContext, typename CharType>
-	struct FormatType<EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>, FormatContext>
+	template<typename FormatterContext, typename CharType>
+	struct FormatterType<EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>& names, FormatContext& context) {
+		static void Write(const EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>& names, FormatterContext& context) {
 			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(names.LoggerName, FORMAT_SV("sink", names.SinkName));
 			context.Print(static_cast<std::basic_string_view<CharType>>(formatBuffer));
 		}

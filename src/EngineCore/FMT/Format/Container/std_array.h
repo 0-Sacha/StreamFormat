@@ -1,15 +1,15 @@
 #pragma once
 
-#include "FMT/Context/FormatContext/Utils/FormatType.h"
+#include "FMT/Context/FormatterContext/Utils/FormatterType.h"
 #include <array>
 
 namespace EngineCore::FMT {
 
-	template<std::size_t SIZE, typename T, typename FormatContext>
-	struct FormatType<std::array<T, SIZE>, FormatContext>
+	template<std::size_t SIZE, typename T, typename FormatterContext>
+	struct FormatterType<std::array<T, SIZE>, FormatterContext>
 	{
-		static void Write(const std::array<T, SIZE>& t, FormatContext& context) {
-			FormatType<ForwardAsSTDEnumerable<std::array<T, SIZE>>, FormatContext>::Write(t, context);
+		static void Write(const std::array<T, SIZE>& t, FormatterContext& context) {
+			FormatterType<ForwardAsSTDEnumerable<std::array<T, SIZE>>, FormatterContext>::Write(t, context);
 		}
 	};
 

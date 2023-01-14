@@ -12,7 +12,7 @@ project "EngineCore"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "on"
+	staticruntime "off"
 
 	pchheader "EngineCorepch.h"
 	pchsource "src/EngineCore/Core/EngineCorepch.cpp"

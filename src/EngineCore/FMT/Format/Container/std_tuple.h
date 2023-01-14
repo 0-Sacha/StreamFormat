@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FMT/Context/FormatContext/Utils/FormatType.h"
+#include "FMT/Context/FormatterContext/Utils/FormatterType.h"
 #include <tuple>
 #include <utility>
 
@@ -15,16 +15,16 @@ namespace EngineCore::FMT::TupleDetail {
 		return std::get<N>(tuple);
 	}
 
-	template<typename FormatContext>
-	static void TupleFormatRec(FormatContext& context) { }
+	template<typename FormatterContext>
+	static void TupleFormatRec(FormatterContext& context) { }
 
-	template<typename T, typename FormatContext>
-	static void TupleFormatRec(FormatContext& context, const T& t) {
+	template<typename T, typename FormatterContext>
+	static void TupleFormatRec(FormatterContext& context, const T& t) {
 		context.WriteType(t);
 	}
 
-	template<typename T, typename FormatContext, typename ...Args>
-	static void TupleFormatRec(FormatContext& context, const T& t, Args&& ...args) {
+	template<typename T, typename FormatterContext, typename ...Args>
+	static void TupleFormatRec(FormatterContext& context, const T& t, Args&& ...args) {
 		context.WriteType(t);
 		context.BufferOut().PushBack(',');
 		context.BufferOut().PushBack(' ');
@@ -35,10 +35,10 @@ namespace EngineCore::FMT::TupleDetail {
 
 namespace EngineCore::FMT {
 
-	template<typename ...T, typename FormatContext>
-	struct FormatType<std::tuple<T...>, FormatContext>
+	template<typename ...T, typename FormatterContext>
+	struct FormatterType<std::tuple<T...>, FormatterContext>
 	{
-		static void Write(const std::tuple<T...>& t, FormatContext& context) {
+		static void Write(const std::tuple<T...>& t, FormatterContext& context) {
 			context.BufferOut().PushBack('<');
 			std::apply([&context](auto&&... args) { TupleDetail::TupleFormatRec(context, args...); }, t);
 			context.BufferOut().PushBack('>');
@@ -47,10 +47,10 @@ namespace EngineCore::FMT {
 
 
 
-	template<typename T1, typename T2, typename FormatContext>
-	struct FormatType<std::pair<T1, T2>, FormatContext>
+	template<typename T1, typename T2, typename FormatterContext>
+	struct FormatterType<std::pair<T1, T2>, FormatterContext>
 	{
-		static void Write(const std::pair<T1, T2>& t, FormatContext& context) {
+		static void Write(const std::pair<T1, T2>& t, FormatterContext& context) {
 			context.BufferOut().PushBack('<');
 			context.WriteType(t.first);
 			context.BufferOut().PushBack(':');

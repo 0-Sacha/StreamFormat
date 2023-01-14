@@ -1,14 +1,14 @@
 #pragma once
 
-#include "FMT/Context/FormatContext/Utils/FormatType.h"
+#include "FMT/Context/FormatterContext/Utils/FormatterType.h"
 #include <stack>
 
 namespace EngineCore::FMT {
 
-	template<typename T, typename FormatContext>
-	struct FormatType<std::stack<T>, FormatContext>
+	template<typename T, typename FormatterContext>
+	struct FormatterType<std::stack<T>, FormatterContext>
 	{
-		static void Write(const std::stack<T>& t, FormatContext& context) {
+		static void Write(const std::stack<T>& t, FormatterContext& context) {
 
 		}
 	};

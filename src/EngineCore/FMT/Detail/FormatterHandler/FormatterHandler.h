@@ -33,5 +33,4 @@ namespace EngineCore::FMT::Detail {
 }
 
 #define ENGINECORE_FORMATTER_TIME_BEGIN()		EngineCore::FMT::Detail::FormatterHandler::SetBeginTime()
-
 #define ENGINECORE_FORMATTER_SET_TIME_GTM(i) 	EngineCore::FMT::Detail::FormatterHandler::SetHoursShift(std::chrono::hours(i))
