@@ -12,7 +12,7 @@
 #include "IndentHandlers.h"
 #include "UtilsContextsFunctions.h"
 
-#include "AnsiFormat/AnsiHandler.h"
+#include "TextProperties/TextProperties.h"
 
 // TODO :
 //

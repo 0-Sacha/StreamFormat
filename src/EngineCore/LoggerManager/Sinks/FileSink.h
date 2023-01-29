@@ -8,11 +8,11 @@
 
 namespace EngineCore::LoggerManager::Sinks
 {
-    template <typename CharType>
-    class BasicConsoleSink : public Detail::BasicLoggerSink<CharType>
+    template <typename Severity, typename CharType>
+    class BasicConsoleSink : public Detail::BasicLoggerSink<Severity, CharType>
     {
         public:
-            using Base = Detail::BasicLoggerSink<CharType>;
+            using Base = Detail::BasicLoggerSink<Severity, CharType>;
             using typename Base::PatternType;
             using typename Base::NameType;
             using typename Base::BufferType;
@@ -43,11 +43,11 @@ namespace EngineCore::LoggerManager::Sinks
             std::basic_ostream<CharType>& m_Stream;
     };
 
-    template <typename CharType>
-    class BasicFileSink : public Detail::BasicLoggerSink<CharType>
+    template <typename Severity, typename CharType>
+    class BasicFileSink : public Detail::BasicLoggerSink<Severity, CharType>
     {
         public:
-            using Base = Detail::BasicLoggerSink<CharType>;
+            using Base = Detail::BasicLoggerSink<Severity, CharType>;
             using typename Base::PatternType;
             using typename Base::NameType;
             using typename Base::BufferType;
@@ -74,8 +74,10 @@ namespace EngineCore::LoggerManager::Sinks
     };
 }
 
-namespace EngineCore::LoggerManager::Sinks
+namespace EngineCore::LoggerManager::Sinks::Severity
 {
-    using ConsoleSink = BasicConsoleSink<char>;
-    using FileSink = BasicFileSink<char>;
+    template<typename Severity>
+    using ConsoleSink = BasicConsoleSink<Severity, char>;
+    template<typename Severity>
+    using FileSink = BasicFileSink<Severity, char>;
 }

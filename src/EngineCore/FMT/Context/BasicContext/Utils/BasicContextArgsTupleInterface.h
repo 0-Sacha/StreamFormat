@@ -13,7 +13,7 @@ namespace EngineCore::FMT::Detail {
             BasicArgsTupleInterface() {}
 
         public:
-            virtual int Size() = 0;
+            virtual size_t Size() = 0;
 
         public:
             virtual void RunTypeAtIndex(const Detail::FormatIndex& idx) = 0;
@@ -81,7 +81,7 @@ namespace EngineCore::FMT::Detail {
             EmptyContextArgsTupleInterface() {}
 
         public:
-            int Size() override { return 0; }
+            size_t Size() override { return 0; }
 
             void RunTypeAtIndex(const Detail::FormatIndex& idx) override { }
 

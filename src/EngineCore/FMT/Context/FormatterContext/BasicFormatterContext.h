@@ -7,7 +7,7 @@
 #include "Utils/IndexArgs.h"
 #include "Utils/STDEnumerable.h"
 
-#include "AnsiFormatParser.h"
+#include "FMT/Context/BasicContext/TextPropertiesParser.h"
 
 #include "FormatterContextArgsTuple.h"
 
@@ -16,10 +16,10 @@
 namespace EngineCore::FMT::Context {
    
     template<typename CharFormat, typename CharBuffer>
-    class BasicFormatterContext : public BasicContext<CharFormat, Detail::AnsiTextData>
+    class BasicFormatterContext : public BasicContext<CharFormat, Detail::TextProperties::Properties>
     {
     public:
-        using Base = BasicContext<CharFormat, Detail::AnsiTextData>;
+        using Base = BasicContext<CharFormat, Detail::TextProperties::Properties>;
         using M_Type = BasicFormatterContext<CharFormat, CharBuffer>;
 
         friend Base;
@@ -33,7 +33,7 @@ namespace EngineCore::FMT::Context {
         using CharBufferType 	    = CharBuffer;
         using StringViewBuffer 	    = std::basic_string_view<CharBuffer>;
         using BufferOutType 	    = Detail::BasicFormatterMemoryBufferOut<CharBuffer>;
-        using AnsiParserType 	    = Detail::AnsiFormatParser<M_Type, FormatBufferType>;
+        using TextPropertiesParser  = Detail::TextPropertiesParser<M_Type>;
 
     public:
         BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
@@ -51,7 +51,7 @@ namespace EngineCore::FMT::Context {
         using Base::m_ContextArgsInterface;
 
         BufferOutType 		    m_BufferOut;
-        AnsiParserType 		    m_AnsiManager;
+        TextPropertiesParser 	m_TextPropertiesParser;
 
     public:
         using Base::Format;
@@ -64,8 +64,8 @@ namespace EngineCore::FMT::Context {
         inline BufferOutType&			    BufferOut()			    { return m_BufferOut; }
         inline const BufferOutType&		    BufferOut() const	    { return m_BufferOut; }
 
-        inline AnsiParserType&				GetAnsiManager()		{ return m_AnsiManager; }
-        inline const AnsiParserType&		GetAnsiManager() const	{ return m_AnsiManager; }
+        inline TextPropertiesParser&			GetTextPropertiesParser()		{ return m_TextPropertiesParser; }
+        inline const TextPropertiesParser&		GetTextPropertiesParser() const	{ return m_TextPropertiesParser; }
 
     public:
         using Base::SafeRun;
@@ -98,12 +98,12 @@ namespace EngineCore::FMT::Context {
 		using Base::ParseVariable;
 		using Base::Parse;
 
-        void ParseFormatDataColor() override { m_AnsiManager.ParseColor(); }
-        void ParseFormatDataStyle() override { m_AnsiManager.ParseStyle(); }
-        void ParseFormatDataFront() override { m_AnsiManager.ParseFront(); }
+        void ParseFormatDataColor() override { m_TextPropertiesParser.ParseColor(); }
+        void ParseFormatDataStyle() override { m_TextPropertiesParser.ParseStyle(); }
+        void ParseFormatDataFront() override { m_TextPropertiesParser.ParseFront(); }
 
-        Detail::AnsiTextData ContextStyleSave() override { return m_AnsiManager.Save(); }
-        void ContextStyleRestore(const Detail::AnsiTextData& data) override { m_AnsiManager.Reload(data); }
+        Detail::TextProperties::Properties ContextStyleSave() override { return m_TextPropertiesParser.Save(); }
+        void ContextStyleRestore(const Detail::TextProperties::Properties& data) override { m_TextPropertiesParser.Reload(data); }
 
     protected:
     	using Base::ParseTimer;
@@ -120,9 +120,9 @@ namespace EngineCore::FMT::Context {
         void ParseTimer() override;
         void ParseDate() override;
 
-        void ParseColor() override          { m_AnsiManager.ParseColor(); }
-        void ParseStyle() override          { m_AnsiManager.ParseStyle(); }
-        void ParseFront() override          { m_AnsiManager.ParseFront(); }
+        void ParseColor() override          { m_TextPropertiesParser.ParseColor(); }
+        void ParseStyle() override          { m_TextPropertiesParser.ParseStyle(); }
+        void ParseFront() override          { m_TextPropertiesParser.ParseFront(); }
         void ContextStyleBegin() override   {}
         void ContextStyleEnd() override     {}
 
@@ -204,9 +204,10 @@ namespace EngineCore::FMT::Context {
     };
 }
 
-#include "BaseFormat\BaseAnsiTextColor.h"
-#include "BaseFormat\BaseAnsiTextFront.h"
-#include "BaseFormat\BaseAnsiTextStyle.h"
-#include "BaseFormat\BaseFormat.h"
-#include "BaseFormat\BaseSTDLib.h"
-#include "BaseFormat\Chrono.h"
+#include "BaseFormatter/FormatTextPropertiesColor.h"
+#include "BaseFormatter/FormatTextPropertiesStyle.h"
+#include "BaseFormatter/FormatTextPropertiesFront.h"
+
+#include "BaseFormatter/BaseFormat.h"
+#include "BaseFormatter/FormatSTDLib.h"
+#include "BaseFormatter/FormatChrono.h"

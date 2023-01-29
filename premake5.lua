@@ -5,7 +5,9 @@ Solution.ProjectsInfo.Includes["EngineCore"] = {
 	"%{Solution.Projects.EngineCore}/src/EngineCore/Core",
 	"%{Solution.Projects.EngineCore}/src/EngineCore/LIB",
 	"%{Solution.Projects.EngineCore}/src/EngineCore/TNX",
-	"%{Solution.Projects.EngineCore}/src/EngineCore/Test"
+	"%{Solution.Projects.EngineCore}/src/EngineCore/Test",
+
+	"%{Solution.Projects.EngineCore}/Modules/"
 }
 
 project "EngineCore"

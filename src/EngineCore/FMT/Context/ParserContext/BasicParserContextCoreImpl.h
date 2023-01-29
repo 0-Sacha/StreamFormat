@@ -2,12 +2,6 @@
 
 #include "BasicParserContext.h"
 
-#include "BaseFormat/BaseFormat.h"
-#include "BaseFormat/BaseAnsiTextColor.h"
-#include "BaseFormat/BaseAnsiTextStyle.h"
-#include "BaseFormat/Chrono.h"
-#include "BaseFormat/BaseSTDLib.h"
-
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
@@ -53,5 +47,4 @@ namespace EngineCore::FMT::Context {
 		ContextType child(format, *this, &childContextArgsInterface);
 		child.Run();
 	}
-
 }

@@ -6,4 +6,6 @@
 
 #include "Sinks/FileSink.h"
 
+#include "LoggerImpl/XLogger.h"
+
 #include "LoggerFactory.h"

@@ -3,28 +3,30 @@
 #include "LoggerManager/Detail/LoggerMultiSinks.h"
 
 namespace EngineCore::LoggerManager::Detail {
-    template <typename CharType>
-	class BasicLoggerMultiSinkSafeImpl: public BasicLoggerMultiSinkImpl<CharType>
+    template <typename Severity, typename CharType>
+	class BasicLoggerMultiSinkSafeImpl: public BasicLoggerMultiSinkImpl<Severity, CharType>
 	{
 	public:
-		using BasicLoggerMultiSinkImpl<CharType>::SetName;
-		using BasicLoggerMultiSinkImpl<CharType>::GetName;
-		using BasicLoggerMultiSinkImpl<CharType>::GetSinks;
-		using BasicLoggerMultiSinkImpl<CharType>::m_Name;
-		using BasicLoggerMultiSinkImpl<CharType>::m_Sinks;
-		using BasicLoggerMultiSinkImpl<CharType>::AddSink;
+		using Base = BasicLoggerMultiSinkImpl<Severity, CharType>;
+		using Base::SetName;
+		using Base::GetName;
+		using Base::GetSinks;
+		using Base::m_Name;
+		using Base::m_Sinks;
+		using Base::AddSink;
+		using Base::SeverityValueType;
 
 	public:
-		BasicLoggerMultiSinkSafeImpl() : BasicLoggerMultiSinkImpl<CharType>() {}
+		BasicLoggerMultiSinkSafeImpl() : Base() {}
 		
 		BasicLoggerMultiSinkSafeImpl(std::basic_string<CharType>&& name)
-			: BasicLoggerMultiSinkImpl<CharType>(std::forward<std::basic_string<CharType>>(name))
+			: Base(std::forward<std::basic_string<CharType>>(name))
 		{}
 
 	public:
-		template<typename Severity, typename Format = std::string_view, typename ...Args>
+		template<typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value
-		void Log(const Severity& severity, const Format& format, Args&& ...args) {
+		void Log(const SeverityValueType& severity, const Format& format, Args&& ...args) {
             // FIXME maybe add : name ; indent ???
             for (auto& sink : m_Sinks)
             {
@@ -41,8 +43,8 @@ namespace EngineCore::LoggerManager::Detail {
 	    			sink->WaitUnitlFinishedToWrite();
 	    }
 
-		template<typename Severity, typename T>
-		void Log(const Severity& severity, T&& t) {
+		template<typename T>
+		void Log(const SeverityValueType& severity, T&& t) {
             for (auto& sink : m_Sinks)
             {
 				if (sink->NeedToLog(severity))
@@ -57,13 +59,4 @@ namespace EngineCore::LoggerManager::Detail {
 	    			sink->WaitUnitlFinishedToWrite();
 	    }
 	};
-}
-
-#include "LoggerManager/Detail/XLogger.h"
-
-namespace EngineCore::LoggerManager
-{
-    template <typename CharType>
-	using BasicLoggerMultiSinkSafe = Detail::XLogger<Detail::BasicLoggerMultiSinkSafeImpl<CharType>>;
-    using LoggerMultiSinkSafe = BasicLoggerMultiSinkSafe<char>;
 }

@@ -4,34 +4,23 @@
 #include <future>
 
 namespace EngineCore::LoggerManager::Detail {
-
-template<typename CharType>
-struct PatternOverride
-{
-    std::basic_string<CharType> TracePattern = "";
-    std::basic_string<CharType> DebugPattern = "";
-    std::basic_string<CharType> InfoPattern = "";
-    std::basic_string<CharType> WarnPattern = "";
-    std::basic_string<CharType> ErrorPattern = "";
-    std::basic_string<CharType> FatalPattern = "";
-
-    std::basic_string<CharType> OkPattern = "";
-    std::basic_string<CharType> FailPattern = "";
-};
-
+    
 enum class AsyncSink
 {
     Sync,
     Async
 };
 
-template<typename CharType>
+template<typename Severity, typename CharType>
 class BasicLoggerSink
 {
     public:
         using PatternType = std::basic_string<CharType>;
+        using PatternTransfertType = std::basic_string_view<CharType>;
         using NameType = std::basic_string<CharType>;
-        using BufferType = std::basic_string_view<CharType>;
+		using BufferType = std::basic_string_view<CharType>;
+
+		using SeverityValueType = typename Severity::Value;
 
     public:
         BasicLoggerSink(NameType&& name)
@@ -44,14 +33,37 @@ class BasicLoggerSink
                 , IsAsync(isAsync)
             {}
 
+    public:
+        NameType Name = "";
+        PatternType Pattern = "{name} >> {data}";
+        SeverityValueType SinkSeverity{SeverityValueType::DefaultSeverity};
+        Severity::PatternOverride SeverityPatternOverride;
+        AsyncSink IsAsync;
+    
     protected:
-        virtual void WriteImpl(const BufferType& bufferToPrint) {}
+        std::future<void> m_AsyncWaiter;
+
+    public:
+        bool NeedToLog(const SeverityValueType& severity) { return severity >= SinkSeverity; }
+        void WriteToSink(const SeverityValueType& severity, const BufferType& bufferToPrint) { if (NeedToLog(severity)) WriteToSink(bufferToPrint); }
+
+    public:
+        PatternTransfertType GetPattern(const typename Severity::Value& severity) const 
+        {
+            PatternTransfertType customPattern = SeverityPatternOverride.GetPattern(severity);
+            if (customPattern.data() == nullptr || customPattern.size() == 0)
+                return Pattern;
+            return customPattern;
+        }
+
+    protected:
+        virtual void WriteImpl(const BufferType& bufferToPrint) = 0;
 
     public:
         void WriteToSinkSync(const BufferType& bufferToPrint)       { WriteImpl(bufferToPrint); }
         void WriteToSinkAsync(const BufferType& bufferToPrint)
         {
-            m_AsyncWaiter = std::async(std::launch::async, &WriteToSinkSync, this, bufferToPrint);
+            m_AsyncWaiter = std::async(std::launch::async, &BasicLoggerSink<Severity, CharType>::WriteToSinkSync, this, bufferToPrint);
         }
         
         void WriteToSink(const BufferType& bufferToPrint)
@@ -69,7 +81,7 @@ class BasicLoggerSink
                 return m_AsyncWaiter.get();
         }
 
-        void FormatAndWriteToSinkSync(const PatternType& pattern, const NameType& loggerName, const BufferType& formatBuffer)
+        void FormatAndWriteToSinkSync(PatternTransfertType pattern, const NameType& loggerName, const BufferType& formatBuffer)
         {
             auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(pattern,
                                                                        FORMAT_SV("name", ConcateNameAndSinkName(loggerName, Name)),
@@ -77,73 +89,17 @@ class BasicLoggerSink
 	        WriteToSinkSync(formatPatternStr);
         }
 
-        void FormatAndWriteToSinkAsync(const PatternType& pattern, const NameType& loggerName, const BufferType& formatBuffer)
+        void FormatAndWriteToSinkAsync(PatternTransfertType pattern, const NameType& loggerName, const BufferType& formatBuffer)
         {
-            m_AsyncWaiter = std::async(std::launch::async, &FormatAndWriteToSinkSync, this, pattern, loggerName, formatBuffer);
+            m_AsyncWaiter = std::async(std::launch::async, &BasicLoggerSink<Severity, CharType>::FormatAndWriteToSinkSync, this, pattern, loggerName, formatBuffer);
         }
 
-        void FormatAndWriteToSink(const PatternType& pattern, const NameType& loggerName, const BufferType& formatBuffer)
+        void FormatAndWriteToSink(PatternTransfertType pattern, const NameType& loggerName, const BufferType& formatBuffer)
         {
             if (IsAsync == AsyncSink::Sync)
                 FormatAndWriteToSinkSync(pattern, loggerName, formatBuffer);
             else
                 FormatAndWriteToSinkAsync(pattern, loggerName, formatBuffer);
-        }
-
-    public:
-        NameType Name = "";
-        PatternType Pattern = "{name} >> {data}";
-        PatternOverride<CharType> PatternOverride;
-        LogSeverity Severity = LogSeverity::Trace;
-        AsyncSink IsAsync;
-    
-    protected:
-        std::future<void> m_AsyncWaiter;
-
-    public:
-        template<typename T>
-        void WriteToSink(const T& severity, const BufferType& bufferToPrint) { if (NeedToLog(severity)) WriteToSink(bufferToPrint); }
-
-    public:
-        bool NeedToLog(const LogSeverity& severity) const   { return severity >= Severity; }
-        bool NeedToLog(const LogStatus& status) const       { return true; }
-        bool NeedToLog(const LogBasic&) const               { return true; }
-
-
-    public:
-        const PatternType& GetPattern() const { return Pattern; }
-
-        const PatternType& GetPattern(const LogSeverity& severity) const 
-        {
-            switch(severity)
-            {
-                case LogSeverity::Trace:    if (PatternOverride.TracePattern.empty() == false) return PatternOverride.TracePattern;
-                case LogSeverity::Debug:    if (PatternOverride.DebugPattern.empty() == false) return PatternOverride.DebugPattern;
-                case LogSeverity::Info:     if (PatternOverride.InfoPattern.empty() == false) return PatternOverride.InfoPattern;
-                case LogSeverity::Warn:     if (PatternOverride.WarnPattern.empty() == false) return PatternOverride.WarnPattern;
-                case LogSeverity::Error:    if (PatternOverride.ErrorPattern.empty() == false) return PatternOverride.ErrorPattern;
-                case LogSeverity::Fatal:    if (PatternOverride.FatalPattern.empty() == false) return PatternOverride.FatalPattern;
-            }
-
-            return Pattern;
-        }
-
-        const PatternType& GetPattern(const LogStatus& status) const 
-        {
-            switch(status)
-            {
-                case LogStatus::OK:     if (PatternOverride.OkPattern.empty() == false) return PatternOverride.OkPattern;
-                case LogStatus::FAIL:   if (PatternOverride.FailPattern.empty() == false) return PatternOverride.FailPattern;
-            }
-
-            return Pattern;
-        }
-
-        const PatternType& GetPattern(const LogBasic&) const 
-        {
-            if (PatternOverride.BasicPattern.empty() == false)
-                return PatternOverride.BasicPattern;
-            return Pattern;
         }
     };
 }

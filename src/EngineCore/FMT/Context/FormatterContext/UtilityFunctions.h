@@ -122,7 +122,7 @@ namespace EngineCore::FMT {
 	requires Detail::IsFmtConvertible<Format>::Value&& Detail::IsCharType<CharBuffer>::Value
 	inline std::basic_string<CharBuffer> FormatString(const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
-		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, CharBuffer>(std::forward<Args>(args)...);
+		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
 		ContextType context(format, nullptr, 256, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushEndChar();

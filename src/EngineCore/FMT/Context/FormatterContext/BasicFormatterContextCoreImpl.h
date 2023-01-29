@@ -8,7 +8,7 @@ namespace EngineCore::FMT::Context {
 	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface)
 		: Base(format, static_cast<ContextArgsInterface*>(argsInterface))
 		, m_BufferOut(buffer, bufferSize)
-		, m_AnsiManager(*this)
+		, m_TextPropertiesParser(*this)
 	{
 		argsInterface->SetContext(this);
 	}
@@ -19,7 +19,7 @@ namespace EngineCore::FMT::Context {
 	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface)
 		: Base(format, static_cast<ContextArgsInterface*>(argsInterface))
 		, m_BufferOut(parentContext.BufferOut())
-		, m_AnsiManager(*this, parentContext.GetAnsiManager())
+		, m_TextPropertiesParser(*this, parentContext)
 	{
 		argsInterface->SetContext(this);
 	}
@@ -37,8 +37,6 @@ namespace EngineCore::FMT::Context {
 				if (!Parse())
 					m_BufferOut.PushBack('{');
 		}
-
-		m_AnsiManager.Kill();
 	}
 
 	template<typename CharFormat, typename CharBuffer>

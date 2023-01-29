@@ -198,9 +198,10 @@ namespace EngineCore::FMT::Context {
 	};
 }
 
-#include "BaseFormat\BaseAnsiTextColor.h"
-#include "BaseFormat\BaseAnsiTextFront.h"
-#include "BaseFormat\BaseAnsiTextStyle.h"
-#include "BaseFormat\BaseFormat.h"
-#include "BaseFormat\BaseSTDLib.h"
-#include "BaseFormat\Chrono.h"
+#include "BaseParse/ParseTextPropertiesColor.h"
+#include "BaseParse/ParseTextPropertiesStyle.h"
+#include "BaseParse/ParseTextPropertiesFront.h"
+
+#include "BaseParse/BaseParser.h"
+#include "BaseParse/ParseSTDLib.h"
+#include "BaseParse/ParseChrono.h"

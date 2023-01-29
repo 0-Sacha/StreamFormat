@@ -8,7 +8,8 @@ namespace EngineCore::Instrumentation
 	class Profiler;
 	class ProfileResult;
 
-	class ProfileResult {
+	class ProfileResult
+	{
 	public:
 		ProfileResult(Profiler& link, const std::string& name);
 		ProfileResult(Profiler& link, std::string&& name);
