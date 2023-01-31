@@ -41,7 +41,7 @@ namespace EngineCore::FMT {
 	{
 		static void Write(const EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>& names, FormatterContext& context) {
 			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(names.LoggerName, FORMAT_SV("sink", names.SinkName));
-			context.Print(static_cast<std::basic_string_view<CharType>>(formatBuffer));
+			context.Print(static_cast<std::basic_string_view<CharType>>(*formatBuffer));
 		}
 	};
 }

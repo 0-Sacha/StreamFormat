@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasicBuffer.h"
+#include "FMT/Detail/Buffer/BasicBuffer.h"
 
 namespace EngineCore::FMT::Detail {
 
@@ -278,6 +278,3 @@ namespace EngineCore::FMT::Detail {
         }
     };
 }
-
-#include "BufferInReader/Integer.h"
-#include "BufferInReader/FromFormatData.h"

@@ -47,7 +47,7 @@ namespace EngineCore::LoggerManager::Detail {
 				return;
 			
 			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
-			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
+			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(*formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 		}
 
 		template<typename T>

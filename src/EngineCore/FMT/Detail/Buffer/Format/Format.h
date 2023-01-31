@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasicBufferIn.h"
+#include "FMT/Detail/Buffer/BufferIn/BufferIn.h"
 
 namespace EngineCore::FMT::Detail {
 	template <typename CharFormat>
@@ -159,5 +159,3 @@ namespace EngineCore::FMT::Detail {
         }
 	};
 }
-
-#include "FormatReader/Integer.h"

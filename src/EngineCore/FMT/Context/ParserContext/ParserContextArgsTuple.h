@@ -123,7 +123,7 @@ namespace EngineCore::FMT::Detail {
             {}
             
         public:
-            int Size() override
+            std::size_t Size() override
                     { return m_contextArgs.Size(); }
 
             void RunTypeAtIndex(const Detail::FormatIndex& idx) override

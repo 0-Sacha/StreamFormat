@@ -14,7 +14,8 @@ namespace EngineCore::LoggerManager::Detail {
 		using Base::m_Name;
 		using Base::m_Sinks;
 		using Base::AddSink;
-		using Base::SeverityValueType;
+
+		using typename Base::SeverityValueType;
 
 	public:
 		BasicLoggerMultiSinkFastImpl() : Base() {}
@@ -30,7 +31,7 @@ namespace EngineCore::LoggerManager::Detail {
             auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(format, std::forward<Args>(args)...);
             for (auto& sink : m_Sinks)
 				if (sink->NeedToLog(severity))
-					sink->FormatAndWriteToSink(sink->GetPattern(severity), m_Name, static_cast<std::basic_string_view<CharType>>(formatBuffer));
+					sink->FormatAndWriteToSink(sink->GetPattern(severity), m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer));
 
 			for (auto& sink : m_Sinks)
 				if (sink->NeedToLog(severity))
@@ -42,7 +43,7 @@ namespace EngineCore::LoggerManager::Detail {
             auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::forward<T>(t));
             for (auto& sink : m_Sinks)
 				if (sink->NeedToLog(severity))
-					sink->FormatAndWriteToSink(sink->GetPattern(severity), m_Name, static_cast<std::basic_string_view<CharType>>(formatBuffer));
+					sink->FormatAndWriteToSink(sink->GetPattern(severity), m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer));
 		
 			for (auto& sink : m_Sinks)
 				if (sink->NeedToLog(severity))

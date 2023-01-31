@@ -5,9 +5,9 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
-	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface)
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(const std::basic_string_view<CharFormat>& format, Detail::BasicBufferManager<CharBuffer>& bufferManager, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface)
 		: Base(format, static_cast<ContextArgsInterface*>(argsInterface))
-		, m_BufferOut(buffer, bufferSize)
+		, m_BufferOut(bufferManager)
 		, m_TextPropertiesParser(*this)
 	{
 		argsInterface->SetContext(this);

@@ -1,16 +1,10 @@
 #pragma once
 
-#include "BasicBufferOut.h"
-#include "BufferOutWritter/FromFormatData.h"
+#include "BufferOut/BufferOut.h"
+#include "BufferOut/FromFormatData.h"
 
-#include "BasicBufferIn.h"
-#include "BasicBufferIn.h"
-#include "BufferInReader/FromFormatData.h"
+#include "BufferIn/BufferIn.h"
+#include "BufferIn/FromFormatData.h"
 
-#include "Format.h"
-#include "FormatReader/Integer.h"
-
-
-
-
-
+#include "Format/Format.h"
+#include "Format/Integer.h"

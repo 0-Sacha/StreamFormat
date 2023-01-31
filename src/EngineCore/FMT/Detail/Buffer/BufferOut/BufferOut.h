@@ -1,21 +1,21 @@
 #pragma once
 
-#include "BasicBuffer.h"
+#include "FMT/Detail/Buffer/BasicBuffer.h"
+#include "BufferManager/DynamicBufferManager.h"
+#include "BufferManager/StaticBufferManager.h"
+#include "BufferManager/GivenBufferManager.h"
 
 namespace EngineCore::FMT::Detail {
 
 	template <typename CharBuffer>
-	class BasicFormatterMemoryBufferOutCopy;
-
-	template <typename CharBuffer>
 	class BasicFormatterMemoryBufferOut : public BasicFormatterMemoryBuffer<CharBuffer> {
-
 	protected:
 		using Base = BasicFormatterMemoryBuffer<CharBuffer>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
+		using Base::m_ParentBuffer;
 
 	public:
 		using typename Base::StringView;
@@ -30,6 +30,9 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
 		using Base::SetParentBufferForUpdate;
+
+		using Base::SetBuffer;
+		using Base::SetCurrentPos;
 
 	public:
 		using Base::CanMoveForward;
@@ -63,19 +66,13 @@ namespace EngineCore::FMT::Detail {
 		using Base::UpdateFromChlid;
 
 	public:
-		static constexpr std::size_t	DEFAULT_BEGIN_SIZE	= 512;
-		static constexpr std::size_t	GROW_UP_BUFFER_SIZE = 2;
-		static constexpr bool			DEBUG_RESIZE		= true;
-
 		static constexpr char			UPPER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 		static constexpr char			LOWER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 	
 	private:
-		bool				m_BufferAutoResize;
-		bool				m_FreeOnDestructor;
-
-		std::size_t 		m_NoStride;
-		std::size_t 		m_Indent;
+		BasicBufferManager<CharBuffer>& m_BufferManager;
+		std::size_t 					m_NoStride;
+		std::size_t 					m_Indent;
 
 	public:
 		inline CharBuffer*			GetBuffer()									{ return Base::GetBuffer(); }
@@ -88,8 +85,8 @@ namespace EngineCore::FMT::Detail {
 		inline std::size_t			GetBufferCurrentSize() const				{ return Base::GetBufferCurrentSize(); }
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)	{ Base::SetBufferCurrentPos(pos); }
 
-		inline bool					BufferIsAutoResize()						{ return m_BufferAutoResize; }
-
+		inline BasicBufferManager<CharBuffer>& GetBufferManager() 				{ return m_BufferManager; }
+		inline const BasicBufferManager<CharBuffer>& GetBufferManager() const 	{ return m_BufferManager; }
 
 		inline std::size_t GetNoStride() const					{ return m_NoStride; }
 		inline void AddNoStride(const std::size_t noStride)		{ m_NoStride += noStride; }
@@ -100,38 +97,38 @@ namespace EngineCore::FMT::Detail {
 		inline void RemoveIndent(const std::size_t indent) 		{ m_Indent -= indent; }
 		void SetIndent() 										{ m_Indent = GetBufferCurrentSize() - GetNoStride(); }
 
-	private:
-		friend BasicFormatterMemoryBufferOutCopy<CharBuffer>;
-		inline void					DoNotFreeOnDestructor()					{ m_FreeOnDestructor = false; }
-
 	public:
-		BasicFormatterMemoryBufferOut(CharBuffer* const buffer, const std::size_t bufferSize = DEFAULT_BEGIN_SIZE)
-			: Base(buffer != nullptr ? buffer : new CharBuffer[bufferSize], bufferSize)
-			, m_BufferAutoResize(buffer != nullptr)
-			, m_FreeOnDestructor(buffer != nullptr)
+		BasicFormatterMemoryBufferOut(BasicBufferManager<CharBuffer>& bufferManager)
+			: Base()
+			, m_BufferManager(bufferManager)
 			, m_NoStride(0)
 			, m_Indent(0)
 		{
+			m_BufferManager.BeginContext();
+			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
 			PushEndCharToTheEnd();
 		}
 
 		template <typename ParentBuffer>
 		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
-			: Base(parentBuffer.GetBuffer(), parentBuffer.GetBufferCurrentPos(), parentBuffer.GetBufferSize())
-			, m_BufferAutoResize(parentBuffer.BufferIsAutoResize())
-			, m_FreeOnDestructor(false)
+			: Base()
+			, m_BufferManager(parentBuffer.GetBufferManager())
 			, m_NoStride(parentBuffer.GetNoStride())
 			, m_Indent(parentBuffer.GetIndent())
 		{
 			SetParentBufferForUpdate(&parentBuffer);
+			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
+			SetCurrentPos(parentBuffer.GetBufferCurrentPos());
 		}
 
-		~BasicFormatterMemoryBufferOut() {
-			// Should call the destructor but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
+		~BasicFormatterMemoryBufferOut()
+		{
+			// This must be, but this do not compile : BasicFormatterMemoryBuffer<CharBuffer>::BasicFormatterMemoryBuffer<CharBuffer>();
 			UpdateFromChlid();
 
-			if (m_FreeOnDestructor)
-				delete[] m_Buffer;
+			// if not a child
+			if (m_ParentBuffer == nullptr)
+				m_BufferManager.EndContext();
 		}
 
 	public:
@@ -149,9 +146,9 @@ namespace EngineCore::FMT::Detail {
 
 
 	public:
-		template<typename T, typename FormatDataCharType> void WriteIntFormatData	(T i, const FormatData<FormatDataCharType>& formatData);
-		template<typename T, typename FormatDataCharType> void WriteUIntFormatData	(T i, const FormatData<FormatDataCharType>& formatData);
-		template<typename T, typename FormatDataCharType> void WriteFloatFormatData	(T i, const FormatData<FormatDataCharType>& formatData);
+		template<typename T, typename FormatDataCharBuffer> void WriteIntFormatData	(T i, const FormatData<FormatDataCharBuffer>& formatData);
+		template<typename T, typename FormatDataCharBuffer> void WriteUIntFormatData	(T i, const FormatData<FormatDataCharBuffer>& formatData);
+		template<typename T, typename FormatDataCharBuffer> void WriteFloatFormatData	(T i, const FormatData<FormatDataCharBuffer>& formatData);
 
 	public:
 		// Basic types
@@ -183,38 +180,14 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharType> inline void BasicWriteType(const std::basic_string_view<CharType>& i) { WriteStringView(i); }
 
 	public:
-		inline bool CanMoveForward()									{ if (m_CurrentPos < m_BufferEnd)			return true; return CheckResize(); }
-		inline bool CanMoveForward(const std::size_t count) 			{ if (m_CurrentPos + count <= m_BufferEnd)	return true; return CheckResize(count); }
+		inline bool CanMoveForward()									{ if (m_CurrentPos < m_BufferEnd)			return true; return Resize(1); }
+		inline bool CanMoveForward(const std::size_t count) 			{ if (m_CurrentPos + count <= m_BufferEnd)	return true; return Resize(count); }
 
-		inline bool CheckResize(const std::size_t addToBufferSize = 0) {
-			if (!m_BufferAutoResize)	return false;
-			return						AddToBufferSize(addToBufferSize);
-		}
-
-		bool AddToBufferSize(const std::size_t addToBufferSize = 0) {
-			const std::size_t targetBufferSize = addToBufferSize + m_BufferSize;
-
-			const std::size_t step = m_CurrentPos - m_Buffer;
-
-			const CharBuffer* oldBuffer = m_Buffer;
-			const std::size_t oldSize = m_BufferSize;
-			
-			while(m_BufferSize < targetBufferSize)
-				m_BufferSize *= GROW_UP_BUFFER_SIZE;
-
-			m_Buffer = new CharBuffer[m_BufferSize];
-			if (m_Buffer == nullptr) return false;
-
-			m_CurrentPos = m_Buffer + step;
-			m_BufferEnd = m_Buffer + m_BufferSize;
-
-			std::memcpy(m_Buffer, oldBuffer, oldSize);
-
-			delete[] oldBuffer;
-
-			if constexpr (DEBUG_RESIZE)
-				std::cout << "Resize from " << oldSize << " to " << m_BufferSize << std::endl;
-
+		bool Resize(const std::size_t count = 1)
+		{
+			if (m_BufferManager.Resize(count) == false)
+				return false;
+			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
 			return true;
 		}
 
@@ -341,52 +314,4 @@ namespace EngineCore::FMT::Detail {
 			PrintShiftCenterEnd(st, sp, shift);
 		}
 	};
-
-
-	template <typename CharBuffer>
-	class BasicFormatterMemoryBufferOutCopy {
-	public:
-		BasicFormatterMemoryBufferOutCopy(BasicFormatterMemoryBufferOut<CharBuffer>& bufferOut)
-			: m_Buffer(bufferOut.GetBuffer())
-			, m_Size(bufferOut.GetBufferCurrentSize())
-			, m_FreeOnDestructor(true)
-		{
-			bufferOut.DoNotFreeOnDestructor();
-		}
-
-		explicit BasicFormatterMemoryBufferOutCopy(BasicFormatterMemoryBufferOutCopy<CharBuffer>& bufferOutCopy)
-			: m_Buffer(bufferOutCopy.GetBuffer())
-			, m_Size(bufferOutCopy.GetSize())
-			, m_FreeOnDestructor(true)
-		{
-			bufferOutCopy.DoNotFreeOnDestructor();
-		}
-
-		~BasicFormatterMemoryBufferOutCopy() {
-			if (m_FreeOnDestructor)
-				delete[] m_Buffer;
-		}
-
-		operator std::basic_string_view<CharBuffer>() {
-			return std::basic_string_view<CharBuffer>(m_Buffer, m_Size);
-		}
-
-
-	public:
-		inline const CharBuffer*	GetBuffer() const		{ return m_Buffer; }
-		inline std::size_t			GetSize() const			{ return m_Size; }
-
-		inline void DoNotFreeOnDestructor() {
-			m_FreeOnDestructor = false;
-		}
-
-	private:
-		const CharBuffer* const m_Buffer;
-		const std::size_t		m_Size;
-
-		bool					m_FreeOnDestructor;
-	};
 }
-
-#include "BufferOutWritter/Integer.h"
-#include "BufferOutWritter/FromFormatData.h"

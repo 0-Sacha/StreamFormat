@@ -14,7 +14,7 @@ namespace EngineCore::LoggerManager::Detail {
 		using Base::m_Name;
 		using Base::m_Sinks;
 		using Base::AddSink;
-		using Base::SeverityValueType;
+		using typename Base::SeverityValueType;
 
 	public:
 		BasicLoggerMultiSinkSafeImpl() : Base() {}
@@ -33,8 +33,8 @@ namespace EngineCore::LoggerManager::Detail {
 				if (sink->NeedToLog(severity))
 				{
 					auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
-					auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(static_cast<std::string_view>(formatPatternStr), std::forward<Args>(args)..., FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity));
-					sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(formatFormatStr));
+					auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(static_cast<std::string_view>(*formatPatternStr), std::forward<Args>(args)..., FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity));
+					sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatFormatStr));
 				}
             }
 
@@ -50,7 +50,7 @@ namespace EngineCore::LoggerManager::Detail {
 				if (sink->NeedToLog(severity))
 				{
 					auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t));
-					sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(formatBuffer));
+					sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatBuffer));
 				}
             }
 			

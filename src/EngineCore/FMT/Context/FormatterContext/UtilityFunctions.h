@@ -4,8 +4,6 @@
 #include "BasicFormatterContextCoreImpl.h"
 #include "BasicFormatterContextParseImpl.h"
 
-#include "FMT/Detail/Buffer/BasicBufferOut.h"
-
 namespace EngineCore::FMT {
 
 	/////---------- Impl with as Format ----------//////
@@ -13,21 +11,23 @@ namespace EngineCore::FMT {
 	namespace Detail {
 		template<typename Format = std::string_view, typename CharBuffer = typename GetFmtBaseType<Format>::Type, typename ...Args>
 		requires IsFmtConvertible<Format>::Value && IsCharType<CharBuffer>::Value
-		BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(const Format& format, Args&& ...args) {
+		std::shared_ptr<Detail::BasicBufferManager<CharBuffer>> FormatAndGetBufferOut(const Format& format, Args&& ...args) {
 			using ContextType = Context::BasicFormatterContext<typename GetFmtBaseType<Format>::Type, CharBuffer>;
 			auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-			ContextType context(format, nullptr, 256, &contextArgsInterface);
+			std::shared_ptr<Detail::DynamicBufferManager<CharBuffer>> bufferManager = std::make_shared<Detail::DynamicBufferManager<CharBuffer>>(256);
+			ContextType context(format, *bufferManager, &contextArgsInterface);
 			context.SafeRun();
 			context.BufferOut().PushEndChar();
-			return context.BufferOut();
+			return bufferManager;
 		}
 
 		template<typename CharBuffer = char, typename T>
-		Detail::BasicFormatterMemoryBufferOutCopy<CharBuffer> FormatAndGetBufferOut(T&& t) {
-			Context::BasicFormatterContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), nullptr, 0);
+		std::shared_ptr<Detail::BasicBufferManager<CharBuffer>> FormatAndGetBufferOut(T&& t) {
+			std::shared_ptr<Detail::DynamicBufferManager<CharBuffer>> bufferManager = std::make_shared<Detail::DynamicBufferManager<CharBuffer>>(256);
+			Context::BasicFormatterContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), *bufferManager);
 			context.WriteType(t);
 			context.BufferOut().PushEndChar();
-			return context.BufferOut();
+			return bufferManager;
 		}
 	}
 
@@ -37,7 +37,8 @@ namespace EngineCore::FMT {
 	void FormatInChar(CharBuffer(&buffer)[BUFFER_SIZE], const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, buffer, BUFFER_SIZE, &contextArgsInterface);
+		Detail::GivenBufferManager<CharBuffer> bufferManager(buffer, BUFFER_SIZE);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushEndChar();
 	}
@@ -48,7 +49,8 @@ namespace EngineCore::FMT {
 	void FormatInChar(CharBuffer const buffer, const std::size_t bufferSize, const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, buffer, bufferSize, &contextArgsInterface);
+		Detail::GivenBufferManager<CharBuffer> bufferManager(buffer, bufferSize);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushEndChar();
 	}
@@ -59,7 +61,8 @@ namespace EngineCore::FMT {
 	void CFilePrint(FILE* stream, const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, nullptr, 256, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun(); 
 
 		std::fwrite(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize(), 1, stream);
@@ -71,7 +74,8 @@ namespace EngineCore::FMT {
 	void CFilePrintLn(FILE* stream, const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, nullptr, 256, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushBack('\n');
 
@@ -85,7 +89,8 @@ namespace EngineCore::FMT {
 	void FilePrint(std::basic_ostream<CharBuffer>& stream, const Format format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, nullptr, 256, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 
 		stream.write(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize());
@@ -97,7 +102,8 @@ namespace EngineCore::FMT {
 	void FilePrintLn(std::basic_ostream<CharBuffer>& stream, const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, nullptr, 256, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushBack('\n');
 
@@ -111,7 +117,8 @@ namespace EngineCore::FMT {
 	void FormatInString(std::basic_string<CharBuffer>& str, const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, nullptr, 256, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushEndChar();
 		str = context.BufferOut().GetBuffer();
@@ -123,7 +130,8 @@ namespace EngineCore::FMT {
 	inline std::basic_string<CharBuffer> FormatString(const Format& format, Args&& ...args) {
 		using ContextType = Context::BasicFormatterContext<typename Detail::GetFmtBaseType<Format>::Type, CharBuffer>;
 		auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		ContextType context(format, nullptr, 256, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
+		ContextType context(format, bufferManager, &contextArgsInterface);
 		context.SafeRun();
 		context.BufferOut().PushEndChar();
 		return context.BufferOut().GetBuffer();
@@ -135,7 +143,8 @@ namespace EngineCore::FMT {
 	template<typename CharBuffer, size_t BUFFER_SIZE, typename T>
 	requires Detail::IsCharType<CharBuffer>::Value
 	void FormatInChar(CharBuffer(&buffer)[BUFFER_SIZE], T&& t) {
-		Context::BasicFormatterContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), buffer, BUFFER_SIZE);
+		Detail::GivenBufferManager<CharBuffer> bufferManager(buffer, BUFFER_SIZE);
+		Context::BasicFormatterContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), bufferManager);
 		context.WriteType(t);
 		context.BufferOut().PushEndChar();
 	}
@@ -143,7 +152,8 @@ namespace EngineCore::FMT {
 	template<typename CharBuffer, typename T>
 	requires Detail::IsCharType<CharBuffer>::Value
 	void FormatInChar(CharBuffer* const buffer, const std::size_t bufferSize, T&& t) {
-		Context::BasicFormatterContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), buffer, bufferSize);
+		Detail::GivenBufferManager<CharBuffer> bufferManager(buffer, bufferSize);
+		Context::BasicFormatterContext<char, CharBuffer> context(std::basic_string_view<char>(nullptr, 0), bufferManager);
 		context.WriteType(t);
 		context.BufferOut().PushEndChar();
 	}
@@ -154,7 +164,8 @@ namespace EngineCore::FMT {
 	void CFilePrint(FILE* stream, T&& t) {
 		using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
 		Detail::EmptyContextArgsTupleInterface<ContextType> contextArgsInterface;
-		ContextType context(std::basic_string_view<char>(nullptr, 0), nullptr, 0, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
+		ContextType context(std::basic_string_view<char>(nullptr, 0), bufferManager, &contextArgsInterface);
 		context.WriteType(t);
 
 		std::fwrite(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize(), 1, stream);
@@ -166,7 +177,8 @@ namespace EngineCore::FMT {
 	void CFilePrintLn(FILE* stream, T&& t) {
 		using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
 		Detail::EmptyContextArgsTupleInterface<ContextType> contextArgsInterface;
-		ContextType context(std::basic_string_view<char>(nullptr, 0), nullptr, 0, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
+		ContextType context(std::basic_string_view<char>(nullptr, 0), bufferManager, &contextArgsInterface);
 		context.WriteType(t);
 		context.BufferOut().PushBack('\n');
 
@@ -180,7 +192,8 @@ namespace EngineCore::FMT {
 	void FilePrint(std::basic_ostream<CharBuffer>& stream, T&& t) {
 		using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
 		Detail::EmptyContextArgsTupleInterface<ContextType> contextArgsInterface;
-		ContextType context(std::basic_string_view<char>(nullptr, 0), nullptr, 0, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
+		ContextType context(std::basic_string_view<char>(nullptr, 0), bufferManager, &contextArgsInterface);
 		context.WriteType(t);
 
 		stream.write(context.BufferOut().GetBuffer(), context.BufferOut().GetBufferCurrentSize());
@@ -192,7 +205,8 @@ namespace EngineCore::FMT {
 	void FilePrintLn(std::basic_ostream<CharBuffer>& stream, T&& t) {
 		using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
 		Detail::EmptyContextArgsTupleInterface<ContextType> contextArgsInterface;
-		ContextType context(std::basic_string_view<char>(nullptr, 0), nullptr, 0, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
+		ContextType context(std::basic_string_view<char>(nullptr, 0), bufferManager, &contextArgsInterface);
 		context.WriteType(t);
 		context.BufferOut().PushBack('\n');
 
@@ -206,7 +220,8 @@ namespace EngineCore::FMT {
 	void FormatInString(std::basic_string<CharBuffer>& str, T&& t) {
 		using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
 		Detail::EmptyContextArgsTupleInterface<ContextType> contextArgsInterface;
-		ContextType context(std::basic_string_view<char>(nullptr, 0), nullptr, 0, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
+		ContextType context(std::basic_string_view<char>(nullptr, 0), bufferManager, &contextArgsInterface);
 		context.WriteType(t);
 		context.BufferOut().PushEndChar();
 		str = context.BufferOut().GetBuffer();
@@ -217,7 +232,8 @@ namespace EngineCore::FMT {
 	inline std::basic_string<CharBuffer> FormatString(T&& t) {
 		using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
 		Detail::EmptyContextArgsTupleInterface<ContextType> contextArgsInterface;
-		ContextType context(std::basic_string_view<char>(nullptr, 0), nullptr, 0, &contextArgsInterface);
+		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
+		ContextType context(std::basic_string_view<char>(nullptr, 0), bufferManager, &contextArgsInterface);
 		context.WriteType(t);
 		context.BufferOut().PushEndChar();
 		return context.BufferOut().GetBuffer();

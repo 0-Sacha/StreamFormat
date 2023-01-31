@@ -11,8 +11,6 @@
 
 #include "FormatterContextArgsTuple.h"
 
-#include "FMT/Detail/Buffer/BasicBufferOut.h"
-
 namespace EngineCore::FMT::Context {
    
     template<typename CharFormat, typename CharBuffer>
@@ -36,7 +34,7 @@ namespace EngineCore::FMT::Context {
         using TextPropertiesParser  = Detail::TextPropertiesParser<M_Type>;
 
     public:
-        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, CharBuffer* const buffer, const std::size_t bufferSize, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
+        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, Detail::BasicBufferManager<CharBuffer>& bufferManager, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
         
 		// Used for SubContext
 	    template<typename ParentCharFormat>

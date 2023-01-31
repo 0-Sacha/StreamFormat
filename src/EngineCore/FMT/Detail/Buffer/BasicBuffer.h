@@ -17,7 +17,7 @@ namespace EngineCore::FMT::Detail {
 		CharBuffer*			m_BufferEnd;			// Point to the end char of the format
 		std::size_t			m_BufferSize;			// Do not count the end char
 		
-	private:
+	protected:
 		BasicFormatterMemoryBuffer<CharBuffer>* m_ParentBuffer;
 
 	protected:
@@ -31,11 +31,16 @@ namespace EngineCore::FMT::Detail {
 		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
 
-		inline void					SetParentBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* parentBuffer)	{
-			m_ParentBuffer = parentBuffer;
-		}
-
 	public:
+		explicit BasicFormatterMemoryBuffer()
+			: m_Buffer(nullptr)
+			, m_CurrentPos(nullptr)
+			, m_BufferEnd(nullptr)
+			, m_BufferSize(0)
+			, m_ParentBuffer(nullptr)
+		{}
+
+
 		BasicFormatterMemoryBuffer(const std::basic_string_view<CharBufferType>& buffer)
 			: m_Buffer(buffer.data())
 			, m_CurrentPos(buffer.data())
@@ -52,21 +57,33 @@ namespace EngineCore::FMT::Detail {
 			, m_ParentBuffer(nullptr)
 		{}
 
-		// Used for SubContext
-		BasicFormatterMemoryBuffer(CharBuffer* const buffer, CharBuffer* const bufferCurrentPos, const std::size_t size)
-			: m_Buffer(buffer)
-			, m_CurrentPos(bufferCurrentPos)
-			, m_BufferEnd(buffer + size)
-			, m_BufferSize(size)
-			, m_ParentBuffer(nullptr)
-		{}
-
-		~BasicFormatterMemoryBuffer() {
+		~BasicFormatterMemoryBuffer()
+		{
 			UpdateFromChlid();
 		}
 
+		void SetBuffer(CharBuffer *const buffer, const std::size_t size)
+		{
+ 			m_Buffer = buffer;
+			m_CurrentPos = m_Buffer;
+			m_BufferEnd = m_Buffer + size;
+			m_BufferSize = size;
+		}
+
+		void SetCurrentPos(CharBuffer *const bufferCurrentPos)
+		{
+			m_CurrentPos = bufferCurrentPos;
+		}
+
+	public:
+		inline void SetParentBufferForUpdate(BasicFormatterMemoryBuffer<CharBuffer>* parentBuffer)
+		{
+			m_ParentBuffer = parentBuffer;
+		}
+
 	protected:
-		inline void UpdateFromChlid() {
+		inline void UpdateFromChlid()
+		{
 			if (m_ParentBuffer != nullptr)
 				m_ParentBuffer->SetBufferCurrentPos(GetBufferCurrentPos());
 		}

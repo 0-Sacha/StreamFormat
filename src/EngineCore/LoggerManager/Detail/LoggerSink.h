@@ -86,7 +86,8 @@ class BasicLoggerSink
             auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(pattern,
                                                                        FORMAT_SV("name", ConcateNameAndSinkName(loggerName, Name)),
                                                                        FORMAT_SV("data", formatBuffer));
-	        WriteToSinkSync(formatPatternStr);
+	        BufferType buffer(*formatPatternStr);
+            WriteToSinkSync(buffer);
         }
 
         void FormatAndWriteToSinkAsync(PatternTransfertType pattern, const NameType& loggerName, const BufferType& formatBuffer)

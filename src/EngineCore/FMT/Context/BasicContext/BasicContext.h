@@ -1,8 +1,7 @@
 #pragma once
 
 #include "FMT/Detail/Detail.h"
-#include "FMT/Detail/Buffer/BasicBufferIn.h"
-#include "FMT/Detail/Buffer/Format.h"
+#include "FMT/Detail/Buffer/Buffer.h"
 
 #include "FMT/Detail/FormatterHandler/FormatterHandler.h"
 #include "Utils/BasicContextArgsTupleInterface.h"
