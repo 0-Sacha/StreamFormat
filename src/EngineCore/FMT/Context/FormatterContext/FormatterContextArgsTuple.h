@@ -100,8 +100,12 @@ namespace EngineCore::FMT::Detail {
         {
             if (idx.Is0())
             {
-                if constexpr (FormatterContextArgsTupleConvertFunc<TypeWithoutRef, T>::IsConvertible)
-                    return *value = FormatterContextArgsTupleConvertFunc<TypeWithoutRef, T>::Convert(m_Value);;
+                if constexpr (FormatterContextArgsTupleConvertFunc<T, TypeWithoutRef>::IsConvertible)
+                    *value = FormatterContextArgsTupleConvertFunc<T, TypeWithoutRef>::Convert(m_Value);
+                else
+                {
+                    // Warrning
+                }
             }
             return FormatterContextArgsTuple<Rest...>::template GetTypeAtIndexConvert<T>(value, idx.GetPrev());
         }
