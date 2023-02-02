@@ -60,11 +60,15 @@ namespace EngineCore::FMT::Detail {
         using Base::UpdateFromChlid;
 
     public:
+        explicit BasicFormatterMemoryBufferIn()
+            : Base()
+        {}
+
         explicit BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer>& buffer)
             : Base(buffer)
         {}
 
-        BasicFormatterMemoryBufferIn(CharBuffer* const buffer, const std::size_t bufferSize)
+        explicit BasicFormatterMemoryBufferIn(CharBuffer* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
 

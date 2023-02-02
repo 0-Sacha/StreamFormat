@@ -14,6 +14,7 @@ namespace EngineCore::FMT::Detail {
 
         public:
             virtual size_t Size() = 0;
+            virtual void SetContext(std::any context) = 0;
 
         public:
             virtual void RunTypeAtIndex(const Detail::FormatIndex& idx) = 0;
@@ -68,7 +69,7 @@ namespace EngineCore::FMT::Detail {
                 : m_Context(nullptr)
             {}
 
-            void SetContext(Context* context) { m_Context = context; }
+            void SetContext(std::any context) override { m_Context = std::any_cast<Context*>(context); }
             
         protected:
             Context* m_Context;

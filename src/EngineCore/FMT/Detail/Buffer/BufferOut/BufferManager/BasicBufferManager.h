@@ -13,16 +13,25 @@ namespace EngineCore::FMT::Detail {
 
         public:
             virtual CharType* GetBuffer() = 0;
-            virtual std::size_t GetBufferSize() = 0;
+            virtual const CharType* GetBuffer() const = 0;
+            virtual std::size_t GetBufferSize() const = 0;
         
         public:
             virtual bool Resize(const std::size_t count) = 0;
 
         public:
-            operator std::basic_string_view<CharType>()
+            std::basic_string_view<CharType> GetLastGeneratedString() const { return std::basic_string_view<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
+            operator std::basic_string_view<CharType>() const
             {
-                return std::basic_string_view<CharType>(GetBuffer());
+                return GetLastGeneratedString();
             }
+
+        public:
+            std::size_t GetLastGeneratedDataSize() const { return m_LastGeneratedDataSize; }
+            void SetLastGeneratedDataSize(const std::size_t size) { m_LastGeneratedDataSize = size; }
+
+        protected:
+            std::size_t m_LastGeneratedDataSize;
     };
 
 }

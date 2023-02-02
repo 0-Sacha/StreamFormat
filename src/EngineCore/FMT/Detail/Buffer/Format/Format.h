@@ -115,9 +115,12 @@ namespace EngineCore::FMT::Detail {
 		using Base::SkipShiftEnd;
 
 	public:
-		explicit FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)
-			: BasicFormatterMemoryBufferIn<CharFormat>(format) {}
+		explicit FormatterMemoryFormat()
+			: Base() {}
 
+		explicit FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)
+			: Base(format) {}
+		
 	public:
 		template<typename T> bool ReadInt(T& t);
 		template<typename T> bool ReadUInt(T& t);

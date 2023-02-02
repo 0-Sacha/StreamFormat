@@ -40,8 +40,7 @@ namespace EngineCore::FMT {
 	struct FormatterType<EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>, FormatterContext>
 	{
 		static void Write(const EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>& names, FormatterContext& context) {
-			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(names.LoggerName, FORMAT_SV("sink", names.SinkName));
-			context.Print(static_cast<std::basic_string_view<CharType>>(*formatBuffer));
+			context.SubContext(names.LoggerName, FORMAT_SV("sink", names.SinkName));
 		}
 	};
 }

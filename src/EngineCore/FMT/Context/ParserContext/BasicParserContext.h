@@ -29,11 +29,10 @@ namespace EngineCore::FMT::Context {
 		using BufferInType		= Detail::BasicFormatterMemoryBufferIn<CharBuffer>;
 
 	public:
-		BasicParserContext(const std::basic_string_view<CharFormat>& format, const std::basic_string_view<CharBuffer>& buffer, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
+		BasicParserContext(const std::basic_string_view<CharBuffer>& buffer);
 
-		// Used for SubContext
 		template<typename ParentCharFormat>
-		BasicParserContext(const std::basic_string_view<CharFormat>& format, BasicParserContext<ParentCharFormat, CharBuffer>& parentContext, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
+		BasicParserContext(BasicParserContext<ParentCharFormat, CharBuffer>& parentContext);
 
 		~BasicParserContext();
 
@@ -55,8 +54,10 @@ namespace EngineCore::FMT::Context {
 		inline const BufferInType& BufferIn() const		{ return m_BufferIn; }
 
 	public:
+        using Base::Run;
 		using Base::SafeRun;
-		void Run();
+		void RunImpl();
+		void SetArgsInterfaceCurrentContex() override { m_ContextArgsInterface->SetContext(this); }
 
 	public:
         template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>

@@ -5,16 +5,8 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format, ContextArgsInterface* argsInterface)
-		: m_Format(format)
-		, m_ValuesIndex(0, argsInterface->Size())
-		, m_FormatData()
-		, m_ContextArgsInterface(argsInterface)
-	{}
-
-	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::BasicContext(const std::basic_string_view<CharFormat>& format)
-		: m_Format(format)
+	BasicContext<CharFormat, ContextPackageSaving>::BasicContext()
+		: m_Format()
 		, m_ValuesIndex(0, 0)
 		, m_FormatData()
 		, m_ContextArgsInterface(nullptr)
@@ -24,9 +16,31 @@ namespace EngineCore::FMT::Context {
 	BasicContext<CharFormat, ContextPackageSaving>::~BasicContext() { }
 
 	template<typename CharFormat, typename ContextPackageSaving>
-	void BasicContext<CharFormat, ContextPackageSaving>::SafeRun() {
-		try {
-			Run();
+	void BasicContext<CharFormat, ContextPackageSaving>::Run(FormatBufferType& format, ContextArgsInterface* argsInterface)
+	{
+		// Save old context
+		FormatBufferType oldFormat = m_Format;
+		ContextArgsInterface* oldArgsInterface = m_ContextArgsInterface;
+		Detail::FormatIndex oldValuesIndex = m_ValuesIndex;
+		// Set new context
+		m_Format = format;
+		m_ContextArgsInterface = argsInterface;
+		m_ValuesIndex = Detail::FormatIndex(0, argsInterface->Size());
+		SetArgsInterfaceCurrentContex();
+		// Run
+		RunImpl();
+		// Restore old context
+		m_ValuesIndex = oldValuesIndex;
+		m_ContextArgsInterface = oldArgsInterface;
+		m_Format = oldFormat;
+	}
+	
+	template<typename CharFormat, typename ContextPackageSaving>
+	void BasicContext<CharFormat, ContextPackageSaving>::SafeRun(FormatBufferType& format, ContextArgsInterface* argsInterface)
+	{
+		try
+		{
+			Run(format, argsInterface);
 		}
 		catch (const Detail::FormatError&) {}
 	}

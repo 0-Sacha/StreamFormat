@@ -34,11 +34,9 @@ namespace EngineCore::FMT::Context {
         using TextPropertiesParser  = Detail::TextPropertiesParser<M_Type>;
 
     public:
-        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, Detail::BasicBufferManager<CharBuffer>& bufferManager, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
-        
-		// Used for SubContext
-	    template<typename ParentCharFormat>
-        BasicFormatterContext(const std::basic_string_view<CharFormat>& format, BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext, Detail::BasicContextArgsTupleInterface<M_Type>* argsInterface);
+        BasicFormatterContext(Detail::BasicBufferManager<CharBuffer>& bufferManager);
+        template<typename ParentCharFormat>
+        BasicFormatterContext(BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext);
 
 	    ~BasicFormatterContext();
 
@@ -57,7 +55,6 @@ namespace EngineCore::FMT::Context {
         using Base::ForwardFormatData;
         using Base::SetFormatData;
         using Base::GetContextArgsInterface;
-        using Base::SetContextArgsInterface;
 
         inline BufferOutType&			    BufferOut()			    { return m_BufferOut; }
         inline const BufferOutType&		    BufferOut() const	    { return m_BufferOut; }
@@ -66,8 +63,10 @@ namespace EngineCore::FMT::Context {
         inline const TextPropertiesParser&		GetTextPropertiesParser() const	{ return m_TextPropertiesParser; }
 
     public:
+        using Base::Run;
         using Base::SafeRun;
-        void Run() override;
+        void RunImpl() override;
+		void SetArgsInterfaceCurrentContex() override { m_ContextArgsInterface->SetContext(this); }
 
     public:
         template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>

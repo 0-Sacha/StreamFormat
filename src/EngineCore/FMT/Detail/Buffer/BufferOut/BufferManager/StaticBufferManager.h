@@ -13,7 +13,8 @@ namespace EngineCore::FMT::Detail {
 
         public:
             CharType* GetBuffer() override { return m_Buffer; }
-            std::size_t GetBufferSize() override { return Count; }
+            const CharType* GetBuffer() const override { return m_Buffer; }
+            std::size_t GetBufferSize() const override { return Count; }
         
         public:
             bool Resize(const std::size_t count) override { return false; }

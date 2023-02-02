@@ -62,6 +62,14 @@ namespace EngineCore::FMT::Detail {
 			UpdateFromChlid();
 		}
 
+		void SetBuffer(const std::basic_string_view<CharBufferType>& buffer)
+		{
+ 			m_Buffer = buffer.data();
+			m_CurrentPos = buffer.data();
+			m_BufferEnd = buffer.data() + buffer.size();
+			m_BufferSize = buffer.size();
+		}
+
 		void SetBuffer(CharBuffer *const buffer, const std::size_t size)
 		{
  			m_Buffer = buffer;
