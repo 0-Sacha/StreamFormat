@@ -120,6 +120,10 @@ namespace EngineCore::FMT::Detail {
 
 		explicit FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)
 			: Base(format) {}
+
+ 		explicit FormatterMemoryFormat(const CharFormat* const buffer, const std::size_t bufferSize)
+            : Base(buffer, bufferSize)
+        {}
 		
 	public:
 		template<typename T> bool ReadInt(T& t);

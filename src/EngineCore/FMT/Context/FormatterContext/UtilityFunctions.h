@@ -144,7 +144,7 @@ namespace EngineCore::FMT {
 		// TODO : optimization
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
 		Detail::FormatInBufferManager(bufferManager, format, std::forward<Args>(args)...);
-		str = std::string(bufferManager.GetBuffer(), bufferManager.GetBufferSize());
+		str = std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
 	}
 
 
@@ -153,7 +153,7 @@ namespace EngineCore::FMT {
 	inline std::basic_string<CharBuffer> FormatString(const Format& format, Args&& ...args) {
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
 		Detail::FormatInBufferManager(bufferManager, format, std::forward<Args>(args)...);
-		return std::string(bufferManager.GetBuffer(), bufferManager.GetBufferSize());
+		return std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
 	}
 
 
@@ -221,7 +221,7 @@ namespace EngineCore::FMT {
 	void FormatInString(std::basic_string<CharBuffer>& str, T&& t) {
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
 		Detail::FormatInBufferManager(bufferManager, std::forward<T>(t));
-		str = std::string(bufferManager.GetBuffer(), bufferManager.GetBufferSize());
+		str = std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
 	}
 
 	template<typename CharBuffer = char, typename T>
@@ -229,6 +229,6 @@ namespace EngineCore::FMT {
 	inline std::basic_string<CharBuffer> FormatString(T&& t) {
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
 		Detail::FormatInBufferManager(bufferManager, std::forward<T>(t));
-		return std::string(bufferManager.GetBuffer(), bufferManager.GetBufferSize());
+		return std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
 	}
 }

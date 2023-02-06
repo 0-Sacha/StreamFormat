@@ -37,10 +37,10 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
 	template<typename NewCharFormat, typename ...Args>
-	void BasicParserContext<CharFormat, CharBuffer>::SubContext(const std::basic_string_view<NewCharFormat>& formatStr, Args&& ...args) {
+	void BasicParserContext<CharFormat, CharBuffer>::SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, Args&& ...args) {
 		using ContextType = BasicParserContext<NewCharFormat, CharBuffer>;
 		auto childContextArgsInterface = Detail::ParserContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		Detail::FormatterMemoryFormat<NewCharFormat> format(formatStr);
+		Detail::FormatterMemoryFormat<NewCharFormat> format(formatStr, formatStrSize);
 		
 		if constexpr (std::is_same_v<NewCharFormat, CharFormat>)
 		{

@@ -17,9 +17,16 @@ namespace EngineCore::FMT {
 
 
 #define ENGINECORE_INTERNAL_ADDVALUE(x) value.x
-#define ENGINECORE_AUTO_FORMATTER(Type, fmt, ...)	template<typename FormatterContext>\
+#define ENGINECORE_AUTO_FORMATTER_X(Type, fmt, ...)	template<typename FormatterContext>\
 													struct EngineCore::FMT::FormatterType<Type, FormatterContext> {\
 														static void Write(const Type& value, FormatterContext& context) {\
 															context.SubContext(fmt, FOR_EACH(ENGINECORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
+														}\
+													};
+
+#define ENGINECORE_AUTO_FORMATTER(Type, fmt, ...)	template<typename FormatterContext>\
+													struct EngineCore::FMT::FormatterType<Type, FormatterContext> {\
+														static void Write(const Type& value, FormatterContext& context) {\
+															context.SubContext(fmt, __VA_ARGS__);\
 														}\
 													};

@@ -62,10 +62,18 @@ namespace EngineCore::FMT::Context {
 	public:
         template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
 		inline void SubContext(const CharType (&format)[SIZE], NewContextArgs&& ...args)
-		{ SubContext(std::basic_string_view<CharType>(format), std::forward<NewContextArgs>(args)...); }
+		{ SubContextFormat(format, SIZE, std::forward<NewContextArgs>(args)...); }
 
-		template<typename NewCharFormat, typename ...NewContextArgs>
-		void SubContext(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args);
+        template<typename NewCharFormat, typename ...NewContextArgs>
+        void SubContext(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args)
+		{ SubContextFormat(format.data(), format.size(), std::forward<NewContextArgs>(args)...); }
+
+        template<typename NewCharFormat, typename ...NewContextArgs>
+        void SubContext(const std::basic_string<NewCharFormat>& format, NewContextArgs&& ...args)
+		{ SubContextFormat(format.data(), format.size(), std::forward<NewContextArgs>(args)...); }
+
+        template<typename NewCharFormat, typename ...NewContextArgs>
+        void SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, NewContextArgs&& ...args);
 
 	public:
 		using Base::GetFormatIndexThrow;

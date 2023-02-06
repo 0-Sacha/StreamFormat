@@ -25,7 +25,7 @@ namespace EngineCore::FMT::Context {
 		// Set new context
 		m_Format = format;
 		m_ContextArgsInterface = argsInterface;
-		m_ValuesIndex = Detail::FormatIndex(0, argsInterface->Size());
+		m_ValuesIndex = Detail::FormatIndex(0, static_cast<Detail::FormatIndex::BaseType>(argsInterface->Size()));
 		SetArgsInterfaceCurrentContex();
 		// Run
 		RunImpl();

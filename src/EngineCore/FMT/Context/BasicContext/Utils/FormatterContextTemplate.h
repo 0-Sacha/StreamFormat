@@ -43,7 +43,7 @@ namespace EngineCore::FMT::Detail {
     struct FormatterContextArgsTupleConvertFunc<Detail::FormatIndex, From>
     {
         static constexpr bool IsConvertible = true;
-        static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(from); }
+        static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(static_cast<Detail::FormatIndex::BaseType>(from)); }
     };
 
 }

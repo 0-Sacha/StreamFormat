@@ -68,7 +68,7 @@ namespace EngineCore::FMT::Detail {
             : Base(buffer)
         {}
 
-        explicit BasicFormatterMemoryBufferIn(CharBuffer* const buffer, const std::size_t bufferSize)
+        explicit BasicFormatterMemoryBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
 
