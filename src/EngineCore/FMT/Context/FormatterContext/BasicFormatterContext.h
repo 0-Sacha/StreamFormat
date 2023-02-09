@@ -64,9 +64,11 @@ namespace EngineCore::FMT::Context {
 
     public:
         using Base::Run;
-        using Base::SafeRun;
-        void RunImpl() override;
-		void SetArgsInterfaceCurrentContex() override { m_ContextArgsInterface->SetContext(this); }
+    
+    protected:
+        void FormatToParamsString(const CharFormat* buffer, std::size_t size) override  { Print(buffer, size); }
+		void FormatExecParams() override                                                { if (!Parse()) m_BufferOut.PushBack('{'); }
+		void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }
 
     public:
         template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
@@ -190,22 +192,16 @@ namespace EngineCore::FMT::Context {
     public:
         void CheckEndStr();
 
-        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str)						{ m_BufferOut.WriteCharPt(str); }
-        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str, std::size_t size)	{ m_BufferOut.WriteCharPt(str, size); }
+        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str)					    	{ m_BufferOut.WriteCharPt(str); }
+        template<typename CharStr>						inline void Print(const CharStr* str, std::size_t size)	        { m_BufferOut.WriteCharPt(str, size); }
         template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPt(str, SIZE); }
         template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr>& str)	{ m_BufferOut.WriteCharPt(str.data(), str.size()); }
         template<typename CharStr>						inline void Print(const std::basic_string<CharStr>& str)		{ Print(static_cast<std::basic_string_view<CharStr>>(str)); }
 
-        template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str)					{ m_BufferOut.WriteCharPtIndent(str); }
-        template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str, std::size_t size) { m_BufferOut.WriteCharPtIndent(str, size); }
+        template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str)					        { m_BufferOut.WriteCharPtIndent(str); }
+        template<typename CharStr>						inline void PrintIndent(const CharStr* str, std::size_t size)       { m_BufferOut.WriteCharPtIndent(str, size); }
         template<typename CharStr, std::size_t SIZE>	inline void PrintIndent(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPtIndent(str, SIZE); }
         template<typename CharStr>						inline void PrintIndent(const std::basic_string_view<CharStr>& str) { m_BufferOut.WriteCharPtIndent(str.data(), str.size()); }
-
-    public:
-        inline void CopyFormatToBuffer() { m_BufferOut.PushBackIndent(m_Format.GetAndForward()); }
-
-        template<typename ...CharToTest> inline void WriteUntilNextParameterOr(const CharToTest ...ele)	{ while (m_Format.IsNotEqualTo('{', ele...) && m_Format.CanMoveForward())	CopyFormatToBuffer(); }
-        template<typename ...CharToTest> inline void WriteUntilEndOfParameterOr(const CharToTest ...ele)	{ while (m_Format.IsNotEqualTo('}', ele...) && m_Format.CanMoveForward())	CopyFormatToBuffer(); }
     };
 }
 

@@ -8,8 +8,10 @@ namespace EngineCore::FMT::Detail {
     class BasicBufferManager
     {
         public:
-            virtual void BeginContext() = 0;
-            virtual void EndContext() = 0;
+            virtual void BeginContextImpl() {}
+            void BeginContext() { BeginContextImpl(); }
+            virtual void EndContextImpl(std::size_t totalGeneratedLength) {}
+            void EndContext(std::size_t totalGeneratedLength) { EndContextImpl(totalGeneratedLength); SetLastGeneratedDataSize(totalGeneratedLength); }
 
         public:
             virtual CharType* GetBuffer() = 0;
@@ -17,7 +19,7 @@ namespace EngineCore::FMT::Detail {
             virtual std::size_t GetBufferSize() const = 0;
         
         public:
-            virtual bool Resize(const std::size_t count) = 0;
+            virtual bool AddSize(const std::size_t count) = 0;
 
         public:
             std::basic_string_view<CharType> GetLastGeneratedString() const { return std::basic_string_view<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
@@ -28,6 +30,8 @@ namespace EngineCore::FMT::Detail {
 
         public:
             std::size_t GetLastGeneratedDataSize() const { return m_LastGeneratedDataSize; }
+        
+        private:
             void SetLastGeneratedDataSize(const std::size_t size) { m_LastGeneratedDataSize = size; }
 
         protected:

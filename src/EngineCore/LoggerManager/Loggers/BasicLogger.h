@@ -15,11 +15,15 @@ namespace EngineCore::LoggerManager::Detail {
 		
 		explicit BasicLoggerImpl(const std::string_view& name, typename Severity::Value severity = Severity::Value::DefaultSeverity, std::ostream& stream = std::cout)
 			: m_Name(name), m_Severity(severity), m_Stream(stream)
+			, preFormatBufferManager(64)
+			, fullFormatBufferManager(64)
 		{
 			ResetPattern();
 		}
 		explicit BasicLoggerImpl(const std::string_view& name, const std::string_view& format, typename Severity::Value severity = Severity::Value::DefaultSeverity, std::ostream& stream = std::cout)
 			: m_Name(name), m_Severity(severity), m_Stream(stream)
+			, preFormatBufferManager(64)
+			, fullFormatBufferManager(64)
 		{
 			SetPattern(format);
 		}
@@ -35,8 +39,9 @@ namespace EngineCore::LoggerManager::Detail {
 		std::string m_Name;
 		SeverityValueType m_Severity;
 		std::ostream& m_Stream;
-
 		std::string m_Pattern;
+		FMT::Detail::DynamicBufferManager<char> preFormatBufferManager;
+		FMT::Detail::DynamicBufferManager<char> fullFormatBufferManager;
 
 	public:
 		template<typename Format = std::string_view, typename ...Args>
@@ -46,17 +51,21 @@ namespace EngineCore::LoggerManager::Detail {
 			if (severity < m_Severity)
 				return;
 
-			auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
-			FMT::FilePrintLn(m_Stream, static_cast<std::string_view>(*formatBuffer), std::forward<Args>(args)..., FORMAT_SV("color", severity));
+			FMT::Detail::FormatInBufferManager(preFormatBufferManager, std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
+			FMT::Detail::FormatInBufferManagerLn(fullFormatBufferManager, preFormatBufferManager.GetLastGeneratedString(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
+			m_Stream.write(fullFormatBufferManager.GetBuffer(), fullFormatBufferManager.GetLastGeneratedDataSize());
+			m_Stream.flush();
 		}
 
 		template<typename T>
-		void Log(const SeverityValueType& severity, T&& t) const
+		void Log(const SeverityValueType& severity, T&& t)
 		{
 			if (severity < m_Severity)
 				return;
 
-			FMT::FilePrintLn(m_Stream, m_Pattern, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
+			FMT::Detail::FormatInBufferManagerLn(fullFormatBufferManager, m_Pattern, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
+			m_Stream.write(fullFormatBufferManager.GetBuffer(), fullFormatBufferManager.GetLastGeneratedDataSize());
+			m_Stream.flush();
 		}
 	};
 }

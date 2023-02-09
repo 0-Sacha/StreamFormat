@@ -23,19 +23,6 @@ namespace EngineCore::FMT::Context {
 	BasicFormatterContext<CharFormat, CharBuffer>::~BasicFormatterContext() {}
 
 	template<typename CharFormat, typename CharBuffer>
-	void BasicFormatterContext<CharFormat, CharBuffer>::RunImpl()
-	{
-		while (!m_Format.IsEnd()) {
-
-			WriteUntilNextParameterOr();
-
-			if (m_Format.IsEqualTo('{'))
-				if (!Parse())
-					m_BufferOut.PushBack('{');
-		}
-	}
-
-	template<typename CharFormat, typename CharBuffer>
 	template<typename NewCharFormat, typename ...Args>
     void BasicFormatterContext<CharFormat, CharBuffer>::SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, Args&& ...args)
 	{

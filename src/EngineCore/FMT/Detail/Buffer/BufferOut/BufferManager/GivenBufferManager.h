@@ -14,16 +14,12 @@ namespace EngineCore::FMT::Detail {
             {}        
 
         public:
-            void BeginContext() override {}
-            void EndContext() override {}
-
-        public:
             CharType* GetBuffer() override { return m_Buffer; }
             const CharType* GetBuffer() const override { return m_Buffer; }
             std::size_t GetBufferSize() const override { return m_BufferSize; }
         
         public:
-            bool Resize(const std::size_t count) override { return false; }
+            bool AddSize(const std::size_t count) override { return false; }
 
         private:
             CharType* m_Buffer;

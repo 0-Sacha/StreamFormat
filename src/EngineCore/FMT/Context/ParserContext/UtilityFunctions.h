@@ -13,7 +13,7 @@ namespace EngineCore::FMT {
 		auto childContextArgsInterface = Detail::ParserContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
 		Detail::FormatterMemoryFormat<typename Detail::GetFmtBaseType<Format>::Type> format(formatData);
 		ContextType context(buffer);
-		return context.SafeRun(format, &childContextArgsInterface);
+		return context.Run(format, &childContextArgsInterface);
 	}
 	
 }

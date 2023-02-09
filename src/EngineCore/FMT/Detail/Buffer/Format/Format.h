@@ -98,11 +98,8 @@ namespace EngineCore::FMT::Detail {
 		using Base::IsUpperCaseThrow;
 		using Base::IsADigitThrow;
 
-		using Base::NextIsSame;
-		using Base::NextIsSameThrow;
-
-		using Base::NextIsANamedArgs;
-		using Base::NextIsANamedArgsThrow;
+		using Base::IsSame;
+		using Base::IsSameThrow;
 
 		using Base::GetWordFromList;
 
@@ -163,6 +160,14 @@ namespace EngineCore::FMT::Detail {
             ParamGoToForward(args...);
             const CharFormat* end = GetBufferCurrentPos();
             return StringView(begin, end); 
+        }
+
+	public:
+		template<typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
+            const CharToTest* const prevSubFormat = m_CurrentPos;
+            if (IsSame(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
+            m_CurrentPos = prevSubFormat;
+            return false;
         }
 	};
 }

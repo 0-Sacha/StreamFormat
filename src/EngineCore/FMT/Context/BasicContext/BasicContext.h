@@ -49,12 +49,15 @@ namespace EngineCore::FMT::Context {
 		inline const ContextArgsInterface&	GetContextArgsInterface() const					{ return *m_ContextArgsInterface; }
 
 	protected:
-		virtual void RunImpl() = 0;
 		virtual void SetArgsInterfaceCurrentContex() = 0;
-	
+		virtual void FormatToParamsString(const CharFormat* buffer, std::size_t size) = 0;
+		virtual void FormatExecParams() = 0;
+
+	protected:
+		void RunImpl();
+
 	public:
 		void Run(FormatBufferType& format, ContextArgsInterface* argsInterface);
-		void SafeRun(FormatBufferType& format, ContextArgsInterface* argsInterface);
 
 	public:
 		Detail::FormatIndex GetFormatIndexThrow();

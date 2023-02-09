@@ -80,7 +80,7 @@ namespace EngineCore::FMT::Detail {
         }
 
         ~BasicFormatterMemoryBufferIn() {
-            // Should call the destructo but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
+            // Should call the destructor but doesn't compile : BasicFormatterMemoryBuffer<CharBuffer>::~BasicFormatterMemoryBuffer();
             UpdateFromChlid();
         }
 
@@ -136,7 +136,7 @@ namespace EngineCore::FMT::Detail {
         // Format check
         inline bool IsEqualTo(const CharBuffer c) const				{ return Get() == c; }
         inline bool IsNotEqualTo(const CharBuffer c) const			{ return Get() != c; }
-        inline bool IsEqualToForward(const CharBuffer c)				{ if (IsEqualTo(c)) { Forward(); return true; } return false; }
+        inline bool IsEqualToForward(const CharBuffer c)			{ if (IsEqualTo(c)) { Forward(); return true; } return false; }
         inline bool IsNotEqualForward(const CharBuffer c)			{ if (IsNotEqualTo(c)) { Forward(); return true; } return false; }
         template<typename ...CharToTest> inline bool IsEqualTo(const CharBuffer c, const CharToTest ...ele) const		{ return IsEqualTo(c) || IsEqualTo(ele...); }
         template<typename ...CharToTest> inline bool IsEqualToForward(const CharToTest ...ele)							{ if (IsEqualTo(ele...)) { Forward(); return true; } return false; }
@@ -175,37 +175,53 @@ namespace EngineCore::FMT::Detail {
         inline void IsADigitThrow() const		{ if (IsADigit()) return; throw FormatParseError(); }
 
     public:
-        template<typename CharToTest> bool NextIsSame(const std::basic_string_view<CharToTest>& sv) {
-            const CharToTest* str = sv.data();
-            std::size_t size = sv.size();
-            const CharBuffer* prevSubFormat = m_CurrentPos;		bool isSame = true;
-            while (isSame && size-- != 0 && CanMoveForward())	isSame = GetAndForwardNoCheck() == *str++;
-            if (isSame && size == 0)							isSame = false;
+        template<typename CharToTest, typename ...Rest> bool IsSame(const CharToTest c, const Rest ...ele)
+        {
+            if (IsEqualToForward(c))
+            {
+                if constexpr (sizeof...(ele) > 0)
+                {
+                    bool res = IsSame(ele...);
+                    if (res == false)
+						--m_CurrentPos;
+                    return res;
+                }
+                else
+                    return true;
+            }
+            return false;
+        }
+
+        template<typename CharToTest> bool IsSame(const CharToTest* str, std::size_t size)
+        {
+            if (CanMoveForward(size) == false)
+            {
+                if (str[size - 1] == 0)
+                    size--;
+				if (CanMoveForward(size) == false)
+                    return false;
+			}
+
+            const CharBuffer* prevSubFormat = m_CurrentPos;
+            bool isSame = true;
+            while (isSame && size != 0 && *str != 0)            { isSame = GetAndForwardNoCheck() == *str++; --size; }
+            if (size != 0 && *str != 0)							isSame = false;
             if (!isSame)										m_CurrentPos = prevSubFormat;
             return isSame;
         }
 
-        template<std::size_t SIZE, typename CharToTest> inline bool NextIsSame(const CharToTest(&data)[SIZE])			{ return NextIsSame(std::basic_string_view<CharToTest>(data)); }
-        template<typename CharToTest> inline void NextIsSameThrow(const std::basic_string_view<CharToTest>& sv)			{ if (NextIsSame(sv)) return; throw FormatParseError(); }
-        template<std::size_t SIZE, typename CharToTest> inline void NextIsSameThrow(const CharToTest(&data)[SIZE])		{ if (NextIsSame(data)) return; throw FormatParseError(); }
-
-
-        template<typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
-            const CharBuffer* const prevSubFormat = m_CurrentPos;
-            if (NextIsSame(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
-            m_CurrentPos = prevSubFormat;
-            return false;
-        }
-
-        template<typename CharToTest> inline void NextIsANamedArgsThrow(const std::basic_string_view<CharToTest>& sv)	{ if (NextIsANamedArgs(sv)) return; throw FormatParseError(); }
-
+        template<std::size_t SIZE, typename CharToTest> inline bool IsSame(const CharToTest(&data)[SIZE])		{ return IsSame(data, SIZE); }
+        template<typename CharToTest> inline bool IsSame(std::basic_string_view<CharToTest> sv)			        { return IsSame(sv.data(), sv.size()); }
+        template<typename CharToTest> inline void IsSameThrow(const CharToTest* data, std::size_t size)		    { if (IsSame(data, size)) return; throw FormatParseError(); }
+        template<std::size_t SIZE, typename CharToTest> inline void IsSameThrow(const CharToTest(&data)[SIZE])	{ if (IsSame(data)) return; throw FormatParseError(); }
+        template<typename CharToTest> inline void IsSameThrow(const std::basic_string_view<CharToTest>& sv)		{ if (IsSame(sv)) return; throw FormatParseError(); }
 
         static constexpr std::size_t GET_WORD_FROM_LIST_NOT_FOUND = (std::numeric_limits<std::size_t>::max)();
         template<std::size_t SIZE>
         std::size_t GetWordFromList(const StringView (&data)[SIZE], const std::size_t defaultValue = GET_WORD_FROM_LIST_NOT_FOUND)
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
-                if (NextIsSame(data[idx]))
+                if (IsSame(data[idx]))
                     return idx;
             return defaultValue;
         }
@@ -218,7 +234,7 @@ namespace EngineCore::FMT::Detail {
         T GetWordFromList(const TextTo<T> (&data)[SIZE], T defaultValue = T{})
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
-                if (NextIsSame(data[idx].first))
+                if (IsSame(data[idx].first))
                     return data[idx].second;
             return defaultValue;
         }

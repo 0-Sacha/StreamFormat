@@ -18,11 +18,7 @@ namespace EngineCore::FMT {
 
 			auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
 			Detail::FormatterMemoryFormat<typename GetFmtBaseType<Format>::Type> format(formatData);
-			context.SafeRun(format, &contextArgsInterface);
-
-			bufferManager.SetLastGeneratedDataSize(context.BufferOut().GetBufferCurrentSize());
-
-			context.BufferOut().PushEndChar();
+			context.Run(format, &contextArgsInterface);
 		}
 
 		template<typename Format = std::string_view, typename CharBuffer = typename GetFmtBaseType<Format>::Type, typename ...Args>
@@ -34,12 +30,8 @@ namespace EngineCore::FMT {
 
 			auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
 			Detail::FormatterMemoryFormat<typename GetFmtBaseType<Format>::Type> format(formatData);
-			context.SafeRun(format, &contextArgsInterface);
+			context.Run(format, &contextArgsInterface);
 			context.BufferOut().PushBack('\n');
-
-			bufferManager.SetLastGeneratedDataSize(context.BufferOut().GetBufferCurrentSize());
-
-			context.BufferOut().PushEndChar();
 		}
 
 		template<typename CharBuffer = char, typename T>
@@ -47,8 +39,6 @@ namespace EngineCore::FMT {
 		{
 			Context::BasicFormatterContext<char, CharBuffer> context(bufferManager);
 			context.WriteType(t);
-			bufferManager.SetLastGeneratedDataSize(context.BufferOut().GetBufferCurrentSize());
-			context.BufferOut().PushEndChar();
 		}
 
 		template<typename CharBuffer = char, typename T>
@@ -57,8 +47,6 @@ namespace EngineCore::FMT {
 			Context::BasicFormatterContext<char, CharBuffer> context(bufferManager);
 			context.WriteType(t);
 			context.BufferOut().PushBack('\n');
-			bufferManager.SetLastGeneratedDataSize(context.BufferOut().GetBufferCurrentSize());
-			context.BufferOut().PushEndChar();
 		}
 
 		template<typename Format = std::string_view, typename CharBuffer = typename GetFmtBaseType<Format>::Type, typename ...Args>

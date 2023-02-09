@@ -75,16 +75,6 @@ namespace EngineCore::FMT::Detail {
 		std::size_t 					m_Indent;
 
 	public:
-		inline CharBuffer*			GetBuffer()									{ return Base::GetBuffer(); }
-		inline const CharBuffer*	GetBuffer() const							{ return Base::GetBuffer(); }
-		inline CharBuffer*			GetBufferCurrentPos()						{ return Base::GetBufferCurrentPos(); }
-		inline const CharBuffer*	GetBufferCurrentPos() const					{ return Base::GetBufferCurrentPos(); }
-		inline CharBuffer*			GetBufferEnd() 								{ return Base::GetBufferEnd(); }
-		inline const CharBuffer*	GetBufferEnd() const						{ return Base::GetBufferEnd()(); }
-		inline std::size_t			GetBufferSize() const						{ return Base::GetBufferSize(); }
-		inline std::size_t			GetBufferCurrentSize() const				{ return Base::GetBufferCurrentSize(); }
-		inline void					SetBufferCurrentPos(CharBuffer* const pos)	{ Base::SetBufferCurrentPos(pos); }
-
 		inline BasicBufferManager<CharBuffer>& GetBufferManager() 				{ return m_BufferManager; }
 		inline const BasicBufferManager<CharBuffer>& GetBufferManager() const 	{ return m_BufferManager; }
 
@@ -106,7 +96,7 @@ namespace EngineCore::FMT::Detail {
 		{
 			m_BufferManager.BeginContext();
 			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
-			PushEndCharToTheEnd();
+			SetCurrentPos(m_BufferManager.GetBuffer());
 		}
 
 		template <typename ParentBuffer>
@@ -123,12 +113,14 @@ namespace EngineCore::FMT::Detail {
 
 		~BasicFormatterMemoryBufferOut()
 		{
+			PushEndChar();
+
 			// This must be, but this do not compile : BasicFormatterMemoryBuffer<CharBuffer>::BasicFormatterMemoryBuffer<CharBuffer>();
 			UpdateFromChlid();
 
 			// if not a child
 			if (m_ParentBuffer == nullptr)
-				m_BufferManager.EndContext();
+				m_BufferManager.EndContext(GetBufferCurrentSize() - 1);
 		}
 
 	public:
@@ -180,14 +172,17 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharType> inline void BasicWriteType(const std::basic_string_view<CharType>& i) { WriteStringView(i); }
 
 	public:
-		inline bool CanMoveForward()									{ if (m_CurrentPos < m_BufferEnd)			return true; return Resize(1); }
-		inline bool CanMoveForward(const std::size_t count) 			{ if (m_CurrentPos + count <= m_BufferEnd)	return true; return Resize(count); }
+		virtual bool RecoveryFunction(const std::size_t count) { return AddSize(count); }
 
-		bool Resize(const std::size_t count = 1)
+		bool AddSize(const std::size_t count)
 		{
-			if (m_BufferManager.Resize(count) == false)
+			if (m_CurrentPos >= m_BufferEnd)
+				std::cout << "Issue, out of bound" << std::endl;
+			std::size_t currentSize = GetBufferCurrentSize();
+			if (m_BufferManager.AddSize(count) == false)
 				return false;
 			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
+			SetBufferCurrentPos(m_BufferManager.GetBuffer() + currentSize);
 			return true;
 		}
 
@@ -202,7 +197,6 @@ namespace EngineCore::FMT::Detail {
 		inline void PushReverse(const CharBuffer c, std::size_t count)		{ if (CanMoveBackward(count)) while (count-- > 0) PushReverseNoCheck(c); }
 
 		inline void PushEndChar()										{ PushBack('\0'); }
-		inline void PushEndCharToTheEnd() 								{ *(m_BufferEnd - 1) = 0; }
 		inline void AddSpaces(const std::size_t count)					{ for (std::size_t i = count; i > 0 && CanMoveForward(); --i) PushBackNoCheck(' '); }
 
 		template<typename CharStr, std::size_t SIZE>	inline void WriteCharArray(const CharStr(&str)[SIZE])					{ WriteCharPt(str, SIZE); }

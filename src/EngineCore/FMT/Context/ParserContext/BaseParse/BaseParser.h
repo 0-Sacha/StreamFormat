@@ -21,12 +21,12 @@ namespace EngineCore::FMT {
 				{
 				case 'T':
 				case 't':
-					if (context.BufferIn().NextIsSame("True"))
+					if (context.BufferIn().IsSame("True"))
 						t = true;
 				
 				case 'F':
 				case 'f':
-					if (context.BufferIn().NextIsSame("False"))
+					if (context.BufferIn().IsSame("False"))
 						t = false;
 				
 				default:

@@ -21,21 +21,6 @@ namespace EngineCore::FMT::Context {
 	BasicParserContext<CharFormat, CharBuffer>::~BasicParserContext() {}
 
 	template<typename CharFormat, typename CharBuffer>
-	void BasicParserContext<CharFormat, CharBuffer>::RunImpl() {
-		while (!m_Format.IsEnd()) {
-
-			if (CheckUntilNextParameter())
-			{
-				if (m_Format.IsEqualTo('{'))
-					if (Parse() == false)
-						throw Detail::FormatParseError();
-			}
-			else if (!Check())
-				throw Detail::FormatParseError();
-		}
-	}
-
-	template<typename CharFormat, typename CharBuffer>
 	template<typename NewCharFormat, typename ...Args>
 	void BasicParserContext<CharFormat, CharBuffer>::SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, Args&& ...args) {
 		using ContextType = BasicParserContext<NewCharFormat, CharBuffer>;

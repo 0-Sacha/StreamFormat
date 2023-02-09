@@ -55,9 +55,20 @@ namespace EngineCore::FMT::Context {
 
 	public:
         using Base::Run;
-		using Base::SafeRun;
-		void RunImpl();
-		void SetArgsInterfaceCurrentContex() override { m_ContextArgsInterface->SetContext(this); }
+
+    protected:
+        void FormatToParamsString(const CharFormat* buffer, std::size_t size) override {
+			if (m_BufferIn.IsSame(buffer, size) == false)
+				throw Detail::FormatParseError();
+		}
+
+		void FormatExecParams() override {
+			if (Parse() == false)
+				if (m_BufferIn.IsEqualToForward('{') == false)
+					throw Detail::FormatParseError();
+		}
+
+		void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }
 
 	public:
         template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
@@ -178,32 +189,6 @@ namespace EngineCore::FMT::Context {
 		using Base::GetStringViewParamUntil;
 		using Base::GetStringViewUntil;
 		using Base::ReadDataType;
-
-	public:
-		inline bool FormatIsEndOfParameter()	{ return m_Format.IsEqualTo('}'); }
-		inline void FormatGoToEndOfParameter()	{ while (m_Format.IsNotEqualTo('}') && m_Format.CanMoveForward()) m_Format.ForwardNoCheck(); }
-		inline void FormatGoOutOfParameter()	{ while (m_Format.IsNotEqualTo('}') && m_Format.CanMoveForward()) m_Format.ForwardNoCheck(); m_Format.Forward(); }
-
-		inline bool Check()						{ return m_BufferIn.IsEqualTo(m_Format.Get()); }
-		inline bool CheckAndNext()				{ if (m_BufferIn.IsEqualTo(m_Format.Get())) { m_BufferIn.Forward(); m_Format.Forward(); return true; } return false; }
-
-		template<typename ...CharToTest>
-		inline bool CheckUntilNextParameter(const CharToTest ...ele) {
-			while (m_Format.IsNotEqualTo('{', ele...) && m_Format.CanMoveForward()) {
-				if (!Check()) return false;
-				m_Format.ForwardNoCheck(); m_BufferIn.Forward();
-			}
-			return true;
-		}
-
-		template<typename ...CharToTest>
-		inline bool CheckUntilEndOfParameter(const CharToTest ...ele) {
-			while (m_Format.IsNotEqualTo('}', ele...) && m_Format.CanMoveForward()) {
-				if (!Check()) return false;
-				m_Format.ForwardNoCheck(); m_BufferIn.Forward();
-			}
-			return true;
-		}
 	};
 }
 
