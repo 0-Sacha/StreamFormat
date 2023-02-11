@@ -414,7 +414,7 @@ namespace EngineCore::FMT::Detail
 		TextProperties::TextColor::ColorBG Bg;
 
 	public:
-		template <typename T> void ModifyThrow(const T&) { throw FormatGivenTypeError(); }
+		template <typename T> void ModifyThrow(const T&) { throw FMTGivenTypeError(); }
 
 		void ModifyThrow(const Color& given) { *this = given; }
 

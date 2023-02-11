@@ -15,7 +15,6 @@ namespace EngineCore::FMT::Detail {
 
 	public:
 		using typename Base::StringView;
-		using CharFormatType = CharFormat;
 
 	public:
 		using Base::GetBuffer;
@@ -27,24 +26,20 @@ namespace EngineCore::FMT::Detail {
 
 	public:
 		using Base::CanMoveForward;
-		using Base::CanMoveBackward;
-		using Base::IsNotOutOfBound;
-
-		using Base::IsEnd;
-
 		using Base::CanMoveForwardThrow;
+		using Base::CanMoveBackward;
 		using Base::CanMoveBackwardThrow;
+		using Base::IsNotOutOfBound;
 		using Base::IsNotOutOfBoundThrow;
+		using Base::IsEnd;
 		using Base::IsEndThrow;
 
 		using Base::Forward;
 		using Base::ForwardNoCheck;
+		using Base::ForwardNoThrow;
 		using Base::Backward;
 		using Base::BackwardNoCheck;
-		using Base::ForwardNoThrow;
-		using Base::ForwardNoCheckNoThrow;
 		using Base::BackwardNoThrow;
-		using Base::BackwardNoCheckNoThrow;
 
 		using Base::Get;
 		using Base::GetAndForward;
@@ -53,6 +48,8 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetAndBackwardNoCheck;
 		using Base::GetNext;
 		using Base::GetNextNoCheck;
+		using Base::GetPrev;
+		using Base::GetPrevNoCheck;
 
 	public:
 		using Base::FastReadInt;
@@ -80,6 +77,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::IsEqualToThrow;
 		using Base::IsNotEqualToThrow;
 		using Base::IsEqualToForwardThrow;
+		using Base::Skip;
 		using Base::IsNotEqualForwardThrow;
 
 		using Base::NextIsEqualTo;
@@ -91,15 +89,33 @@ namespace EngineCore::FMT::Detail {
 		using Base::NextIsEqualToForwardThrow;
 		using Base::NextIsNotEqualForwardThrow;
 
+		using Base::PrevIsEqualTo;
+		using Base::PrevIsNotEqualTo;
+		using Base::PrevIsEqualToThrow;
+		using Base::PrevIsNotEqualToThrow;
+
 		using Base::IsLowerCase;
 		using Base::IsUpperCase;
 		using Base::IsADigit;
+		using Base::IsLowerCaseForward;
+		using Base::IsUpperCaseForward;
+		using Base::IsADigitForward;
 		using Base::IsLowerCaseThrow;
 		using Base::IsUpperCaseThrow;
 		using Base::IsADigitThrow;
+		using Base::IsLowerCaseForwardThrow;
+		using Base::IsUpperCaseForwardThrow;
+		using Base::IsADigitForwardThrow;
 
+
+		using Base::IsSameSeq;
+		using Base::IsSameSeqForward;
+		using Base::IsSameSeqThrow;
+		using Base::IsSameSeqForwardThrow;
 		using Base::IsSame;
+		using Base::IsSameForward;
 		using Base::IsSameThrow;
+		using Base::IsSameForwardThrow;
 
 		using Base::GetWordFromList;
 
@@ -115,8 +131,12 @@ namespace EngineCore::FMT::Detail {
 		explicit FormatterMemoryFormat()
 			: Base() {}
 
+		template <std::size_t SIZE>
+		explicit FormatterMemoryFormat(const CharFormat (&format)[SIZE])
+			: Base(format, SIZE) {}
+
 		explicit FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)
-			: Base(format) {}
+			: Base(format.data(), format.size()) {}
 
  		explicit FormatterMemoryFormat(const CharFormat* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
@@ -165,7 +185,7 @@ namespace EngineCore::FMT::Detail {
 	public:
 		template<typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
             const CharToTest* const prevSubFormat = m_CurrentPos;
-            if (IsSame(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
+            if (IsSameForward(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
             m_CurrentPos = prevSubFormat;
             return false;
         }

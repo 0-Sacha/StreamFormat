@@ -7,26 +7,21 @@ namespace EngineCore::FMT::Detail {
 	struct TextPropertiesParser {
 
 	public:
-		explicit TextPropertiesParser(FormatterContext& context)
+		explicit TextPropertiesParser(FormatterContext& context, const TextProperties::Properties* baseContextProperties = nullptr)
 			: Context{context}
-			, ParentCurrentContexProperties{nullptr}
-			, CurrentContexProperties{}
-		{}
-
-		template<typename ParentContext>
-		explicit TextPropertiesParser(FormatterContext& context, ParentContext& parent)
-			: Context{context}
-			, ParentCurrentContexProperties{&(parent.GetTextPropertiesParser().CurrentContexProperties)}
-			, CurrentContexProperties{parent.GetTextPropertiesParser().CurrentContexProperties}
+			, BaseContextProperties{baseContextProperties}
+			, CurrentContexProperties{baseContextProperties == nullptr ? TextProperties::Properties{} : *baseContextProperties}
 		{}
 
 		~TextPropertiesParser()
 		{
-			if (ParentCurrentContexProperties != nullptr)
-				*ParentCurrentContexProperties = CurrentContexProperties;
+			if (BaseContextProperties != nullptr)
+				Reload(*BaseContextProperties);
 			else
 				AllResetIfNeeded();
 		}
+
+		void SetBaseContextProperties(const TextProperties::Properties* baseContextProperties) { BaseContextProperties = baseContextProperties; }
 
 	public:
 		FormatIndex GetFormatIndexThrow()  { return Context.GetFormatIndexThrow(); }
@@ -87,9 +82,9 @@ namespace EngineCore::FMT::Detail {
 		void ReloadFront(const TextProperties::TextFront::Front& target);
 
 	public:
-		FormatterContext& 		Context;
-		TextProperties::Properties* ParentCurrentContexProperties;
-		TextProperties::Properties 	CurrentContexProperties;
+		FormatterContext& 					Context;
+		const TextProperties::Properties* 	BaseContextProperties;
+		TextProperties::Properties 			CurrentContexProperties;
 	};
 }
 

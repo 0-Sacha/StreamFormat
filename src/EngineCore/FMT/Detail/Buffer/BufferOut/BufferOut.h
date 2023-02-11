@@ -15,55 +15,48 @@ namespace EngineCore::FMT::Detail {
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
-		using Base::m_ParentBuffer;
 
 	public:
 		using typename Base::StringView;
 
 	public:
-		using CharBufferType = CharBuffer;
-
 		using Base::GetBuffer;
 		using Base::GetBufferCurrentPos;
 		using Base::GetBufferEnd;
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
-		using Base::SetParentBufferForUpdate;
 
 		using Base::SetBuffer;
 		using Base::SetCurrentPos;
 
 	public:
-		using Base::CanMoveForward;
+		// using Base::CanMoveForward;
+		// using Base::CanMoveForwardThrow;
 		using Base::CanMoveBackward;
-		using Base::IsNotOutOfBound;
-
-		using Base::IsEnd;
-
-		using Base::CanMoveForwardThrow;
 		using Base::CanMoveBackwardThrow;
+
+		using Base::IsNotOutOfBound;
 		using Base::IsNotOutOfBoundThrow;
+		using Base::IsEnd;
 		using Base::IsEndThrow;
 
-		using Base::Forward;
+		// using Base::Forward;
 		using Base::ForwardNoCheck;
+		// using Base::ForwardNoThrow;
 		using Base::Backward;
 		using Base::BackwardNoCheck;
-		using Base::ForwardNoThrow;
-		using Base::ForwardNoCheckNoThrow;
 		using Base::BackwardNoThrow;
-		using Base::BackwardNoCheckNoThrow;
 
 		using Base::Get;
-		using Base::GetAndForward;
+		// using Base::GetAndForward;
 		using Base::GetAndForwardNoCheck;
 		using Base::GetAndBackward;
 		using Base::GetAndBackwardNoCheck;
-		using Base::GetNext;
+		// using Base::GetNext;
 		using Base::GetNextNoCheck;
-
-		using Base::UpdateFromChlid;
+		using Base::GetPrev;
+		using Base::GetPrevNoCheck;
 
 	public:
 		static constexpr char			UPPER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -97,30 +90,6 @@ namespace EngineCore::FMT::Detail {
 			m_BufferManager.BeginContext();
 			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
 			SetCurrentPos(m_BufferManager.GetBuffer());
-		}
-
-		template <typename ParentBuffer>
-		explicit BasicFormatterMemoryBufferOut(ParentBuffer& parentBuffer)
-			: Base()
-			, m_BufferManager(parentBuffer.GetBufferManager())
-			, m_NoStride(parentBuffer.GetNoStride())
-			, m_Indent(parentBuffer.GetIndent())
-		{
-			SetParentBufferForUpdate(&parentBuffer);
-			SetBuffer(m_BufferManager.GetBuffer(), m_BufferManager.GetBufferSize());
-			SetCurrentPos(parentBuffer.GetBufferCurrentPos());
-		}
-
-		~BasicFormatterMemoryBufferOut()
-		{
-			PushEndChar();
-
-			// This must be, but this do not compile : BasicFormatterMemoryBuffer<CharBuffer>::BasicFormatterMemoryBuffer<CharBuffer>();
-			UpdateFromChlid();
-
-			// if not a child
-			if (m_ParentBuffer == nullptr)
-				m_BufferManager.EndContext(GetBufferCurrentSize() - 1);
 		}
 
 	public:
@@ -172,12 +141,10 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharType> inline void BasicWriteType(const std::basic_string_view<CharType>& i) { WriteStringView(i); }
 
 	public:
-		virtual bool RecoveryFunction(const std::size_t count) { return AddSize(count); }
-
 		bool AddSize(const std::size_t count)
 		{
 			if (m_CurrentPos >= m_BufferEnd)
-				std::cout << "Issue, out of bound" << std::endl;
+				throw Detail::FMTBufferError{};
 			std::size_t currentSize = GetBufferCurrentSize();
 			if (m_BufferManager.AddSize(count) == false)
 				return false;
@@ -186,15 +153,27 @@ namespace EngineCore::FMT::Detail {
 			return true;
 		}
 
-		/////---------- Buffer Commands ----------/////
-		inline void SetChar(const CharBuffer c)							{ *m_CurrentPos = c; }
-		inline void PushBack(const CharBuffer c)						{ if (CanMoveForward()) *m_CurrentPos++ = c; }
-		inline void PushReverse(const CharBuffer c)						{ if (CanMoveBackward()) *m_CurrentPos-- = c; }
-		inline void PushBackNoCheck(const CharBuffer c)					{ *m_CurrentPos++ = c; }
-		inline void PushReverseNoCheck(const CharBuffer c)				{ *m_CurrentPos-- = c; }
+		inline bool CanMoveForward()								{ if (Base::CanMoveForward())		return true; return AddSize(1); }
+		inline bool CanMoveForward(const std::size_t count)			{ if (Base::CanMoveForward(count))	return true; return AddSize(count);}
+		inline void CanMoveForwardThrow()							{ if (CanMoveForward())			return; throw FMTBufferFull(); }
+		inline void CanMoveForwardThrow(const std::size_t count)	{ if (CanMoveForward(count))	return; throw FMTBufferFull(); }
 
-		inline void PushBack(const CharBuffer c, std::size_t count)			{ if (CanMoveForward(count)) while (count-- > 0) PushBackNoCheck(c); }
-		inline void PushReverse(const CharBuffer c, std::size_t count)		{ if (CanMoveBackward(count)) while (count-- > 0) PushReverseNoCheck(c); }
+		inline void Forward()										{ CanMoveForwardThrow(); ++m_CurrentPos; }
+		inline void Forward(const std::size_t count)				{ CanMoveForwardThrow(count); m_CurrentPos += count; }
+		inline void ForwardNoThrow()								{ if (CanMoveForward()) ++m_CurrentPos; }
+		inline void ForwardNoThrow(const std::size_t count)			{ if (CanMoveForward(count)) m_CurrentPos += count; }
+		inline CharBuffer GetAndForward()							{ CanMoveForwardThrow(); return *m_CurrentPos++; }
+		inline CharBuffer GetNext()									{ CanMoveForwardThrow(); return *(m_CurrentPos + 1); }
+
+		/////---------- Buffer Commands ----------/////
+		inline void SetChar(const CharBuffer c)						{ *m_CurrentPos = c; }
+		inline void PushBack(const CharBuffer c)					{ if (CanMoveForward()) *m_CurrentPos++ = c; }
+		inline void PushReverse(const CharBuffer c)					{ if (CanMoveForward()) *m_CurrentPos-- = c; }
+		inline void PushBackNoCheck(const CharBuffer c)				{ *m_CurrentPos++ = c; }
+		inline void PushReverseNoCheck(const CharBuffer c)			{ *m_CurrentPos-- = c; }
+
+		inline void PushBack(const CharBuffer c, std::size_t count)			{ if (CanMoveForward(count)) 	while (count-- > 0) PushBackNoCheck(c); }
+		inline void PushReverse(const CharBuffer c, std::size_t count)		{ if (CanMoveForward(count)) 	while (count-- > 0) PushReverseNoCheck(c); }
 
 		inline void PushEndChar()										{ PushBack('\0'); }
 		inline void AddSpaces(const std::size_t count)					{ for (std::size_t i = count; i > 0 && CanMoveForward(); --i) PushBackNoCheck(' '); }

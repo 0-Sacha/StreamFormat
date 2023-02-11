@@ -22,7 +22,7 @@ namespace EngineCore::FMT::Detail {
     public:
         template <typename FormatterContext>
         inline void RunTypeAtIndex(FormatterContext &context, const Detail::FormatIndex& idx)
-                    { throw Detail::FormatBufferWrongIndex(); }
+                    { throw Detail::FMTBufferWrongIndex(); }
 
         template <typename FormatterContext>
         inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, const Detail::FormatIndex& beginSearchIndex)

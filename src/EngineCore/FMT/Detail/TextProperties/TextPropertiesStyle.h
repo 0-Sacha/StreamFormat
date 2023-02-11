@@ -204,7 +204,7 @@ namespace EngineCore::FMT::Detail {
 		TextProperties::TextStyle::Underline				Underline			= TextProperties::TextStyle::Underline::Disable;
 		TextProperties::TextStyle::UnderlineColor::Color	UnderlineColor;
 
-		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
 
 		void ModifyThrow(const Style& given)										{ *this = given; }
 

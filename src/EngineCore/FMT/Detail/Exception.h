@@ -4,24 +4,24 @@
 
 namespace EngineCore::FMT::Detail {
 
-	class FormatException {};
-	class FormatError				: public FormatException {};
-	class FormatUtilityException	: public FormatException {};
+	class FMTException 			{};
+	class FMTError				: public FMTException {};
+	class FMTUtilityException	: public FMTException {};
 
-	class FormatBufferError	: public FormatError {};
-	class FormatBufferFull	: public FormatBufferError {};
-	class FormatBufferLock	: public FormatBufferError {};
-	class FormatBufferEnd	: public FormatBufferError {};
+	class FMTBufferError	: public FMTError {};
+	class FMTBufferFull		: public FMTBufferError {};
+	class FMTBufferLock		: public FMTBufferError {};
+	class FMTBufferEnd		: public FMTBufferError {};
 	
-	class FormatIndexError				: public FormatError {};
-	class FormatBufferWrongIndex 		: public FormatIndexError {};
-	class FormatBufferIndexOutOfRange 	: public FormatIndexError {};
+	class FMTIndexError				: public FMTError {};
+	class FMTBufferWrongIndex 		: public FMTIndexError {};
+	class FMTBufferIndexOutOfRange 	: public FMTIndexError {};
 
-	class FormatParseError		: public FormatError {};
-	class FormatGivenTypeError	: public FormatParseError {};
+	class FMTParseError			: public FMTError {};
+	class FMTGivenTypeError		: public FMTParseError {};
 
-	class FormatImplError			: public FormatError {};
-	class FormatShouldNotEndHere 	: public FormatImplError {};
-	class FormatNotImplYet 			: public FormatImplError {};
+	class FMTImplError			: public FMTError {};
+	class FMTShouldNotEndHere 	: public FMTImplError {};
+	class FMTNotImplYet 		: public FMTImplError {};
 
 }

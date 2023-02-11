@@ -10,12 +10,12 @@ namespace EngineCore::FMT::ChronoDetail {
 		Detail::ShiftSize nbDigit{};
 		pattern.ReadUInt(nbDigit.Value);
 
-		if (pattern.IsSame('n', 's')) 	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())	, Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('u', 's'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count())	, Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('m', 's'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count())	, Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('s'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count())		, Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('m'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count())		, Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('h'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count())			, Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('n', 's')) 	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('u', 's'))		return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count()), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('m', 's'))		return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('s'))			return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('m'))			return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('h'))			return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
 	}
 
 	template<typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
@@ -25,13 +25,13 @@ namespace EngineCore::FMT::ChronoDetail {
 		bool isDefault = nbDigit.IsDefault();
 
 		if (isDefault) nbDigit.Value = 3;
-		if (pattern.IsSame('n', 's')) 	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('u', 's'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count() % 1000), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('m', 's'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('n', 's')) return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('u', 's'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count()	% 1000), Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('m', 's'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
 		if (isDefault) nbDigit.Value = 2;
-		if (pattern.IsSame('s'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()		% 60),		Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('m'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()		% 60),		Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('h'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()			% 24),		Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('s'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()		% 60),		Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('m'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()		% 60),		Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('h'))	return context.BufferOut().BasicWriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()			% 24),		Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
 	}
 
 	template<typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
@@ -43,9 +43,9 @@ namespace EngineCore::FMT::ChronoDetail {
 		if (pattern.IsEqualToForward('.'))
 			pattern.ReadUInt(nbDecimal.Value);
 
-		if (pattern.IsSame('u', 's'))	return context.BufferOut().BasicWriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())		/ 1000, 		nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('m', 's'))	return context.BufferOut().BasicWriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())		/ 1000000, 		nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
-		if (pattern.IsSame('s'))		return context.BufferOut().BasicWriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())		/ 1000000000,	nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('u', 's'))	return context.BufferOut().BasicWriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())		/ 1000, 		nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('m', 's'))	return context.BufferOut().BasicWriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())		/ 1000000, 		nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
+		if (pattern.IsSameSeqForward('s'))		return context.BufferOut().BasicWriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count())		/ 1000000000,	nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
 	}
 
 	template<typename Clock, typename Duration, typename FormatterContext>
@@ -59,7 +59,7 @@ namespace EngineCore::FMT::ChronoDetail {
 		if (patternPtr != nullptr)
 			patternStr = patternPtr->ValueAsText;
 
-		Detail::FormatterMemoryFormat pattern(patternStr);
+		Detail::FormatterMemoryFormat pattern(patternStr.data(), patternStr.size());
 		context.Print(pattern.ParamGoToAndGetStr('%', '#', '/'));
 		while (!pattern.IsEnd()) {
 

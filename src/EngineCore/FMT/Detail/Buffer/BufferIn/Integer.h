@@ -2,6 +2,8 @@
 
 #include "FMT/Detail/Buffer/BufferIn/BufferIn.h"
 
+#include <cmath>
+
 namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
@@ -11,7 +13,7 @@ namespace EngineCore::FMT::Detail {
 
 		bool sign = IsEqualToForward('-');
 		if (!IsADigit())
-			throw FormatParseError();
+			throw FMTParseError();
 
 		while (IsADigit())
 			res = res * 10 + (GetAndForward() - '0');
@@ -25,7 +27,7 @@ namespace EngineCore::FMT::Detail {
 		T res = (T)0;
 
 		if(!IsADigit())
-			throw FormatParseError();
+			throw FMTParseError();
 
 		while (IsADigit())
 			res = res * 10 + (GetAndForward() - '0');
@@ -77,7 +79,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftEnd(st, sp, shift);
 
-		if (shift > 0) throw FormatParseError();
+		if (shift > 0) throw FMTParseError();
 		
 		i = sign ? -res : res;
 	}
@@ -98,7 +100,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftEnd(st, sp, shift);
 
-		if (shift > 0) throw FormatParseError();
+		if (shift > 0) throw FMTParseError();
 
 		i = res;
 	}
@@ -135,7 +137,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftEnd(st, sp, shift);
 
-		if (shift > 0) throw FormatParseError();
+		if (shift > 0) throw FMTParseError();
 
 		sign ? i = -iInt - res : i = iInt + res;
 	}
@@ -170,7 +172,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftEnd(st, sp, shift);
 
-		if (shift > 0) throw FormatParseError();
+		if (shift > 0) throw FMTParseError();
 
 		i = res;
 	}
@@ -203,7 +205,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftEnd(st, sp, shift);
 
-		if (shift > 0) throw FormatParseError();
+		if (shift > 0) throw FMTParseError();
 
 		i = res;
 	}
@@ -234,7 +236,7 @@ namespace EngineCore::FMT::Detail {
 
 		SkipShiftEnd(st, sp, shift);
 
-		if (shift > 0) throw FormatParseError();
+		if (shift > 0) throw FMTParseError();
 
 		i = res;
 	}

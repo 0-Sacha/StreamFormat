@@ -2,6 +2,9 @@
 
 #include "BasicBufferManager.h"
 
+#include <memory>
+#include <iostream>
+
 namespace EngineCore::FMT::Detail {
 
     template <typename CharType>

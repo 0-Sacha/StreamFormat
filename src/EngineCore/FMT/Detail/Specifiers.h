@@ -2,6 +2,8 @@
 
 #include "EngineCore/Core/Core.h"
 
+#include <array>
+
 namespace EngineCore::FMT::Detail {
 	
 	template<typename T> struct ForwardAsInt;
@@ -318,7 +320,7 @@ namespace EngineCore::FMT::Detail {
 		}
 
 	public:
-		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
 
 		void ModifyThrow(const FormatData& given) 					{ *this = given; }
 

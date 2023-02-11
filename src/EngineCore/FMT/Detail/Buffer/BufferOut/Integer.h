@@ -2,6 +2,8 @@
 
 #include "FMT/Detail/Buffer/BufferOut/BufferOut.h"
 
+#include <cmath>
+
 namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FMT/Detail/Detail.h"
-#include "EngineCore/Detail/MapMacro.h"
+#include "EngineCore/Tools/MapMacro.h"
 
 #define ENGINECORE_FORMATTER_DECLARED
 namespace EngineCore::FMT {
@@ -10,7 +10,7 @@ namespace EngineCore::FMT {
 	struct FormatterType {
 		static inline void Write(const T& t, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {}{C})", typeid(T).name());
-			throw Detail::FormatShouldNotEndHere{};
+			throw Detail::FMTShouldNotEndHere{};
 		}
 	};
 }

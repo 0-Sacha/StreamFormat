@@ -56,7 +56,7 @@ namespace EngineCore::FMT::Context {
 
 		else if (m_Format.IsEqualToForward('A')) { m_FormatData.Safe = true; }
 
-		else if (m_Format.IsEqualToForward('W')) { m_FormatData.KeepNewStyle = true; }
+		else if (m_Format.IsEqualToForward('K')) { m_FormatData.KeepNewStyle = true; }
 
 		else if (m_Format.IsEqualToForward('N')) { m_FormatData.NextOverride = ParseNextOverrideFormatData(); }
 	}
@@ -89,7 +89,7 @@ namespace EngineCore::FMT::Context {
 			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::FloatPrecision>(formatIndex))
 			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftPrint>(formatIndex))
 			 || m_FormatData.ModifyTestThrow(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftType>(formatIndex))) == false)
-			throw Detail::FormatGivenTypeError{};
+			throw Detail::FMTGivenTypeError{};
 			m_Format.IsEqualToForwardThrow('}');
 		}
 		else if (m_Format.IsEqualToForward('=')) { m_FormatData.TrueValue = true; }
@@ -198,9 +198,9 @@ namespace EngineCore::FMT::Context {
 						return finalRecIndex;
 				}
 				
-				throw Detail::FormatParseError();
+				throw Detail::FMTParseError();
 
-			} catch (const Detail::FormatError&)
+			} catch (const Detail::FMTError&)
 			{}
 		}
 		m_Format.SetBufferCurrentPos(mainSubFormat);
@@ -210,11 +210,11 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackageSaving>
 	void BasicContext<CharFormat, ContextPackageSaving>::ParseSpecial() {
-			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseColor(); 	}
-		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseStyle(); 	}
-		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseFront(); 	}
-		else if (m_Format.IsEqualTo('T') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseTimer(); 	}
-		else if (m_Format.IsEqualTo('D') && m_Format.NextIsEqualToForward(':', '}'))		{ ParseDate(); 		}
+			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseColor(); 	}
+		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseStyle(); 	}
+		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseFront(); 	}
+		else if (m_Format.IsEqualTo('T') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseTimer(); 	}
+		else if (m_Format.IsEqualTo('D') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseDate(); 		}
 		else if (m_Format.IsEqualTo('K') && m_Format.NextIsEqualToForward(':'))			{ ParseSetter();	}
 	}
 

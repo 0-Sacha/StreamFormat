@@ -1,6 +1,8 @@
 #pragma once
 
-#include "EngineCorepch.h"
+#include "Flags.h"
+
+#include <utility>
 
 #ifdef ENGINECORE_DEV
 #define ENGINECORE_DEBUG
@@ -34,12 +36,4 @@
 	#define ENGINECORE_ASSERT(x)	if(!(x)) ENGINECORE_FATAL("ASSERT FAILED! : {}", #x)
 #else
 	#define ENGINECORE_ASSERT(x)
-#endif
-
-#ifndef __FUNCSIG__
-#define __FUNCSIG__ __PRETTY_FUNCTION__
-#endif
-
-#ifndef __FUNCDNAME__
-#define __FUNCDNAME__ __PRETTY_FUNCTION__
 #endif

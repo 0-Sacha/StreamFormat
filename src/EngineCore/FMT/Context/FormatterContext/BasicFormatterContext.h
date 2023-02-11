@@ -28,16 +28,12 @@ namespace EngineCore::FMT::Context {
         using typename Base::FormatBufferType;
         using typename Base::ContextArgsInterface;
         
-        using CharBufferType 	    = CharBuffer;
         using StringViewBuffer 	    = std::basic_string_view<CharBuffer>;
         using BufferOutType 	    = Detail::BasicFormatterMemoryBufferOut<CharBuffer>;
         using TextPropertiesParser  = Detail::TextPropertiesParser<M_Type>;
 
     public:
         BasicFormatterContext(Detail::BasicBufferManager<CharBuffer>& bufferManager);
-        template<typename ParentCharFormat>
-        BasicFormatterContext(BasicFormatterContext<ParentCharFormat, CharBuffer>& parentContext);
-
 	    ~BasicFormatterContext();
 
     protected:
@@ -46,8 +42,8 @@ namespace EngineCore::FMT::Context {
         using Base::m_FormatData;
         using Base::m_ContextArgsInterface;
 
-        BufferOutType 		    m_BufferOut;
-        TextPropertiesParser 	m_TextPropertiesParser;
+        BufferOutType 		                    m_BufferOut;
+        TextPropertiesParser 	                m_TextPropertiesParser;
 
     public:
         using Base::Format;

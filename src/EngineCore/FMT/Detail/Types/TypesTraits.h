@@ -2,6 +2,8 @@
 
 #include "EngineCore/Core/Core.h"
 
+#include <string>
+
 namespace EngineCore::FMT::Detail {
 
 	/////---------- Const PT ----------/////

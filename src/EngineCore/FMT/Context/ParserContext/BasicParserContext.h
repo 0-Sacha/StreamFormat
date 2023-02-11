@@ -24,15 +24,14 @@ namespace EngineCore::FMT::Context {
 		using typename Base::FormatBufferType;
 		using typename Base::ContextArgsInterface;
 
-		using CharBufferType	= CharBuffer;
 		using StringViewBuffer	= std::basic_string_view<CharBuffer>;
 		using BufferInType		= Detail::BasicFormatterMemoryBufferIn<CharBuffer>;
 
 	public:
-		BasicParserContext(const std::basic_string_view<CharBuffer>& buffer);
-
-		template<typename ParentCharFormat>
-		BasicParserContext(BasicParserContext<ParentCharFormat, CharBuffer>& parentContext);
+		template <std::size_t SIZE>
+		explicit BasicParserContext(const CharBuffer (&buffer)[SIZE]);
+		explicit BasicParserContext(const CharBuffer* const buffer, const std::size_t size);
+		explicit BasicParserContext(const std::basic_string_view<CharBuffer>& buffer);
 
 		~BasicParserContext();
 
@@ -58,14 +57,13 @@ namespace EngineCore::FMT::Context {
 
     protected:
         void FormatToParamsString(const CharFormat* buffer, std::size_t size) override {
-			if (m_BufferIn.IsSame(buffer, size) == false)
-				throw Detail::FormatParseError();
+			m_BufferIn.IsSameForwardThrow(buffer, size);
 		}
 
 		void FormatExecParams() override {
 			if (Parse() == false)
 				if (m_BufferIn.IsEqualToForward('{') == false)
-					throw Detail::FormatParseError();
+					throw Detail::FMTParseError();
 		}
 
 		void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }

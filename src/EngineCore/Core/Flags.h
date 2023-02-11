@@ -1,3 +1,5 @@
+#pragma once
+
 // Target Define
 #ifdef TARGET_DEBUG
 #define ENGINECORE_DEBUG
@@ -42,30 +44,11 @@
 #endif
 
 
-// Include
-#include <cstring>
-#include <string>
+// Compiler Macro Define
+#ifndef __FUNCSIG__
+#define __FUNCSIG__ __PRETTY_FUNCTION__
+#endif
 
-#include <utility>
-#include <memory>
-#include <limits>
-#include <array>
-#include <chrono>
-#include <bitset>
-
-#include <algorithm>
-#include <functional>
-#include <type_traits>
-#include <concepts>
-#include <any>
-
-#include <cmath>
-
-#include <fstream>
-#include <iostream>
-
-
-// Intrinsic
-#ifdef ENGINECORE_PLATFORM_WINDOWS
-#include <intrin.h>
+#ifndef __FUNCDNAME__
+#define __FUNCDNAME__ __PRETTY_FUNCTION__
 #endif

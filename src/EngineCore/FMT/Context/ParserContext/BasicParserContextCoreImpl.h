@@ -5,16 +5,22 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
-	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const std::basic_string_view<CharBuffer>& buffer)
+	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const CharBuffer* const buffer, const std::size_t size)
 		: Base()
-		, m_BufferIn(buffer)
+		, m_BufferIn(buffer, size)
 	{}
 	
 	template<typename CharFormat, typename CharBuffer>
-	template<typename ParentCharFormat>
-	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(BasicParserContext<ParentCharFormat, CharBuffer>& parentContext)
+	template <std::size_t SIZE>
+	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const CharBuffer (&buffer)[SIZE])
 		: Base()
-		, m_BufferIn(parentContext.BufferIn())
+		, m_BufferIn(buffer, SIZE)
+	{}
+
+	template<typename CharFormat, typename CharBuffer>
+	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const std::basic_string_view<CharBuffer>& buffer)
+		: Base()
+		, m_BufferIn(buffer.data(), buffer.size())
 	{}
 
 	template<typename CharFormat, typename CharBuffer>
@@ -33,8 +39,10 @@ namespace EngineCore::FMT::Context {
 		}
 		else
 		{
-			ContextType child(*this);
+			ContextType child(m_BufferIn.GetBuffer(), m_BufferIn.GetBufferSize());
+			child.BufferIn().SetBufferCurrentPos(m_BufferIn.GetBufferCurrentPos());
 			child.Run(format, &childContextArgsInterface);
+			m_BufferIn.SetBufferCurrentPos(child.BufferIn().GetBufferCurrentPos());
 		}
 	}
 }

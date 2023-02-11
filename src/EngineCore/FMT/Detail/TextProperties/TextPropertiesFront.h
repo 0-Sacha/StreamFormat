@@ -28,7 +28,7 @@ namespace EngineCore::FMT::Detail {
 		std::uint8_t FrontId;
 
 	public:
-		template <typename T> void ModifyThrow(const T&) { throw Detail::FormatGivenTypeError{}; }
+		template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
 		void ModifyThrow(const Front& given) { *this = given; }
 
 	public:

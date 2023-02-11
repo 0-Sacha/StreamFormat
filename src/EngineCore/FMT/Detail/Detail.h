@@ -1,7 +1,6 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
-#include "EngineCore/Detail/Detail.h"
 
 #include "Types/Types.h"
 #include "Types/TypesInfo.h"

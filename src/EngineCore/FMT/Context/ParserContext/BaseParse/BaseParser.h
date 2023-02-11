@@ -21,16 +21,16 @@ namespace EngineCore::FMT {
 				{
 				case 'T':
 				case 't':
-					if (context.BufferIn().IsSame("True"))
+					if (context.BufferIn().IsSameForward("True"))
 						t = true;
 				
 				case 'F':
 				case 'f':
-					if (context.BufferIn().IsSame("False"))
+					if (context.BufferIn().IsSameForward("False"))
 						t = false;
 				
 				default:
-					throw Detail::FormatParseError();
+					throw Detail::FMTParseError();
 				}
 				return;
 			} else {
@@ -38,7 +38,7 @@ namespace EngineCore::FMT {
 				else if (context.BufferIn().IsEqualToForward('1'))	{ t = true;		return; }
 			}
 
-			throw Detail::FormatParseError();
+			throw Detail::FMTParseError();
 		}
 	};
 

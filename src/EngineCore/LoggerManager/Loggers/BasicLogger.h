@@ -2,6 +2,8 @@
 
 #include "LoggerManager/Detail/Detail.h"
 
+#include <iostream>
+
 namespace EngineCore::LoggerManager::Detail {
 
 	template <typename Severity>
@@ -51,8 +53,8 @@ namespace EngineCore::LoggerManager::Detail {
 			if (severity < m_Severity)
 				return;
 
-			FMT::Detail::FormatInBufferManager(preFormatBufferManager, std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
-			FMT::Detail::FormatInBufferManagerLn(fullFormatBufferManager, preFormatBufferManager.GetLastGeneratedString(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
+			FMT::Detail::FormatInBufferManager(preFormatBufferManager, false, std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
+			FMT::Detail::FormatInBufferManager(fullFormatBufferManager, true, preFormatBufferManager.GetLastGeneratedString(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 			m_Stream.write(fullFormatBufferManager.GetBuffer(), fullFormatBufferManager.GetLastGeneratedDataSize());
 			m_Stream.flush();
 		}
@@ -63,7 +65,7 @@ namespace EngineCore::LoggerManager::Detail {
 			if (severity < m_Severity)
 				return;
 
-			FMT::Detail::FormatInBufferManagerLn(fullFormatBufferManager, m_Pattern, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
+			FMT::Detail::FormatInBufferManager(fullFormatBufferManager, true, m_Pattern, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
 			m_Stream.write(fullFormatBufferManager.GetBuffer(), fullFormatBufferManager.GetLastGeneratedDataSize());
 			m_Stream.flush();
 		}

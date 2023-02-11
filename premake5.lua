@@ -16,9 +16,6 @@ project "EngineCore"
 	cppdialect "C++20"
 	staticruntime "on"
 
-	pchheader "EngineCorepch.h"
-	pchsource "src/EngineCore/Core/EngineCorepch.cpp"
-
 	targetdir 	(Solution.Path.ProjectTargetDirectory)
 	objdir 		(Solution.Path.ProjectObjectDirectory)
 

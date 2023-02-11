@@ -4,7 +4,6 @@
 #include "TextPropertiesStyle.h"
 #include "TextPropertiesFront.h"
 
-
 namespace EngineCore::FMT::Detail {
 	struct TextProperties::Properties
 	{

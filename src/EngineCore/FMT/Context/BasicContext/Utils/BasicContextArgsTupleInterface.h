@@ -4,6 +4,9 @@
 #include "FMT/Detail/Detail.h"
 #include "FormatterContextTemplate.h"
 
+#include <any>
+#include <functional>
+
 namespace EngineCore::FMT::Detail {
 
     template<typename CharFormat>
@@ -48,7 +51,7 @@ namespace EngineCore::FMT::Detail {
                 const T* value = GetTypeAtIndex<T>(idx);
                 if (value != nullptr)
                     return *value;
-                throw FormatGivenTypeError{};
+                throw FMTGivenTypeError{};
             }
 
 
