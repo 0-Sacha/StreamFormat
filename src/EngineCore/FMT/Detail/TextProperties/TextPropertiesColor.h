@@ -418,6 +418,11 @@ namespace EngineCore::FMT::Detail
 
 		void ModifyThrow(const Color& given) { *this = given; }
 
+		void ModifyThrow(const TextProperties::TextColor::Reset& given) {
+			Fg = TextProperties::TextColor::ColorFG{};
+			Bg = TextProperties::TextColor::ColorBG{};
+		}
+
 		void ModifyThrow(const TextProperties::TextColor::BasicColorFG& given) {
 			Fg.Type = TextProperties::TextColor::ColorType::BasicColor;
 			Fg.Data.BasicColor = given;

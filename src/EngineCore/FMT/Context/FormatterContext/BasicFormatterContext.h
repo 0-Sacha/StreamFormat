@@ -178,7 +178,7 @@ namespace EngineCore::FMT::Context {
         template<typename Type, typename ...Rest>
         inline void BasicWriteType(Type&& type, Rest&& ...rest)	    { BasicRunType(type, std::forward<Rest>(rest)...); }
         template<typename Type, typename ...Rest>
-        inline void BasicSubWriteType(Type&& type, Rest&& ...rest)	{ BasicSubRunType(type, std::forward<Rest>(rest)...); }
+        inline void BasicSubWriteType(Type&& type, Rest&& ...rest)	{ BasicRunSubType(type, std::forward<Rest>(rest)...); }
 
     public:
         using Base::GetStringViewParamUntil;

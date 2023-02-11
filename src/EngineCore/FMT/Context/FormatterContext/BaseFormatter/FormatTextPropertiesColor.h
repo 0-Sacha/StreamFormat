@@ -5,6 +5,16 @@
 namespace EngineCore::FMT {
 
 	template<typename FormatterContext>
+	struct FormatterType<Detail::TextProperties::TextColor::Reset, FormatterContext>
+	{
+		static void Write(const Detail::TextProperties::TextColor::Reset& t, FormatterContext& context) {
+			Detail::NoStrideFunction nostride(context.BufferOut());
+			context.BasicWriteType('\033', '[', 39, 49, 'm');
+			context.GetTextPropertiesParser().ColorModif(t);
+		}
+	};
+
+	template<typename FormatterContext>
 	struct FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>
 	{
 		static void Write(const Detail::TextProperties::TextColor::BasicColorFG& t, FormatterContext& context) {
