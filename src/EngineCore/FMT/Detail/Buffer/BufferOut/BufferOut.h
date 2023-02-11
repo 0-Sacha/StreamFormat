@@ -153,8 +153,8 @@ namespace EngineCore::FMT::Detail {
 			return true;
 		}
 
-		inline bool CanMoveForward()								{ if (Base::CanMoveForward())		return true; return AddSize(1); }
-		inline bool CanMoveForward(const std::size_t count)			{ if (Base::CanMoveForward(count))	return true; return AddSize(count);}
+		inline bool CanMoveForward()								{ if (m_CurrentPos < m_BufferEnd)			return true; return AddSize(1); }
+		inline bool CanMoveForward(const std::size_t count)			{ if (m_CurrentPos + count < m_BufferEnd)	return true; return AddSize(count);}
 		inline void CanMoveForwardThrow()							{ if (CanMoveForward())			return; throw FMTBufferFull(); }
 		inline void CanMoveForwardThrow(const std::size_t count)	{ if (CanMoveForward(count))	return; throw FMTBufferFull(); }
 

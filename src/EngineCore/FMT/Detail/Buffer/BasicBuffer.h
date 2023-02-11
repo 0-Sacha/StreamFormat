@@ -57,7 +57,7 @@ namespace EngineCore::FMT::Detail {
 
 	public:
 		// Format
-		inline bool CanMoveForward() const							{ return m_CurrentPos + 1 < m_BufferEnd; }
+		inline bool CanMoveForward() const							{ return m_CurrentPos < m_BufferEnd; }
 		inline bool CanMoveForward(const std::size_t count) const	{ return m_CurrentPos + count < m_BufferEnd; }
 
 		inline bool CanMoveBackward() const							{ return m_CurrentPos - 1 >= m_Buffer; }
