@@ -9,10 +9,10 @@
 
 namespace EngineCore::FMT::Context {
 
-	template<typename CharFormat, typename ContextPackageSaving>
+	template<typename CharFormat, typename ContextPackage>
 	class BasicContext {
 	private:
-		using M_Type 				= BasicContext<CharFormat, ContextPackageSaving>;
+		using M_Type 				= BasicContext<CharFormat, ContextPackage>;
 	
 	public:
 		using CharFormatType 		= CharFormat;
@@ -78,8 +78,8 @@ namespace EngineCore::FMT::Context {
 		virtual void ParseFormatDataColor() = 0;
 		virtual void ParseFormatDataStyle() = 0;
 		virtual void ParseFormatDataFront() = 0;
-		virtual ContextPackageSaving ContextStyleSave() = 0;
-		virtual void ContextStyleRestore(const ContextPackageSaving& package) = 0;
+		virtual ContextPackage ContextStyleSave() = 0;
+		virtual void ContextStyleRestore(const ContextPackage& package) = 0;
 
 		void ParseSpecial();
 		void ParseVariable(Detail::FormatIndex formatIdx);

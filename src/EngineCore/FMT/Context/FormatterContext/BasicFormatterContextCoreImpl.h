@@ -12,6 +12,13 @@ namespace EngineCore::FMT::Context {
 	{}
 
 	template<typename CharFormat, typename CharBuffer>
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(Detail::BasicBufferManager<CharBuffer>& bufferManager, const Detail::TextProperties::Properties* parentContextProperties)
+		: Base()
+		, m_BufferOut(bufferManager)
+		, m_TextPropertiesParser(*this, parentContextProperties)
+	{}
+
+	template<typename CharFormat, typename CharBuffer>
 	BasicFormatterContext<CharFormat, CharBuffer>::~BasicFormatterContext()
 	{
 		m_BufferOut.PushEndChar();
@@ -32,7 +39,7 @@ namespace EngineCore::FMT::Context {
 		}
 		else
 		{
-			ContextType child(m_BufferOut.GetBufferManager());
+			ContextType child(m_BufferOut.GetBufferManager(), &m_TextPropertiesParser);
 			child.BufferOut().SetBufferCurrentPos(m_BufferOut.GetBufferCurrentPos());
 			child.Run(format, &childContextArgsInterface);
 			m_BufferOut.SetBufferCurrentPos(child.BufferOut().GetBufferCurrentPos());

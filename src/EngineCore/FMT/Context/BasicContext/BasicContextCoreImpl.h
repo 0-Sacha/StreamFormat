@@ -4,19 +4,19 @@
 
 namespace EngineCore::FMT::Context {
 
-	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::BasicContext()
+	template<typename CharFormat, typename ContextPackage>
+	BasicContext<CharFormat, ContextPackage>::BasicContext()
 		: m_Format()
 		, m_ValuesIndex(0, 0)
 		, m_FormatData()
 		, m_ContextArgsInterface(nullptr)
 	{}
 
-	template<typename CharFormat, typename ContextPackageSaving>
-	BasicContext<CharFormat, ContextPackageSaving>::~BasicContext() { }
+	template<typename CharFormat, typename ContextPackage>
+	BasicContext<CharFormat, ContextPackage>::~BasicContext() { }
 
-	template<typename CharFormat, typename ContextPackageSaving>
-	void BasicContext<CharFormat, ContextPackageSaving>::RunImpl()
+	template<typename CharFormat, typename ContextPackage>
+	void BasicContext<CharFormat, ContextPackage>::RunImpl()
 	{
 		while (!m_Format.IsEnd())
 		{
@@ -34,14 +34,14 @@ namespace EngineCore::FMT::Context {
 		}
 	}
 
-	template<typename CharFormat, typename ContextPackageSaving>
-	void BasicContext<CharFormat, ContextPackageSaving>::Run(FormatBufferType& format, ContextArgsInterface* argsInterface)
+	template<typename CharFormat, typename ContextPackage>
+	void BasicContext<CharFormat, ContextPackage>::Run(FormatBufferType& format, ContextArgsInterface* argsInterface)
 	{
 		// Save old context
 		FormatBufferType oldFormat = m_Format;
 		ContextArgsInterface* oldArgsInterface = m_ContextArgsInterface;
 		Detail::FormatIndex oldValuesIndex = m_ValuesIndex;
-		ContextPackageSaving saveContextInfo = ContextStyleSave();
+		ContextPackage saveContextInfo = ContextStyleSave();
 		// Set new context
 		m_Format = format;
 		m_ContextArgsInterface = argsInterface;
@@ -56,9 +56,9 @@ namespace EngineCore::FMT::Context {
 		ContextStyleRestore(saveContextInfo);
 	}
 	
-	template<typename CharFormat, typename ContextPackageSaving>
+	template<typename CharFormat, typename ContextPackage>
 	template<typename T>
-	void BasicContext<CharFormat, ContextPackageSaving>::FormatReadParameterThrow(T& i) {
+	void BasicContext<CharFormat, ContextPackage>::FormatReadParameterThrow(T& i) {
 		if (!m_Format.IsEqualTo('{'))
 			if (m_Format.ReadUInt(i))
 				return;
@@ -75,8 +75,8 @@ namespace EngineCore::FMT::Context {
 		// CATCH 	m_Format.SetBufferCurrentPos(mainSubFormat);
 	}
 
-	template<typename CharFormat, typename ContextPackageSaving>
-	void BasicContext<CharFormat, ContextPackageSaving>::FormatDataApplyNextOverride() {
+	template<typename CharFormat, typename ContextPackage>
+	void BasicContext<CharFormat, ContextPackage>::FormatDataApplyNextOverride() {
 		if (m_FormatData.NextOverride.size() == 0)
 			return;
 	

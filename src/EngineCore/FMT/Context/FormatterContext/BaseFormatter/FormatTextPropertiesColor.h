@@ -9,7 +9,7 @@ namespace EngineCore::FMT {
 	{
 		static void Write(const Detail::TextProperties::TextColor::Reset& t, FormatterContext& context) {
 			Detail::NoStrideFunction nostride(context.BufferOut());
-			context.BasicWriteType('\033', '[', 39, 49, 'm');
+			context.BasicWriteType('\033', '[', 39, ';', 49, 'm');
 			context.GetTextPropertiesParser().ColorModif(t);
 		}
 	};

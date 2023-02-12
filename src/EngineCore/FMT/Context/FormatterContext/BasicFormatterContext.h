@@ -34,6 +34,7 @@ namespace EngineCore::FMT::Context {
 
     public:
         BasicFormatterContext(Detail::BasicBufferManager<CharBuffer>& bufferManager);
+	    BasicFormatterContext(Detail::BasicBufferManager<CharBuffer>& bufferManager, const Detail::TextProperties::Properties* parentContextProperties);
 	    ~BasicFormatterContext();
 
     protected:

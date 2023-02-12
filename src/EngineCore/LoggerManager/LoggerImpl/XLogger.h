@@ -118,7 +118,9 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<EngineCore::LoggerManager::LogSeverity::Value, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::LogSeverity::Value t, FormatterContext& context) {
+		static void Write(const EngineCore::LoggerManager::LogSeverity::Value t, FormatterContext& context)
+		{
+			context.GetFormatData().KeepNewStyle = true;
 			switch (t)
 			{
 			case EngineCore::LoggerManager::LogSeverity::Trace:
