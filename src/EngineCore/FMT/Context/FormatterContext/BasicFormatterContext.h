@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FMT/Context/BasicContext/BasicContextInclude.h"
+#include "FMT/Detail/Buffer/FMTBufferOut/FMTBufferOut.h"
 
 #include "Utils/FormatterType.h"
 #include "Utils/NamedArgs.h"
@@ -29,7 +30,7 @@ namespace EngineCore::FMT::Context {
         using typename Base::ContextArgsInterface;
         
         using StringViewBuffer 	    = std::basic_string_view<CharBuffer>;
-        using BufferOutType 	    = Detail::BasicFormatterMemoryBufferOut<CharBuffer>;
+        using BufferOutType 	    = Detail::FMTBufferOut<CharBuffer>;
         using TextPropertiesParser  = Detail::TextPropertiesParser<M_Type>;
 
     public:
@@ -189,10 +190,10 @@ namespace EngineCore::FMT::Context {
     public:
         void CheckEndStr();
 
-        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str)					    	{ m_BufferOut.WriteCharPt(str); }
-        template<typename CharStr>						inline void Print(const CharStr* str, std::size_t size)	        { m_BufferOut.WriteCharPt(str, size); }
-        template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPt(str, SIZE); }
-        template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr>& str)	{ m_BufferOut.WriteCharPt(str.data(), str.size()); }
+        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str)					    	{ m_BufferOut.WriteCharPtr(str); }
+        template<typename CharStr>						inline void Print(const CharStr* str, std::size_t size)	        { m_BufferOut.WriteCharPtr(str, size); }
+        template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPtr(str, SIZE); }
+        template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr>& str)	{ m_BufferOut.WriteCharPtr(str.data(), str.size()); }
         template<typename CharStr>						inline void Print(const std::basic_string<CharStr>& str)		{ Print(static_cast<std::basic_string_view<CharStr>>(str)); }
 
         template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str)					        { m_BufferOut.WriteCharPtIndent(str); }

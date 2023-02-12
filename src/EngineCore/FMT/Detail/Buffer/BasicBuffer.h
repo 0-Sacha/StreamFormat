@@ -5,7 +5,7 @@
 namespace EngineCore::FMT::Detail {
 
 	template <typename CharBuffer>
-	class BasicFormatterMemoryBuffer {
+	class BasicBuffer {
 
 	public:
 		using StringView = std::basic_string_view<Detail::GetBaseType<CharBuffer>>;
@@ -29,14 +29,14 @@ namespace EngineCore::FMT::Detail {
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
 
 	public:
-		explicit BasicFormatterMemoryBuffer()
+		explicit BasicBuffer()
 			: m_Buffer(nullptr)
 			, m_CurrentPos(nullptr)
 			, m_BufferEnd(nullptr)
 			, m_BufferSize(0)
 		{}
 
-		explicit BasicFormatterMemoryBuffer(CharBuffer *const buffer, const std::size_t size)
+		explicit BasicBuffer(CharBuffer *const buffer, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(m_Buffer)
 			, m_BufferEnd(m_Buffer + size)

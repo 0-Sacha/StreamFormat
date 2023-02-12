@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FMT/Detail/Detail.h"
-#include "FMT/Detail/Buffer/Buffer.h"
+#include "FMT/Detail/Buffer/FMTFormatBuffer/FMTFormatBuffer.h"
 
 #include "FMT/Detail/FormatterHandler/FormatterHandler.h"
 #include "Utils/BasicContextArgsTupleInterface.h"
@@ -20,7 +20,7 @@ namespace EngineCore::FMT::Context {
 		using FormatDataType		= Detail::FormatData<CharFormat>;
 		using FormatSpecifierType	= Detail::FormatSpecifier<CharFormat>;
 
-		using FormatBufferType		= Detail::FormatterMemoryFormat<CharFormat>;
+		using FormatBufferType		= Detail::FMTFormatBuffer<CharFormat>;
 
 		using StringViewFormat 		= std::basic_string_view<CharFormat>;
 

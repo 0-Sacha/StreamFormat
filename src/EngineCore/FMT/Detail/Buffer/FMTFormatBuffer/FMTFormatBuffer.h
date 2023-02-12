@@ -1,13 +1,13 @@
 #pragma once
 
-#include "FMT/Detail/Buffer/BufferIn/BufferIn.h"
+#include "FMT/Detail/Buffer/FMTBufferIn/FMTBufferIn.h"
 
 namespace EngineCore::FMT::Detail {
 	template <typename CharFormat>
-	class FormatterMemoryFormat : public BasicFormatterMemoryBufferIn<CharFormat> {
+	class FMTFormatBuffer : public FMTBufferIn<CharFormat> {
 
 	protected:
-		using Base = BasicFormatterMemoryBufferIn<CharFormat>;
+		using Base = FMTBufferIn<CharFormat>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
@@ -119,7 +119,14 @@ namespace EngineCore::FMT::Detail {
 
 		using Base::GetWordFromList;
 
+		using Base::IsBlank;
+		using Base::IsBlankForward;
+		using Base::IsBlankThrow;
+		using Base::IsBlankForwardThrow;
+
+		using Base::IgnoreBlank;
 		using Base::IgnoreSpace;
+
 		using Base::GoTo;
 		using Base::GoToForward;
 
@@ -128,17 +135,17 @@ namespace EngineCore::FMT::Detail {
 		using Base::SkipShiftEnd;
 
 	public:
-		explicit FormatterMemoryFormat()
+		explicit FMTFormatBuffer()
 			: Base() {}
 
 		template <std::size_t SIZE>
-		explicit FormatterMemoryFormat(const CharFormat (&format)[SIZE])
+		explicit FMTFormatBuffer(const CharFormat (&format)[SIZE])
 			: Base(format, SIZE) {}
 
-		explicit FormatterMemoryFormat(const std::basic_string_view<CharFormat>& format)
+		explicit FMTFormatBuffer(const std::basic_string_view<CharFormat>& format)
 			: Base(format.data(), format.size()) {}
 
- 		explicit FormatterMemoryFormat(const CharFormat* const buffer, const std::size_t bufferSize)
+ 		explicit FMTFormatBuffer(const CharFormat* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
 		
@@ -191,3 +198,5 @@ namespace EngineCore::FMT::Detail {
         }
 	};
 }
+
+#include "Integer.h"

@@ -78,7 +78,7 @@ namespace EngineCore::FMT {
 			auto size = context.GetFormatData().GetSpecifierAsNumber("size", SIZE - begin);
 
 			if (data.TrueValue)	context.BufferOut().PushBack('\"');
-			context.BufferOut().WriteCharPt(t + begin, size);
+			context.BufferOut().WriteCharPtr(t + begin, size);
 			if (data.TrueValue)	context.BufferOut().PushBack('\"');
 		}
 	};

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "FMT/Context/BasicContext/BasicContextInclude.h"
+#include "FMT/Detail/Buffer/FMTBufferIn/FMTBufferIn.h"
 
 #include "Utils/ParserType.h"
 
@@ -25,7 +26,7 @@ namespace EngineCore::FMT::Context {
 		using typename Base::ContextArgsInterface;
 
 		using StringViewBuffer	= std::basic_string_view<CharBuffer>;
-		using BufferInType		= Detail::BasicFormatterMemoryBufferIn<CharBuffer>;
+		using BufferInType		= Detail::FMTBufferIn<CharBuffer>;
 
 	public:
 		template <std::size_t SIZE>

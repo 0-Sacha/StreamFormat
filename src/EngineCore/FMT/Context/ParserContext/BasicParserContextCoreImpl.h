@@ -31,7 +31,7 @@ namespace EngineCore::FMT::Context {
 	void BasicParserContext<CharFormat, CharBuffer>::SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, Args&& ...args) {
 		using ContextType = BasicParserContext<NewCharFormat, CharBuffer>;
 		auto childContextArgsInterface = Detail::ParserContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		Detail::FormatterMemoryFormat<NewCharFormat> format(formatStr, formatStrSize);
+		Detail::FMTFormatBuffer<NewCharFormat> format(formatStr, formatStrSize);
 		
 		if constexpr (std::is_same_v<NewCharFormat, CharFormat>)
 		{

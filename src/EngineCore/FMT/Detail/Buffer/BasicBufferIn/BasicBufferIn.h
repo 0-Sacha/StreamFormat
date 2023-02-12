@@ -5,10 +5,10 @@
 namespace EngineCore::FMT::Detail {
 
     template<typename CharBuffer>
-    class BasicFormatterMemoryBufferIn : public BasicFormatterMemoryBuffer<const CharBuffer> {
+    class BasicBufferIn : public BasicBuffer<const CharBuffer> {
         
     protected:
-        using Base = BasicFormatterMemoryBuffer<const CharBuffer>;
+        using Base = BasicBuffer<const CharBuffer>;
         using Base::m_Buffer;
         using Base::m_BufferEnd;
         using Base::m_BufferSize;
@@ -54,18 +54,18 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetPrevNoCheck;
 
     public:
-        explicit BasicFormatterMemoryBufferIn()
+        explicit BasicBufferIn()
             : Base()
         {}
 
 		template <std::size_t SIZE>
-		explicit BasicFormatterMemoryBufferIn(const CharBuffer (&format)[SIZE])
+		explicit BasicBufferIn(const CharBuffer (&format)[SIZE])
 			: Base(format, SIZE) {}
 
-		explicit BasicFormatterMemoryBufferIn(const std::basic_string_view<CharBuffer>& format)
+		explicit BasicBufferIn(const std::basic_string_view<CharBuffer>& format)
 			: Base(format.data(), format.size()) {}
 
- 		explicit BasicFormatterMemoryBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)
+ 		explicit BasicBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
 
@@ -73,20 +73,6 @@ namespace EngineCore::FMT::Detail {
         template<typename T> void FastReadInt	(T& i);
         template<typename T> void FastReadUInt	(T& i);
         template<typename T> void FastReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{});
-        
-        template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        template<typename T> void BasicReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        
-        template<typename T> void BasicReadIntAsBin	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
-        template<typename T> void BasicReadIntAsHex	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-        template<typename T> void BasicReadIntAsOct	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
-
-
-    public:
-        template<typename T, typename FormatDataCharType> void ReadIntFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
-        template<typename T, typename FormatDataCharType> void ReadUIntFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
-        template<typename T, typename FormatDataCharType> void ReadFloatFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
 
     public:
         // Basic types
@@ -260,7 +246,14 @@ namespace EngineCore::FMT::Detail {
 
         // Format commands
     public:
-        inline void IgnoreSpace()															{ while (IsEqualTo(' ') && CanMoveForward()) ForwardNoCheck(); }
+        inline bool IsBlank() const			    { return IsEqualTo(' ', '\t', '\r'); }
+        inline bool IsBlankForward() const      { if (IsBlank()) { Forward(); return true; } return false; }
+        inline void IsBlankThrow() const	        { if (IsBlank()) return; throw FMTParseError(); }
+        inline void IsBlankForwardThrow() const     { if (IsBlankForward()) return; throw FMTParseError(); }
+        
+        inline void IgnoreSpace()					{ while (IsEqualTo(' ') && CanMoveForward()) ForwardNoCheck(); }
+        inline void IgnoreBlank()					{ while (IsBlank() && CanMoveForward()) ForwardNoCheck(); }
+        
         template<typename ...CharToTest> inline void GoTo(const CharToTest ...ele)			{ while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); }
         template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele)	{ GoTo(ele...); Forward(); }
 
@@ -293,27 +286,8 @@ namespace EngineCore::FMT::Detail {
             const CharBuffer* end = GetBufferCurrentPos();
             return StringView(begin, end); 
         }
-
-    // Utils
-    protected:
-        template<typename T>
-        void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-            if (sp.BeforeIsADigit() == false)
-                return;
-            if (st == ShiftType::Right || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
-                while (Base::Get() == ' ') {
-                    Base::Forward();
-                    --shift;
-                }
-        }
-
-        template<typename T>
-        void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
-            if (st == ShiftType::Left || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
-                while (Base::Get() == ' ' && shift > 0) {
-                    Base::Forward();
-                    --shift;
-                }
-        }
+    
     };
 }
+
+#include "Integer.h"

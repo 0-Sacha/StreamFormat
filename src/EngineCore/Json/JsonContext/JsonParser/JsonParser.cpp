@@ -1,53 +1,46 @@
 #pragma once
 
 #include "JsonParser.h"
-#include "EngineCore/Json/JsonContext/JsonObjects/JsonObjectParserLoader.h"
 
 namespace EngineCore::JSON::Detail
 {
-    std::unique_ptr<Detail::JsonObject> JsonParser::CreateJsonObject()
+    std::unique_ptr<Detail::JsonObject> JsonParser::LoadJsonObject()
     {
         m_Buffer.GoToJsonObject();
         if (m_Buffer.IsJsonStringBegin())
         {
-            JsonStringObject* stringObject = new JsonStringObject();
-            JsonParserType<JsonStringObject>::Load(*stringObject, *this);
-            return std::unique_ptr<Detail::JsonObject>(stringObject);
+            std::unique_ptr<Detail::JsonObject> stringObject = std::make_unique<JsonStringObject>();
+            stringObject->Parse(*this);
         }
 
         if (m_Buffer.IsJsonNumberBegin())
         {
-            JsonNumberObject* numberObject = new JsonNumberObject();
-            JsonParserType<JsonNumberObject>::Load(*numberObject, *this);
-            return std::unique_ptr<Detail::JsonObject>(numberObject);
+            std::unique_ptr<Detail::JsonObject> numberObject = std::make_unique<JsonNumberObject>();
+            numberObject->Parse(*this);
         }
     
         if (m_Buffer.IsJsonBooleanBegin())
         {
-            JsonBooleanObject* booleanObject = new JsonBooleanObject();
-            JsonParserType<JsonBooleanObject>::Load(*booleanObject, *this);
-            return std::unique_ptr<Detail::JsonObject>(booleanObject);
+            std::unique_ptr<Detail::JsonObject> booleanObject = std::make_unique<JsonBooleanObject>();
+            booleanObject->Parse(*this);
         }
 
         if (m_Buffer.IsJsonStructBegin())
         {
-            JsonStructObject* structObject = new JsonStructObject();
-            JsonParserType<JsonStructObject>::Load(*structObject, *this);
-            return std::unique_ptr<Detail::JsonObject>(structObject);
+            std::unique_ptr<Detail::JsonObject> structObject = std::make_unique<JsonStructObject>();
+            structObject->Parse(*this);
         }
 
         if (m_Buffer.IsJsonArrayBegin())
         {
-            JsonArrayObject* arrayObject = new JsonArrayObject();
-            JsonParserType<JsonArrayObject>::Load(*arrayObject, *this);
-            return std::unique_ptr<Detail::JsonObject>(arrayObject);
+            std::unique_ptr<Detail::JsonObject> arrayObject = std::make_unique<JsonArrayObject>();
+            arrayObject->Parse(*this);
         }
 
         if (m_Buffer.IsJsonNullBegin())
         {
-            JsonNullObject* nullObject = new JsonNullObject();
-            JsonParserType<JsonNullObject>::Load(*nullObject, *this);
-            return std::unique_ptr<Detail::JsonObject>(nullObject);
+            std::unique_ptr<Detail::JsonObject> nullObject = std::make_unique<JsonNullObject>();
+            nullObject->Parse(*this);
         }
 
         return std::unique_ptr<Detail::JsonObject>(nullptr);

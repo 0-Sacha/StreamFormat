@@ -2,6 +2,7 @@
 
 #include "EngineCore//Json/Detail/Buffer/JsonBuffer.h"
 #include "JsonParser/JsonParser.h"
+#include "JsonFormatter/JsonFormatter.h"
 #include "JsonObjects/JsonObjects.h"
 
 #include <string>
@@ -17,7 +18,7 @@ namespace EngineCore::JSON
 
     public:
         void ReloadParser()     { m_Parser.GetBuffer().SetBuffer(m_Buffer.GetBuffer(), m_Buffer.GetSize()); }
-        void LoadObjects()      { m_Objects = m_Parser.CreateJsonObject(); }
+        void LoadObjects()      { m_Objects = m_Parser.LoadJsonObject(); }
 
     public:
         std::unique_ptr<Detail::JsonObject>&  GetObjectsPtr()                       { return m_Objects; };

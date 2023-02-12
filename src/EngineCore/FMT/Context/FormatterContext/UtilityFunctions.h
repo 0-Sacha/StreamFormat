@@ -17,7 +17,7 @@ namespace EngineCore::FMT {
 			ContextType context(bufferManager);
 
 			auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-			Detail::FormatterMemoryFormat<typename GetFmtBaseType<Format>::Type> format(formatData);
+			Detail::FMTFormatBuffer<typename GetFmtBaseType<Format>::Type> format(formatData);
 			context.Run(format, &contextArgsInterface);
 			if (newline)
 				context.BufferOut().PushBack('\n');

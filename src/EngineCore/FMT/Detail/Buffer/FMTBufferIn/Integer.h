@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FMT/Detail/Buffer/BufferIn/BufferIn.h"
+#include "FMTBufferIn.h"
 
 #include <cmath>
 
@@ -8,61 +8,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadInt(T& i) {
-		T res = 0;
-
-		bool sign = IsEqualToForward('-');
-		if (!IsADigit())
-			throw FMTParseError();
-
-		while (IsADigit())
-			res = res * 10 + (GetAndForward() - '0');
-
-		i = sign ? -res : res;
-	}
-
-	template<typename CharBuffer>
-	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadUInt(T& i) {
-		T res = (T)0;
-
-		if(!IsADigit())
-			throw FMTParseError();
-
-		while (IsADigit())
-			res = res * 10 + (GetAndForward() - '0');
-
-		i = res;
-	}
-
-	template<typename CharBuffer>
-	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision) {
-		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt;
-		FastReadInt(iInt);
-
-		T res = 0;
-		T dec = 0.1f;
-
-		IsEqualToForwardThrow('.');
-		
-		++floatPrecision;
-		while (IsADigit() && --floatPrecision != 0) {
-			res += (GetAndForward() - '0') * dec;
-			dec *= 0.1f;
-		}
-
-		i = iInt + res;
-	}
-
-
-	//---------------------------------------------//
-	//---------------------------------------------//
-	//---------------------------------------------//
-
-	template<typename CharBuffer>
-	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		T res = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -86,7 +32,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		T res = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -107,7 +53,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadFloat(T& i, FloatPrecision floatPrecision, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferIn<CharBuffer>::BasicReadFloat(T& i, FloatPrecision floatPrecision, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -122,24 +68,40 @@ namespace EngineCore::FMT::Detail {
 			--shift;
 		}
 
-		T res = 0;
-		T dec = 0.1f;
+		T dec = 0;
+		T decIdx = 0.1f;
 
-		IsEqualToForwardThrow('.');
+		if (IsEqualToForward('.') == false)
+		{
+			if (floatPrecision == 0 || floatPrecision.IsDefault())	
+				return iInt;
+			throw Detail::FMTParseError{};
+		}
 		--shift;
 			
-		++floatPrecision;
-		while (IsADigit() && --floatPrecision != 0) {
-			res += (GetAndForward() - '0') * dec;
-			dec *= 0.1f;
+		if (floatPrecision.IsDefault)
+		{
+			while (IsADigit() && IsEnd() == false) {
+				dec += (GetAndForward() - '0') * decIdx;
+				decIdx *= 0.1f;
 			--shift;
+			}
+		}
+		else
+		{
+			++floatPrecision;
+			while (IsADigit() && --floatPrecision != 0) {
+				dec += (GetAndForward() - '0') * decIdx;
+				decIdx *= 0.1f;
+			--shift;
+			}
 		}
 
 		SkipShiftEnd(st, sp, shift);
 
 		if (shift > 0) throw FMTParseError();
 
-		sign ? i = -iInt - res : i = iInt + res;
+		sign ? i = -iInt - dec : i = iInt + dec;
 	}
 
 	//---------------------------------------------//
@@ -148,7 +110,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+	void FMTBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 8;
 
@@ -158,8 +120,8 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 		
 		if (trueValue) {
-			IsEqualToForwardThrow('0');
-			IsEqualToForwardThrow('b');
+			Skip('0');
+			Skip('b');
 		}
 
 		T res = 0;
@@ -179,7 +141,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void FMTBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 2;
 
@@ -189,8 +151,8 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 
 		if (trueValue) {
-			IsEqualToForwardThrow('0');
-			IsEqualToForwardThrow('x');
+			Skip('0');
+			Skip('x');
 		}
 
 		T res = 0;
@@ -212,7 +174,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicFormatterMemoryBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+	void FMTBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize.IsDefault())
 			digitSize = std::ceil(static_cast<float>(sizeof(T) * 8) / 3);
 
@@ -222,8 +184,8 @@ namespace EngineCore::FMT::Detail {
 		SkipShiftBeginSpace(st, sp, shift);
 
 		if (trueValue) {
-			IsEqualToForwardThrow('0');
-			IsEqualToForwardThrow('o');
+			Skip('0');
+			Skip('o');
 		}
 
 		T res = 0;
@@ -240,5 +202,4 @@ namespace EngineCore::FMT::Detail {
 
 		i = res;
 	}
-
 }

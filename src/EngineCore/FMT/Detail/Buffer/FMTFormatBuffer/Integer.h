@@ -1,11 +1,11 @@
 #pragma once
 
-#include "FMT/Detail/Buffer/Format/Format.h"
+#include "FMTFormatBuffer.h"
 
 namespace EngineCore::FMT::Detail {
 	template<typename CharFormat>
 	template<typename T>
-	bool FormatterMemoryFormat<CharFormat>::ReadInt(T& i) {
+	bool FMTFormatBuffer<CharFormat>::ReadInt(T& i) {
 		T res{};
 		bool sign		= IsEqualToForward('-');
 		bool isValid	= IsADigit();
@@ -21,7 +21,7 @@ namespace EngineCore::FMT::Detail {
 
 	template<typename CharFormat>
 	template<typename T>
-	bool FormatterMemoryFormat<CharFormat>::ReadUInt(T& i) {
+	bool FMTFormatBuffer<CharFormat>::ReadUInt(T& i) {
 		T res{};
 		bool isValid = IsADigit();
 

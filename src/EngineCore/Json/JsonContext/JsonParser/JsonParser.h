@@ -10,7 +10,7 @@ namespace EngineCore::JSON::Detail
     class JsonParser
     {
     public:
-        std::unique_ptr<Detail::JsonObject> CreateJsonObject();
+        std::unique_ptr<Detail::JsonObject> LoadJsonObject();
 
     public:
         JsonParserBuffer& GetBuffer() { return m_Buffer; }
@@ -19,12 +19,4 @@ namespace EngineCore::JSON::Detail
     protected:
         JsonParserBuffer m_Buffer;
     };
-
-    template<typename T>
-	struct JsonParserType {
-		static inline void Load(T& t, JsonParser& parser)
-        {
-            // TODO : error recovery for unknown types
-		}
-	};
 }

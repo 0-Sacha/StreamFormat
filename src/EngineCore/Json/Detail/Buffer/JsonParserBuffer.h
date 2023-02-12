@@ -1,13 +1,14 @@
 #pragma once
 
-#include "EngineCore/FMT/Detail/Buffer/BufferIn/BufferIn.h"
+#include "EngineCore/FMT/Detail/Buffer/BasicBufferIn/BasicBufferIn.h"
+#include "EngineCore/FMT/Detail/Buffer/BasicBufferIn/Utils/BufferInUtils.h"
 
 namespace EngineCore::JSON::Detail
 {
-    class JsonParserBuffer : public EngineCore::FMT::Detail::BasicFormatterMemoryBufferIn<char>
+    class JsonParserBuffer : public EngineCore::FMT::Detail::BasicBufferIn<char>
     {
     protected:
-        using Base = EngineCore::FMT::Detail::BasicFormatterMemoryBufferIn<char>;
+        using Base = EngineCore::FMT::Detail::BasicBufferIn<char>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
@@ -55,18 +56,6 @@ namespace EngineCore::JSON::Detail
 		using Base::FastReadInt;
 		using Base::FastReadUInt;
 		using Base::FastReadFloat;
-
-		using Base::BasicReadInt;
-		using Base::BasicReadUInt;
-		using Base::BasicReadFloat;
-
-		using Base::BasicReadIntAsBin;
-		using Base::BasicReadIntAsHex;
-		using Base::BasicReadIntAsOct;
-
-		using Base::ReadIntFormatData;
-		using Base::ReadUIntFormatData;
-		using Base::ReadFloatFormatData;
 
 		using Base::BasicReadType;
 
@@ -119,14 +108,17 @@ namespace EngineCore::JSON::Detail
 
 		using Base::GetWordFromList;
 
+		using Base::IsBlank;
+		using Base::IsBlankForward;
+		using Base::IsBlankThrow;
+		using Base::IsBlankForwardThrow;
+
+		using Base::IgnoreBlank;
 		using Base::IgnoreSpace;
+
 		using Base::GoTo;
 		using Base::GoToForward;
 
-	protected:
-		using Base::SkipShiftBeginSpace;
-		using Base::SkipShiftEnd;
-        
     public:
         explicit JsonParserBuffer()
             : Base()

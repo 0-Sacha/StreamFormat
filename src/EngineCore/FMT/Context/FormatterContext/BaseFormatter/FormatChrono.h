@@ -59,7 +59,7 @@ namespace EngineCore::FMT::ChronoDetail {
 		if (patternPtr != nullptr)
 			patternStr = patternPtr->ValueAsText;
 
-		Detail::FormatterMemoryFormat pattern(patternStr.data(), patternStr.size());
+		Detail::FMTFormatBuffer pattern(patternStr.data(), patternStr.size());
 		context.Print(pattern.ParamGoToAndGetStr('%', '#', '/'));
 		while (!pattern.IsEnd()) {
 

@@ -100,11 +100,17 @@ namespace EngineCore::FMT::Detail {
 		inline constexpr ShiftSize& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
-	struct FloatPrecision : public BasicCustomDataType<DataType, 2, -1> { 
+	struct FloatPrecision : public BasicCustomDataType<DataType, -1, -2> { 
+	public:
+		static constexpr DataType BASIC_DECIMAL_SIZE = 2;
+
 	public:
 		inline constexpr FloatPrecision(const DataType value = DEFAULT)
-			: BasicCustomDataType<DataType, 2, -1>(value)
+			: BasicCustomDataType<DataType, -1, -2>(value)
 		{}
+
+		inline constexpr void SetToBasicSizeIfDefault() 	{ if (IsDefault()) Value = BASIC_DECIMAL_SIZE; };
+		inline constexpr bool IsBasicSize() 				{ return Value == BASIC_DECIMAL_SIZE; };
 
 		// operator =
 		template <typename K>

@@ -31,7 +31,7 @@ namespace EngineCore::FMT::Context {
 	{
 		using ContextType = BasicFormatterContext<NewCharFormat, CharBuffer>;
 		auto childContextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		Detail::FormatterMemoryFormat<NewCharFormat> format(formatStr, formatStrSize);
+		Detail::FMTFormatBuffer<NewCharFormat> format(formatStr, formatStrSize);
 		
 		if constexpr (std::is_same_v<NewCharFormat, CharFormat>)
 		{
