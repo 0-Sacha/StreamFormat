@@ -25,6 +25,9 @@ namespace EngineCore::FMT::Detail
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
 
+		using Base::ReloadBuffer;
+		using Base::SetBuffer;
+
 	public:
 		using Base::CanMoveForward;
 		using Base::CanMoveForwardThrow;
@@ -108,6 +111,11 @@ namespace EngineCore::FMT::Detail
 
 		using Base::GetWordFromList;
 
+		using Base::Ignore;
+		using Base::IgnoreAll;
+		using Base::GoTo;
+		using Base::GoToForward;
+
 		using Base::IsBlank;
 		using Base::IsBlankForward;
 		using Base::IsBlankThrow;
@@ -115,9 +123,8 @@ namespace EngineCore::FMT::Detail
 
 		using Base::IgnoreBlank;
 		using Base::IgnoreSpace;
-
-		using Base::GoTo;
-		using Base::GoToForward;
+		using Base::IgnoreAllBlanks;
+		using Base::IgnoreAllSpaces;
 
 	public:
         explicit FMTBufferIn()                                                                : Base() {}

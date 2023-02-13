@@ -7,11 +7,11 @@ namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename ContextPackage>
 	std::basic_string_view<CharFormat> BasicContext<CharFormat, ContextPackage>::ParseNextOverrideFormatData() {
-		m_Format.IgnoreSpace();
+		m_Format.IgnoreAllSpaces();
 		m_Format.ParamGoTo('{', '=', ':');
-		m_Format.IgnoreSpace();
+		m_Format.IgnoreAllSpaces();
 		m_Format.IsEqualToForward('=', ':');
-		m_Format.IgnoreSpace();
+		m_Format.IgnoreAllSpaces();
 		m_Format.ParamGoTo('{');
 
 		const CharFormat* begin = m_Format.GetBufferCurrentPos();
@@ -112,7 +112,7 @@ namespace EngineCore::FMT::Context {
 		StringViewFormat name = GetStringViewParamUntil(' ', '=', '\'', '{', ',');
 		m_Format.ParamGoTo('=', '\'', '{', ',');
 		m_Format.IsEqualToForward('=');
-		m_Format.IgnoreSpace();
+		m_Format.IgnoreAllSpaces();
 
 		if (m_Format.IsEqualToForward('\'')) {
 			StringViewFormat value = GetStringViewUntil('\'');
@@ -141,7 +141,7 @@ namespace EngineCore::FMT::Context {
 			m_FormatData.HasSpec = true;
 			while (!m_Format.IsEndOfParameter()) {
 				m_Format.Forward();
-				m_Format.IgnoreSpace();
+				m_Format.IgnoreAllSpaces();
 
 				if(m_Format.IsUpperCase())
 					ParseFormatDataBase();

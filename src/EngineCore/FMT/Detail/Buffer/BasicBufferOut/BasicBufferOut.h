@@ -27,8 +27,8 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
 
+		using Base::ReloadBuffer;
 		using Base::SetBuffer;
-		using Base::SetCurrentPos;
 
 	public:
 		// using Base::CanMoveForward;
@@ -86,7 +86,7 @@ namespace EngineCore::FMT::Detail {
 			{
 				m_BufferManager->BeginContext();
 				SetBuffer(m_BufferManager->GetBuffer(), m_BufferManager->GetBufferSize());
-				SetCurrentPos(m_BufferManager->GetBuffer());
+				SetBufferCurrentPos(m_BufferManager->GetBuffer());
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace EngineCore::FMT::Detail {
 				
 			m_BufferManager->BeginContext();
 			SetBuffer(m_BufferManager->GetBuffer(), m_BufferManager->GetBufferSize());
-			SetCurrentPos(m_BufferManager->GetBuffer());
+			SetBufferCurrentPos(m_BufferManager->GetBuffer());
 		}
 
 	public:
@@ -150,7 +150,7 @@ namespace EngineCore::FMT::Detail {
 			return true;
 		}
 
-		inline bool CanMoveForward()								{ if (m_CurrentPos < m_BufferEnd)			return true; return AddSize(1); }
+		inline bool CanMoveForward()								{ if (m_CurrentPos + 1 < m_BufferEnd)		return true; return AddSize(1); }
 		inline bool CanMoveForward(const std::size_t count)			{ if (m_CurrentPos + count < m_BufferEnd)	return true; return AddSize(count);}
 		inline void CanMoveForwardThrow()							{ if (CanMoveForward())			return; throw FMTBufferFull(); }
 		inline void CanMoveForwardThrow(const std::size_t count)	{ if (CanMoveForward(count))	return; throw FMTBufferFull(); }
@@ -187,7 +187,7 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharStr>						inline void WriteCharPtr(const CharStr* str)							{ while (*str != 0) PushBack(*str++); }
 		
 		template<typename CharStr>
-		inline void WriteCharPtr(const CharStr* str, std::size_t size)	{
+		inline void WriteCharPtr(const CharStr* str, std::size_t size) {
 			if (CanMoveForward(size) == false)
 				return; // TODO Error recovery
 
@@ -196,8 +196,8 @@ namespace EngineCore::FMT::Detail {
 		}
 
 		template<typename CharStr>
-		inline void Append(const CharStr* begin, const CharStr* end)	{
-			if (CanMoveForward(end - begin))
+		inline void Append(const CharStr* begin, const CharStr* end) {
+			if (CanMoveForward(end - begin) == false)
 				return; // TODO Error recovery
 
 			while (*begin != 0 && begin < end)

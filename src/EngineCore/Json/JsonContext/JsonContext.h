@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore//Json/Detail/Buffer/JsonBuffer.h"
+#include "EngineCore//Json/Detail/Buffer/JsonMemoryBuffer.h"
 #include "JsonParser/JsonParser.h"
 #include "JsonFormatter/JsonFormatter.h"
 #include "JsonObjects/JsonObjects.h"
@@ -17,8 +17,11 @@ namespace EngineCore::JSON
         JsonContext() {}
 
     public:
-        void ReloadParser()     { m_Parser.GetBuffer().SetBuffer(m_Buffer.GetBuffer(), m_Buffer.GetSize()); }
-        void LoadObjects()      { m_Objects = m_Parser.LoadJsonObject(); }
+        void ReloadFromBuffer()
+        {
+            Detail::JsonParser parser(m_Buffer.GetBuffer(), m_Buffer.GetSize());
+            m_Objects = parser.LoadJsonObject();
+        }
 
     public:
         std::unique_ptr<Detail::JsonObject>&  GetObjectsPtr()                       { return m_Objects; };
@@ -26,14 +29,11 @@ namespace EngineCore::JSON
         Detail::JsonObject&  GetObjects()                                           { return *m_Objects; };
         const Detail::JsonObject&  GetObjects() const                               { return *m_Objects; };
 
-		Detail::JsonBuffer& GetBuffer()                                             { return m_Buffer; };
-		const Detail::JsonBuffer& GetBuffer() const                                 { return m_Buffer; };
-        Detail::JsonParser&  GetParser()                                            { return m_Parser; };
-        const Detail::JsonParser&  GetParser() const                                { return m_Parser; };
+		Detail::JsonMemoryBuffer& GetBuffer()                                             { return m_Buffer; };
+		const Detail::JsonMemoryBuffer& GetBuffer() const                                 { return m_Buffer; };
 
     protected:
         std::unique_ptr<Detail::JsonObject> m_Objects;
-        Detail::JsonBuffer m_Buffer;
-        Detail::JsonParser m_Parser;
+        Detail::JsonMemoryBuffer m_Buffer;
     };
 }

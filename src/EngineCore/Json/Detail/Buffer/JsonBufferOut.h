@@ -5,7 +5,7 @@
 
 namespace EngineCore::JSON::Detail
 {
-    class JsonFormatterBuffer : public EngineCore::FMT::Detail::BasicBufferOut<char>
+    class JsonBufferOut : public EngineCore::FMT::Detail::BasicBufferOut<char>
     {
 	protected:
 		using Base = EngineCore::FMT::Detail::BasicBufferOut<char>;
@@ -29,8 +29,8 @@ namespace EngineCore::JSON::Detail
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
 
+		using Base::ReloadBuffer;
 		using Base::SetBuffer;
-		using Base::SetCurrentPos;
 
 		// using Base::SetBufferManager;
 
@@ -89,11 +89,11 @@ namespace EngineCore::JSON::Detail
 		using Base::GetNumberOfDigitDec;
 
     public:
-		JsonFormatterBuffer()
+		JsonBufferOut()
 			: Base()
 		{}
 
-        JsonFormatterBuffer(FMT::Detail::BasicBufferManager<char>& bufferManager)
+        JsonBufferOut(FMT::Detail::BasicBufferManager<char>& bufferManager)
 			: Base(bufferManager)
 		{}
     };

@@ -21,12 +21,11 @@ namespace EngineCore::FMT
             while(strAsBuffer.IsEnd() == false)
             {
                 const CharBuffer* beginString = strAsBuffer.GetBufferCurrentPos();
-                strAsBuffer.GoTo('"', '\\');
+                strAsBuffer.GoTo('\\');
                 const CharBuffer* endString = strAsBuffer.GetBufferCurrentPos();
                 buffer.Append(beginString, endString);
 
-                if (strAsBuffer.IsEqualTo('"'))
-                    break;
+                if (strAsBuffer.IsEnd()) break;
                 
                 strAsBuffer.Skip('\\');
                 switch (strAsBuffer.Get())

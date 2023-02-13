@@ -44,6 +44,13 @@ namespace EngineCore::FMT::Detail {
 		{}
 
 	public:
+		template <typename OtherBuffer>
+		void ReloadBuffer(OtherBuffer& buffer)
+		{
+			SetBuffer(buffer.GetBuffer(), buffer.GetBufferSize());
+			SetBufferCurrentPos(buffer.GetBufferCurrentPos());
+		}
+
 		void SetBuffer(CharBuffer *const buffer, const std::size_t size)
 		{
  			m_Buffer = buffer;
@@ -53,7 +60,6 @@ namespace EngineCore::FMT::Detail {
 		}
 
 		void SetBuffer(const std::basic_string_view<Detail::GetBaseType<CharBuffer>>& buffer)		{ SetBuffer(buffer.data(), buffer.size()); }
-		void SetCurrentPos(CharBuffer *const bufferCurrentPos)										{ m_CurrentPos = bufferCurrentPos; }
 
 	public:
 		// Format

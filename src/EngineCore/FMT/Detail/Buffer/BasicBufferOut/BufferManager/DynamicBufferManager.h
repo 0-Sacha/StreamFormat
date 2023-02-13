@@ -20,7 +20,7 @@ namespace EngineCore::FMT::Detail {
     public:
 		static constexpr std::size_t	DEFAULT_BEGIN_SIZE	= 128;
 		static constexpr std::size_t	GROW_UP_BUFFER_SIZE = 2;
-		static constexpr bool			DEBUG_RESIZE		= true;
+		static constexpr bool			DEBUG_RESIZE		= false;
 
 	public:
 		CharType* GetBuffer() override { return m_Buffer.get(); }

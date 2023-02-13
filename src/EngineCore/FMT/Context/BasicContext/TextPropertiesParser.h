@@ -127,7 +127,7 @@ template<typename FormatterContext>
 	template<typename FormatterContext>
 	void TextPropertiesParser<FormatterContext>::ParseColor() {
 		if (Context.Format().IsEqualToForward(':')) {
-			Context.Format().IgnoreSpace();
+			Context.Format().IgnoreAllSpaces();
 			if (Context.Format().IsEqualToForward('{'))
 			{
 				FormatIndex idx = GetFormatIndexThrow();
@@ -140,7 +140,7 @@ template<typename FormatterContext>
 
 				Context.Format().ParamGoTo('-', ',');
 				if (Context.Format().IsEqualToForward('-')) {
-					Context.Format().IgnoreSpace();
+					Context.Format().IgnoreAllSpaces();
 					TextProperties::TextColor::BasicColorBG colorBg = GetColorCodeAuto<TextProperties::TextColor::BasicColorBG>();
 					ColorRun(TextProperties::TextColor::BasicColor{ colorFg, colorBg });
 				}
@@ -186,7 +186,7 @@ template<typename FormatterContext>
 			if (!Context.Format().IsEqualTo('}', ',')) {
 				bool l = true;
 				while (l) {
-					Context.Format().IgnoreSpace();
+					Context.Format().IgnoreAllSpaces();
 					if (Context.Format().IsEqualToForward('{'))
 					{
 						FormatIndex idx = GetFormatIndexThrow();
@@ -206,7 +206,7 @@ template<typename FormatterContext>
 					}
 					Context.Format().ParamGoTo('|', ',');
 					l = Context.Format().IsEqualToForward('|');
-					Context.Format().IgnoreSpace();
+					Context.Format().IgnoreAllSpaces();
 				}
 			}
 			else
@@ -252,7 +252,7 @@ template<typename FormatterContext>
 	TextProperties::TextStyle::UnderlineColor::ColorCube TextPropertiesParser<FormatterContext>::SelectUnderlinedColorStyle() {
 		Context.Format().ParamGoTo(':');
 		Context.Format().IsEqualToForward(':');
-		Context.Format().IgnoreSpace();
+		Context.Format().IgnoreAllSpaces();
 		return GetColorCodeAuto<TextProperties::TextStyle::UnderlineColor::ColorCube>();
 	}
 
@@ -261,7 +261,7 @@ template<typename FormatterContext>
 	template<typename FormatterContext>
 	void TextPropertiesParser<FormatterContext>::ParseFront() {
 		if (Context.Format().IsEqualToForward(':')) {
-			Context.Format().IgnoreSpace();
+			Context.Format().IgnoreAllSpaces();
 			FrontRun(GetFrontCode());
 		}
 		else

@@ -4,7 +4,7 @@
 
 namespace EngineCore::JSON::Detail
 {
-    class JsonBuffer
+    class JsonMemoryBuffer
     {
     public:
         void Reserve(const std::size_t size)

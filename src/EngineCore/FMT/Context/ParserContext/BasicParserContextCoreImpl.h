@@ -40,9 +40,9 @@ namespace EngineCore::FMT::Context {
 		else
 		{
 			ContextType child(m_BufferIn.GetBuffer(), m_BufferIn.GetBufferSize());
-			child.BufferIn().SetBufferCurrentPos(m_BufferIn.GetBufferCurrentPos());
+			child.BufferIn().ReloadBuffer(m_BufferIn);
 			child.Run(format, &childContextArgsInterface);
-			m_BufferIn.SetBufferCurrentPos(child.BufferIn().GetBufferCurrentPos());
+			m_BufferIn.ReloadBuffer(child.BufferIn());
 		}
 	}
 }

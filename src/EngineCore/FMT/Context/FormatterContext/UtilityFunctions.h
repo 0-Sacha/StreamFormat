@@ -24,7 +24,7 @@ namespace EngineCore::FMT {
 		}
 
 		template<typename CharBuffer = char, typename T>
-		void FormatInBufferManagerLn(Detail::BasicBufferManager<CharBuffer>& bufferManager, bool newline, T&& t)
+		void FormatInBufferManager(Detail::BasicBufferManager<CharBuffer>& bufferManager, bool newline, T&& t)
 		{
 			Context::BasicFormatterContext<char, CharBuffer> context(bufferManager);
 			context.WriteType(t);

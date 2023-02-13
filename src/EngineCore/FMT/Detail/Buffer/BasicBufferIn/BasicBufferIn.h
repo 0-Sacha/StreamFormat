@@ -26,6 +26,9 @@ namespace EngineCore::FMT::Detail {
         using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
 
+        using Base::ReloadBuffer;
+		using Base::SetBuffer;
+
     public:
         using Base::CanMoveForward;
         using Base::CanMoveForwardThrow;
@@ -54,20 +57,12 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetPrevNoCheck;
 
     public:
-        explicit BasicBufferIn()
-            : Base()
-        {}
+        explicit BasicBufferIn() : Base() {}
 
 		template <std::size_t SIZE>
-		explicit BasicBufferIn(const CharBuffer (&format)[SIZE])
-			: Base(format, SIZE) {}
-
-		explicit BasicBufferIn(const std::basic_string_view<CharBuffer>& format)
-			: Base(format.data(), format.size()) {}
-
- 		explicit BasicBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)
-            : Base(buffer, bufferSize)
-        {}
+		explicit BasicBufferIn(const CharBuffer (&format)[SIZE])                                : Base(format, SIZE) {}
+		explicit BasicBufferIn(const std::basic_string_view<CharBuffer>& format)                : Base(format.data(), format.size()) {}
+ 		explicit BasicBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)    : Base(buffer, bufferSize) {}
 
     public:
         template<typename T> void FastReadInt	(T& i);
@@ -197,7 +192,7 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharToTest> bool IsSame(const CharToTest* str, std::size_t size) const
         {
             if (str[size - 1] == 0)
-                size--;
+                --size;
             if (size > GetBufferSizeLeft())
                 return false;
 
@@ -244,18 +239,24 @@ namespace EngineCore::FMT::Detail {
             return defaultValue;
         }
 
-        // Format commands
     public:
-        inline bool IsBlank() const			    { return IsEqualTo(' ', '\t', '\r'); }
+        inline void Ignore(const CharBuffer c) { IsEqualToForward(c); }
+        template<typename ...CharToTest> inline void IgnoreAll(const CharToTest ...ele) { while (IsEqualTo(ele...) && CanMoveForward()) ForwardNoCheck(); }
+
+		template<typename ...CharToTest> inline void GoTo(const CharToTest ...ele) { while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); }
+		template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele) { GoTo(ele...); Forward(); }
+
+    public:
+		inline bool IsBlank() const             { return IsEqualTo(' ', '\t', '\r'); }
         inline bool IsBlankForward() const      { if (IsBlank()) { Forward(); return true; } return false; }
         inline void IsBlankThrow() const	        { if (IsBlank()) return; throw FMTParseError(); }
         inline void IsBlankForwardThrow() const     { if (IsBlankForward()) return; throw FMTParseError(); }
         
-        inline void IgnoreSpace()					{ while (IsEqualTo(' ') && CanMoveForward()) ForwardNoCheck(); }
-        inline void IgnoreBlank()					{ while (IsBlank() && CanMoveForward()) ForwardNoCheck(); }
-        
-        template<typename ...CharToTest> inline void GoTo(const CharToTest ...ele)			{ while (IsNotEqualTo(ele...) && CanMoveForward())	ForwardNoCheck(); }
-        template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele)	{ GoTo(ele...); Forward(); }
+		inline void IgnoreSpace()       { Ignore(' ', '\t'); }
+		inline void IgnoreBlank()       { Ignore(' ', '\t', '\n'); }
+
+        inline void IgnoreAllSpaces()	{ IgnoreAll(' ', '\t'); }
+        inline void IgnoreAllBlanks()	{ IgnoreAll(' ', '\t', '\n'); }
 
     public:
         // TODO Better way

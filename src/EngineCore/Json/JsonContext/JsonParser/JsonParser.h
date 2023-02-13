@@ -1,7 +1,7 @@
 #pragma once
 
-#include "EngineCore/Json/Detail/Buffer/JsonBuffer.h"
-#include "EngineCore/Json/Detail/Buffer/JsonParserBuffer.h"
+#include "EngineCore/Json/Detail/Buffer/JsonMemoryBuffer.h"
+#include "EngineCore/Json/Detail/Buffer/JsonBufferIn.h"
 
 #include "EngineCore/Json/JsonContext/JsonObjects/JsonObjects.h"
 
@@ -9,14 +9,22 @@ namespace EngineCore::JSON::Detail
 {
     class JsonParser
     {
-    public:
+	public:
+		explicit JsonParser() : m_BufferIn() {}
+
+		template <std::size_t SIZE>
+		explicit JsonParser(const char(&format)[SIZE])                                : m_BufferIn(format, SIZE) {}
+		explicit JsonParser(const std::string_view& format)                           : m_BufferIn(format.data(), format.size()) {}
+		explicit JsonParser(const char* const buffer, const std::size_t bufferSize)   : m_BufferIn(buffer, bufferSize) {}
+
+	public:
         std::unique_ptr<Detail::JsonObject> LoadJsonObject();
 
     public:
-        JsonParserBuffer& GetBuffer() { return m_Buffer; }
-        const JsonParserBuffer& GetBuffer() const { return m_Buffer; }
+        JsonBufferIn& BufferIn() { return m_BufferIn; }
+        const JsonBufferIn& BufferIn() const { return m_BufferIn; }
 
     protected:
-        JsonParserBuffer m_Buffer;
+        JsonBufferIn m_BufferIn;
     };
 }

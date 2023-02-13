@@ -10,7 +10,9 @@ namespace EngineCore::FMT {
 	struct FormatterType {
 		static inline void Write(const T& t, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {}{C})", typeid(T).name());
+#ifndef ENGINECORE_COMPILER_VS
 			throw Detail::FMTShouldNotEndHere{};
+#endif
 		}
 	};
 }

@@ -7,9 +7,9 @@ namespace EngineCore::JSON::Detail
 {
     void JsonObject::Parse(JsonParser& parser)
     {
-        const char* begin = parser.GetBuffer().GetBufferCurrentPos();
+        const char* begin = parser.BufferIn().GetBufferCurrentPos();
         ParseImpl(parser);
-        const char* end = parser.GetBuffer().GetBufferCurrentPos();
+        const char* end = parser.BufferIn().GetBufferCurrentPos();
         Data = std::string_view(begin, end);
     }
 
@@ -22,83 +22,82 @@ namespace EngineCore::JSON::Detail
     void JsonStringObject::ParseImpl(JsonParser& parser)
     {
         String.clear();
-        String = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.GetBuffer());
+        String = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.BufferIn());
     }
 
     void JsonStringObject::FormatImpl(JsonFormatter& formatter) const
     {
-        EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.GetBuffer(), String);
+        EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), String);
     }
 
 
     void JsonNumberObject::ParseImpl(JsonParser& parser)
     {
-        const char* begin = parser.GetBuffer().GetBufferCurrentPos();
+        const char* begin = parser.BufferIn().GetBufferCurrentPos();
 
-        parser.GetBuffer().FastReadFloat<double>(NumberAsDouble);
-        const char* end = parser.GetBuffer().GetBufferCurrentPos();
+        parser.BufferIn().FastReadFloat<double>(NumberAsDouble);
+        const char* end = parser.BufferIn().GetBufferCurrentPos();
         
-        parser.GetBuffer().SetCurrentPos(begin);
-        parser.GetBuffer().FastReadInt(NumberAsInt);
+        parser.BufferIn().SetBufferCurrentPos(begin);
+        parser.BufferIn().FastReadInt(NumberAsInt);
 
-        parser.GetBuffer().SetCurrentPos(begin);
-        parser.GetBuffer().FastReadUInt(NumberAsUInt);
+        parser.BufferIn().SetBufferCurrentPos(begin);
+        parser.BufferIn().FastReadUInt(NumberAsUInt);
 
-        parser.GetBuffer().SetCurrentPos(end);
+        parser.BufferIn().SetBufferCurrentPos(end);
     }
 
     void JsonNumberObject::FormatImpl(JsonFormatter& formatter) const
     {
-        formatter.GetBuffer().FastWriteFloat<double>(NumberAsDouble);
+        formatter.BufferOut().FastWriteFloat<double>(NumberAsDouble);
     }
 
 
     void JsonBooleanObject::ParseImpl(JsonParser& parser)
     {
-        if (parser.GetBuffer().IsSameSeqForward('t', 'r', 'u', 'e'))
+        if (parser.BufferIn().IsSameSeqForward('t', 'r', 'u', 'e'))
             Boolean = true;
-        else if (parser.GetBuffer().IsSameSeqForward('f', 'a', 'l', 's', 'e'))
+        else if (parser.BufferIn().IsSameSeqForward('f', 'a', 'l', 's', 'e'))
             Boolean = false;
     }
 
     void JsonBooleanObject::FormatImpl(JsonFormatter& formatter) const
     {
         if (Boolean)
-            formatter.GetBuffer().WriteCharPtr("true", 4);
+            formatter.BufferOut().WriteCharPtr("true", 4);
         else
-            formatter.GetBuffer().WriteCharPtr("false", 5);
+            formatter.BufferOut().WriteCharPtr("false", 5);
     }
 
 
     void JsonStructObject::ParseImpl(JsonParser& parser)
     {
-        parser.GetBuffer().Skip('{');
+        parser.BufferIn().Skip('{');
 
-        while (parser.GetBuffer().IsEnd() == false)
+        while (parser.BufferIn().IsEnd() == false)
         {
-            parser.GetBuffer().GoTo('"', '}');
-            if (parser.GetBuffer().IsEqualTo('}')) break;
+            parser.BufferIn().GoTo('"', '}');
+            if (parser.BufferIn().IsEqualTo('}')) break;
 
-            std::string name = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.GetBuffer());
+            std::string name = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.BufferIn());
 
-            parser.GetBuffer().IgnoreBlank();
-            parser.GetBuffer().Skip(':');
-            parser.GetBuffer().IgnoreBlank();
+            parser.BufferIn().IgnoreAllBlanks();
+            parser.BufferIn().Skip(':');
+            parser.BufferIn().IgnoreAllBlanks();
 
             std::unique_ptr<JsonObject> subObject = parser.LoadJsonObject();
             Objects.insert({ std::move(name), std::move(subObject) });
 
-            parser.GetBuffer().GoTo(',', '}');
-            if (parser.GetBuffer().IsEqualTo('}')) break;
-            parser.GetBuffer().Skip(',');
+            parser.BufferIn().GoTo(',', '}');
+            parser.BufferIn().Ignore(',');
         }
 
-        parser.GetBuffer().Skip('}');
+        parser.BufferIn().Skip('}');
     }
 
     void JsonStructObject::FormatImpl(JsonFormatter& formatter) const
     {
-        formatter.GetBuffer().PushBack('{');
+        formatter.BufferOut().PushBack('{');
 
         bool first = true;
         for (const auto& [name, object] : Objects)
@@ -106,40 +105,44 @@ namespace EngineCore::JSON::Detail
             if (first)
                 first = false;
             else
-                formatter.GetBuffer().PushBack(',');
+                formatter.BufferOut().PushBack(',');
 
-			EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.GetBuffer(), name);
-			formatter.GetBuffer().PushBack(':');
-			formatter.GetBuffer().PushBack(' ');
+            formatter.BeginNewObject();
+            formatter.NewLine();
+			EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), name);
+			formatter.BufferOut().PushBack(':');
+			formatter.BufferOut().PushBack(' ');
 			formatter.DumpJsonObject(*object);
+            formatter.EndNewObject();
         }
-
-        formatter.GetBuffer().PushBack('}');
+		formatter.NewLine();
+        formatter.BufferOut().PushBack('}');
     }
 
 
     void JsonArrayObject::ParseImpl(JsonParser& parser)
     {
-        parser.GetBuffer().Skip('[');
+        parser.BufferIn().Skip('[');
 
-        while (parser.GetBuffer().IsEnd() == false)
+        while (parser.BufferIn().IsEnd() == false)
         {
-            parser.GetBuffer().IgnoreBlank();
+            parser.BufferIn().IgnoreAllBlanks();
+
+            if (parser.BufferIn().IsEqualTo(']')) break;
 
             std::unique_ptr<JsonObject> subObject = parser.LoadJsonObject();
             Objects.push_back(std::move(subObject));
 
-            parser.GetBuffer().GoTo(',', ']');
-            if (parser.GetBuffer().IsEqualTo(']')) break;
-            parser.GetBuffer().Skip(',');
+            parser.BufferIn().GoTo(',', ']');
+            parser.BufferIn().Ignore(',');
         }
 
-        parser.GetBuffer().Skip(']');
+        parser.BufferIn().Skip(']');
     }
 
     void JsonArrayObject::FormatImpl(JsonFormatter& formatter) const
     {
-        formatter.GetBuffer().PushBack('[');
+        formatter.BufferOut().PushBack('[');
 
         bool first = true;
         for (const auto& object : Objects)
@@ -147,22 +150,26 @@ namespace EngineCore::JSON::Detail
             if (first)
                 first = false;
             else
-                formatter.GetBuffer().PushBack(',');
+                formatter.BufferOut().PushBack(',');
 
+            formatter.BeginNewObject();
+            formatter.NewLine();
             formatter.DumpJsonObject(*object);
+            formatter.EndNewObject();
         }
 
-        formatter.GetBuffer().PushBack(']');
+        formatter.NewLine();
+		formatter.BufferOut().PushBack(']');
     }
 
 
     void JsonNullObject::ParseImpl(JsonParser& parser)
     {
-        parser.GetBuffer().IsSameForwardThrow("null");
+        parser.BufferIn().IsSameForwardThrow("null");
     }
 
     void JsonNullObject::FormatImpl(JsonFormatter& formatter) const
     {
-        formatter.GetBuffer().WriteCharPtr("null", 4);
+        formatter.BufferOut().WriteCharPtr("null", 4);
     }
 }

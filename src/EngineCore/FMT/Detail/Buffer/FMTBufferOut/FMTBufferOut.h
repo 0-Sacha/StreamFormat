@@ -28,8 +28,8 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
 
+		using Base::ReloadBuffer;
 		using Base::SetBuffer;
-		using Base::SetCurrentPos;
 
 		// using Base::SetBufferManager;
 

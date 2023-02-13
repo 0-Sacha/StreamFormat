@@ -5,7 +5,7 @@
 
 namespace EngineCore::JSON::Detail
 {
-    class JsonParserBuffer : public EngineCore::FMT::Detail::BasicBufferIn<char>
+    class JsonBufferIn : public EngineCore::FMT::Detail::BasicBufferIn<char>
     {
     protected:
         using Base = EngineCore::FMT::Detail::BasicBufferIn<char>;
@@ -24,6 +24,9 @@ namespace EngineCore::JSON::Detail
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
 		using Base::SetBufferCurrentPos;
+
+		using Base::ReloadBuffer;
+		using Base::SetBuffer;
 
 	public:
 		using Base::CanMoveForward;
@@ -108,6 +111,11 @@ namespace EngineCore::JSON::Detail
 
 		using Base::GetWordFromList;
 
+		using Base::Ignore;
+		using Base::IgnoreAll;
+		using Base::GoTo;
+		using Base::GoToForward;
+
 		using Base::IsBlank;
 		using Base::IsBlankForward;
 		using Base::IsBlankThrow;
@@ -115,36 +123,27 @@ namespace EngineCore::JSON::Detail
 
 		using Base::IgnoreBlank;
 		using Base::IgnoreSpace;
-
-		using Base::GoTo;
-		using Base::GoToForward;
+		using Base::IgnoreAllBlanks;
+		using Base::IgnoreAllSpaces;
 
     public:
-        explicit JsonParserBuffer()
-            : Base()
-        {}
+        explicit JsonBufferIn() : Base() {}
 
 		template <std::size_t SIZE>
-		explicit JsonParserBuffer(const char (&format)[SIZE])
-			: Base(format, SIZE) {}
-
-		explicit JsonParserBuffer(const std::string_view& format)
-			: Base(format.data(), format.size()) {}
-
- 		explicit JsonParserBuffer(const char* const buffer, const std::size_t bufferSize)
-            : Base(buffer, bufferSize)
-        {}
+		explicit JsonBufferIn(const char (&format)[SIZE])								: Base(format, SIZE) {}
+		explicit JsonBufferIn(const std::string_view& format)							: Base(format.data(), format.size()) {}
+ 		explicit JsonBufferIn(const char* const buffer, const std::size_t bufferSize)	: Base(buffer, bufferSize) {}
 
     public:
-        inline bool IsJsonObjectBegin() const		{ return IsEqualTo('{', '[', '"') || IsADigit() || IsSame("null", 4); }
-        
 		inline bool IsJsonStringBegin() const		{ return IsEqualTo('"'); }
-        inline bool IsJsonNumberBegin() const		{ return IsADigit(); }
-        inline bool IsJsonBooleanBegin() const		{ return IsSame("true", 4) || IsSame("false", 5); }
+        inline bool IsJsonNumberBegin() const		{ return IsADigit() || IsEqualTo('.'); }
+        inline bool IsJsonBooleanBegin() const		{ return IsEqualTo('t', 'f'); }
         inline bool IsJsonStructBegin() const		{ return IsEqualTo('{'); }
         inline bool IsJsonArrayBegin() const		{ return IsEqualTo('['); }
-        inline bool IsJsonNullBegin() const			{ return IsSame("null", 4); }
+        inline bool IsJsonNullBegin() const			{ return IsEqualTo('n'); }
     
+        inline bool IsJsonObjectBegin() const		{ return IsJsonStringBegin() || IsJsonNumberBegin() || IsJsonBooleanBegin() || IsJsonStructBegin() || IsJsonArrayBegin() || IsJsonNullBegin(); }
+
 	public:
         inline void GoToJsonObject()
 		{
