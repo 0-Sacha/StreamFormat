@@ -43,7 +43,7 @@ namespace EngineCore::FMT {
 	template <typename T, typename FormatterContext>
 	struct FormatterType<std::unique_ptr<T>, FormatterContext> {
 		inline static void Write(const std::unique_ptr<T>& t, FormatterContext& context) {
-			if (context.GetFormatData().BaseValue)	FormatterType<T*, FormatterContext>::Write(t.get(), context);
+			if (context.GetFormatData().TrueValue)	FormatterType<T*, FormatterContext>::Write(t.get(), context);
 			else									FormatterType<T, FormatterContext>::Write(*t, context);
 		}
 	};
@@ -52,7 +52,7 @@ namespace EngineCore::FMT {
 	template <typename T, typename FormatterContext>
 	struct FormatterType<std::shared_ptr<T>, FormatterContext> {
 		inline static void Write(const std::shared_ptr<T>& t, FormatterContext& context) {
-			if (context.GetFormatData().BaseValue)	FormatterType<T*, FormatterContext>::Write(t.get(), context);
+			if (context.GetFormatData().TrueValue)	FormatterType<T*, FormatterContext>::Write(t.get(), context);
 			else									FormatterType<T, FormatterContext>::Write(*t, context);
 		}
 	};

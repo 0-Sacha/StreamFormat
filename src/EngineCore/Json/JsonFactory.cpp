@@ -6,29 +6,33 @@
 #include <fstream>
 #include <utility>
 
+#include "JsonObjectsSerializer.h"
+
 namespace EngineCore::JSON
 {
-    JsonContext JsonFactory::FromPath(const std::filesystem::path& path)
+    std::unique_ptr<JsonObject> JsonFactory::FromPath(const std::filesystem::path& path)
     {
         std::ifstream file(path.string(), std::ios::in);
         
         if (file.is_open() == false)
             throw std::runtime_error("unable to open file");
         
-        JsonContext json;
+        std::string buffer;
 
         file.seekg(0, std::ios::end);
         std::size_t size = file.tellg();
         file.seekg(0, std::ios::beg);
-        json.GetBuffer().Reserve(size);
-        file.read(json.GetBuffer().GetBuffer(), size);
+        buffer.resize(size);
+        file.read(buffer.data(), size);
         file.close();
 
-        json.ReloadFromBuffer();
-        return json;                  
+        Detail::JsonParser parser(buffer.data(), buffer.size());
+        std::unique_ptr<JsonObject> res;
+        JsonSerializer<std::unique_ptr<JsonObject>>::Load(res, parser);
+        return res;
     }
     
-    void JsonFactory::SaveToPath(JsonContext& json, const std::filesystem::path& path)
+    void JsonFactory::SaveToPath(JsonObject& json, const std::filesystem::path& path)
     {
 		std::ofstream file(path.string(), std::ios::out);
 
@@ -37,7 +41,7 @@ namespace EngineCore::JSON
 
         FMT::Detail::DynamicBufferManager<char> bufferManager(256);
         Detail::JsonFormatter formatter(bufferManager);
-        formatter.DumpJsonObject(json.GetObjects());
+        JsonSerializer<JsonObject>::Dump(json, formatter);
         
 		file.write(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
 		file.flush();

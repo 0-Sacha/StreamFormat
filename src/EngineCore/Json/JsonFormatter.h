@@ -1,12 +1,15 @@
 #pragma once
 
-#include "EngineCore/Json/Detail/Buffer/JsonBufferOut.h"
-#include "EngineCore/Json/JsonContext/JsonObjects/JsonObjects.h"
+#include "EngineCore/FMT/Detail/Buffer/BasicBufferOut/BasicBufferOut.h"
+#include "JsonObjects.h"
 
 namespace EngineCore::JSON::Detail
 {
     class JsonFormatter
     {
+    public:
+        using JsonBufferOut = EngineCore::FMT::Detail::BasicBufferOut<char>;
+
     public:
         JsonFormatter(EngineCore::FMT::Detail::BasicBufferManager<char>& bufferManager)
             : m_BufferOut(bufferManager)
@@ -15,9 +18,6 @@ namespace EngineCore::JSON::Detail
             , m_IndentWithSpaces(true)
             , m_OneLine(false)
         {}
-
-    public:
-        void DumpJsonObject(const Detail::JsonObject& object);
 
     public:
         JsonBufferOut& BufferOut() { return m_BufferOut; }

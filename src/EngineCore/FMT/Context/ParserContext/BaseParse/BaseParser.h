@@ -16,7 +16,7 @@ namespace EngineCore::FMT {
 		static void Read(bool& t, ParserContext& context) {
 			const auto& data = context.GetFormatData();
 
-			if (!data.BaseValue) {
+			if (!data.TrueValue) {
 				switch (context.BufferIn().Get())
 				{
 				case 'T':

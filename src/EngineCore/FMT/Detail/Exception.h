@@ -2,9 +2,11 @@
 
 #include "EngineCore/Core/Core.h"
 
+#include <exception>
+
 namespace EngineCore::FMT::Detail {
 
-	class FMTException 			{};
+	class FMTException 			: public std::exception {};
 	class FMTError				: public FMTException {};
 	class FMTUtilityException	: public FMTException {};
 

@@ -176,7 +176,7 @@ namespace EngineCore::FMT::Detail {
 
 	protected:
 		template<typename ...Rest>
-		inline void PushBackSeqImpl(const CharBuffer c, const Rest... rest) 	{ PushBackNoCheck(c); if (sizeof...(rest) > 0) PushBackSeqImpl(rest...); }
+		inline void PushBackSeqImpl(const CharBuffer c, const Rest... rest) 	{ PushBackNoCheck(c); if constexpr (sizeof...(rest) > 0) PushBackSeqImpl(rest...); }
 	
 	public:
 		template<typename ...CharToPush>

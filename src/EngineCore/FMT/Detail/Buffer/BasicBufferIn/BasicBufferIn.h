@@ -186,7 +186,7 @@ namespace EngineCore::FMT::Detail {
         }
 
 		template<typename ...CharToTest> inline void IsSameSeqThrow(const CharToTest ...ele) const          { if (IsSameSeq(ele...)) return; throw FMTParseError(); }
-		template<typename ...CharToTest> inline void IsSameSeqForwardThrow(const CharToTest ...ele) const   { if (IsSameSeqForward(ele...)) return; throw FMTParseError(); }
+		template<typename ...CharToTest> inline void IsSameSeqForwardThrow(const CharToTest ...ele)         { if (IsSameSeqForward(ele...)) return; throw FMTParseError(); }
         
 	public:
 		template<typename CharToTest> bool IsSame(const CharToTest* str, std::size_t size) const

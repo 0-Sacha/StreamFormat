@@ -1,8 +1,10 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
+#include "Types/Types.h"
 
 #include <array>
+#include <string_view>
 
 namespace EngineCore::FMT::Detail {
 	
