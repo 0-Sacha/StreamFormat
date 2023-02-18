@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FormatterType.h"
+#include "../FormatterType.h"
 
 namespace EngineCore::FMT {
 	template<typename T, typename FormatterContext>

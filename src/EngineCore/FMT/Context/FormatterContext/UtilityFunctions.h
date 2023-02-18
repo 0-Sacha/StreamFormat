@@ -4,6 +4,10 @@
 #include "BasicFormatterContextCoreImpl.h"
 #include "BasicFormatterContextParseImpl.h"
 
+#include "Detail/Buffer/BufferManager/DynamicBufferManager.h"
+#include "Detail/Buffer/BufferManager/GivenBufferManager.h"
+#include "Detail/Buffer/BufferManager/StaticBufferManager.h"
+
 namespace EngineCore::FMT {
 
 	/////---------- Impl with as Format ----------//////

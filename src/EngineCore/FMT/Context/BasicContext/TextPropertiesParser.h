@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FMT/Detail/Detail.h"
+#include "EngineCore/FMT/Detail/Detail.h"
 
 namespace EngineCore::FMT::Detail {
 	template<typename FormatterContext>

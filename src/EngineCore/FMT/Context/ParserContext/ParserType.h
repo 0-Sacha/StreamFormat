@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FMT/Detail/Detail.h"
+#include "EngineCore/FMT/Detail/Detail.h"
 
 #define ENGINECORE_PARSER_DECLARED
 namespace EngineCore::FMT {

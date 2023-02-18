@@ -1,7 +1,7 @@
 #pragma once
 
-#include "JsonObjects.h"
-#include "JsonSerializer.h"
+#include "../JsonObjects.h"
+#include "../JsonSerializer.h"
 
 namespace EngineCore::JSON
 {
@@ -48,12 +48,12 @@ namespace EngineCore::JSON
         static inline void Load(JsonStringObject& t, Detail::JsonParser& parser)
         {
             t.String.clear();
-            JsonSerializer<Detail::ForwardAsJsonString<JsonStringObject>>::LoadString(t.String, parser);
+            JsonSerializer<Detail::ForwardAsJsonString<JsonStringObject>>::LoadSTDString(t.String, parser);
         }
 
 		static inline void Dump(const JsonStringObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonSerializer<Detail::ForwardAsJsonString<JsonStringObject>>::DumpString(t.String, formatter);
+            JsonSerializer<Detail::ForwardAsJsonString<JsonStringObject>>::DumpSTDString(t.String, formatter);
         }
     };
 

@@ -2,6 +2,8 @@
 
 #include "EngineCore/FMT/Detail/Buffer/BasicBufferIn/BasicBufferIn.h"
 #include "EngineCore/FMT/Detail/Buffer/BasicBufferOut/BasicBufferOut.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferManager/DynamicBufferManager.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferManager/GivenBufferManager.h"
 
 namespace EngineCore::FMT
 {

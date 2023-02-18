@@ -46,13 +46,13 @@ namespace EngineCore::JSON
     template <typename T>
 	struct JsonSerializer<Detail::ForwardAsJsonString<T>>
     {
-        static inline void LoadString(std::string& t, Detail::JsonParser& parser)
+        static inline void LoadSTDString(std::string& t, Detail::JsonParser& parser)
         {
             std::string string = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.BufferIn());
             t = std::move(string);
         }
 
-		static inline void DumpString(const std::string& t, Detail::JsonFormatter& formatter)
+		static inline void DumpSTDString(const std::string& t, Detail::JsonFormatter& formatter)
         {
             EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), t);
         }

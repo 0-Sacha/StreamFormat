@@ -8,13 +8,6 @@
 
 namespace EngineCore::FMT::Detail {
 	
-	template<typename T> struct ForwardAsInt;
-	template<typename T> struct ForwardAsUInt;
-	template<typename T> struct ForwardAsFloat;
-	template<typename CharType> struct ForwardAsChar {};
-	template<typename CharType, std::size_t SIZE> struct ForwardAsCharArray {};
-	template<typename CharType> struct ForwardAsCharPt {};
-
 	enum class ValueIntPrint : DataType {
 		Dec,
 		Bin,

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "FMT/Context/ParserContext/BasicParserContext.h"
+#include "EngineCore/FMT/Context/ParserContext/BasicParserContext.h"
+#include "ParserForwarders.h"
 
 namespace EngineCore::FMT {
 
@@ -42,54 +43,7 @@ namespace EngineCore::FMT {
 		}
 	};
 
-
-	// Int
-	template<typename T, typename ParserContext>
-	struct ParserType<Detail::ForwardAsInt<T>, ParserContext> {
-		static inline void Read(T& t, ParserContext& context) {
-			context.BufferIn().ReadIntFormatData(t, context.GetFormatData());
-		}
-	};
-
-	// UInt
-	template<typename T, typename ParserContext>
-	struct ParserType<Detail::ForwardAsUInt<T>, ParserContext> {
-		static inline void Read(T& t, ParserContext& context) {
-			context.BufferIn().ReadUIntFormatData(t, context.GetFormatData());
-		}
-	};
-
-	// Float
-	template<typename T, typename ParserContext>
-	struct ParserType<Detail::ForwardAsFloat<T>, ParserContext> {
-		static inline void Read(T& t, ParserContext& context) {
-			context.BufferIn().ReadFloatFormatData(t, context.GetFormatData());
-		}
-	};
-
-	// Char type
-	template<typename T, typename ParserContext>
-	struct ParserType<Detail::ForwardAsChar<T>, ParserContext> {
-		static inline void Read(T& t, ParserContext& context) {
-			context.BufferIn().GetAndForward(t);
-		}
-	};
-	template<std::size_t SIZE, typename T, typename ParserContext>
-	struct ParserType<Detail::ForwardAsCharArray<T, SIZE>, ParserContext> {
-		static inline void Read(T(&t)[SIZE], ParserContext& context) {
-			// FIXME
-		}
-	};
-	template<typename T, typename ParserContext>
-	struct ParserType<Detail::ForwardAsCharPt<T>, ParserContext> {
-		static inline void Read(T* const t, ParserContext& context) {
-			// FIXME
-		}
-	};
-
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Int basic
+	// Int Types
 	template<typename ParserContext>
 	struct ParserType<std::int8_t, ParserContext> {
 		static inline void Read(std::int8_t &t, ParserContext& context) {
@@ -116,7 +70,7 @@ namespace EngineCore::FMT {
 	};
 
 
-	// UInt basic
+	// UInt Types
 	template<typename ParserContext>
 	struct ParserType<std::uint8_t, ParserContext> {
 		static inline void Read(std::uint8_t &t, ParserContext& context) {
@@ -143,8 +97,7 @@ namespace EngineCore::FMT {
 	};
 
 
-	// Float basic
-
+	// Float Types
 	template<typename ParserContext>
 	struct ParserType<float, ParserContext> {
 		static inline void Read(float &t, ParserContext& context) {
@@ -165,8 +118,7 @@ namespace EngineCore::FMT {
 	};
 
 
-
-
+	// Char Types
 	template<typename ParserContext>
 	struct ParserType<char, ParserContext> {
 		static inline void Read(char &t, ParserContext& context) {
@@ -220,25 +172,25 @@ namespace EngineCore::FMT {
 	template<typename ParserContext>
 	struct ParserType<char*, ParserContext> {
 		static inline void Read(char* const t, ParserContext& context) {
-			ParserType<Detail::ForwardAsCharPt<char>, ParserContext>::Read(t, context);
+			ParserType<Detail::ForwardAsCharPointer<char>, ParserContext>::Read(t, context);
 		}
 	};
 	template<typename ParserContext>
 	struct ParserType<wchar_t*, ParserContext> {
 		static inline void Read(wchar_t* const t, ParserContext& context) {
-			ParserType<Detail::ForwardAsCharPt<wchar_t>, ParserContext>::Read(t, context);
+			ParserType<Detail::ForwardAsCharPointer<wchar_t>, ParserContext>::Read(t, context);
 		}
 	};
 	template<typename ParserContext>
 	struct ParserType<char16_t*, ParserContext> {
 		static inline void Read(char16_t* const t, ParserContext& context) {
-			ParserType<Detail::ForwardAsCharPt<char16_t>, ParserContext>::Read(t, context);
+			ParserType<Detail::ForwardAsCharPointer<char16_t>, ParserContext>::Read(t, context);
 		}
 	};
 	template<typename ParserContext>
 	struct ParserType<char32_t*, ParserContext> {
 		static inline void Read(char32_t* const t, ParserContext& context) {
-			ParserType<Detail::ForwardAsCharPt<char32_t>, ParserContext>::Read(t, context);
+			ParserType<Detail::ForwardAsCharPointer<char32_t>, ParserContext>::Read(t, context);
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

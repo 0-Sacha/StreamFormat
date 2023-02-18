@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FMT/Detail/Detail.h"
+#include "EngineCore/FMT/Detail/Detail.h"
 #include "EngineCore/Tools/MapMacro.h"
 
 #define ENGINECORE_FORMATTER_DECLARED
@@ -17,7 +17,6 @@ namespace EngineCore::FMT {
 	};
 }
 
-
 #define ENGINECORE_INTERNAL_ADDVALUE(x) value.x
 #define ENGINECORE_AUTO_FORMATTER_X(Type, fmt, ...)	template<typename FormatterContext>\
 													struct EngineCore::FMT::FormatterType<Type, FormatterContext> {\
@@ -32,3 +31,4 @@ namespace EngineCore::FMT {
 															context.SubContext(fmt, __VA_ARGS__);\
 														}\
 													};
+													

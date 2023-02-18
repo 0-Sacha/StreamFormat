@@ -1,7 +1,7 @@
 #pragma once
 
-#include "FormatterType.h"
-#include "FMT/Detail/Detail.h"
+#include "../FormatterType.h"
+#include "EngineCore/FMT/Detail/Detail.h"
 
 namespace EngineCore::FMT {
 

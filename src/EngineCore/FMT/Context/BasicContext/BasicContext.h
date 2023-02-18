@@ -1,9 +1,9 @@
 #pragma once
 
-#include "FMT/Detail/Detail.h"
-#include "FMT/Detail/Buffer/FMTFormatBuffer/FMTFormatBuffer.h"
+#include "EngineCore/FMT/Detail/Detail.h"
+#include "EngineCore/FMT/Detail/Buffer/FMTFormatBuffer/FMTFormatBuffer.h"
 
-#include "FMT/Detail/FormatterHandler/FormatterHandler.h"
+#include "EngineCore/FMT/Detail/FormatterHandler/FormatterHandler.h"
 #include "Utils/BasicContextArgsTupleInterface.h"
 #include "Utils/FormatterContextTemplate.h"
 

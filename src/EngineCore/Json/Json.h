@@ -4,4 +4,4 @@
 #include "JsonFactory.h"
 
 #include "JsonSerializer.h"
-#include "JsonObjectsSerializer.h"
+#include "Serializers/AllSerializers.h"

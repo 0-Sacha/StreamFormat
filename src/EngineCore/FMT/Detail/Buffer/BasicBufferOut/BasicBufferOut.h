@@ -1,9 +1,7 @@
 #pragma once
 
-#include "FMT/Detail/Buffer/BasicBuffer.h"
-#include "BufferManager/DynamicBufferManager.h"
-#include "BufferManager/StaticBufferManager.h"
-#include "BufferManager/GivenBufferManager.h"
+#include "EngineCore/FMT/Detail/Buffer/BasicBuffer.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferManager/BasicBufferManager.h"
 
 namespace EngineCore::FMT::Detail {
 

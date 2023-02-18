@@ -1,6 +1,7 @@
 #pragma once
 
-#include "FMT/Context/FormatterContext/BasicFormatterContext.h"
+#include "EngineCore/FMT/Context/FormatterContext/BasicFormatterContext.h"
+#include "FormatterForwarders.h"
 
 namespace EngineCore::FMT {
 
@@ -21,8 +22,6 @@ namespace EngineCore::FMT {
 		}
 	};
 
-
-
 	// Bool
 	template<typename FormatterContext>
 	struct FormatterType<bool, FormatterContext> {
@@ -37,74 +36,7 @@ namespace EngineCore::FMT {
 		}
 	};
 
-	// Int basic
-	template<typename T, typename FormatterContext>
-	struct FormatterType<Detail::ForwardAsInt<T>, FormatterContext> {
-		static inline void Write(const T t, FormatterContext& context) {
-			context.BufferOut().WriteIntFormatData(t, context.GetFormatData());
-		}
-	};
-
-	// UInt basic
-	template<typename T, typename FormatterContext>
-	struct FormatterType<Detail::ForwardAsUInt<T>, FormatterContext> {
-		static inline void Write(const T t, FormatterContext& context) {
-			context.BufferOut().WriteUIntFormatData(t, context.GetFormatData());
-		}
-	};
-
-	// Float basic
-	template<typename T, typename FormatterContext>
-	struct FormatterType<Detail::ForwardAsFloat<T>, FormatterContext> {
-		static void Write(const T t, FormatterContext& context) {
-			context.BufferOut().WriteFloatFormatData(t, context.GetFormatData());
-		}
-	};
-
-	// Char type
-	template<typename T, typename FormatterContext>
-	struct FormatterType<Detail::ForwardAsChar<T>, FormatterContext> {
-		inline static void Write(const T t, FormatterContext& context) {
-			context.BufferOut().PushBack(t);
-		}
-	};
-
-	template<typename T, std::size_t SIZE, typename FormatterContext>
-	struct FormatterType<Detail::ForwardAsCharArray<T, SIZE>, FormatterContext> {
-		static void Write(const T(&t)[SIZE], FormatterContext& context) {
-			const auto& data = context.GetFormatData();
-
-			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-			auto size = context.GetFormatData().GetSpecifierAsNumber("size", SIZE - begin);
-
-			if (data.TrueValue)	context.BufferOut().PushBack('\"');
-			context.BufferOut().WriteCharPtr(t + begin, size);
-			if (data.TrueValue)	context.BufferOut().PushBack('\"');
-		}
-	};
-
-	template<typename T, typename FormatterContext>
-	struct FormatterType<Detail::ForwardAsCharPt<T>, FormatterContext> {
-		static void Write(const T* t, FormatterContext& context) {
-			if (t == nullptr)
-				return context.Print(context.GetFormatData().GetSpecifierAsText("null", "[nullptr string]"));
-
-			const auto& data = context.GetFormatData();
-
-			if (data.TrueValue)										context.BufferOut().PushBack('\"');
-
-			auto begin = data.GetSpecifierAsNumber("begin", 0);
-			auto size = data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
-
-			if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.Print(t + begin, size);
-			else											context.PrintCharPtr(t + begin);
-
-			if (data.TrueValue)										context.BufferOut().PushBack('\"');
-		}
-	};
-
-
-	// Int basic
+	// Int Types
 	template<typename FormatterContext>
 	struct FormatterType<std::int8_t, FormatterContext> {
 		static inline void Write(const std::int8_t t, FormatterContext& context) {
@@ -131,7 +63,7 @@ namespace EngineCore::FMT {
 	};
 
 
-	// UInt basic
+	// UInt Types
 	template<typename FormatterContext>
 	struct FormatterType<std::uint8_t, FormatterContext> {
 		static inline void Write(const std::uint8_t t, FormatterContext& context) {
@@ -158,8 +90,7 @@ namespace EngineCore::FMT {
 	};
 
 
-	// Float basic
-
+	// Float Types
 	template<typename FormatterContext>
 	struct FormatterType<float, FormatterContext> {
 		static inline void Write(const float t, FormatterContext& context) {
@@ -247,31 +178,31 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<char*, FormatterContext> {
 		static void Write(const char* const t, FormatterContext& context) {
-			FormatterType<Detail::ForwardAsCharPt<char>, FormatterContext>::Write(t, context);
+			FormatterType<Detail::ForwardAsCharPointer<char>, FormatterContext>::Write(t, context);
 		}
 	};
 	template<typename FormatterContext>
 	struct FormatterType<wchar_t*, FormatterContext> {
 		static void Write(const wchar_t* const t, FormatterContext& context) {
-			FormatterType<Detail::ForwardAsCharPt<wchar_t>, FormatterContext>::Write(t, context);
+			FormatterType<Detail::ForwardAsCharPointer<wchar_t>, FormatterContext>::Write(t, context);
 		}
 	};
 	template<typename FormatterContext>
 	struct FormatterType<char8_t*, FormatterContext> {
 		static void Write(const char8_t* const t, FormatterContext& context) {
-			FormatterType<Detail::ForwardAsCharPt<char8_t>, FormatterContext>::Write(t, context);
+			FormatterType<Detail::ForwardAsCharPointer<char8_t>, FormatterContext>::Write(t, context);
 		}
 	};
 	template<typename FormatterContext>
 	struct FormatterType<char16_t*, FormatterContext> {
 		static void Write(const char16_t* const t, FormatterContext& context) {
-			FormatterType<Detail::ForwardAsCharPt<char16_t>, FormatterContext>::Write(t, context);
+			FormatterType<Detail::ForwardAsCharPointer<char16_t>, FormatterContext>::Write(t, context);
 		}
 	};
 	template<typename FormatterContext>
 	struct FormatterType<char32_t*, FormatterContext> {
 		static void Write(const char32_t* const t, FormatterContext& context) {
-			FormatterType<Detail::ForwardAsCharPt<char32_t>, FormatterContext>::Write(t, context);
+			FormatterType<Detail::ForwardAsCharPointer<char32_t>, FormatterContext>::Write(t, context);
 		}
 	};
 
@@ -340,7 +271,8 @@ namespace EngineCore::FMT {
 			const T* begin 	= t + beginValue;
 			const T* end  	= begin + context.GetFormatData().GetSpecifierAsNumber("size", SIZE - beginValue);
 
-			while(begin < end) {
+			while(begin < end)
+			{
 				if (first)	first = false;
 				else		context.PrintIndent(join);
 				context.WriteType(*begin++);
