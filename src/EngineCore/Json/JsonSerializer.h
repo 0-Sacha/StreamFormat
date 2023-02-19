@@ -139,7 +139,8 @@ namespace EngineCore::JSON
     {
         static inline void LoadSubObjects(T& t, Detail::JsonParser& parser)
         {
-           parser.BufferIn().Skip('{');
+            parser.BufferIn().Skip('{');
+            std::size_t idx = 0;
 
             while (parser.BufferIn().IsEnd() == false)
             {
@@ -154,7 +155,7 @@ namespace EngineCore::JSON
 
                 typename JsonSerializer<T>::SubObjectType subObject;
                 JsonSerializer<typename JsonSerializer<T>::SubObjectType>::Load(subObject, parser);
-                JsonSerializer<T>::AddSubObject(t, std::move(name), std::move(subObject));
+                JsonSerializer<T>::AddSubObject(t, idx++, std::move(name), std::move(subObject));
 
                 parser.BufferIn().GoTo(',', '}');
                 parser.BufferIn().Ignore(',');
@@ -193,7 +194,8 @@ namespace EngineCore::JSON
     {
         static inline void LoadSubObjects(T& t, Detail::JsonParser& parser)
         {
-           parser.BufferIn().Skip('[');
+            parser.BufferIn().Skip('[');
+            std::size_t idx = 0;
 
             while (parser.BufferIn().IsEnd() == false)
             {
@@ -203,7 +205,7 @@ namespace EngineCore::JSON
 
 				typename JsonSerializer<T>::SubObjectType subObject;
 				JsonSerializer<typename JsonSerializer<T>::SubObjectType>::Load(subObject, parser);
-                JsonSerializer<T>::AddSubObject(t, std::move(subObject));
+                JsonSerializer<T>::AddSubObject(t, idx++, std::move(subObject));
 
                 parser.BufferIn().GoTo(',', ']');
                 parser.BufferIn().Ignore(',');

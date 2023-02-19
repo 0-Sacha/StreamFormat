@@ -3,6 +3,9 @@
 #include "../JsonObjects.h"
 #include "../JsonSerializer.h"
 
+#include "STDSerializers/JSON_vector.h"
+#include "STDSerializers/JSON_unordered_map.h"
+
 namespace EngineCore::JSON
 {
 	template <>
@@ -102,49 +105,22 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonStructObject>
     {
-        using SubObjectType = std::unique_ptr<JsonObject>;
-
-        static inline void Load(JsonStructObject& t, Detail::JsonParser& parser)
-        {
-            JsonSerializer<Detail::ForwardAsJsonStruct<JsonStructObject>>::LoadSubObjects(t, parser);
+        static inline void Load(JsonStructObject& t, Detail::JsonParser& parser) {
+            JsonSerializer<std::unordered_map<std::string, std::unique_ptr<JsonObject>>>::Load(t.Objects, parser);
         }
-        static inline void AddSubObject(JsonStructObject& t, std::string&& name, SubObjectType&& subObject)
-        {
-            t.Objects.insert({ std::move(name), std::move(subObject) });
-        }
-
-		static inline void Dump(const JsonStructObject& t, Detail::JsonFormatter& formatter)
-        {
-            JsonSerializer<Detail::ForwardAsJsonStruct<JsonStructObject>>::DumpBegin(formatter);
-            std::size_t idx = 0;
-            for (const auto& [name, object] : t.Objects)
-                JsonSerializer<Detail::ForwardAsJsonStruct<JsonStructObject>>::DumpObject(name, object, idx++, formatter);
-            JsonSerializer<Detail::ForwardAsJsonStruct<JsonStructObject>>::DumpEnd(formatter);
+		static inline void Dump(const JsonStructObject& t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<std::unordered_map<std::string, std::unique_ptr<JsonObject>>>::Dump(t.Objects, formatter);
         }
     };
-
 
     template <>
 	struct JsonSerializer<JsonArrayObject>
     {
-        using SubObjectType = std::unique_ptr<JsonObject>;
-
-        static inline void Load(JsonArrayObject& t, Detail::JsonParser& parser)
-        {
-            JsonSerializer<Detail::ForwardAsJsonArray<JsonArrayObject>>::LoadSubObjects(t, parser);
+        static inline void Load(JsonArrayObject& t, Detail::JsonParser& parser) {
+            JsonSerializer<std::vector<std::unique_ptr<JsonObject>>>::Load(t.Objects, parser);
         }
-        static inline void AddSubObject(JsonArrayObject& t, SubObjectType&& subObject)
-        {
-            t.Objects.emplace_back(std::move(subObject));
-        }
-
-		static inline void Dump(const JsonArrayObject& t, Detail::JsonFormatter& formatter)
-        {
-            JsonSerializer<Detail::ForwardAsJsonArray<JsonArrayObject>>::DumpBegin(formatter);
-            std::size_t idx = 0;
-            for (const auto& object : t.Objects)
-                JsonSerializer<Detail::ForwardAsJsonArray<JsonArrayObject>>::DumpObject(object, idx++, formatter);
-            JsonSerializer<Detail::ForwardAsJsonArray<JsonArrayObject>>::DumpEnd(formatter);
+		static inline void Dump(const JsonArrayObject& t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<std::vector<std::unique_ptr<JsonObject>>>::Dump(t.Objects, formatter);
         }
     };
 }

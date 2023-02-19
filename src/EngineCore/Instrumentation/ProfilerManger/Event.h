@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineCore/Core/Core.h"
-#include "EngineCore/FMT/Formatter.h"
+#include "EngineCore/FMT/FMT.h"
 #include "EventData.h"
 #include "Detail.h"
 

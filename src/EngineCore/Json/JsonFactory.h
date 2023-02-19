@@ -34,7 +34,7 @@ namespace EngineCore::JSON::Detail
 	};
 }
 
-#include "EngineCore//FMT/Formatter.h"
+#include "EngineCore/FMT/FMT.h"
 namespace EngineCore::FMT
 {
 	template<typename FormatterContext>

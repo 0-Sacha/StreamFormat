@@ -218,6 +218,138 @@ namespace EngineCore::JSON
         }
     };
 
+    template <std::size_t SIZE>
+	struct JsonSerializer<char[SIZE]>
+    {
+        static inline void Load(char(&t)[SIZE], Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char, SIZE>>::Load(t, parser);
+        }
+		static inline void Dump(const char(&t)[SIZE], Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char, SIZE>>::Dump(t, formatter);
+        }
+    };
+    template <std::size_t SIZE>
+	struct JsonSerializer<wchar_t[SIZE]>
+    {
+        static inline void Load(wchar_t(&t)[SIZE], Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<wchar_t, SIZE>>::Load(t, parser);
+        }
+		static inline void Dump(const wchar_t(&t)[SIZE], Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<wchar_t, SIZE>>::Dump(t, formatter);
+        }
+    };
+    template <std::size_t SIZE>
+	struct JsonSerializer<char8_t[SIZE]>
+    {
+        static inline void Load(char8_t(&t)[SIZE], Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char8_t, SIZE>>::Load(t, parser);
+        }
+		static inline void Dump(const char8_t(&t)[SIZE], Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char8_t, SIZE>>::Dump(t, formatter);
+        }
+    };
+    template <std::size_t SIZE>
+	struct JsonSerializer<char16_t[SIZE]>
+    {
+        static inline void Load(char16_t(&t)[SIZE], Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char16_t, SIZE>>::Load(t, parser);
+        }
+		static inline void Dump(const char16_t(&t)[SIZE], Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char16_t, SIZE>>::Dump(t, formatter);
+        }
+    };
+    template <std::size_t SIZE>
+	struct JsonSerializer<char32_t[SIZE]>
+    {
+        static inline void Load(char32_t(&t)[SIZE], Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char32_t, SIZE>>::Load(t, parser);
+        }
+		static inline void Dump(const char32_t(&t)[SIZE], Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharArray<char32_t, SIZE>>::Dump(t, formatter);
+        }
+    };
+    
+    template <>
+	struct JsonSerializer<char*>
+    {
+        static inline void Load(char* t, Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char>>::Load(t, parser);
+        }
+		static inline void Dump(const char* t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char>>::Dump(t, formatter);
+        }
+    };
+    template <>
+	struct JsonSerializer<wchar_t*>
+    {
+        static inline void Load(wchar_t* t, Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<wchar_t>>::Load(t, parser);
+        }
+		static inline void Dump(const wchar_t* t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<wchar_t>>::Dump(t, formatter);
+        }
+    };
+    template <>
+	struct JsonSerializer<char8_t*>
+    {
+        static inline void Load(char8_t* t, Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char8_t>>::Load(t, parser);
+        }
+		static inline void Dump(const char8_t* t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char8_t>>::Dump(t, formatter);
+        }
+    };
+    template <>
+	struct JsonSerializer<char16_t*>
+    {
+        static inline void Load(char16_t* t, Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char16_t>>::Load(t, parser);
+        }
+		static inline void Dump(const char16_t* t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char16_t>>::Dump(t, formatter);
+        }
+    };
+    template <>
+	struct JsonSerializer<char32_t*>
+    {
+        static inline void Load(char32_t* t, Detail::JsonParser& parser) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char32_t>>::Load(t, parser);
+        }
+		static inline void Dump(const char32_t* t, Detail::JsonFormatter& formatter) {
+            JsonSerializer<FMT::Detail::ForwardAsCharPointer<char32_t>>::Dump(t, formatter);
+        }
+    };
 
+    template <typename T>
+	struct JsonSerializer<T*>
+    {
+        static inline void Load(T* t, Detail::JsonParser& parser) {
+            if (t == nullptr) throw JsonGivenTypeError{};
+            JsonSerializer<T>::Load(*t, parser);
+        }
+		static inline void Dump(const T* t, Detail::JsonFormatter& formatter) {
+            if (t == nullptr) throw JsonGivenTypeError{};
+            JsonSerializer<T>::Dump(*t, formatter);
+        }
+    };
 
+    template <typename T, std::size_t SIZE>
+	struct JsonSerializer<T[SIZE]>
+    {
+        using SubObjectType = T;
+        
+        static inline void Load(T(&t)[SIZE], Detail::JsonParser& parser) {
+            JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::LoadSubObjects(t, parser);
+        }
+        static inline void AddSubObject(T(&t)[SIZE], std::size_t idx, SubObjectType&& subObject) {
+            t[idx] = std::move(subObject);
+        }
+
+		static inline void Dump(const T(&t)[SIZE], Detail::JsonFormatter& formatter) {
+            JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::DumpBegin(formatter);
+            for (std::size_t idx = 0; idx < SIZE; ++idx) 
+                JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::DumpObject(t[idx], idx, formatter);
+            JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::DumpEnd(formatter);
+        }
+    };
 }

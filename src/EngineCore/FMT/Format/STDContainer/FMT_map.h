@@ -1,9 +1,9 @@
 #pragma once
 
-#include "EngineCore/FMT/Context/FormatterContext/Utils/FormatterType.h"
+#include "EngineCore/FMT/Context/FormatterContext/FormatterType.h"
 #include <map>
 
-#include "std_tuple.h"
+#include "FMT_tuple.h"
 
 namespace EngineCore::FMT {
 	template<typename T1, typename T2, typename FormatterContext>
