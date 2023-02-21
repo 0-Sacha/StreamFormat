@@ -31,4 +31,3 @@ namespace EngineCore::FMT {
 															context.SubContext(fmt, __VA_ARGS__);\
 														}\
 													};
-													

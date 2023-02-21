@@ -27,6 +27,10 @@ namespace EngineCore::JSON::Detail
         JsonBufferOut m_BufferOut;
 
     public:
+        template <typename T>
+        void Dump(const T& t);
+
+    public:
         void Indent()
         {
             if (m_OneLine) return;

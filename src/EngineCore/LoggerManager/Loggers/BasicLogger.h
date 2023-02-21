@@ -34,7 +34,8 @@ namespace EngineCore::LoggerManager::Detail {
 		void SetSeverity(const SeverityValueType& severity)	{ m_Severity = severity; }
 		void SetName(const std::string& name)				{ m_Name = name; }
 		void SetName(std::string&& name)					{ m_Name = std::move(name); }
-		void SetPattern(std::string_view pattern)			{ m_Pattern = "{color:W}"; m_Pattern += pattern; }
+		void SetRealPattern(std::string_view pattern)		{ m_Pattern = pattern; }
+		void SetPattern(std::string_view pattern)			{ m_Pattern = "{color}"; m_Pattern += pattern; }
 		void ResetPattern()									{ SetPattern("[{T:pattern='%h:%m:%s:%ms'}] {name} >> {data}"); }
 
 	private:

@@ -21,11 +21,3 @@ namespace EngineCore::FMT {
 															return context.SubContext(fmt, __VA_ARGS__);\
 														}\
 													};
-
-
-
-
-
-
-
-

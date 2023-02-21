@@ -7,3 +7,4 @@
 #include "Detail/Buffer/BufferManager/GivenBufferManager.h"
 #include "Detail/Buffer/BufferManager/StaticBufferManager.h"
 
+#include "Format/CompilationData.h"

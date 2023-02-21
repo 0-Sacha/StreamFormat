@@ -21,7 +21,7 @@ namespace EngineCore::FMT::Detail {
 		static inline constexpr std::uint8_t FrontAnsiIdx	= 10;
 
 	public:
-		Front(const std::uint8_t frontId = DefaultFront)
+		constexpr Front(const std::uint8_t frontId = DefaultFront)
 			: FrontId((frontId > MaxFront ? DefaultFront : frontId) + FrontAnsiIdx) {}
 		
 	public:

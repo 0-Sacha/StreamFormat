@@ -33,5 +33,9 @@ namespace EngineCore::JSON::Detail
 
     protected:
         JsonBufferIn m_BufferIn;
+
+    public:
+        template <typename T>
+        void Load(T& t);
     };
 }

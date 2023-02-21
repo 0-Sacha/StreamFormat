@@ -86,7 +86,7 @@ namespace EngineCore::FMT::Detail
 
 	struct TextProperties::TextColor::BasicColor
 	{
-		BasicColor(TextProperties::TextColor::BasicColorFG fg = TextProperties::TextColor::BasicColorFG::Default, TextProperties::TextColor::BasicColorBG bg = TextProperties::TextColor::BasicColorBG::Default)
+		constexpr BasicColor(TextProperties::TextColor::BasicColorFG fg = TextProperties::TextColor::BasicColorFG::Default, TextProperties::TextColor::BasicColorBG bg = TextProperties::TextColor::BasicColorBG::Default)
 			: Fg(fg), Bg(bg) { }
 		TextProperties::TextColor::BasicColorFG Fg;
 		TextProperties::TextColor::BasicColorBG Bg;
@@ -145,10 +145,10 @@ namespace EngineCore::FMT::Detail
 		const std::uint8_t GetColorRef() const	{ return Color; }
 	
 	public:
-		BaseColorCube(const std::uint8_t color)
+		constexpr BaseColorCube(const std::uint8_t color)
 			: Color(color) {}
 
-		BaseColorCube()
+		constexpr BaseColorCube()
 			: Color(0) {}
 
 		Type GetType()
@@ -202,9 +202,9 @@ namespace EngineCore::FMT::Detail
 	struct TextProperties::TextColor::ColorCubeFG : public TextProperties::TextColor::BaseColorCube
 	{
 	public:
-		explicit ColorCubeFG()												: TextProperties::TextColor::BaseColorCube() 		{}
-		explicit ColorCubeFG(const std::uint8_t color)						: TextProperties::TextColor::BaseColorCube(color) 	{}
-		ColorCubeFG(const TextProperties::TextColor::BaseColorCube& color)	: TextProperties::TextColor::BaseColorCube(color) 	{}
+		constexpr explicit ColorCubeFG()												: TextProperties::TextColor::BaseColorCube() 		{}
+		constexpr explicit ColorCubeFG(const std::uint8_t color)						: TextProperties::TextColor::BaseColorCube(color) 	{}
+		constexpr ColorCubeFG(const TextProperties::TextColor::BaseColorCube& color)	: TextProperties::TextColor::BaseColorCube(color) 	{}
 
 	public:
 		static ColorCubeFG MakeNormalColor(const std::uint8_t value) {
@@ -234,9 +234,9 @@ namespace EngineCore::FMT::Detail
 	
 	struct TextProperties::TextColor::ColorCubeBG : public TextProperties::TextColor::BaseColorCube
 	{
-		explicit ColorCubeBG()														: TextProperties::TextColor::BaseColorCube() 		{}
-		explicit ColorCubeBG(const std::uint8_t color)								: TextProperties::TextColor::BaseColorCube(color) 	{}
-		ColorCubeBG(const TextProperties::TextColor::BaseColorCube& color)			: TextProperties::TextColor::BaseColorCube(color) 	{}
+		constexpr explicit ColorCubeBG()														: TextProperties::TextColor::BaseColorCube() 		{}
+		constexpr explicit ColorCubeBG(const std::uint8_t color)								: TextProperties::TextColor::BaseColorCube(color) 	{}
+		constexpr ColorCubeBG(const TextProperties::TextColor::BaseColorCube& color)			: TextProperties::TextColor::BaseColorCube(color) 	{}
 
 	public:
 		static TextProperties::TextColor::ColorCubeBG MakeNormalColor(const std::uint8_t value) {
@@ -271,17 +271,17 @@ namespace EngineCore::FMT::Detail
 
 	struct TextProperties::TextColor::ColorCube
 	{
-		ColorCube()
+		constexpr ColorCube()
 			: Fg()
 			, Bg()
 		{}
 		
-		ColorCube(const TextProperties::TextColor::ColorCubeFG& fg)
+		constexpr ColorCube(const TextProperties::TextColor::ColorCubeFG& fg)
 			: Fg(fg)
 			, Bg()
 		{}
 
-		ColorCube(const TextProperties::TextColor::ColorCubeFG& fg, const TextProperties::TextColor::ColorCubeBG& bg)
+		constexpr ColorCube(const TextProperties::TextColor::ColorCubeFG& fg, const TextProperties::TextColor::ColorCubeBG& bg)
 			: Fg(fg)
 			, Bg(bg)
 		{}
@@ -293,7 +293,7 @@ namespace EngineCore::FMT::Detail
 
 	struct TextProperties::TextColor::BaseColor24b
 	{
-		BaseColor24b(std::uint8_t r, std::uint8_t g, std::uint8_t b)
+		constexpr BaseColor24b(std::uint8_t r, std::uint8_t g, std::uint8_t b)
 			: R(r), G(g), B(b) { }
 		std::uint8_t R, G, B;
 	};
@@ -305,20 +305,20 @@ namespace EngineCore::FMT::Detail
 
 	struct TextProperties::TextColor::Color24bFG : public TextProperties::TextColor::BaseColor24b
 	{
-		Color24bFG(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
+		constexpr Color24bFG(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
 			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
 	};
 
 	struct TextProperties::TextColor::Color24bBG : public TextProperties::TextColor::BaseColor24b
 	{
-		Color24bBG(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
+		constexpr Color24bBG(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
 	};
 
 
 	struct TextProperties::TextColor::Color24b
 	{
-		Color24b(const TextProperties::TextColor::Color24bFG&& fg = TextProperties::TextColor::Color24bFG(), const TextProperties::TextColor::Color24bBG&& bg = TextProperties::TextColor::Color24bBG())
+		constexpr Color24b(const TextProperties::TextColor::Color24bFG&& fg = TextProperties::TextColor::Color24bFG(), const TextProperties::TextColor::Color24bBG&& bg = TextProperties::TextColor::Color24bBG())
 			: Fg(fg), Bg(bg) { }
 
 		TextProperties::TextColor::Color24bFG Fg;
@@ -340,7 +340,7 @@ namespace EngineCore::FMT::Detail
 
 	union TextProperties::TextColor::ColorFGData
 	{
-		ColorFGData()
+		constexpr ColorFGData()
 			: BasicColor{ TextProperties::TextColor::BasicColorFG::Default }
 		{}
 
@@ -351,7 +351,7 @@ namespace EngineCore::FMT::Detail
 
 	union TextProperties::TextColor::ColorBGData
 	{
-		ColorBGData()
+		constexpr ColorBGData()
 			: BasicColor{ TextProperties::TextColor::BasicColorBG::Default }
 		{}
 
@@ -404,7 +404,7 @@ namespace EngineCore::FMT::Detail
 	struct TextProperties::TextColor::Color
 	{
 	public:
-		Color()
+		constexpr Color()
 			: Fg()
 			, Bg()
 		{}

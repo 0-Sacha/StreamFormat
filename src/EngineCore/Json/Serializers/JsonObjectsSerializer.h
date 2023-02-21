@@ -106,10 +106,10 @@ namespace EngineCore::JSON
 	struct JsonSerializer<JsonStructObject>
     {
         static inline void Load(JsonStructObject& t, Detail::JsonParser& parser) {
-            JsonSerializer<std::unordered_map<std::string, std::unique_ptr<JsonObject>>>::Load(t.Objects, parser);
+            parser.Load(t.Objects);
         }
 		static inline void Dump(const JsonStructObject& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<std::unordered_map<std::string, std::unique_ptr<JsonObject>>>::Dump(t.Objects, formatter);
+            formatter.Dump(t.Objects);
         }
     };
 
@@ -117,10 +117,10 @@ namespace EngineCore::JSON
 	struct JsonSerializer<JsonArrayObject>
     {
         static inline void Load(JsonArrayObject& t, Detail::JsonParser& parser) {
-            JsonSerializer<std::vector<std::unique_ptr<JsonObject>>>::Load(t.Objects, parser);
+            parser.Load(t.Objects);
         }
 		static inline void Dump(const JsonArrayObject& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<std::vector<std::unique_ptr<JsonObject>>>::Dump(t.Objects, formatter);
+            formatter.Dump(t.Objects);
         }
     };
 }

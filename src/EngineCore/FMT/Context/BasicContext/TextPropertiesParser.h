@@ -9,16 +9,13 @@ namespace EngineCore::FMT::Detail {
 	public:
 		explicit TextPropertiesParser(FormatterContext& context, const TextProperties::Properties* baseContextProperties = nullptr)
 			: Context{context}
-			, BaseContextProperties{baseContextProperties}
+			, BaseContextProperties{baseContextProperties == nullptr ? &BasicTextProperties : baseContextProperties }
 			, CurrentContexProperties{baseContextProperties == nullptr ? TextProperties::Properties{} : *baseContextProperties}
 		{}
 
 		~TextPropertiesParser()
 		{
-			if (BaseContextProperties != nullptr)
-				Reload(*BaseContextProperties);
-			else
-				AllResetIfNeeded();
+			Reload(*BaseContextProperties);
 		}
 
 		void SetBaseContextProperties(const TextProperties::Properties* baseContextProperties) { BaseContextProperties = baseContextProperties; }
@@ -42,9 +39,11 @@ namespace EngineCore::FMT::Detail {
 		void FrontRunOnIndex(const FormatIndex& index);
 
 		void ParseColor();
+	private:
 		std::size_t GetColorCode();
+	public:
 		template <typename T>
-		T GetColorCodeAuto();
+		bool GetColorCodeAuto(T& t);
 
 		void ParseStyle();
 		TextProperties::TextStyle::BasicStyle GetStyleCode();
@@ -77,7 +76,11 @@ namespace EngineCore::FMT::Detail {
 	public:
 		TextProperties::Properties Save() 							{ return CurrentContexProperties; }
 		void Reload(const TextProperties::Properties& target);
+
 		void ReloadColor(const TextProperties::TextColor::Color& target);
+		void ReloadColorFG(const TextProperties::TextColor::ColorFG& target);
+		void ReloadColorBG(const TextProperties::TextColor::ColorBG& target);
+
 		void ReloadStyle(const TextProperties::TextStyle::Style& target);
 		void ReloadFront(const TextProperties::TextFront::Front& target);
 
@@ -85,6 +88,8 @@ namespace EngineCore::FMT::Detail {
 		FormatterContext& 					Context;
 		const TextProperties::Properties* 	BaseContextProperties;
 		TextProperties::Properties 			CurrentContexProperties;
+
+		static inline const constexpr TextProperties::Properties BasicTextProperties{};
 	};
 }
 
@@ -136,20 +141,30 @@ template<typename FormatterContext>
 			}
 			else
 			{
-				TextProperties::TextColor::BasicColorFG colorFg = GetColorCodeAuto<TextProperties::TextColor::BasicColorFG>();
+				TextProperties::TextColor::BasicColorFG colorFg;
+				bool colorFgFound = GetColorCodeAuto(colorFg);
 
 				Context.Format().ParamGoTo('-', ',');
 				if (Context.Format().IsEqualToForward('-')) {
 					Context.Format().IgnoreAllSpaces();
-					TextProperties::TextColor::BasicColorBG colorBg = GetColorCodeAuto<TextProperties::TextColor::BasicColorBG>();
-					ColorRun(TextProperties::TextColor::BasicColor{ colorFg, colorBg });
+					TextProperties::TextColor::BasicColorBG colorBg;
+					bool colorBgFound = GetColorCodeAuto(colorBg);
+					if (colorBgFound && colorFgFound)
+						ColorRun(TextProperties::TextColor::BasicColor{ colorFg, colorBg });
+					else
+						ReloadColor(BaseContextProperties->Color);
 				}
 				else
-					ColorRun(colorFg);
+				{
+					if (colorFgFound)
+						ColorRun(colorFg);
+					else
+						ReloadColorFG(BaseContextProperties->Color.Fg);
+				}
 			}
 		}
 		else
-			ColorRun(TextProperties::TextColor::Reset{});
+			ReloadColor(BaseContextProperties->Color);
 	}
 
 
@@ -173,11 +188,12 @@ template<typename FormatterContext>
 
 	template<typename FormatterContext>
 	template<typename T>
-	T TextPropertiesParser<FormatterContext>::GetColorCodeAuto() {
+	bool TextPropertiesParser<FormatterContext>::GetColorCodeAuto(T& t) {
 		std::size_t step = static_cast<std::size_t>(Context.Format().IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
 		std::size_t code = GetColorCode();
-		if (code == Context.Format().GET_WORD_FROM_LIST_NOT_FOUND) 	return T::Default;
-		return static_cast<T>(code + step);
+		if (code == Context.Format().GET_WORD_FROM_LIST_NOT_FOUND) 	return false;
+		t = static_cast<T>(code + step);
+		return true;
 	}
 
 	template<typename FormatterContext>
@@ -253,7 +269,11 @@ template<typename FormatterContext>
 		Context.Format().ParamGoTo(':');
 		Context.Format().IsEqualToForward(':');
 		Context.Format().IgnoreAllSpaces();
-		return GetColorCodeAuto<TextProperties::TextStyle::UnderlineColor::ColorCube>();
+		TextProperties::TextStyle::UnderlineColor::ColorCube color;
+		if (GetColorCodeAuto(color))
+			return color;
+		// TODO : handle Color24b
+		return BaseContextProperties->Style.UnderlineColor.Data.ColorCube;
 	}
 
 
@@ -291,81 +311,91 @@ template<typename FormatterContext>
 	template<typename FormatterContext>
 	void TextPropertiesParser<FormatterContext>::ReloadColor(const TextProperties::TextColor::Color& target)
 	{
-		if (target.Fg.Type != CurrentContexProperties.Color.Fg.Type) {
-			switch (target.Fg.Type) {
+		ReloadColorFG(target.Fg);
+		ReloadColorBG(target.Bg);
+	}
+
+	template<typename FormatterContext>
+	void TextPropertiesParser<FormatterContext>::ReloadColorFG(const TextProperties::TextColor::ColorFG& target)
+	{
+		if (target.Type != CurrentContexProperties.Color.Fg.Type) {
+			switch (target.Type) {
 			case TextProperties::TextColor::ColorType::Default:
 				Context.RunType(TextProperties::TextColor::BasicColorFG::Default);
 				break;
 			case TextProperties::TextColor::ColorType::BasicColor:
-				Context.RunType(target.Fg.Data.BasicColor);
-				CurrentContexProperties.Color.Fg.Data.BasicColor = target.Fg.Data.BasicColor;
+				Context.RunType(target.Data.BasicColor);
+				CurrentContexProperties.Color.Fg.Data.BasicColor = target.Data.BasicColor;
 				break;
 			case TextProperties::TextColor::ColorType::ColorCube:
-				Context.RunType(target.Fg.Data.ColorCube);
-				CurrentContexProperties.Color.Fg.Data.ColorCube = target.Fg.Data.ColorCube;
+				Context.RunType(target.Data.ColorCube);
+				CurrentContexProperties.Color.Fg.Data.ColorCube = target.Data.ColorCube;
 				break;
 			case TextProperties::TextColor::ColorType::Color24b:
-				Context.RunType(target.Fg.Data.Color24b);
-				CurrentContexProperties.Color.Fg.Data.Color24b = target.Fg.Data.Color24b;
+				Context.RunType(target.Data.Color24b);
+				CurrentContexProperties.Color.Fg.Data.Color24b = target.Data.Color24b;
 				break;
 			}
-			CurrentContexProperties.Color.Fg.Type = target.Fg.Type;
+			CurrentContexProperties.Color.Fg.Type = target.Type;
 		}
 		else {
-			switch (target.Fg.Type) {
+			switch (target.Type) {
 			case TextProperties::TextColor::ColorType::Default:
 				break;
 			case TextProperties::TextColor::ColorType::BasicColor:
-				if (CurrentContexProperties.Color.Fg.Data.BasicColor != target.Fg.Data.BasicColor) 			Context.RunType(target.Fg.Data.BasicColor);
-				CurrentContexProperties.Color.Fg.Data.BasicColor = target.Fg.Data.BasicColor;
+				if (CurrentContexProperties.Color.Fg.Data.BasicColor != target.Data.BasicColor) Context.RunType(target.Data.BasicColor);
+				CurrentContexProperties.Color.Fg.Data.BasicColor = target.Data.BasicColor;
 				break;
 			case TextProperties::TextColor::ColorType::ColorCube:
-				if (CurrentContexProperties.Color.Fg.Data.ColorCube != target.Fg.Data.ColorCube) Context.RunType(target.Fg.Data.ColorCube);
-				CurrentContexProperties.Color.Fg.Data.ColorCube = target.Fg.Data.ColorCube;
+				if (CurrentContexProperties.Color.Fg.Data.ColorCube != target.Data.ColorCube)	Context.RunType(target.Data.ColorCube);
+				CurrentContexProperties.Color.Fg.Data.ColorCube = target.Data.ColorCube;
 				break;
 			case TextProperties::TextColor::ColorType::Color24b:
-				if (CurrentContexProperties.Color.Fg.Data.Color24b != target.Fg.Data.Color24b) 	Context.RunType(target.Fg.Data.Color24b);
-				CurrentContexProperties.Color.Fg.Data.Color24b = target.Fg.Data.Color24b;
+				if (CurrentContexProperties.Color.Fg.Data.Color24b != target.Data.Color24b) 	Context.RunType(target.Data.Color24b);
+				CurrentContexProperties.Color.Fg.Data.Color24b = target.Data.Color24b;
 				break;
 			}
 		}
+	}
 
-
-		if (target.Bg.Type != CurrentContexProperties.Color.Bg.Type) {
-			switch (target.Bg.Type) {
+	template<typename FormatterContext>
+	void TextPropertiesParser<FormatterContext>::ReloadColorBG(const TextProperties::TextColor::ColorBG& target)
+	{
+		if (target.Type != CurrentContexProperties.Color.Bg.Type) {
+			switch (target.Type) {
 			case TextProperties::TextColor::ColorType::Default:
 				Context.RunType(TextProperties::TextColor::BasicColorBG::Default);
 				break;
 			case TextProperties::TextColor::ColorType::BasicColor:
-				Context.RunType(target.Bg.Data.BasicColor);
-				CurrentContexProperties.Color.Bg.Data.BasicColor = target.Bg.Data.BasicColor;
+				Context.RunType(target.Data.BasicColor);
+				CurrentContexProperties.Color.Bg.Data.BasicColor = target.Data.BasicColor;
 				break;
 			case TextProperties::TextColor::ColorType::ColorCube:
-				Context.RunType(target.Bg.Data.ColorCube);
-				CurrentContexProperties.Color.Bg.Data.ColorCube = target.Bg.Data.ColorCube;
+				Context.RunType(target.Data.ColorCube);
+				CurrentContexProperties.Color.Bg.Data.ColorCube = target.Data.ColorCube;
 				break;
 			case TextProperties::TextColor::ColorType::Color24b:
-				Context.RunType(target.Bg.Data.Color24b);
-				CurrentContexProperties.Color.Bg.Data.Color24b = target.Bg.Data.Color24b;
+				Context.RunType(target.Data.Color24b);
+				CurrentContexProperties.Color.Bg.Data.Color24b = target.Data.Color24b;
 				break;
 			}
-			CurrentContexProperties.Color.Bg.Type = target.Bg.Type;
+			CurrentContexProperties.Color.Bg.Type = target.Type;
 		}
 		else {
-			switch (target.Bg.Type) {
+			switch (target.Type) {
 			case TextProperties::TextColor::ColorType::Default:
 				break;
 			case TextProperties::TextColor::ColorType::BasicColor:
-				if (CurrentContexProperties.Color.Bg.Data.BasicColor != target.Bg.Data.BasicColor) 			Context.RunType(target.Bg.Data.BasicColor);
-				CurrentContexProperties.Color.Bg.Data.BasicColor = target.Bg.Data.BasicColor;
+				if (CurrentContexProperties.Color.Bg.Data.BasicColor != target.Data.BasicColor) Context.RunType(target.Data.BasicColor);
+				CurrentContexProperties.Color.Bg.Data.BasicColor = target.Data.BasicColor;
 				break;
 			case TextProperties::TextColor::ColorType::ColorCube:
-				if (CurrentContexProperties.Color.Bg.Data.ColorCube != target.Bg.Data.ColorCube) 		Context.RunType(target.Bg.Data.ColorCube);
-				CurrentContexProperties.Color.Bg.Data.ColorCube = target.Bg.Data.ColorCube;
+				if (CurrentContexProperties.Color.Bg.Data.ColorCube != target.Data.ColorCube) 	Context.RunType(target.Data.ColorCube);
+				CurrentContexProperties.Color.Bg.Data.ColorCube = target.Data.ColorCube;
 				break;
 			case TextProperties::TextColor::ColorType::Color24b:
-				if (CurrentContexProperties.Color.Bg.Data.Color24b != target.Bg.Data.Color24b) 	Context.RunType(target.Bg.Data.Color24b);
-				CurrentContexProperties.Color.Bg.Data.Color24b = target.Bg.Data.Color24b;
+				if (CurrentContexProperties.Color.Bg.Data.Color24b != target.Data.Color24b) 	Context.RunType(target.Data.Color24b);
+				CurrentContexProperties.Color.Bg.Data.Color24b = target.Data.Color24b;
 				break;
 			}
 		}

@@ -16,6 +16,18 @@ namespace EngineCore::JSON::Detail
     template <typename T> class ForwardAsJsonStruct {};
     template <typename T> class ForwardAsJsonArray {};
     template <typename T> class ForwardAsJsonNull {};
+
+    template <typename T>
+    void JsonFormatter::Dump(const T& t)
+    {
+        JsonSerializer<T>::Dump(t, *this);
+    }
+
+    template <typename T>
+    void JsonParser::Load(T& t)
+    {
+        JsonSerializer<T>::Load(t, *this);
+    }
 }
 
 namespace EngineCore::JSON
@@ -154,7 +166,7 @@ namespace EngineCore::JSON
                 parser.BufferIn().IgnoreAllBlanks();
 
                 typename JsonSerializer<T>::SubObjectType subObject;
-                JsonSerializer<typename JsonSerializer<T>::SubObjectType>::Load(subObject, parser);
+                parser.Load(subObject);
                 JsonSerializer<T>::AddSubObject(t, idx++, std::move(name), std::move(subObject));
 
                 parser.BufferIn().GoTo(',', '}');
@@ -175,7 +187,8 @@ namespace EngineCore::JSON
             formatter.BufferOut().PushBack('}');
         }
 
-        static inline void DumpObject(const std::string& name, const typename JsonSerializer<T>::SubObjectType& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
+        template <typename SubObject>
+        static inline void DumpObject(const std::string& name, const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
             if (idx != 0) formatter.BufferOut().PushBack(',');
 
@@ -184,7 +197,7 @@ namespace EngineCore::JSON
             EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), name);
             formatter.BufferOut().PushBack(':');
             formatter.BufferOut().PushBack(' ');
-            JsonSerializer<typename JsonSerializer<T>::SubObjectType>::Dump(subObject, formatter);
+            formatter.Dump(subObject);
             formatter.EndNewObject();
         }
     };
@@ -204,7 +217,7 @@ namespace EngineCore::JSON
                 if (parser.BufferIn().IsEqualTo(']')) break;
 
 				typename JsonSerializer<T>::SubObjectType subObject;
-				JsonSerializer<typename JsonSerializer<T>::SubObjectType>::Load(subObject, parser);
+                parser.Load(subObject);
                 JsonSerializer<T>::AddSubObject(t, idx++, std::move(subObject));
 
                 parser.BufferIn().GoTo(',', ']');
@@ -225,13 +238,14 @@ namespace EngineCore::JSON
 		    formatter.BufferOut().PushBack(']');
         }
 
-        static inline void DumpObject(const typename JsonSerializer<T>::SubObjectType& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
+        template <typename SubObject>
+        static inline void DumpObject(const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
             if (idx != 0) formatter.BufferOut().PushBack(',');
 
             formatter.BeginNewObject();
             formatter.NewLine();
-            JsonSerializer<typename JsonSerializer<T>::SubObjectType>::Dump(subObject, formatter);
+            formatter.Dump(subObject);
             formatter.EndNewObject();
         }
     };
@@ -249,4 +263,34 @@ namespace EngineCore::JSON
             formatter.BufferOut().PushBackSeq('n', 'u', 'l', 'l');
         }
     };
+}
+
+namespace EngineCore::JSON
+{
+    template <typename T>
+    struct FormatAsJson
+    {
+    public:
+        FormatAsJson(const T& value)
+            : Value(value)
+        {}
+
+    public:
+        const T& Value;
+    };
+}
+
+#include "EngineCore/FMT/FMT.h"
+namespace EngineCore::FMT
+{
+	template<typename T, typename FormatterContext>
+	struct FormatterType<JSON::FormatAsJson<T>, FormatterContext> {
+		static void Write(const JSON::FormatAsJson<T>& json, FormatterContext& context)
+		{
+            JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferManager());
+			jsonFormatter.BufferOut().ReloadBuffer(context.BufferOut());
+            JSON::JsonSerializer<T>::Dump(json.Value, jsonFormatter);
+			context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());
+		}
+	};
 }

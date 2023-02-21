@@ -117,15 +117,15 @@ namespace EngineCore::FMT::Detail {
 
 	struct TextProperties::TextStyle::UnderlineColor::Color24b : public TextProperties::TextColor::BaseColor24b
 	{
-		Color24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
+		constexpr Color24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
 	};
 
 	struct TextProperties::TextStyle::UnderlineColor::ColorCube : public TextProperties::TextColor::BaseColorCube
 	{
-		ColorCube()										: TextProperties::TextColor::BaseColorCube() 	{}
-		ColorCube(const std::uint8_t color)				: TextProperties::TextColor::BaseColorCube(color) {}
-		ColorCube(const TextProperties::TextColor::BaseColorCube& color)	: TextProperties::TextColor::BaseColorCube(color) {}
+		constexpr ColorCube()															: TextProperties::TextColor::BaseColorCube() 	{}
+		constexpr ColorCube(const std::uint8_t color)									: TextProperties::TextColor::BaseColorCube(color) {}
+		constexpr ColorCube(const TextProperties::TextColor::BaseColorCube& color)	: TextProperties::TextColor::BaseColorCube(color) {}
 
 	public:
 		static ColorCube MakeNormalColor(const std::uint8_t value) {
@@ -162,7 +162,7 @@ namespace EngineCore::FMT::Detail {
 
 	union TextProperties::TextStyle::UnderlineColor::ColorData
 	{
-		ColorData()
+		constexpr ColorData()
 			: ColorCube()
 		{}
 
@@ -192,7 +192,7 @@ namespace EngineCore::FMT::Detail {
 	struct TextProperties::TextStyle::Style
 	{
 	public:
-		Style() {}
+		constexpr Style() {}
 
 		TextProperties::TextStyle::Intensity		Intensity			= TextProperties::TextStyle::Intensity::Normal;
 		TextProperties::TextStyle::Italic			Italic				= TextProperties::TextStyle::Italic::Disable;
