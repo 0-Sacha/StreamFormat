@@ -99,6 +99,12 @@ namespace EngineCore::FMT::Detail {
 			SetBufferCurrentPos(m_BufferManager->GetBuffer());
 		}
 
+
+		void EndContext()
+		{
+			m_BufferManager->EndContext(GetBufferCurrentSize());
+		}
+
 	public:
 		template<typename T> void FastWriteInt	(T i);
 		template<typename T> void FastWriteUInt	(T i);
@@ -169,7 +175,7 @@ namespace EngineCore::FMT::Detail {
 		inline void PushBack(const CharBuffer c, std::size_t count)			{ if (CanMoveForward(count)) 	while (count-- > 0) PushBackNoCheck(c); }
 		inline void PushReverse(const CharBuffer c, std::size_t count)		{ if (CanMoveBackward(count)) 	while (count-- > 0) PushReverseNoCheck(c); }
 
-		inline void PushEndChar()									{ PushBack('\0'); }
+		inline void PushBackEndChar()								{ PushBack('\0'); }
 		inline void AddSpaces(const std::size_t count)				{ PushBack(' ', count); }
 
 	protected:

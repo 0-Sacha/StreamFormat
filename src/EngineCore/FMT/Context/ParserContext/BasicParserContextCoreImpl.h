@@ -2,8 +2,8 @@
 
 #include "BasicParserContext.h"
 
-namespace EngineCore::FMT::Context {
-
+namespace EngineCore::FMT::Context
+{
 	template<typename CharFormat, typename CharBuffer>
 	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const CharBuffer* const buffer, const std::size_t size)
 		: Base()

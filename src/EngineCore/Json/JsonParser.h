@@ -35,7 +35,79 @@ namespace EngineCore::JSON::Detail
         JsonBufferIn m_BufferIn;
 
     public:
+        struct Intermediate;
+
+    public:
         template <typename T>
         void Load(T& t);
+ 
+        struct StructIntermediate;
+        struct ArrayIntermediate;
+        StructIntermediate GetStructIntermediate();
+        ArrayIntermediate GetArrayIntermediate();
     };
+}
+
+namespace EngineCore::JSON::Detail
+{
+    struct JsonParser::Intermediate
+    {
+        std::string_view Data;
+
+        void Parse(Detail::JsonParser& parser);
+
+        template<typename T>
+        void Load(T& t)
+        {
+            JsonParser parser;
+            parser.Load(t);
+        }
+    };
+
+    struct JsonParser::StructIntermediate
+    {
+    private:
+        std::unordered_map<std::string, Detail::JsonParser::Intermediate> Objects;
+        
+        void Parse(Detail::JsonParser& parser);
+
+    public:
+        template<typename T>
+        void Load(const std::string& name, T& t)
+        {
+            if (Objects.contains(name) == false)
+                throw JsonGivenTypeError{};
+            Objects[name].Load(t);
+        }
+    };
+
+    struct JsonParser::ArrayIntermediate
+    {
+    private:
+        std::vector<Detail::JsonParser::Intermediate> Objects;
+
+        void Parse(Detail::JsonParser& parser);
+
+    public:
+        template<typename T>
+        void Load(const std::size_t idx, T& t)
+        {
+            if (idx >= Objects.size())
+                throw JsonGivenTypeError{};
+			Objects[idx].Load(t);
+        }
+    };
+
+    JsonParser::StructIntermediate JsonParser::GetStructIntermediate()
+    {
+        JsonParser::StructIntermediate res;
+        Load(res);
+        return res;
+    }
+    JsonParser::ArrayIntermediate JsonParser::GetArrayIntermediate()
+    {
+        JsonParser::ArrayIntermediate res;
+        Load(res);
+        return res;
+    }
 }

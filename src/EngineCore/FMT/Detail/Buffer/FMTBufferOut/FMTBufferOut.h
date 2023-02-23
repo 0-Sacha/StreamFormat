@@ -78,7 +78,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::PushBackNoCheck;
 		using Base::PushReverseNoCheck;
 
-		using Base::PushEndChar;
+		using Base::PushBackEndChar;
 		using Base::AddSpaces;
 		using Base::WriteCharArray;
 		using Base::WriteStringView;

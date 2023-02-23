@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Detail.h"
+
 #include <unordered_map>
 #include <string>
-#include <string_view>
 #include <vector>
 #include <memory>
-#include <exception>
 #include <concepts>
 
 
@@ -17,11 +17,6 @@ namespace EngineCore::JSON::Detail
 
 namespace EngineCore::JSON
 {
-    class JsonError : public std::exception {};
-    class JsonIndexingError : public JsonError {};
-    class JsonTypeSerializerNotImpl : public JsonError {};
-    class JsonGivenTypeError : public JsonError {};
-
     struct JsonObject
     {
     public:

@@ -3,20 +3,13 @@
 #include "JsonParser.h"
 #include "JsonFormatter.h"
 
-#include "EngineCore/FMT/Detail/Buffer/BasicBufferIn/Utils/BufferInUtils.h"
-#include "EngineCore/FMT/Detail/Buffer/BasicBufferOut/Utils/BufferOutUtils.h"
+#include "EngineCore/FMT/Detail/Buffer/Utils/BufferUtils.h"
 
 #include <string>
+#include <functional>
 
 namespace EngineCore::JSON::Detail
 {
-    template <typename T> class ForwardAsJsonString {};
-    template <typename T> class ForwardAsJsonNumber {};
-    template <typename T> class ForwardAsJsonBoolean {};
-    template <typename T> class ForwardAsJsonStruct {};
-    template <typename T> class ForwardAsJsonArray {};
-    template <typename T> class ForwardAsJsonNull {};
-
     template <typename T>
     void JsonFormatter::Dump(const T& t)
     {
@@ -55,23 +48,24 @@ namespace EngineCore::JSON
         }
 	};
 
-    template <typename T>
-	struct JsonSerializer<Detail::ForwardAsJsonString<T>>
+	struct JsonStringSerializer
     {
         static inline void LoadSTDString(std::string& t, Detail::JsonParser& parser)
         {
-            std::string string = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.BufferIn());
-            t = std::move(string);
+            EngineCore::FMT::Detail::STDStringBufferManager<char> bufferData;
+            EngineCore::FMT::Detail::BasicBufferOut<char> buffer(bufferData);
+            EngineCore::FMT::BufferUtils<char>::ParseEscapedQuotedString(parser.BufferIn(), buffer);
+            t = std::move(bufferData.GetSTDString());
         }
 
 		static inline void DumpSTDString(const std::string& t, Detail::JsonFormatter& formatter)
         {
-            EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), t);
+            EngineCore::FMT::Detail::BasicBufferIn<char> buffer(t.data(), t.size());
+            EngineCore::FMT::BufferUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), buffer);
         }
     };
 
-    template <typename T>
-	struct JsonSerializer<Detail::ForwardAsJsonNumber<T>>
+	struct JsonNumberSerializer
     {
         template <typename FloatType>
         static inline void LoadFloat(FloatType& t, Detail::JsonParser& parser)
@@ -126,8 +120,7 @@ namespace EngineCore::JSON
         }
     };
 
-    template <typename T>
-	struct JsonSerializer<Detail::ForwardAsJsonBoolean<T>>
+	struct JsonBooleanSerializer
     {
         static inline void LoadBool(bool& t, Detail::JsonParser& parser)
         {
@@ -146,10 +139,10 @@ namespace EngineCore::JSON
         }
     };
 
-    template <typename T>
-	struct JsonSerializer<Detail::ForwardAsJsonStruct<T>>
+	struct JsonStructSerializer
     {
-        static inline void LoadSubObjects(T& t, Detail::JsonParser& parser)
+        template <typename T>
+        static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser, std::function<void(T&, std::size_t, std::string&&, Detail::JsonParser&)> subObjectParsingFunction)
         {
             parser.BufferIn().Skip('{');
             std::size_t idx = 0;
@@ -159,21 +152,30 @@ namespace EngineCore::JSON
                 parser.BufferIn().GoTo('"', '}');
                 if (parser.BufferIn().IsEqualTo('}')) break;
 
-                std::string name = EngineCore::FMT::BufferInUtils<char>::ParseEscapedQuotedString(parser.BufferIn());
-
+                std::string name;
+                JsonStringSerializer::LoadSTDString(name, parser);
+                
                 parser.BufferIn().IgnoreAllBlanks();
                 parser.BufferIn().Skip(':');
                 parser.BufferIn().IgnoreAllBlanks();
 
-                typename JsonSerializer<T>::SubObjectType subObject;
-                parser.Load(subObject);
-                JsonSerializer<T>::AddSubObject(t, idx++, std::move(name), std::move(subObject));
+                subObjectParsingFunction(t, idx++, std::move(name), parser);
 
                 parser.BufferIn().GoTo(',', '}');
                 parser.BufferIn().Ignore(',');
             }
 
             parser.BufferIn().Skip('}');
+        }
+
+        template <typename T>
+        static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser)
+        {
+            LoadAllSubObjects<T>(t, parser, [](T& t, std::size_t idx, std::string&& name, Detail::JsonParser& parser){
+                typename JsonSerializer<T>::StructSubObjectType subObject;
+                parser.Load(subObject);
+                JsonSerializer<T>::AddStructSubObject(t, idx, std::move(name), std::move(subObject));
+            });
         }
 
 		static inline void DumpBegin(Detail::JsonFormatter& formatter)
@@ -194,7 +196,7 @@ namespace EngineCore::JSON
 
             formatter.BeginNewObject();
             formatter.NewLine();
-            EngineCore::FMT::BufferOutUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), name);
+            JsonStringSerializer::DumpSTDString(name, formatter);
             formatter.BufferOut().PushBack(':');
             formatter.BufferOut().PushBack(' ');
             formatter.Dump(subObject);
@@ -202,10 +204,10 @@ namespace EngineCore::JSON
         }
     };
 
-     template <typename T>
-	struct JsonSerializer<Detail::ForwardAsJsonArray<T>>
+	struct JsonArraySerializer
     {
-        static inline void LoadSubObjects(T& t, Detail::JsonParser& parser)
+        template <typename T>
+        static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser, std::function<void(T&, std::size_t, Detail::JsonParser&)> subObjectParsingFunction)
         {
             parser.BufferIn().Skip('[');
             std::size_t idx = 0;
@@ -216,15 +218,23 @@ namespace EngineCore::JSON
 
                 if (parser.BufferIn().IsEqualTo(']')) break;
 
-				typename JsonSerializer<T>::SubObjectType subObject;
-                parser.Load(subObject);
-                JsonSerializer<T>::AddSubObject(t, idx++, std::move(subObject));
+                subObjectParsingFunction(t, idx++, parser);
 
                 parser.BufferIn().GoTo(',', ']');
                 parser.BufferIn().Ignore(',');
             }
 
             parser.BufferIn().Skip(']');
+        }
+
+        template <typename T>
+        static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser)
+        {
+            LoadAllSubObjects<T>(t, parser, [](T& t, std::size_t idx, Detail::JsonParser& parser){
+                typename JsonSerializer<T>::ArraySubObjectType subObject;
+                parser.Load(subObject);
+                JsonSerializer<T>::AddArraySubObject(t, idx, std::move(subObject));
+            });
         }
 
 		static inline void DumpBegin(Detail::JsonFormatter& formatter)
@@ -250,8 +260,7 @@ namespace EngineCore::JSON
         }
     };
 
-    template <typename T>
-	struct JsonSerializer<Detail::ForwardAsJsonNull<T>>
+	struct JsonNullSerializer
     {
         static inline void LoadNull(Detail::JsonParser& parser)
         {

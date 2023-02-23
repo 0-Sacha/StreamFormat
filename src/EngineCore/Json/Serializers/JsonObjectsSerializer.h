@@ -51,12 +51,12 @@ namespace EngineCore::JSON
         static inline void Load(JsonStringObject& t, Detail::JsonParser& parser)
         {
             t.String.clear();
-            JsonSerializer<Detail::ForwardAsJsonString<JsonStringObject>>::LoadSTDString(t.String, parser);
+            JsonStringSerializer::LoadSTDString(t.String, parser);
         }
 
 		static inline void Dump(const JsonStringObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonSerializer<Detail::ForwardAsJsonString<JsonStringObject>>::DumpSTDString(t.String, formatter);
+            JsonStringSerializer::DumpSTDString(t.String, formatter);
         }
     };
 
@@ -65,12 +65,12 @@ namespace EngineCore::JSON
     {
         static inline void Load(JsonNumberObject& t, Detail::JsonParser& parser)
         {
-            JsonSerializer<Detail::ForwardAsJsonNumber<JsonNumberObject>>::LoadFloat(t.Number, parser);
+            JsonNumberSerializer::LoadFloat(t.Number, parser);
         }
 
 		static inline void Dump(const JsonNumberObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonSerializer<Detail::ForwardAsJsonNumber<JsonNumberObject>>::DumpFloat(t.Number, formatter);
+            JsonNumberSerializer::DumpFloat(t.Number, formatter);
         }
     };
 
@@ -79,12 +79,12 @@ namespace EngineCore::JSON
     {
         static inline void Load(JsonBooleanObject& t, Detail::JsonParser& parser)
         {
-            JsonSerializer<Detail::ForwardAsJsonBoolean<JsonBooleanObject>>::LoadBool(t.Boolean, parser);
+            JsonBooleanSerializer::LoadBool(t.Boolean, parser);
         }
 
 		static inline void Dump(const JsonBooleanObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonSerializer<Detail::ForwardAsJsonBoolean<JsonBooleanObject>>::DumpBool(t.Boolean, formatter);
+            JsonBooleanSerializer::DumpBool(t.Boolean, formatter);
         }
     };
 
@@ -93,12 +93,12 @@ namespace EngineCore::JSON
     {
         static inline void Load(JsonNullObject& t, Detail::JsonParser& parser)
         {
-            JsonSerializer<Detail::ForwardAsJsonNull<JsonNullObject>>::LoadNull(parser);
+            JsonNullSerializer::LoadNull(parser);
         }
 
 		static inline void Dump(const JsonNullObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonSerializer<Detail::ForwardAsJsonNull<JsonNullObject>>::DumpNull(formatter);
+            JsonNullSerializer::DumpNull(formatter);
         }
     };
 

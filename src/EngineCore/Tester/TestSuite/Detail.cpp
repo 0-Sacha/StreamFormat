@@ -2,7 +2,7 @@
 
 #include "Detail.h"
 
-namespace EngineCore::Tests
+namespace EngineCore::Tester
 {
 	bool TestSuitesManager::ExecTestSuitesManagers()
 	{
@@ -17,15 +17,29 @@ namespace EngineCore::Tests
 		}
 
 		LoggerManager::BasicLogger logger("TestSuite");
-		logger.Info("{C:+black}----- {} -------------------", status);
+		if (status.IsAllOk())
+			logger.Info("{C:+black}----- {} -------------------", status);
+		else
+			logger.Error("{C:+black}----- {} -------------------", status);
 
-		return status.TestsOk == status.TestsDone;
+		return status.IsAllOk();
 	}
 }
-namespace EngineCore::Tests::Detail
+namespace EngineCore::Tester::Detail
 {
 	TestStatusBank TestSuite::ExecAllTests()
 	{
+		if (TestSuitesManager::Verbose == false)
+		{
+			Logger.SetSeverity(LoggerManager::LogSeverity::Debug);
+			TestLogger.SetSeverity(LoggerManager::LogSeverity::Debug);
+		}
+		else
+		{
+			Logger.SetSeverity(LoggerManager::LogSeverity::Trace);
+			TestLogger.SetSeverity(LoggerManager::LogSeverity::Trace);
+		}
+
 		TestStatusBank res;
 		
 		for (auto& [name, test] : Tests)
@@ -35,7 +49,10 @@ namespace EngineCore::Tests::Detail
 			Logger.Debug("{} -> {}", status, name);
 		}
 
-		Logger.Info("{C:+black}----- {} -------------------", res);
+		if (res.IsAllOk())
+			Logger.Info("{C:+black}----- {} -------------------", res);
+		else
+			Logger.Error("{C:+black}----- {} -------------------", res);
 
 		return res;
 	}

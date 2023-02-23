@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace EngineCore::Tests
+namespace EngineCore::Tester
 {
 	class TestFailure {};
 
@@ -19,7 +19,7 @@ namespace EngineCore::Tests
 	};
 }
 
-namespace EngineCore::Tests::Detail
+namespace EngineCore::Tester::Detail
 {
 	class TestSuite;
 	class Test
@@ -87,6 +87,8 @@ namespace EngineCore::Tests::Detail
 			TestsCrash += status.TestsCrash;
 		}
 
+		bool IsAllOk() { return TestsDone == TestsOk && TestsCrash == 0 && TestsFail == 0; }
+
 		std::uint32_t TestsDone = 0;
 		std::uint32_t TestsOk = 0;
 		std::uint32_t TestsFail = 0;
@@ -95,7 +97,7 @@ namespace EngineCore::Tests::Detail
 
 	class TestSuite;
 }
-namespace EngineCore::Tests
+namespace EngineCore::Tester
 {
 	class TestSuitesManager
 	{
@@ -107,7 +109,7 @@ namespace EngineCore::Tests
 		static inline bool Verbose = false;
 	};
 }
-namespace EngineCore::Tests::Detail
+namespace EngineCore::Tester::Detail
 {
 	class TestSuite
 	{
@@ -130,11 +132,6 @@ namespace EngineCore::Tests::Detail
 			TestSuitesManager::TestSuites.insert({ Name, this });
 			Logger.SetRealPattern("{C:+black}[{T:pattern='%h:%m:%s:%ms'}] {name} >> {color}{data}");
 			TestLogger.SetRealPattern("{C:+black}[{T:pattern='%h:%m:%s:%ms'}] {name} >> {color}{data}");
-			if (TestSuitesManager::Verbose == false)
-			{
-				Logger.SetSeverity(LoggerManager::LogSeverity::Debug);
-				TestLogger.SetSeverity(LoggerManager::LogSeverity::Debug);
-			}
 		}
 
 		std::string Name;
@@ -150,18 +147,18 @@ namespace EngineCore::Tests::Detail
 
 namespace EngineCore::FMT {
 	template<typename FormatContext>
-	struct FormatterType<EngineCore::Tests::Detail::TestSuite, FormatContext>
+	struct FormatterType<EngineCore::Tester::Detail::TestSuite, FormatContext>
 	{
-		static void Write(const EngineCore::Tests::Detail::TestSuite& t, FormatContext& context)
+		static void Write(const EngineCore::Tester::Detail::TestSuite& t, FormatContext& context)
 		{
 			context.Print(t.Name);
 		}
 	};
 
 	template<typename FormatContext>
-	struct FormatterType<EngineCore::Tests::Detail::Test, FormatContext>
+	struct FormatterType<EngineCore::Tester::Detail::Test, FormatContext>
 	{
-		static void Write(const EngineCore::Tests::Detail::Test& t, FormatContext& context) {
+		static void Write(const EngineCore::Tester::Detail::Test& t, FormatContext& context) {
 			context.Print(t.Link.Name);
 			context.Print("::");
 			context.Print(t.Name);
@@ -169,22 +166,22 @@ namespace EngineCore::FMT {
 	};
 
 	template<typename FormatContext>
-	struct FormatterType<EngineCore::Tests::TestStatus, FormatContext>
+	struct FormatterType<EngineCore::Tester::TestStatus, FormatContext>
 	{
-		static void Write(const EngineCore::Tests::TestStatus& status, FormatContext& context) {
+		static void Write(const EngineCore::Tester::TestStatus& status, FormatContext& context) {
 			switch (status)
 			{
-				case EngineCore::Tests::TestStatus::Ok 		: context.SubContext("[  {C:green}OK{C}  ]"); break;
-				case EngineCore::Tests::TestStatus::Fail 	: context.SubContext("[ {C:red}FAIL{C} ]"); break;
-				case EngineCore::Tests::TestStatus::Crash 	: context.SubContext("[{C:magenta}Crash{C} ]"); break;
+				case EngineCore::Tester::TestStatus::Ok 		: context.SubContext("[  {C:green}OK{C}  ]"); break;
+				case EngineCore::Tester::TestStatus::Fail 	: context.SubContext("[ {C:red}FAIL{C} ]"); break;
+				case EngineCore::Tester::TestStatus::Crash 	: context.SubContext("[{C:magenta}Crash{C} ]"); break;
 			}
 		}
 	};
 
 	template<typename FormatContext>
-	struct FormatterType<EngineCore::Tests::Detail::TestStatusBank, FormatContext>
+	struct FormatterType<EngineCore::Tester::Detail::TestStatusBank, FormatContext>
 	{
-		static void Write(const EngineCore::Tests::Detail::TestStatusBank& statusBank, FormatContext& context) {
+		static void Write(const EngineCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {
 			context.Print("TestsDone ");
 			context.SubContext("{:C:white}", statusBank.TestsDone);
 

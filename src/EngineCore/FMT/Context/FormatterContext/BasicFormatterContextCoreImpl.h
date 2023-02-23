@@ -21,8 +21,8 @@ namespace EngineCore::FMT::Context {
 	template<typename CharFormat, typename CharBuffer>
 	BasicFormatterContext<CharFormat, CharBuffer>::~BasicFormatterContext()
 	{
-		m_BufferOut.PushEndChar();
-		m_BufferOut.GetBufferManager().EndContext(m_BufferOut.GetBufferCurrentSize() - 1);
+		m_BufferOut.EndContext();
+		m_BufferOut.PushBackEndChar();
 	}
 
 	template<typename CharFormat, typename CharBuffer>

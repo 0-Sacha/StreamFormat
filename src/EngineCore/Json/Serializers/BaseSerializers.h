@@ -14,40 +14,40 @@ namespace EngineCore::JSON
 	struct JsonSerializer<std::int8_t>
     {
         static inline void Load(std::int8_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int8_t>>::LoadInt(t, parser);
+            JsonNumberSerializer::LoadInt(t, parser);
         }
 		static inline void Dump(const std::int8_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int8_t>>::DumpInt(t, formatter);
+            JsonNumberSerializer::DumpInt(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<std::int16_t>
     {
         static inline void Load(std::int16_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int16_t>>::LoadInt(t, parser);
+            JsonNumberSerializer::LoadInt(t, parser);
         }
 		static inline void Dump(const std::int16_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int16_t>>::DumpInt(t, formatter);
+            JsonNumberSerializer::DumpInt(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<std::int32_t>
     {
         static inline void Load(std::int32_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int32_t>>::LoadInt(t, parser);
+            JsonNumberSerializer::LoadInt(t, parser);
         }
 		static inline void Dump(const std::int32_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int32_t>>::DumpInt(t, formatter);
+            JsonNumberSerializer::DumpInt(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<std::int64_t>
     {
         static inline void Load(std::int64_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int64_t>>::LoadInt(t, parser);
+            JsonNumberSerializer::LoadInt(t, parser);
         }
 		static inline void Dump(const std::int64_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::int64_t>>::DumpInt(t, formatter);
+            JsonNumberSerializer::DumpInt(t, formatter);
         }
     };
 
@@ -57,40 +57,40 @@ namespace EngineCore::JSON
 	struct JsonSerializer<std::uint8_t>
     {
         static inline void Load(std::uint8_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint8_t>>::LoadUInt(t, parser);
+            JsonNumberSerializer::LoadUInt(t, parser);
         }
 		static inline void Dump(const std::uint8_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint8_t>>::DumpUInt(t, formatter);
+            JsonNumberSerializer::DumpUInt(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<std::uint16_t>
     {
         static inline void Load(std::uint16_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint16_t>>::LoadUInt(t, parser);
+            JsonNumberSerializer::LoadUInt(t, parser);
         }
 		static inline void Dump(const std::uint16_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint16_t>>::DumpUInt(t, formatter);
+            JsonNumberSerializer::DumpUInt(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<std::uint32_t>
     {
         static inline void Load(std::uint32_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint32_t>>::LoadUInt(t, parser);
+            JsonNumberSerializer::LoadUInt(t, parser);
         }
 		static inline void Dump(const std::uint32_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint32_t>>::DumpUInt(t, formatter);
+            JsonNumberSerializer::DumpUInt(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<std::uint64_t>
     {
         static inline void Load(std::uint64_t& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint64_t>>::LoadUInt(t, parser);
+            JsonNumberSerializer::LoadUInt(t, parser);
         }
 		static inline void Dump(const std::uint64_t& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<std::uint64_t>>::DumpUInt(t, formatter);
+            JsonNumberSerializer::DumpUInt(t, formatter);
         }
     };
 
@@ -100,30 +100,30 @@ namespace EngineCore::JSON
 	struct JsonSerializer<float>
     {
         static inline void Load(float& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<float>>::LoadFloat(t, parser);
+            JsonNumberSerializer::LoadFloat(t, parser);
         }
 		static inline void Dump(const float& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<float>>::DumpFloat(t, formatter);
+            JsonNumberSerializer::DumpFloat(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<double>
     {
         static inline void Load(double& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<double>>::LoadFloat(t, parser);
+            JsonNumberSerializer::LoadFloat(t, parser);
         }
 		static inline void Dump(const double& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<double>>::DumpFloat(t, formatter);
+            JsonNumberSerializer::DumpFloat(t, formatter);
         }
     };
     template <>
 	struct JsonSerializer<long double>
     {
         static inline void Load(long double& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<long double>>::LoadFloat(t, parser);
+            JsonNumberSerializer::LoadFloat(t, parser);
         }
 		static inline void Dump(const long double& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonNumber<long double>>::DumpFloat(t, formatter);
+            JsonNumberSerializer::DumpFloat(t, formatter);
         }
     };
 
@@ -336,20 +336,20 @@ namespace EngineCore::JSON
     template <typename T, std::size_t SIZE>
 	struct JsonSerializer<T[SIZE]>
     {
-        using SubObjectType = T;
+        using ArraySubObjectType = T;
         
         static inline void Load(T(&t)[SIZE], Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::LoadSubObjects(t, parser);
+            JsonArraySerializer::LoadAllSubObjects<T[SIZE]>(t, parser);
         }
-        static inline void AddSubObject(T(&t)[SIZE], std::size_t idx, SubObjectType&& subObject) {
+        static inline void AddArraySubObject(T(&t)[SIZE], std::size_t idx, ArraySubObjectType&& subObject) {
             t[idx] = std::move(subObject);
         }
 
 		static inline void Dump(const T(&t)[SIZE], Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::DumpBegin(formatter);
+            JsonArraySerializer::DumpBegin(formatter);
             for (std::size_t idx = 0; idx < SIZE; ++idx) 
-                JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::DumpObject(t[idx], idx, formatter);
-            JsonSerializer<Detail::ForwardAsJsonArray<T[SIZE]>>::DumpEnd(formatter);
+                JsonArraySerializer::DumpObject(t[idx], idx, formatter);
+            JsonArraySerializer::DumpEnd(formatter);
         }
     };
 }

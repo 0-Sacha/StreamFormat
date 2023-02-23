@@ -1,6 +1,5 @@
 #pragma once
 
-#include "EngineCore/Json/JsonObjects.h"
 #include "EngineCore/Json/JsonSerializer.h"
 
 #include <map>
@@ -11,21 +10,21 @@ namespace EngineCore::JSON
 	struct JsonSerializer<std::map<K, T>>
     {
         using KeyType = K;
-        using SubObjectType = T;
+        using StructSubObjectType = T;
 
         static inline void Load(std::map<K, T>& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonStruct<std::map<K, T>>>::LoadSubObjects(t, parser);
+            JsonStructSerializer::LoadAllSubObjects<std::map<K, T>>(t, parser);
         }
-        static inline void AddSubObject(std::map<K, T>& t, std::size_t, std::string&& name, SubObjectType&& subObject) {
+        static inline void AddStructSubObject(std::map<K, T>& t, std::size_t, std::string&& name, StructSubObjectType&& subObject) {
             t.insert({std::move(name), std::move(subObject)});
         }
 
 		static inline void Dump(const std::map<K, T>& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonArray<std::map<K, T>>>::DumpBegin(formatter);
+            JsonStructSerializer::DumpBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
-                JsonSerializer<Detail::ForwardAsJsonStruct<std::map<K, T>>>::DumpObject(name, object, idx++, formatter);
-            JsonSerializer<Detail::ForwardAsJsonArray<std::map<K, T>>>::DumpEnd(formatter);
+                JsonStructSerializer::DumpObject(name, object, idx++, formatter);
+            JsonStructSerializer::DumpEnd(formatter);
         }
     };
 
@@ -33,21 +32,21 @@ namespace EngineCore::JSON
 	struct JsonSerializer<std::multimap<K, T>>
     {
         using KeyType = K;
-        using SubObjectType = T;
+        using StructSubObjectType = T;
 
         static inline void Load(std::multimap<K, T>& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonStruct<std::multimap<K, T>>>::LoadSubObjects(t, parser);
+            JsonStructSerializer::LoadAllSubObjects<std::multimap<K, T>>(t, parser);
         }
-        static inline void AddSubObject(std::multimap<K, T>& t, std::size_t, std::string&& name, SubObjectType&& subObject) {
+        static inline void AddStructSubObject(std::multimap<K, T>& t, std::size_t, std::string&& name, StructSubObjectType&& subObject) {
             t.insert({std::move(name), std::move(subObject)});
         }
 
 		static inline void Dump(const std::multimap<K, T>& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonArray<std::multimap<K, T>>>::DumpBegin(formatter);
+            JsonStructSerializer::DumpBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
-                JsonSerializer<Detail::ForwardAsJsonStruct<std::multimap<K, T>>>::DumpObject(name, object, idx++, formatter);
-            JsonSerializer<Detail::ForwardAsJsonArray<std::multimap<K, T>>>::DumpEnd(formatter);
+                JsonStructSerializer::DumpObject(name, object, idx++, formatter);
+            JsonStructSerializer::DumpEnd(formatter);
         }
     };
 }

@@ -5,7 +5,7 @@
 
 #include "EngineCore/FMT/Format/CompilationData.h"
 
-namespace EngineCore::Tests::Detail
+namespace EngineCore::Tester::Detail
 {
 	struct TestFunction : public Test
 	{
@@ -44,11 +44,11 @@ namespace EngineCore::Tests::Detail
 	{
 		if (result != expected)
 		{
-			Link.TestLogger.Trace("{C:red}{} return {} instead of {} ; Expected was : {}", resultView, result, expected, expectedView, FORMAT_SV("test_name", Name));
+			Link.TestLogger.Error("{C:red}{} return {} instead of {} ; Expected was : {}", resultView, result, expected, expectedView, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
 		}
 
-		Link.TestLogger.Trace("{C:green}{} return {} ; Expected was : {}", resultView, result, expectedView, FORMAT_SV("test_name", Name));
+		Link.TestLogger.Trace("{C:green}{} return {}", resultView, result, FORMAT_SV("test_name", Name));
 	}
 
 	template <typename T>
@@ -56,32 +56,32 @@ namespace EngineCore::Tests::Detail
 	{
 		if (result == notExpected)
 		{
-			Link.TestLogger.Trace("{C:red}{} return {} but this result was prohibited ; Expected was : {}", resultView, result, notExpected, notExpectedView, FORMAT_SV("test_name", Name));
+			Link.TestLogger.Error("{C:red}{} return {} but this result was prohibited", resultView, result, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
 		}
 
-		Link.TestLogger.Trace("{C:green}{} return {} and {} was prohibited ; Expected was : {}", resultView, result, notExpected, notExpectedView, FORMAT_SV("test_name", Name));
+		Link.TestLogger.Trace("{C:green}{} return {} and {} was prohibited", resultView, result, notExpected, FORMAT_SV("test_name", Name));
 	}
 
 	inline void TestFunction::TestAssert(bool assert, std::string_view assertView, int line)
 	{
-		if (assert == true)
+		if (assert == false)
 		{
-			Link.TestLogger.Trace("{:C:red}", assertView, FORMAT_SV("test_name", Name));
+			Link.TestLogger.Error("{C:red}ASSERT FAILED : {}", assertView, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
 		}
 
-		Link.TestLogger.Trace("{:C:green}", assertView, FORMAT_SV("test_name", Name));
+		Link.TestLogger.Trace("{C:green}ASSERT SUCCED : {}", assertView, FORMAT_SV("test_name", Name));
 	}
 }
 
 
-#define ENGINECORE_TESTINTERNAL_FUNC_DECLARE_EXEC(TestSuiteName, TestName)	void ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(EngineCore::Tests::Detail::TestFunction &link);
-#define ENGINECORE_TESTINTERNAL_FUNC_CREATE(TestSuiteName, TestName, ...)	volatile EngineCore::Tests::Detail::TestFunction ENGINECORE_TESTINTERNAL_FUNC_NAME(TestSuiteName, TestName)(#TestName, ENGINECORE_TESTINTERNAL_SUITE_NAME(TestSuiteName), ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName), ENGINECORE_FMT_FILE_LOCATION())
+#define ENGINECORE_TESTINTERNAL_FUNC_DECLARE_EXEC(TestSuiteName, TestName)	void ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(EngineCore::Tester::Detail::TestFunction &link);
+#define ENGINECORE_TESTINTERNAL_FUNC_CREATE(TestSuiteName, TestName, ...)	volatile EngineCore::Tester::Detail::TestFunction ENGINECORE_TESTINTERNAL_FUNC_NAME(TestSuiteName, TestName)(#TestName, ENGINECORE_TESTINTERNAL_SUITE_NAME(TestSuiteName), ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName), ENGINECORE_FMT_FILE_LOCATION())
 
 #define ECT_TEST_FUNC(TestSuiteName, TestName)	ENGINECORE_TESTINTERNAL_FUNC_DECLARE_EXEC(TestSuiteName, TestName) \
 												ENGINECORE_TESTINTERNAL_FUNC_CREATE(TestSuiteName, TestName);	\
-												void ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(EngineCore::Tests::Detail::TestFunction &link)
+												void ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(EngineCore::Tester::Detail::TestFunction &link)
 
 
 #define ECT_ASSERT(Test)			link.TestAssert(Test, #Test, __LINE__)

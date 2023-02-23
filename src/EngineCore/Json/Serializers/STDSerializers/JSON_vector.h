@@ -10,21 +10,21 @@ namespace EngineCore::JSON
     template <typename T>
 	struct JsonSerializer<std::vector<T>>
     {
-        using SubObjectType = T;
+        using ArraySubObjectType = T;
 
         static inline void Load(std::vector<T>& t, Detail::JsonParser& parser) {
-            JsonSerializer<Detail::ForwardAsJsonArray<std::vector<T>>>::LoadSubObjects(t, parser);
+            JsonArraySerializer::LoadAllSubObjects<std::vector<T>>(t, parser);
         }
-        static inline void AddSubObject(std::vector<T>& t, std::size_t, SubObjectType&& subObject) {
+        static inline void AddArraySubObject(std::vector<T>& t, std::size_t, ArraySubObjectType&& subObject) {
             t.emplace_back(std::move(subObject));
         }
 
 		static inline void Dump(const std::vector<T>& t, Detail::JsonFormatter& formatter) {
-            JsonSerializer<Detail::ForwardAsJsonArray<std::vector<T>>>::DumpBegin(formatter);
+            JsonArraySerializer::DumpBegin(formatter);
             std::size_t idx = 0;
-            for (const SubObjectType& subObject : t) 
-                JsonSerializer<Detail::ForwardAsJsonArray<std::vector<T>>>::DumpObject(subObject, idx++, formatter);
-            JsonSerializer<Detail::ForwardAsJsonArray<std::vector<T>>>::DumpEnd(formatter);
+            for (const ArraySubObjectType& subObject : t) 
+                JsonArraySerializer::DumpObject(subObject, idx++, formatter);
+            JsonArraySerializer::DumpEnd(formatter);
         }
     };
 }

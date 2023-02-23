@@ -1,7 +1,7 @@
 
 #include "EngineCore/LoggerManager/LoggerManager.h"
 
-namespace EngineCore::Tests
+namespace EngineCore::Tester
 {
     class CopyMoveCheck
 	{

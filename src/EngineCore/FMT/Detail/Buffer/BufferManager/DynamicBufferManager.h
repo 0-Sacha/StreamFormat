@@ -67,11 +67,12 @@ namespace EngineCore::FMT::Detail {
 			~ShrinkDynamicBufferManager()
 			{}
 
-		public:
+		protected:
 			void BeginContextImpl() override { ShrinkIfNeeded(); }
 			void EndContextImpl(std::size_t totalGeneratedLength) override
 			{ m_MeanGeneratedSize = (m_MeanGeneratedSize * MEAN_CALCFACT_OLD + totalGeneratedLength * MEAN_CALCFACT_LAST) / (MEAN_CALCFACT_OLD + MEAN_CALCFACT_LAST); }
 			
+		public:
 			void ShrinkIfNeeded()
 			{
 				if (m_BufferSize > static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_OVERFLOW))
