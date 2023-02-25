@@ -15,11 +15,11 @@ namespace EngineCore::Instrumentation
 		explicit Profiler(std::string&& name)
 			: Name(name)
 			, Logger(name)
-			{
-				Events.clear();
-				Events.push_back(DurationEvent(name, "Profiler"));
-				GetProfilerProfile().Start();
-			}
+		{
+			Events.clear();
+			Events.push_back(DurationEvent(name, "Profiler"));
+			GetProfilerProfile().Start();
+		}
 
 		~Profiler() {}
 
@@ -33,7 +33,7 @@ namespace EngineCore::Instrumentation
 
 	public:
 		std::string Name;
-		EngineCore::LoggerManager::BasicLogger Logger;
+		LoggerManager::BasicLogger Logger;
 		std::vector<Event> Events;
 	};
 }

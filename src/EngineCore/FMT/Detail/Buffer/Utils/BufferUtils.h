@@ -5,7 +5,6 @@
 
 #include "EngineCore/FMT/Detail/Buffer/BufferManager/DynamicBufferManager.h"
 #include "EngineCore/FMT/Detail/Buffer/BufferManager/StaticBufferManager.h"
-#include "EngineCore/FMT/Detail/Buffer/BufferManager/STDStringBufferManager.h"
 #include "EngineCore/FMT/Detail/Buffer/BufferManager/GivenBufferManager.h"
 
 namespace EngineCore::FMT

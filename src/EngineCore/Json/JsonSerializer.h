@@ -52,10 +52,10 @@ namespace EngineCore::JSON
     {
         static inline void LoadSTDString(std::string& t, Detail::JsonParser& parser)
         {
-            EngineCore::FMT::Detail::STDStringBufferManager<char> bufferData;
+            EngineCore::FMT::Detail::DynamicBufferManager<char> bufferData;
             EngineCore::FMT::Detail::BasicBufferOut<char> buffer(bufferData);
             EngineCore::FMT::BufferUtils<char>::ParseEscapedQuotedString(parser.BufferIn(), buffer);
-            t = std::move(bufferData.GetSTDString());
+            t = bufferData.GetLastGeneratedString();
         }
 
 		static inline void DumpSTDString(const std::string& t, Detail::JsonFormatter& formatter)

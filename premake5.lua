@@ -2,12 +2,6 @@
 Solution.ProjectsInfo.Includes["EngineCore"] = {
 	"%{Solution.Projects.EngineCore}/src/",
 	"%{Solution.Projects.EngineCore}/src/EngineCore",
-	"%{Solution.Projects.EngineCore}/src/EngineCore/Core",
-	"%{Solution.Projects.EngineCore}/src/EngineCore/LIB",
-	"%{Solution.Projects.EngineCore}/src/EngineCore/TNX",
-	"%{Solution.Projects.EngineCore}/src/EngineCore/Test",
-
-	"%{Solution.Projects.EngineCore}/Modules/"
 }
 
 project "EngineCore"
@@ -31,3 +25,22 @@ project "EngineCore"
 	defines {
 		"ENGINECORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
 	}
+
+project "EngineCoreTests"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+
+	targetdir 	(Solution.Path.ProjectTargetDirectory)
+	objdir 		(Solution.Path.ProjectObjectDirectory)
+
+	files {
+		"Tests/**.h",
+		"Tests/**.hpp",
+		"Tests/**.inl",
+		"Tests/**.cpp",
+	}
+	
+	Solution.IncludeAndLinkProject("EngineCore")
+	

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Detail.h"
-#include "BaseMacro.h"
+#include "TestSuite.h"
 
 #include "EngineCore/FMT/Format/CompilationData.h"
 

@@ -7,7 +7,6 @@
 #include "Detail/Buffer/BufferManager/DynamicBufferManager.h"
 #include "Detail/Buffer/BufferManager/GivenBufferManager.h"
 #include "Detail/Buffer/BufferManager/StaticBufferManager.h"
-#include "Detail/Buffer/BufferManager/STDStringBufferManager.h"
 
 namespace EngineCore::FMT {
 
@@ -117,10 +116,9 @@ namespace EngineCore::FMT {
 	template<typename Format = std::string_view, typename CharBuffer, typename ...Args>
 	requires Detail::IsFmtConvertible<Format>::Value&& Detail::IsCharType<CharBuffer>::Value
 	void FormatInString(std::basic_string<CharBuffer>& str, const Format& format, Args&& ...args) {
-		// TODO : optimization
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
 		Detail::FormatInBufferManager(bufferManager, false, format, std::forward<Args>(args)...);
-		str = std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
+		str = bufferManager.GetLastGeneratedString();
 	}
 
 
@@ -129,7 +127,7 @@ namespace EngineCore::FMT {
 	inline std::basic_string<CharBuffer> FormatString(const Format& format, Args&& ...args) {
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(256);
 		Detail::FormatInBufferManager(bufferManager, false, format, std::forward<Args>(args)...);
-		return std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
+		return bufferManager.GetLastGeneratedString();
 	}
 
 
@@ -197,7 +195,7 @@ namespace EngineCore::FMT {
 	void FormatInString(std::basic_string<CharBuffer>& str, T&& t) {
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
 		Detail::FormatInBufferManager(bufferManager, false, std::forward<T>(t));
-		str = std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
+		str = bufferManager.GetLastGeneratedString();
 	}
 
 	template<typename CharBuffer = char, typename T>
@@ -205,6 +203,6 @@ namespace EngineCore::FMT {
 	inline std::basic_string<CharBuffer> FormatString(T&& t) {
 		Detail::DynamicBufferManager<CharBuffer> bufferManager(32);
 		Detail::FormatInBufferManager(bufferManager, false, std::forward<T>(t));
-		return std::string(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
+		return bufferManager.GetLastGeneratedString();
 	}
 }

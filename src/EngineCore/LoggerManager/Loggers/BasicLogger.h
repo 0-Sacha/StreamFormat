@@ -35,6 +35,7 @@ namespace EngineCore::LoggerManager::Detail {
 		void SetName(const std::string& name)				{ m_Name = name; }
 		void SetName(std::string&& name)					{ m_Name = std::move(name); }
 		void SetRealPattern(std::string_view pattern)		{ m_Pattern = pattern; }
+		void SetRealPatternStrmv(std::string&& pattern)		{ m_Pattern = std::move(pattern); }
 		void SetPattern(std::string_view pattern)			{ m_Pattern = "{color}"; m_Pattern += pattern; }
 		void ResetPattern()									{ SetPattern("[{T:pattern='%h:%m:%s:%ms'}] {name} >> {data}"); }
 
@@ -55,7 +56,7 @@ namespace EngineCore::LoggerManager::Detail {
 				return;
 
 			FMT::Detail::FormatInBufferManager(preFormatBufferManager, false, std::string_view(m_Pattern), FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
-			FMT::Detail::FormatInBufferManager(fullFormatBufferManager, true, preFormatBufferManager.GetLastGeneratedString(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
+			FMT::Detail::FormatInBufferManager(fullFormatBufferManager, true, preFormatBufferManager.GetLastGeneratedStringView(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
 			m_Stream.write(fullFormatBufferManager.GetBuffer(), fullFormatBufferManager.GetLastGeneratedDataSize());
 			m_Stream.flush();
 		}

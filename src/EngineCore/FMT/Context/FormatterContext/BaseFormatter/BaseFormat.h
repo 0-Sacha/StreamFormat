@@ -214,7 +214,7 @@ namespace EngineCore::FMT {
 	struct FormatterType<void*, FormatterContext>
 	{
 		static void Write(const void* const t, FormatterContext& context) {
-			if (t == nullptr)	context.Print("nullptr");
+			if (t == nullptr)	context.Print(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 			else				context.SubContext("{:X,=,U}", (std::size_t)t);
 		}
 	};

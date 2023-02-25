@@ -7,6 +7,8 @@
 
 #include <string>
 
+// https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
+
 namespace EngineCore::Instrumentation
 {
     enum class EventType : char
@@ -36,12 +38,14 @@ namespace EngineCore::Instrumentation
         MetaData = 'M',
         Mark = 'R',
         ClockSyncEvents = 'c',
-        Context = ','
+        Context = ',' // '(' ')'
     };
 
 	struct Event
 	{
 	public:
+	    Event() = default;
+        
 	    Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
             : Name(name)
             , Category(category)

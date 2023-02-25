@@ -17,9 +17,7 @@ namespace EngineCore::Instrumentation
 		ScopeProfile(Profiler& profiler, std::string&& name, std::string&& category)
 			: DurationEvent(std::move(name), std::move(category))
 			, m_Profiler(profiler)
-		{
-			Start();
-		}
+		{ Start(); }
 
         ~ScopeProfile();
     

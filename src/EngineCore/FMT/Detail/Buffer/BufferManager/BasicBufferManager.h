@@ -24,11 +24,10 @@ namespace EngineCore::FMT::Detail {
 		virtual bool AddSize(const std::size_t count) = 0;
 
 	public:
-		std::basic_string_view<CharType> GetLastGeneratedString() const { return std::basic_string_view<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
-		operator std::basic_string_view<CharType>() const
-		{
-			return GetLastGeneratedString();
-		}
+		std::basic_string_view<CharType> GetLastGeneratedStringView() const { return std::basic_string_view<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
+		operator std::basic_string_view<CharType>() const 					{ return GetLastGeneratedStringView(); }
+		std::basic_string<CharType> GetLastGeneratedString() const 			{ return std::basic_string<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
+		operator std::basic_string<CharType>() const 						{ return GetLastGeneratedString(); }
 
 	public:
 		std::size_t GetLastGeneratedDataSize() const { return m_LastGeneratedDataSize; }
