@@ -26,6 +26,8 @@ project "EngineCore"
 		"ENGINECORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
 	}
 
+if (EngineCoreTestsEnable)
+then
 project "EngineCoreTests"
 	kind "ConsoleApp"
 	language "C++"
@@ -43,4 +45,5 @@ project "EngineCoreTests"
 	}
 	
 	Solution.IncludeAndLinkProject("EngineCore")
+end
 	
