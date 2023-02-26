@@ -66,6 +66,9 @@ namespace EngineCore::JSON::Detail
 
     struct JsonParser::StructIntermediate
     {
+    public:
+        friend JsonParser;
+
     private:
         std::unordered_map<std::string, Detail::JsonParser::Intermediate> Objects;
         
@@ -83,6 +86,9 @@ namespace EngineCore::JSON::Detail
 
     struct JsonParser::ArrayIntermediate
     {
+    public:
+        friend JsonParser;
+
     private:
         std::vector<Detail::JsonParser::Intermediate> Objects;
 
@@ -98,16 +104,16 @@ namespace EngineCore::JSON::Detail
         }
     };
 
-    JsonParser::StructIntermediate JsonParser::GetStructIntermediate()
+    inline JsonParser::StructIntermediate JsonParser::GetStructIntermediate()
     {
         JsonParser::StructIntermediate res;
-        Load(res);
+        res.Parse(*this);
         return res;
     }
-    JsonParser::ArrayIntermediate JsonParser::GetArrayIntermediate()
+    inline JsonParser::ArrayIntermediate JsonParser::GetArrayIntermediate()
     {
         JsonParser::ArrayIntermediate res;
-        Load(res);
+        res.Parse(*this);
         return res;
     }
 }

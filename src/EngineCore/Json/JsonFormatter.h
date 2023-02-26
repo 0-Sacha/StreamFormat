@@ -30,6 +30,11 @@ namespace EngineCore::JSON::Detail
         template <typename T>
         void Dump(const T& t);
 
+        struct StructIntermediate;
+        struct ArrayIntermediate;
+        StructIntermediate GetStructIntermediate();
+        ArrayIntermediate GetArrayIntermediate();
+
     public:
         void Indent()
         {
@@ -51,4 +56,47 @@ namespace EngineCore::JSON::Detail
 		bool m_IndentWithSpaces;
 		bool m_OneLine;
     };
+}
+
+namespace EngineCore::JSON::Detail
+{
+    struct JsonFormatter::StructIntermediate
+    {
+    public:
+        StructIntermediate(JsonFormatter& formatter);
+        ~StructIntermediate();
+
+    public:
+        template<typename T>
+        void Dump(const std::string& name, const T& t);
+
+    public:
+        JsonFormatter& Formatter;
+        std::uint32_t Idx;
+    };
+
+    struct JsonFormatter::ArrayIntermediate
+    {
+    public:
+        ArrayIntermediate(JsonFormatter& formatter);
+        ~ArrayIntermediate();
+
+    public:
+        template<typename T>
+        void Dump(const T& t);
+
+    public:
+        JsonFormatter& Formatter;
+        std::uint32_t Idx;
+    };
+
+    inline JsonFormatter::StructIntermediate JsonFormatter::GetStructIntermediate()
+    {
+        return JsonFormatter::StructIntermediate(*this);
+    }
+
+    inline JsonFormatter::ArrayIntermediate JsonFormatter::GetArrayIntermediate()
+    {
+        return JsonFormatter::ArrayIntermediate(*this);
+    }
 }

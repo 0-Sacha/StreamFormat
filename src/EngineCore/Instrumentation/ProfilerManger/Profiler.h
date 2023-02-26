@@ -5,7 +5,7 @@
 
 #include "Event.h"
 #include "AllEvents.h"
-#include "Utils.h"
+#include "ProfilerEventCreator.h"
 
 namespace EngineCore::Instrumentation
 {

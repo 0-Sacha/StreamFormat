@@ -1,0 +1,43 @@
+#pragma once
+
+#include "JsonSerializer.h"
+
+namespace EngineCore::JSON::Detail
+{
+    inline JsonFormatter::StructIntermediate::StructIntermediate(JsonFormatter& formatter)
+        : Formatter(formatter)
+        , Idx(0)
+    {
+        JsonStructSerializer::DumpBegin(Formatter);
+    }
+
+    inline JsonFormatter::StructIntermediate::~StructIntermediate()
+    {
+        JsonStructSerializer::DumpEnd(Formatter);
+    }
+
+    template<typename T>
+    inline void JsonFormatter::StructIntermediate::Dump(const std::string& name, const T& t)
+    {
+        JsonStructSerializer::DumpObject(name, t, Idx++, Formatter);
+    }
+
+
+    inline JsonFormatter::ArrayIntermediate::ArrayIntermediate(JsonFormatter& formatter)
+        : Formatter(formatter)
+        , Idx(0)
+    {
+        JsonArraySerializer::DumpBegin(Formatter);
+    }
+
+    inline JsonFormatter::ArrayIntermediate::~ArrayIntermediate()
+    {
+        JsonArraySerializer::DumpEnd(Formatter);
+    }
+
+    template<typename T>
+    inline void JsonFormatter::ArrayIntermediate::Dump(const T& t)
+    {
+        JsonArraySerializer::DumpObject(t, Idx++, Formatter);
+    }
+}

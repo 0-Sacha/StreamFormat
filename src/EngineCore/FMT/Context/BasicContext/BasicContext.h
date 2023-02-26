@@ -92,8 +92,6 @@ namespace EngineCore::FMT::Context {
 		virtual void ParseColor() = 0;
 		virtual void ParseStyle() = 0;
 		virtual void ParseFront() = 0;
-		virtual void ContextStyleBegin() = 0;
-		virtual void ContextStyleEnd() = 0;
 		
 		virtual void ParseSetter() = 0;
 

@@ -59,18 +59,28 @@ namespace EngineCore::JSON
 
     struct JsonStringObject final : public JsonObject
     {
-        JsonStringObject() : JsonObject(ObjectType::String) {}
+		JsonStringObject() : JsonObject(ObjectType::String) {}
+		JsonStringObject(const std::string& value) : JsonObject(ObjectType::String), String(value) {}
+		JsonStringObject(std::string&& value) : JsonObject(ObjectType::String), String(std::move(value)) {}
         std::string String;
 
-    public:
+	public:
+		static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStringObject>(); }
+		static std::unique_ptr<JsonObject> Create(const std::string& value) { return std::make_unique<JsonStringObject>(value); }
+		static std::unique_ptr<JsonObject> Create(std::string&& value) { return std::make_unique<JsonStringObject>(std::move(value)); }
+
+	public:
         void Parse(Detail::JsonParser& parser) override;
         void Format(Detail::JsonFormatter& formatter) const override;
     };
 
     struct JsonNumberObject final : public JsonObject
     {
-        JsonNumberObject() : JsonObject(ObjectType::Number) {}
+        JsonNumberObject(double value = 0.0) : JsonObject(ObjectType::Number), Number(value) {}
         double Number;
+
+	public:
+        static std::unique_ptr<JsonObject> Create(double value = 0.0) { return std::make_unique<JsonNumberObject>(value); }
 
     public:
         void Parse(Detail::JsonParser& parser) override;
@@ -79,8 +89,11 @@ namespace EngineCore::JSON
 
     struct JsonBooleanObject final : public JsonObject
     {
-        JsonBooleanObject() : JsonObject(ObjectType::Boolean) {}
+		JsonBooleanObject(bool value = false) : JsonObject(ObjectType::Boolean), Boolean(value) {}
         bool Boolean;
+
+	public:
+        static std::unique_ptr<JsonObject> Create(bool value = false) { return std::make_unique<JsonBooleanObject>(value); }
 
     public:
         void Parse(Detail::JsonParser& parser) override;
@@ -89,10 +102,19 @@ namespace EngineCore::JSON
 
     struct JsonStructObject final : public JsonObject
     {
-        JsonStructObject() : JsonObject(ObjectType::Struct) {}
-        std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
+	public:
+		JsonStructObject() : JsonObject(ObjectType::Struct) {}
 
-        JsonObject& Get(const std::string& subObject) override
+	public:
+        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStructObject>(); }
+
+	public:
+		std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
+
+	public:
+		void Add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ name, std::move(object) }); }
+		void Add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ std::move(name), std::move(object) }); }
+		JsonObject& Get(const std::string& subObject) override
         {
             try {
                 return *Objects.at(subObject);
@@ -110,10 +132,18 @@ namespace EngineCore::JSON
 
     struct JsonArrayObject final : public JsonObject
     {
-        JsonArrayObject() : JsonObject(ObjectType::Array) {}
-        std::vector<std::unique_ptr<JsonObject>> Objects;
+	public:
+		JsonArrayObject() : JsonObject(ObjectType::Array) {}
 
-        JsonObject& Get(const std::size_t index) override { return *Objects[index]; }
+	public:
+        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonArrayObject>(); }
+
+	public:
+		std::vector<std::unique_ptr<JsonObject>> Objects;
+
+	public:
+		void Add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
+		JsonObject& Get(const std::size_t index) override { return *Objects[index]; }
 
     public:
         void Parse(Detail::JsonParser& parser) override;
@@ -122,7 +152,11 @@ namespace EngineCore::JSON
 
     struct JsonNullObject final : public JsonObject
     {
-        JsonNullObject() : JsonObject(ObjectType::Null) {}
+	public:
+		JsonNullObject() : JsonObject(ObjectType::Null) {}
+
+	public:
+		static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonNullObject>(); }
     
     public:
         void Parse(Detail::JsonParser& parser) override;

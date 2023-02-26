@@ -6,6 +6,7 @@
 #include "Detail.h"
 
 #include <string>
+#include <memory>
 
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
 
@@ -85,7 +86,7 @@ namespace EngineCore::Instrumentation
 		double TimeOfEvent, ThreadTimeOfEvent;
 		double Duration;
 		std::size_t PID, TID;
-        EventData* Data;
+        std::shared_ptr<EventData> Data;
 	};
 }
 

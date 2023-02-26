@@ -117,8 +117,6 @@ namespace EngineCore::FMT::Context {
 		using Base::ParseColor;
 		using Base::ParseStyle;
 		using Base::ParseFront;
-		using Base::ContextStyleBegin;
-		using Base::ContextStyleEnd;
 
 		using Base::ParseSetter;
 
@@ -128,8 +126,6 @@ namespace EngineCore::FMT::Context {
         void ParseColor() override          { m_TextPropertiesParser.ParseColor(); }
         void ParseStyle() override          { m_TextPropertiesParser.ParseStyle(); }
         void ParseFront() override          { m_TextPropertiesParser.ParseFront(); }
-        void ContextStyleBegin() override   {}
-        void ContextStyleEnd() override     {}
 
         void ParseSetter() override;
 
