@@ -69,9 +69,9 @@ namespace EngineCore::FMT::Context {
 		std::basic_string_view<CharFormat> ParseNextOverrideFormatData();
 
 		void ParseFormatDataBase();
-		void ParseFormatDataBase_ValueIntPrint(const Detail::ValueIntPrint type);
+		void ParseFormatDataBase_ValueIntPrint(const typename Detail::ValueIntPrint type);
 		void ParseFormatDataSpecial();
-		void ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type);
+		void ParseFormatDataSpecial_ShiftType(const typename Detail::ShiftType type);
 		void ParseFormatDataCustom();
 		void ParseFormatData();
 
@@ -82,7 +82,7 @@ namespace EngineCore::FMT::Context {
 		virtual void ContextStyleRestore(const ContextPackage& package) = 0;
 
 		void ParseSpecial();
-		void ParseVariable(Detail::FormatIndex formatIdx);
+		void ParseVariable(typename Detail::FormatIndex formatIdx);
 		bool Parse();
 
 	protected:
@@ -113,7 +113,7 @@ namespace EngineCore::FMT::Context {
 			return StringViewFormat(namePos, m_Format.GetBufferCurrentPos() - namePos);
 		}
 
-		inline Detail::DataType ReadDataType()
+		inline typename Detail::DataType ReadDataType()
 		{
 			Detail::DataType res;
 			m_Format.ReadInt(res);

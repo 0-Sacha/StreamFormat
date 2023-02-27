@@ -1,5 +1,3 @@
-#pragma once
-
 #include "EngineCore/Tester/TestSuite/AllTestSuite.h"
 #include "EngineCore/FMT/FMT.h"
 

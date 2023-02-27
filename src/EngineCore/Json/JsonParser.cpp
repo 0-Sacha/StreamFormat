@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Detail.h"
 
 #include <string_view>

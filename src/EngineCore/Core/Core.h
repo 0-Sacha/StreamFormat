@@ -3,6 +3,7 @@
 #include "Flags.h"
 
 #include <utility>
+#include <cstdint>
 
 #ifdef ENGINECORE_DEV
 #define ENGINECORE_DEBUG

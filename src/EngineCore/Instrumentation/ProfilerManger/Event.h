@@ -8,6 +8,11 @@
 #include <string>
 #include <memory>
 
+#ifdef ENGINECORE_PLATFORM_LINUX
+    #include <sys/types.h>
+    #include <unistd.h>
+#endif
+
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
 
 namespace EngineCore::Instrumentation
@@ -55,7 +60,11 @@ namespace EngineCore::Instrumentation
             , TimeOfEvent(Instrumentation::GetMicroseconds())
             , ThreadTimeOfEvent(0)
             , Duration(0)
+#ifdef ENGINECORE_COMPILER_VS
             , PID(_getpid())
+#else
+            , PID(getpid())
+#endif
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
             , Data(data)
         {}
@@ -68,7 +77,11 @@ namespace EngineCore::Instrumentation
 			, TimeOfEvent(Instrumentation::GetMicroseconds())
 			, ThreadTimeOfEvent(0)
 			, Duration(0)
-			, PID(_getpid())
+#ifdef ENGINECORE_COMPILER_VS
+            , PID(_getpid())
+#else
+            , PID(getpid())
+#endif
 			, TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
 			, Data(data)
 		{}

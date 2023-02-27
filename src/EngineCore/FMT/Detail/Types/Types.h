@@ -2,8 +2,10 @@
 
 #include "EngineCore/Core/Core.h"
 
-namespace EngineCore::FMT::Detail {
+#include <limits>
 
+namespace EngineCore::FMT::Detail
+{
 	using DataType	= std::int32_t;
 	static inline constexpr DataType FORMAT_DATA_NOT_SPECIFIED = (std::numeric_limits<DataType>::max)();
 

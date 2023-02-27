@@ -8,7 +8,8 @@
 
 namespace EngineCore::FMT::Detail {
 	
-	enum class ValueIntPrint : DataType {
+	enum class ValueIntPrint : DataType
+	{
 		Dec,
 		Bin,
 		Hex,
@@ -16,7 +17,8 @@ namespace EngineCore::FMT::Detail {
 		Default = Dec
 	};
 
-	enum class ShiftType : DataType {
+	enum class ShiftType : DataType
+	{
 		Nothing,
 		Right,
 		Left,
@@ -25,7 +27,8 @@ namespace EngineCore::FMT::Detail {
 		Default = Nothing
 	};
 
-	enum class PrintStyle : DataType {
+	enum class PrintStyle : DataType
+	{
 		Nothing,
 		UpperCase,
 		LowerCase,
@@ -63,7 +66,8 @@ namespace EngineCore::FMT::Detail {
 	static constexpr ShiftPrint ShiftPrint_Zeros = ShiftPrint('0', ' ');
 	static constexpr ShiftPrint ShiftPrint_Chevron = ShiftPrint('>', '<');
 
-	struct DigitSize : public BasicCustomDataType<DataType, -1, -2> { 
+	struct DigitSize : public BasicCustomDataType<DataType, -1, -2>
+	{ 
 	public:
 		inline constexpr DigitSize(const DataType value = DEFAULT)
 			: BasicCustomDataType<DataType, -1, -2>(value)
@@ -79,7 +83,8 @@ namespace EngineCore::FMT::Detail {
 		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
-	struct ShiftSize : public BasicCustomDataType<DataType, 0, -1> { 
+	struct ShiftSize : public BasicCustomDataType<DataType, 0, -1>
+	{ 
 	public:
 		inline constexpr ShiftSize(const DataType value = DEFAULT)
 			: BasicCustomDataType<DataType, 0, -1>(value)

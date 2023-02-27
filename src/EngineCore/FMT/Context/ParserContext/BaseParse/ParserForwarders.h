@@ -3,7 +3,7 @@
 #include "EngineCore/FMT/Context/ParserContext/BasicParserContext.h"
 #include "EngineCore/FMT/Detail/Forwarders.h"
 
-namespace EngineCore::FMT::Detail
+namespace EngineCore::FMT
 {
     // Int
 	template<typename T, typename ParserContext>

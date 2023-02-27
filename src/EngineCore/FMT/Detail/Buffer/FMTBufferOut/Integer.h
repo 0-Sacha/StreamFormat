@@ -4,8 +4,8 @@
 
 #include <cmath>
 
-namespace EngineCore::FMT::Detail {
-
+namespace EngineCore::FMT::Detail
+{
 	template<typename CharBuffer>
 	template<typename T>
 	void FMTBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
