@@ -80,7 +80,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::time_point<std::chrono::high_resolution_clock>, FormatterContext>
 	{
-		static void Write(const std::chrono::time_point<std::chrono::high_resolution_clock>& t, FormatterContext& context) {
+		static void Format(const std::chrono::time_point<std::chrono::high_resolution_clock>& t, FormatterContext& context) {
 			ChronoDetail::WriteTime(t, context);
 		}
 	};
@@ -89,7 +89,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::time_point<std::chrono::system_clock>, FormatterContext>
 	{
-		static void Write(const std::chrono::time_point<std::chrono::system_clock>& t, FormatterContext& context) {
+		static void Format(const std::chrono::time_point<std::chrono::system_clock>& t, FormatterContext& context) {
 			ChronoDetail::WriteTime(t, context);
 		}
 	};
@@ -98,7 +98,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::seconds, FormatterContext>
 	{
-		static void Write(const std::chrono::seconds& t, FormatterContext& context) {
+		static void Format(const std::chrono::seconds& t, FormatterContext& context) {
 			std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::seconds> time(t);
 			if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::seconds>(time, context)) {
 				context.BufferOut().BasicWriteType(t.count());
@@ -110,7 +110,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::minutes, FormatterContext>
 	{
-		static void Write(const std::chrono::minutes& t, FormatterContext& context) {
+		static void Format(const std::chrono::minutes& t, FormatterContext& context) {
 			std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::minutes> time(t);
 			if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::minutes>(time, context)) {
 				context.BufferOut().BasicWriteType(t.count());
@@ -122,7 +122,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::hours, FormatterContext>
 	{
-		static void Write(const std::chrono::hours& t, FormatterContext& context) {
+		static void Format(const std::chrono::hours& t, FormatterContext& context) {
 			std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::hours> time(t);
 			if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::hours>(time, context)) {
 				context.BufferOut().BasicWriteType(t.count());
@@ -134,7 +134,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::milliseconds, FormatterContext>
 	{
-		static void Write(const std::chrono::milliseconds& t, FormatterContext& context) {
+		static void Format(const std::chrono::milliseconds& t, FormatterContext& context) {
 			std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::milliseconds> time(t);
 			if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::milliseconds>(time, context)) {
 				context.BufferOut().BasicWriteType(t.count());
@@ -147,7 +147,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::microseconds, FormatterContext>
 	{
-		static void Write(const std::chrono::microseconds& t, FormatterContext& context) {
+		static void Format(const std::chrono::microseconds& t, FormatterContext& context) {
 			std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::microseconds> time(t);
 			if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::microseconds>(time, context)) {
 				context.BufferOut().BasicWriteType(t.count());
@@ -160,7 +160,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<std::chrono::nanoseconds, FormatterContext>
 	{
-		static void Write(const std::chrono::nanoseconds& t, FormatterContext& context) {
+		static void Format(const std::chrono::nanoseconds& t, FormatterContext& context) {
 			std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds> time(t);
 			if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::nanoseconds>(time, context)) {
 				context.BufferOut().BasicWriteType(t.count());

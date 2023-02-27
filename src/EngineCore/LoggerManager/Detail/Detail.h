@@ -30,7 +30,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext, typename FormatStr>
 	struct FormatterType<EngineCore::LoggerManager::AddIndentInFormat<FormatStr>, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::AddIndentInFormat<FormatStr>& format, FormatterContext& context) {
+		static void Format(const EngineCore::LoggerManager::AddIndentInFormat<FormatStr>& format, FormatterContext& context) {
 			context.Print("{K:indent}");
 			context.RunType(format.Format);
 		}
@@ -39,7 +39,7 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext, typename CharType>
 	struct FormatterType<EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>& names, FormatterContext& context) {
+		static void Format(const EngineCore::LoggerManager::ConcateNameAndSinkName<CharType>& names, FormatterContext& context) {
 			context.SubContext(names.LoggerName, FORMAT_SV("sink", names.SinkName));
 		}
 	};

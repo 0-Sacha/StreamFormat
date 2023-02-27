@@ -174,7 +174,7 @@ namespace EngineCore::FMT {
 	template<typename FormatContext>
 	struct FormatterType<EngineCore::Tester::Detail::TestSuite, FormatContext>
 	{
-		static void Write(const EngineCore::Tester::Detail::TestSuite& t, FormatContext& context)
+		static void Format(const EngineCore::Tester::Detail::TestSuite& t, FormatContext& context)
 		{
 			context.Print(t.Name);
 		}
@@ -183,7 +183,7 @@ namespace EngineCore::FMT {
 	template<typename FormatContext>
 	struct FormatterType<EngineCore::Tester::Detail::Test, FormatContext>
 	{
-		static void Write(const EngineCore::Tester::Detail::Test& t, FormatContext& context) {
+		static void Format(const EngineCore::Tester::Detail::Test& t, FormatContext& context) {
 			context.Print(t.Link.Name);
 			context.Print("::");
 			context.Print(t.Name);
@@ -193,7 +193,7 @@ namespace EngineCore::FMT {
 	template<typename FormatContext>
 	struct FormatterType<EngineCore::Tester::TestStatus, FormatContext>
 	{
-		static void Write(const EngineCore::Tester::TestStatus& status, FormatContext& context) {
+		static void Format(const EngineCore::Tester::TestStatus& status, FormatContext& context) {
 			switch (status)
 			{
 				case EngineCore::Tester::TestStatus::Ok 		: context.SubContext("[  {C:green}OK{C}  ]"); break;
@@ -206,7 +206,7 @@ namespace EngineCore::FMT {
 	template<typename FormatContext>
 	struct FormatterType<EngineCore::Tester::Detail::TestStatusBank, FormatContext>
 	{
-		static void Write(const EngineCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {
+		static void Format(const EngineCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {
 			context.Print("TestsDone ");
 			context.SubContext("{:C:white}", statusBank.TestsDone);
 

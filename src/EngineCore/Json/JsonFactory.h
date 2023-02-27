@@ -25,7 +25,7 @@ namespace EngineCore::FMT
 {
 	template<typename FormatterContext>
 	struct FormatterType<JSON::JsonObject, FormatterContext> {
-		static void Write(const JSON::JsonObject& object, FormatterContext& context)
+		static void Format(const JSON::JsonObject& object, FormatterContext& context)
 		{
 			JSON::FormatAsJson<JSON::JsonObject> format(object);
 			context.RunType(object);

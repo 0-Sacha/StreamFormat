@@ -17,7 +17,7 @@ namespace EngineCore::JSON::Detail
     }
 
     template<typename T>
-    inline void JsonFormatter::StructIntermediate::Dump(const std::string& name, const T& t)
+    inline void JsonFormatter::StructIntermediate::Format(const std::string& name, const T& t)
     {
         JsonStructSerializer::DumpObject(name, t, Idx++, Formatter);
     }
@@ -36,7 +36,7 @@ namespace EngineCore::JSON::Detail
     }
 
     template<typename T>
-    inline void JsonFormatter::ArrayIntermediate::Dump(const T& t)
+    inline void JsonFormatter::ArrayIntermediate::Format(const T& t)
     {
         JsonArraySerializer::DumpObject(t, Idx++, Formatter);
     }

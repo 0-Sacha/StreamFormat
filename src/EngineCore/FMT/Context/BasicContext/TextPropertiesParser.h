@@ -74,10 +74,9 @@ namespace EngineCore::FMT::Detail {
 		}
 
 	public:
-		TextProperties::Properties Save() 							{ return CurrentContexProperties; }
-		void Reload(const TextProperties::Properties& target);
-
-		void ReloadColor(const TextProperties::TextColor::Color& target);
+		TextProperties::Properties Save() 									{ return CurrentContexProperties; }
+		void Reload(const TextProperties::Properties& target) 				{ ReloadColor(target.Color); ReloadStyle(target.Style); ReloadFront(target.Front); }
+		void ReloadColor(const TextProperties::TextColor::Color& target) 	{ ReloadColorFG(target.Fg); ReloadColorBG(target.Bg); }
 		void ReloadColorFG(const TextProperties::TextColor::ColorFG& target);
 		void ReloadColorBG(const TextProperties::TextColor::ColorBG& target);
 
@@ -98,9 +97,9 @@ namespace EngineCore::FMT::Detail {
 template<typename FormatterContext>
 	void TextPropertiesParser<FormatterContext>::ColorRunOnIndex(const FormatIndex& index)
 	{
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color>(		index, [this](const TextProperties::TextColor::Color& data) 		{ this->ColorRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorFG>(	index, [this](const TextProperties::TextColor::BasicColorFG& data) 	{ this->ColorRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorBG>(	index, [this](const TextProperties::TextColor::BasicColorBG& data) 	{ this->ColorRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color>(		index, [this](const TextProperties::TextColor::Color& data) 				{ this->ColorRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorFG>(	index, [this](const TextProperties::TextColor::BasicColorFG& data) 			{ this->ColorRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorBG>(	index, [this](const TextProperties::TextColor::BasicColorBG& data) 			{ this->ColorRun(data); } );
 		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::ColorCubeFG>(	index, [this](const Detail::TextProperties::TextColor::ColorCubeFG& data) 	{ this->ColorRun(data); } );
 		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::ColorCubeBG>(	index, [this](const Detail::TextProperties::TextColor::ColorCubeBG& data) 	{ this->ColorRun(data); } );
 		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color24bFG>(	index, [this](const Detail::TextProperties::TextColor::Color24bFG& data) 	{ this->ColorRun(data); } );
@@ -110,17 +109,17 @@ template<typename FormatterContext>
 	template<typename FormatterContext>
 	void TextPropertiesParser<FormatterContext>::StyleRunOnIndex(const FormatIndex& index)
 	{
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Style>(							index, [this](const TextProperties::TextStyle::Style& data) 				{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Intensity>(index, [this](const TextProperties::TextStyle::Intensity& data) 		{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Italic>(	index, [this](const TextProperties::TextStyle::Italic& data) 			{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Underline>(index, [this](const TextProperties::TextStyle::Underline& data) 		{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Blink>(	index, [this](const TextProperties::TextStyle::Blink& data) 			{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Inverted>(	index, [this](const TextProperties::TextStyle::Inverted& data) 			{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Ideogram>(	index, [this](const TextProperties::TextStyle::Ideogram& data) 			{ this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Script>(	index, [this](const TextProperties::TextStyle::Script& data) 			{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Style>(	index, [this](const TextProperties::TextStyle::Style& data) 		{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Intensity>(index, [this](const TextProperties::TextStyle::Intensity& data) 	{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Italic>(	index, [this](const TextProperties::TextStyle::Italic& data) 		{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Underline>(index, [this](const TextProperties::TextStyle::Underline& data) 	{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Blink>(	index, [this](const TextProperties::TextStyle::Blink& data) 		{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Inverted>(	index, [this](const TextProperties::TextStyle::Inverted& data) 		{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Ideogram>(	index, [this](const TextProperties::TextStyle::Ideogram& data) 		{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Script>(	index, [this](const TextProperties::TextStyle::Script& data) 		{ this->StyleRun(data); } );
 
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::ColorCube>(		index, [this](const TextProperties::TextStyle::UnderlineColor::ColorCube& data) { this->StyleRun(data); } );
-		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::Color24b>(			index, [this](const TextProperties::TextStyle::UnderlineColor::Color24b& data) 	{ this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::ColorCube>(index, [this](const TextProperties::TextStyle::UnderlineColor::ColorCube& data) { this->StyleRun(data); } );
+		Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::Color24b>(	index, [this](const TextProperties::TextStyle::UnderlineColor::Color24b& data) 	{ this->StyleRun(data); } );
 	}
 
 	template<typename FormatterContext>
@@ -309,13 +308,6 @@ template<typename FormatterContext>
 	}
 
 	template<typename FormatterContext>
-	void TextPropertiesParser<FormatterContext>::ReloadColor(const TextProperties::TextColor::Color& target)
-	{
-		ReloadColorFG(target.Fg);
-		ReloadColorBG(target.Bg);
-	}
-
-	template<typename FormatterContext>
 	void TextPropertiesParser<FormatterContext>::ReloadColorFG(const TextProperties::TextColor::ColorFG& target)
 	{
 		if (target.Type != CurrentContexProperties.Color.Fg.Type) {
@@ -455,13 +447,5 @@ template<typename FormatterContext>
 
 		Context.RunType(target);
 		CurrentContexProperties.Front = target;
-	}
-
-	template<typename FormatterContext>
-	void TextPropertiesParser<FormatterContext>::Reload(const TextProperties::Properties& target)
-	{
-		ReloadColor(target.Color);
-		ReloadStyle(target.Style);
-		ReloadFront(target.Front);
 	}
 }

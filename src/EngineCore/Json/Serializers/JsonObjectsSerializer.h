@@ -11,7 +11,7 @@ namespace EngineCore::JSON
 	template <>
 	struct JsonSerializer<std::unique_ptr<JsonObject>>
 	{
-		static inline void Load(std::unique_ptr<JsonObject>& t, Detail::JsonParser& parser)
+		static inline void Parse(std::unique_ptr<JsonObject>& t, Detail::JsonParser& parser)
 		{
 			parser.BufferIn().IgnoreAllBlanks();
 			if (parser.IsJsonStringBegin())
@@ -30,7 +30,7 @@ namespace EngineCore::JSON
 			t->Parse(parser);
 		}
 
-		static inline void Dump(const std::unique_ptr<JsonObject>& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const std::unique_ptr<JsonObject>& t, Detail::JsonFormatter& formatter)
 		{
 			t->Format(formatter);
 		}
@@ -39,7 +39,7 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonObject>
     {
-		static inline void Dump(const JsonObject& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const JsonObject& t, Detail::JsonFormatter& formatter)
         {
             t.Format(formatter);
         }
@@ -48,13 +48,13 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonStringObject>
     {
-        static inline void Load(JsonStringObject& t, Detail::JsonParser& parser)
+        static inline void Parse(JsonStringObject& t, Detail::JsonParser& parser)
         {
             t.String.clear();
             JsonStringSerializer::LoadSTDString(t.String, parser);
         }
 
-		static inline void Dump(const JsonStringObject& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const JsonStringObject& t, Detail::JsonFormatter& formatter)
         {
             JsonStringSerializer::DumpSTDString(t.String, formatter);
         }
@@ -63,12 +63,12 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonNumberObject>
     {
-        static inline void Load(JsonNumberObject& t, Detail::JsonParser& parser)
+        static inline void Parse(JsonNumberObject& t, Detail::JsonParser& parser)
         {
             JsonNumberSerializer::LoadFloat(t.Number, parser);
         }
 
-		static inline void Dump(const JsonNumberObject& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const JsonNumberObject& t, Detail::JsonFormatter& formatter)
         {
             JsonNumberSerializer::DumpFloat(t.Number, formatter);
         }
@@ -77,12 +77,12 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonBooleanObject>
     {
-        static inline void Load(JsonBooleanObject& t, Detail::JsonParser& parser)
+        static inline void Parse(JsonBooleanObject& t, Detail::JsonParser& parser)
         {
             JsonBooleanSerializer::LoadBool(t.Boolean, parser);
         }
 
-		static inline void Dump(const JsonBooleanObject& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const JsonBooleanObject& t, Detail::JsonFormatter& formatter)
         {
             JsonBooleanSerializer::DumpBool(t.Boolean, formatter);
         }
@@ -91,12 +91,12 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonNullObject>
     {
-        static inline void Load(JsonNullObject& t, Detail::JsonParser& parser)
+        static inline void Parse(JsonNullObject& t, Detail::JsonParser& parser)
         {
             JsonNullSerializer::LoadNull(parser);
         }
 
-		static inline void Dump(const JsonNullObject& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const JsonNullObject& t, Detail::JsonFormatter& formatter)
         {
             JsonNullSerializer::DumpNull(formatter);
         }
@@ -105,22 +105,22 @@ namespace EngineCore::JSON
     template <>
 	struct JsonSerializer<JsonStructObject>
     {
-        static inline void Load(JsonStructObject& t, Detail::JsonParser& parser) {
-            parser.Load(t.Objects);
+        static inline void Parse(JsonStructObject& t, Detail::JsonParser& parser) {
+            parser.Parse(t.Objects);
         }
-		static inline void Dump(const JsonStructObject& t, Detail::JsonFormatter& formatter) {
-            formatter.Dump(t.Objects);
+		static inline void Format(const JsonStructObject& t, Detail::JsonFormatter& formatter) {
+            formatter.Format(t.Objects);
         }
     };
 
     template <>
 	struct JsonSerializer<JsonArrayObject>
     {
-        static inline void Load(JsonArrayObject& t, Detail::JsonParser& parser) {
-            parser.Load(t.Objects);
+        static inline void Parse(JsonArrayObject& t, Detail::JsonParser& parser) {
+            parser.Parse(t.Objects);
         }
-		static inline void Dump(const JsonArrayObject& t, Detail::JsonFormatter& formatter) {
-            formatter.Dump(t.Objects);
+		static inline void Format(const JsonArrayObject& t, Detail::JsonFormatter& formatter) {
+            formatter.Format(t.Objects);
         }
     };
 }

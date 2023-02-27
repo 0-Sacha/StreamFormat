@@ -28,7 +28,7 @@ namespace EngineCore::JSON
 
         Detail::JsonParser parser(buffer.data(), buffer.size());
         std::unique_ptr<JsonObject> res;
-        JsonSerializer<std::unique_ptr<JsonObject>>::Load(res, parser);
+        JsonSerializer<std::unique_ptr<JsonObject>>::Parse(res, parser);
         return res;
     }
     
@@ -41,7 +41,7 @@ namespace EngineCore::JSON
 
         FMT::Detail::DynamicBufferManager<char> bufferManager(256);
         Detail::JsonFormatter formatter(bufferManager);
-        JsonSerializer<JsonObject>::Dump(json, formatter);
+        JsonSerializer<JsonObject>::Format(json, formatter);
         
 		file.write(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
 		file.flush();

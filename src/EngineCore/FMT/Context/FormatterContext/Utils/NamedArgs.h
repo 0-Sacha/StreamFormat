@@ -27,7 +27,7 @@ namespace EngineCore::FMT {
 	template<typename T, typename CharName, typename FormatterContext>
 	struct FormatterType<StringViewNamedArgs<T, CharName>, FormatterContext>
 	{
-		inline static void Write(const StringViewNamedArgs<T, CharName>& t, FormatterContext& context) {
+		inline static void Format(const StringViewNamedArgs<T, CharName>& t, FormatterContext& context) {
 			context.RunType(t.GetValue());
 		}
 	};
@@ -56,7 +56,7 @@ namespace EngineCore::FMT {
 	template<typename T, typename CharName, typename FormatterContext>
 	struct FormatterType<StringNamedArgs<T, CharName>, FormatterContext>
 	{
-		inline static void Write(const StringNamedArgs<T, CharName>& t, FormatterContext& context) {
+		inline static void Format(const StringNamedArgs<T, CharName>& t, FormatterContext& context) {
 			context.RunType(t.GetValue());
 		}
 	};

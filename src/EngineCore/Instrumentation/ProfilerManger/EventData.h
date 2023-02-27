@@ -16,11 +16,11 @@ namespace EngineCore::Instrumentation
     public:
         void ToJson(JSON::Detail::JsonFormatter& formatter) const override
         {
-            JSON::JsonSerializer<JSON::JsonStructObject>::Dump(Data, formatter);
+            JSON::JsonSerializer<JSON::JsonStructObject>::Format(Data, formatter);
         }
         void FromJson(JSON::Detail::JsonParser& parser) override
         {
-            JSON::JsonSerializer<JSON::JsonStructObject>::Load(Data, parser);
+            JSON::JsonSerializer<JSON::JsonStructObject>::Parse(Data, parser);
         }
         JSON::JsonStructObject Data;
     };

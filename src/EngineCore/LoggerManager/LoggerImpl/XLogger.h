@@ -118,28 +118,28 @@ namespace EngineCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<EngineCore::LoggerManager::LogSeverity::Value, FormatterContext>
 	{
-		static void Write(const EngineCore::LoggerManager::LogSeverity::Value t, FormatterContext& context)
+		static void Format(const EngineCore::LoggerManager::LogSeverity::Value t, FormatterContext& context)
 		{
 			context.GetFormatData().KeepNewStyle = true;
 			switch (t)
 			{
 			case EngineCore::LoggerManager::LogSeverity::Trace:
-				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Write(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, context);
+				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Debug:
-				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Write(Detail::TextProperties::TextColor::BasicColorFG::Blue, context);
+				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Info:
-				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Write(Detail::TextProperties::TextColor::BasicColorFG::Green, context);
+				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Warn:
-				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Write(Detail::TextProperties::TextColor::BasicColorFG::Yellow, context);
+				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Error:
-				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Write(Detail::TextProperties::TextColor::BasicColorFG::Red, context);
+				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, context);
 				break;
 			case EngineCore::LoggerManager::LogSeverity::Fatal:
-				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Write(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta, context);
+				FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta, context);
 				break;
 			}
 		}

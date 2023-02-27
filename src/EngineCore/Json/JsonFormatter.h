@@ -28,7 +28,7 @@ namespace EngineCore::JSON::Detail
 
     public:
         template <typename T>
-        void Dump(const T& t);
+        void Format(const T& t);
 
         struct StructIntermediate;
         struct ArrayIntermediate;
@@ -68,7 +68,7 @@ namespace EngineCore::JSON::Detail
 
     public:
         template<typename T>
-        void Dump(const std::string& name, const T& t);
+        void Format(const std::string& name, const T& t);
 
     public:
         JsonFormatter& Formatter;
@@ -83,7 +83,7 @@ namespace EngineCore::JSON::Detail
 
     public:
         template<typename T>
-        void Dump(const T& t);
+        void Format(const T& t);
 
     public:
         JsonFormatter& Formatter;

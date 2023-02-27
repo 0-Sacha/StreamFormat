@@ -95,7 +95,7 @@ namespace EngineCore::FMT
 	template<typename FormatterContext>
 	struct FormatterType<EngineCore::Instrumentation::EventType, FormatterContext>
 	{
-		static void Write(const EngineCore::Instrumentation::EventType& t, FormatterContext& context) {
+		static void Format(const EngineCore::Instrumentation::EventType& t, FormatterContext& context) {
             context.BufferOut().PushBack(static_cast<char>(t));
 		}
 	};

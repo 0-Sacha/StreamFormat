@@ -56,7 +56,7 @@ namespace EngineCore::FMT
 	template<typename FormatterContext>
 	struct FormatterType<Detail::FileLocation, FormatterContext>
 	{
-		static void Write(const Detail::FileLocation& t, FormatterContext& context)
+		static void Format(const Detail::FileLocation& t, FormatterContext& context)
 		{
 			context.RunType(t.FileName);
 			context.BufferOut().PushBack(':');
@@ -67,7 +67,7 @@ namespace EngineCore::FMT
 	template<typename FormatterContext>
 	struct FormatterType<Detail::FunctionProperties, FormatterContext>
 	{
-		static void Write(const Detail::FunctionProperties& t, FormatterContext& context)
+		static void Format(const Detail::FunctionProperties& t, FormatterContext& context)
 		{
 			context.RunType(t.Location);
 			context.BufferOut().WriteCharArray(" @ ");

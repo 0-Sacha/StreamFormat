@@ -24,7 +24,7 @@ namespace EngineCore::FMT {
 	struct FormatterType<FCIndexArgs<T, FormatterContext>, FormatterContext>
 	{
 		template<typename Char>
-		inline static void Write(const FCIndexArgs<T, FormatterContext>& t, FormatterContext& context) {
+		inline static void Format(const FCIndexArgs<T, FormatterContext>& t, FormatterContext& context) {
 			context.RunType(t.GetValue());
 		}
 	};

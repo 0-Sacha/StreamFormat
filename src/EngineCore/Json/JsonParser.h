@@ -39,7 +39,7 @@ namespace EngineCore::JSON::Detail
 
     public:
         template <typename T>
-        void Load(T& t);
+        void Parse(T& t);
  
         struct StructIntermediate;
         struct ArrayIntermediate;
@@ -57,10 +57,10 @@ namespace EngineCore::JSON::Detail
         void Parse(Detail::JsonParser& parser);
 
         template<typename T>
-        void Load(T& t)
+        void Parse(T& t)
         {
             JsonParser parser;
-            parser.Load(t);
+            parser.Parse(t);
         }
     };
 
@@ -76,11 +76,11 @@ namespace EngineCore::JSON::Detail
 
     public:
         template<typename T>
-        void Load(const std::string& name, T& t)
+        void Parse(const std::string& name, T& t)
         {
             if (Objects.contains(name) == false)
                 throw JsonGivenTypeError{};
-            Objects[name].Load(t);
+            Objects[name].Parse(t);
         }
     };
 
@@ -96,11 +96,11 @@ namespace EngineCore::JSON::Detail
 
     public:
         template<typename T>
-        void Load(const std::size_t idx, T& t)
+        void Parse(const std::size_t idx, T& t)
         {
             if (idx >= Objects.size())
                 throw JsonGivenTypeError{};
-			Objects[idx].Load(t);
+			Objects[idx].Parse(t);
         }
     };
 

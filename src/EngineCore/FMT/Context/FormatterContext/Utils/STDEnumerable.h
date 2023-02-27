@@ -53,7 +53,7 @@ namespace EngineCore::FMT {
 
 	template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatterContext>
 	struct FormatterType<STDEnumerable<T, CharBegin, CharJoin, CharEnd>, FormatterContext> {
-		static void Write(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterContext& context) {
+		static void Format(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterContext& context) {
 			context.PrintIndent(enumerable.GetStrBegin());
 			context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
 
@@ -80,7 +80,7 @@ namespace EngineCore::FMT {
 
 	template <typename T, typename FormatterContext>
 	struct FormatterType<ForwardAsSTDEnumerable<T>, FormatterContext> {
-		static void Write(const T& container, FormatterContext& context) {
+		static void Format(const T& container, FormatterContext& context) {
 			STDEnumerable<T> enumerable(container,
 				context.GetFormatData().GetSpecifierAsText("join",		STDEnumerableUtility::DefaultJoin),
 				context.GetFormatData().GetSpecifierAsText("begin",		STDEnumerableUtility::DefaultBegin),

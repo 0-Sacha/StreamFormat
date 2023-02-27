@@ -38,7 +38,7 @@ namespace EngineCore::FMT {
 	template<typename ...T, typename FormatterContext>
 	struct FormatterType<std::tuple<T...>, FormatterContext>
 	{
-		static void Write(const std::tuple<T...>& t, FormatterContext& context) {
+		static void Format(const std::tuple<T...>& t, FormatterContext& context) {
 			context.BufferOut().PushBack('<');
 			std::apply([&context](auto&&... args) { TupleDetail::TupleFormatRec(context, args...); }, t);
 			context.BufferOut().PushBack('>');
@@ -50,7 +50,7 @@ namespace EngineCore::FMT {
 	template<typename T1, typename T2, typename FormatterContext>
 	struct FormatterType<std::pair<T1, T2>, FormatterContext>
 	{
-		static void Write(const std::pair<T1, T2>& t, FormatterContext& context) {
+		static void Format(const std::pair<T1, T2>& t, FormatterContext& context) {
 			context.BufferOut().PushBack('<');
 			context.WriteType(t.first);
 			context.BufferOut().PushBack(':');

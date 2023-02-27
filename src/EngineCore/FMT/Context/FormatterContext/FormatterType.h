@@ -8,7 +8,7 @@ namespace EngineCore::FMT {
 
 	template<typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
 	struct FormatterType {
-		static inline void Write(const T& t, FormatterContext& context) {
+		static inline void Format(const T& t, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {}{C})", typeid(T).name());
 #ifndef ENGINECORE_COMPILER_VS
 			throw Detail::FMTShouldNotEndHere{};
@@ -20,14 +20,14 @@ namespace EngineCore::FMT {
 #define ENGINECORE_INTERNAL_ADDVALUE(x) value.x
 #define ENGINECORE_AUTO_FORMATTER_X(Type, fmt, ...)	template<typename FormatterContext>\
 													struct EngineCore::FMT::FormatterType<Type, FormatterContext> {\
-														static void Write(const Type& value, FormatterContext& context) {\
+														static void Format(const Type& value, FormatterContext& context) {\
 															context.SubContext(fmt, FOR_EACH(ENGINECORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
 														}\
 													};
 
 #define ENGINECORE_AUTO_FORMATTER(Type, fmt, ...)	template<typename FormatterContext>\
 													struct EngineCore::FMT::FormatterType<Type, FormatterContext> {\
-														static void Write(const Type& value, FormatterContext& context) {\
+														static void Format(const Type& value, FormatterContext& context) {\
 															context.SubContext(fmt, __VA_ARGS__);\
 														}\
 													};

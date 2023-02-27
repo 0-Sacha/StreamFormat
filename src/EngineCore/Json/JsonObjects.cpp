@@ -7,55 +7,55 @@ namespace EngineCore::JSON
 {
 	void JsonStringObject::Parse(Detail::JsonParser& parser)
 	{
-		JsonSerializer<JsonStringObject>::Load(*this, parser);
+		JsonSerializer<JsonStringObject>::Parse(*this, parser);
 	}
 	void JsonStringObject::Format(Detail::JsonFormatter& formatter) const
 	{
-		JsonSerializer<JsonStringObject>::Dump(*this, formatter);
+		JsonSerializer<JsonStringObject>::Format(*this, formatter);
 	}
 
 	void JsonNumberObject::Parse(Detail::JsonParser& parser)
 	{
-		JsonSerializer<JsonNumberObject>::Load(*this, parser);
+		JsonSerializer<JsonNumberObject>::Parse(*this, parser);
 	}
 	void JsonNumberObject::Format(Detail::JsonFormatter& formatter) const
 	{
-		JsonSerializer<JsonNumberObject>::Dump(*this, formatter);
+		JsonSerializer<JsonNumberObject>::Format(*this, formatter);
 	}
 
 	void JsonBooleanObject::Parse(Detail::JsonParser& parser)
 	{
-		JsonSerializer<JsonBooleanObject>::Load(*this, parser);
+		JsonSerializer<JsonBooleanObject>::Parse(*this, parser);
 	}
 	void JsonBooleanObject::Format(Detail::JsonFormatter& formatter) const
 	{
-		JsonSerializer<JsonBooleanObject>::Dump(*this, formatter);
+		JsonSerializer<JsonBooleanObject>::Format(*this, formatter);
 	}
 
 	void JsonStructObject::Parse(Detail::JsonParser& parser)
 	{
-		JsonSerializer<JsonStructObject>::Load(*this, parser);
+		JsonSerializer<JsonStructObject>::Parse(*this, parser);
 	}
 	void JsonStructObject::Format(Detail::JsonFormatter& formatter) const
 	{
-		JsonSerializer<JsonStructObject>::Dump(*this, formatter);
+		JsonSerializer<JsonStructObject>::Format(*this, formatter);
 	}
 
 	void JsonArrayObject::Parse(Detail::JsonParser& parser)
 	{
-		JsonSerializer<JsonArrayObject>::Load(*this, parser);
+		JsonSerializer<JsonArrayObject>::Parse(*this, parser);
 	}
 	void JsonArrayObject::Format(Detail::JsonFormatter& formatter) const
 	{
-		JsonSerializer<JsonArrayObject>::Dump(*this, formatter);
+		JsonSerializer<JsonArrayObject>::Format(*this, formatter);
 	}
 
 	void JsonNullObject::Parse(Detail::JsonParser& parser)
 	{
-		JsonSerializer<JsonNullObject>::Load(*this, parser);
+		JsonSerializer<JsonNullObject>::Parse(*this, parser);
 	}
 	void JsonNullObject::Format(Detail::JsonFormatter& formatter) const
 	{
-		JsonSerializer<JsonNullObject>::Dump(*this, formatter);
+		JsonSerializer<JsonNullObject>::Format(*this, formatter);
 	}
 }

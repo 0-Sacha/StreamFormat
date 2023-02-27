@@ -11,15 +11,15 @@
 namespace EngineCore::JSON::Detail
 {
     template <typename T>
-    void JsonFormatter::Dump(const T& t)
+    void JsonFormatter::Format(const T& t)
     {
-        JsonSerializer<T>::Dump(t, *this);
+        JsonSerializer<T>::Format(t, *this);
     }
 
     template <typename T>
-    void JsonParser::Load(T& t)
+    void JsonParser::Parse(T& t)
     {
-        JsonSerializer<T>::Load(t, *this);
+        JsonSerializer<T>::Parse(t, *this);
     }
 }
 
@@ -28,7 +28,7 @@ namespace EngineCore::JSON
     template<typename T>
 	struct JsonSerializer
     {
-		static inline void Load(T& t, Detail::JsonParser& parser)
+		static inline void Parse(T& t, Detail::JsonParser& parser)
         {
 #ifndef ENGINECORE_COMPILER_VS
             throw JsonTypeSerializerNotImpl{};
@@ -37,7 +37,7 @@ namespace EngineCore::JSON
 #endif
         }
 
-		static inline void Dump(const T& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const T& t, Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().WriteCharArray("Unkown JsonFormatter for type : ");
             formatter.BufferOut().WriteCharPtr(typeid(T).name());
@@ -173,7 +173,7 @@ namespace EngineCore::JSON
         {
             LoadAllSubObjects<T>(t, parser, [](T& t, std::size_t idx, std::string&& name, Detail::JsonParser& parser){
                 typename JsonSerializer<T>::StructSubObjectType subObject;
-                parser.Load(subObject);
+                parser.Parse(subObject);
                 JsonSerializer<T>::AddStructSubObject(t, idx, std::move(name), std::move(subObject));
             });
         }
@@ -199,7 +199,7 @@ namespace EngineCore::JSON
             JsonStringSerializer::DumpSTDString(name, formatter);
             formatter.BufferOut().PushBack(':');
             formatter.BufferOut().PushBack(' ');
-            formatter.Dump(subObject);
+            formatter.Format(subObject);
             formatter.EndNewObject();
         }
     };
@@ -232,7 +232,7 @@ namespace EngineCore::JSON
         {
             LoadAllSubObjects<T>(t, parser, [](T& t, std::size_t idx, Detail::JsonParser& parser){
                 typename JsonSerializer<T>::ArraySubObjectType subObject;
-                parser.Load(subObject);
+                parser.Parse(subObject);
                 JsonSerializer<T>::AddArraySubObject(t, idx, std::move(subObject));
             });
         }
@@ -255,7 +255,7 @@ namespace EngineCore::JSON
 
             formatter.BeginNewObject();
             formatter.NewLine();
-            formatter.Dump(subObject);
+            formatter.Format(subObject);
             formatter.EndNewObject();
         }
     };
@@ -294,11 +294,11 @@ namespace EngineCore::FMT
 {
 	template<typename T, typename FormatterContext>
 	struct FormatterType<JSON::FormatAsJson<T>, FormatterContext> {
-		static void Write(const JSON::FormatAsJson<T>& json, FormatterContext& context)
+		static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
 		{
             JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferManager());
 			jsonFormatter.BufferOut().ReloadBuffer(context.BufferOut());
-            JSON::JsonSerializer<T>::Dump(json.Value, jsonFormatter);
+            JSON::JsonSerializer<T>::Format(json.Value, jsonFormatter);
 			context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());
 		}
 	};
