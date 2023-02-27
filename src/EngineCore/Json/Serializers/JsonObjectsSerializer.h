@@ -51,12 +51,12 @@ namespace EngineCore::JSON
         static inline void Parse(JsonStringObject& t, Detail::JsonParser& parser)
         {
             t.String.clear();
-            JsonStringSerializer::LoadSTDString(t.String, parser);
+            JsonStringSerializer::ParseSTDString(t.String, parser);
         }
 
 		static inline void Format(const JsonStringObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonStringSerializer::DumpSTDString(t.String, formatter);
+            JsonStringSerializer::FormatSTDString(t.String, formatter);
         }
     };
 
@@ -65,12 +65,12 @@ namespace EngineCore::JSON
     {
         static inline void Parse(JsonNumberObject& t, Detail::JsonParser& parser)
         {
-            JsonNumberSerializer::LoadFloat(t.Number, parser);
+            JsonNumberSerializer::ParseFloat(t.Number, parser);
         }
 
 		static inline void Format(const JsonNumberObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonNumberSerializer::DumpFloat(t.Number, formatter);
+            JsonNumberSerializer::FormatFloat(t.Number, formatter);
         }
     };
 
@@ -79,12 +79,12 @@ namespace EngineCore::JSON
     {
         static inline void Parse(JsonBooleanObject& t, Detail::JsonParser& parser)
         {
-            JsonBooleanSerializer::LoadBool(t.Boolean, parser);
+            JsonBooleanSerializer::ParseBool(t.Boolean, parser);
         }
 
 		static inline void Format(const JsonBooleanObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonBooleanSerializer::DumpBool(t.Boolean, formatter);
+            JsonBooleanSerializer::FormatBool(t.Boolean, formatter);
         }
     };
 
@@ -93,12 +93,12 @@ namespace EngineCore::JSON
     {
         static inline void Parse(JsonNullObject& t, Detail::JsonParser& parser)
         {
-            JsonNullSerializer::LoadNull(parser);
+            JsonNullSerializer::ParseNull(parser);
         }
 
 		static inline void Format(const JsonNullObject& t, Detail::JsonFormatter& formatter)
         {
-            JsonNullSerializer::DumpNull(formatter);
+            JsonNullSerializer::FormatNull(formatter);
         }
     };
 

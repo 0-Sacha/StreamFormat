@@ -269,8 +269,7 @@ template<typename FormatterContext>
 		Context.Format().IsEqualToForward(':');
 		Context.Format().IgnoreAllSpaces();
 		TextProperties::TextStyle::UnderlineColor::ColorCube color;
-		if (GetColorCodeAuto(color))
-			return color;
+		if (GetColorCodeAuto(color)) return color;
 		// TODO : handle Color24b
 		return BaseContextProperties->Style.UnderlineColor.Data.ColorCube;
 	}

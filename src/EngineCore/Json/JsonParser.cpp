@@ -28,12 +28,12 @@ namespace EngineCore::JSON::Detail
         else if (parser.IsJsonNumberBegin())
         {
             float k;
-            JsonNumberSerializer::LoadFloat(k, parser);
+            JsonNumberSerializer::ParseFloat(k, parser);
         }
         else if (parser.IsJsonBooleanBegin())
         {
             bool k;
-            JsonBooleanSerializer::LoadBool(k, parser);
+            JsonBooleanSerializer::ParseBool(k, parser);
         }
         else if (parser.IsJsonStructBegin())
         {
@@ -51,7 +51,7 @@ namespace EngineCore::JSON::Detail
         }
         else if (parser.IsJsonNullBegin())
         {
-            JsonNullSerializer::LoadNull(parser);
+            JsonNullSerializer::ParseNull(parser);
         }
         
         const char* end = parser.BufferIn().GetBufferCurrentPos();

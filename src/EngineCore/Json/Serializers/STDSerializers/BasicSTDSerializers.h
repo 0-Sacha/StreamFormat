@@ -10,10 +10,10 @@ namespace EngineCore::JSON
 	struct JsonSerializer<std::string>
     {
         static inline void Parse(std::string& t, Detail::JsonParser& parser) {
-            JsonStringSerializer::LoadSTDString(t, parser);
+            JsonStringSerializer::ParseSTDString(t, parser);
         }
 		static inline void Format(const std::string& t, Detail::JsonFormatter& formatter) {
-            JsonStringSerializer::DumpSTDString(t, formatter);
+            JsonStringSerializer::FormatSTDString(t, formatter);
         }
     };
 }

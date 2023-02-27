@@ -4,9 +4,9 @@
 #include "BasicFormatterContextCoreImpl.h"
 #include "BasicFormatterContextParseImpl.h"
 
-#include "Detail/Buffer/BufferManager/DynamicBufferManager.h"
-#include "Detail/Buffer/BufferManager/GivenBufferManager.h"
-#include "Detail/Buffer/BufferManager/StaticBufferManager.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferManager/DynamicBufferManager.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferManager/GivenBufferManager.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferManager/StaticBufferManager.h"
 
 namespace EngineCore::FMT {
 

@@ -17,7 +17,7 @@ namespace EngineCore::FMT
         using BufferOutType = Detail::BasicBufferOut<CharBuffer>;
 
     public:
-        static void ParseEscapedQuotedString(BufferInType& buffer, BufferOutType& dataOut)
+        static void ParseEscapedQuotedString(BufferInType& buffer, BufferOutType& stringOut)
         {
             buffer.Skip('"');
             while(buffer.IsEnd() == false)
@@ -25,7 +25,7 @@ namespace EngineCore::FMT
                 const CharBuffer* beginString = buffer.GetBufferCurrentPos();
                 buffer.GoTo('"', '\\');
                 const CharBuffer* endString = buffer.GetBufferCurrentPos();
-                dataOut.Append(beginString, endString);
+                stringOut.Append(beginString, endString);
 
                 if (buffer.IsEqualTo('"'))
                     break;
@@ -34,30 +34,30 @@ namespace EngineCore::FMT
                 switch (buffer.Get())
                 {
                     // TODO : Do all others escape char
-                    case '"': dataOut.PushBack('"'); break;
-                    case 't': dataOut.PushBack('\t'); break;
-                    case 'r': dataOut.PushBack('\r'); break;
-                    case 'n': dataOut.PushBack('\n'); break;
+                    case '"': stringOut.PushBack('"'); break;
+                    case 't': stringOut.PushBack('\t'); break;
+                    case 'r': stringOut.PushBack('\r'); break;
+                    case 'n': stringOut.PushBack('\n'); break;
                     default: break;
                 }
             }
             buffer.Skip('"');
         }
 
-        static void WriteEscapedQuotedString(BufferOutType& buffer, BufferInType& dataIn)
+        static void FormatEscapedQuotedString(BufferOutType& buffer, BufferInType& stringIn)
         {
             buffer.PushBack('"');
-            while(dataIn.IsEnd() == false)
+            while(stringIn.IsEnd() == false)
             {
-                const CharBuffer* beginString = dataIn.GetBufferCurrentPos();
-                dataIn.GoTo('\\');
-                const CharBuffer* endString = dataIn.GetBufferCurrentPos();
+                const CharBuffer* beginString = stringIn.GetBufferCurrentPos();
+                stringIn.GoTo('\\');
+                const CharBuffer* endString = stringIn.GetBufferCurrentPos();
                 buffer.Append(beginString, endString);
 
-                if (dataIn.IsEnd()) break;
+                if (stringIn.IsEnd()) break;
                 
-                dataIn.Skip('\\');
-                switch (dataIn.Get())
+                stringIn.Skip('\\');
+                switch (stringIn.Get())
                 {
                     // TODO : Do all others escape char
                     case '"': buffer.PushBack('"'); break;
@@ -67,7 +67,6 @@ namespace EngineCore::FMT
                     default: break;
                 }
             }
-
             buffer.PushBack('"');
         }
     };

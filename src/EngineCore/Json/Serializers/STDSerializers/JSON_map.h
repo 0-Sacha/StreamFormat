@@ -20,11 +20,11 @@ namespace EngineCore::JSON
         }
 
 		static inline void Format(const std::map<K, T>& t, Detail::JsonFormatter& formatter) {
-            JsonStructSerializer::DumpBegin(formatter);
+            JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
-                JsonStructSerializer::DumpObject(name, object, idx++, formatter);
-            JsonStructSerializer::DumpEnd(formatter);
+                JsonStructSerializer::FormatObject(name, object, idx++, formatter);
+            JsonStructSerializer::FormatEnd(formatter);
         }
     };
 
@@ -42,11 +42,11 @@ namespace EngineCore::JSON
         }
 
 		static inline void Format(const std::multimap<K, T>& t, Detail::JsonFormatter& formatter) {
-            JsonStructSerializer::DumpBegin(formatter);
+            JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
-                JsonStructSerializer::DumpObject(name, object, idx++, formatter);
-            JsonStructSerializer::DumpEnd(formatter);
+                JsonStructSerializer::FormatObject(name, object, idx++, formatter);
+            JsonStructSerializer::FormatEnd(formatter);
         }
     };
 }

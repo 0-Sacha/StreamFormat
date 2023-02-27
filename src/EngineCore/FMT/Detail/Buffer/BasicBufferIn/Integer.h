@@ -48,7 +48,7 @@ namespace EngineCore::FMT::Detail {
 		{
 			if (floatPrecision == 0 || floatPrecision.IsDefault())
 			{
-				i = iInt;
+				i = static_cast<T>(iInt);
 				return;
 			}
 			throw Detail::FMTParseError{};

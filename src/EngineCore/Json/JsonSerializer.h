@@ -50,7 +50,7 @@ namespace EngineCore::JSON
 
 	struct JsonStringSerializer
     {
-        static inline void LoadSTDString(std::string& t, Detail::JsonParser& parser)
+        static inline void ParseSTDString(std::string& t, Detail::JsonParser& parser)
         {
             EngineCore::FMT::Detail::DynamicBufferManager<char> bufferData;
             EngineCore::FMT::Detail::BasicBufferOut<char> buffer(bufferData);
@@ -58,23 +58,23 @@ namespace EngineCore::JSON
             t = bufferData.GetLastGeneratedString();
         }
 
-		static inline void DumpSTDString(const std::string& t, Detail::JsonFormatter& formatter)
+		static inline void FormatSTDString(const std::string& t, Detail::JsonFormatter& formatter)
         {
             EngineCore::FMT::Detail::BasicBufferIn<char> buffer(t.data(), t.size());
-            EngineCore::FMT::BufferUtils<char>::WriteEscapedQuotedString(formatter.BufferOut(), buffer);
+            EngineCore::FMT::BufferUtils<char>::FormatEscapedQuotedString(formatter.BufferOut(), buffer);
         }
     };
 
 	struct JsonNumberSerializer
     {
         template <typename FloatType>
-        static inline void LoadFloat(FloatType& t, Detail::JsonParser& parser)
+        static inline void ParseFloat(FloatType& t, Detail::JsonParser& parser)
         {
             parser.BufferIn().FastReadFloat<FloatType>(t);
         }
 
         template <typename IntType>
-        static inline void LoadInt(IntType& t, Detail::JsonParser& parser)
+        static inline void ParseInt(IntType& t, Detail::JsonParser& parser)
         {
             const char* begin = parser.BufferIn().GetBufferCurrentPos();
             float tmp = 0;
@@ -88,7 +88,7 @@ namespace EngineCore::JSON
         }
 
         template <typename UIntType>
-        static inline void LoadUInt(UIntType& t, Detail::JsonParser& parser)
+        static inline void ParseUInt(UIntType& t, Detail::JsonParser& parser)
         {
             const char* begin = parser.BufferIn().GetBufferCurrentPos();
             float tmp = 0;
@@ -102,19 +102,19 @@ namespace EngineCore::JSON
         }
 
         template <typename FloatType>
-		static inline void DumpFloat(const FloatType& t, Detail::JsonFormatter& formatter)
+		static inline void FormatFloat(const FloatType& t, Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().FastWriteFloat(t);
         }
 
         template <typename IntType>
-		static inline void DumpInt(const IntType& t, Detail::JsonFormatter& formatter)
+		static inline void FormatInt(const IntType& t, Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().FastWriteInt(t);
         }
 
         template <typename UIntType>
-		static inline void DumpUInt(const UIntType& t, Detail::JsonFormatter& formatter)
+		static inline void FormatUInt(const UIntType& t, Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().FastWriteUInt(t);
         }
@@ -122,7 +122,7 @@ namespace EngineCore::JSON
 
 	struct JsonBooleanSerializer
     {
-        static inline void LoadBool(bool& t, Detail::JsonParser& parser)
+        static inline void ParseBool(bool& t, Detail::JsonParser& parser)
         {
             if (parser.BufferIn().IsSameSeqForward('t', 'r', 'u', 'e'))
                 t = true;
@@ -130,7 +130,7 @@ namespace EngineCore::JSON
                 t  = false;
         }
 
-		static inline void DumpBool(const bool& t, Detail::JsonFormatter& formatter)
+		static inline void FormatBool(const bool& t, Detail::JsonFormatter& formatter)
         {
             if (t)
                 formatter.BufferOut().PushBackSeq('t', 'r', 'u', 'e');
@@ -153,7 +153,7 @@ namespace EngineCore::JSON
                 if (parser.BufferIn().IsEqualTo('}')) break;
 
                 std::string name;
-                JsonStringSerializer::LoadSTDString(name, parser);
+                JsonStringSerializer::ParseSTDString(name, parser);
                 
                 parser.BufferIn().IgnoreAllBlanks();
                 parser.BufferIn().Skip(':');
@@ -178,25 +178,25 @@ namespace EngineCore::JSON
             });
         }
 
-		static inline void DumpBegin(Detail::JsonFormatter& formatter)
+		static inline void FormatBegin(Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().PushBack('{');
         }
 
-        static inline void DumpEnd(Detail::JsonFormatter& formatter)
+        static inline void FormatEnd(Detail::JsonFormatter& formatter)
         {
             formatter.NewLine();
             formatter.BufferOut().PushBack('}');
         }
 
         template <typename SubObject>
-        static inline void DumpObject(const std::string& name, const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
+        static inline void FormatObject(const std::string& name, const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
             if (idx != 0) formatter.BufferOut().PushBack(',');
 
             formatter.BeginNewObject();
             formatter.NewLine();
-            JsonStringSerializer::DumpSTDString(name, formatter);
+            JsonStringSerializer::FormatSTDString(name, formatter);
             formatter.BufferOut().PushBack(':');
             formatter.BufferOut().PushBack(' ');
             formatter.Format(subObject);
@@ -237,19 +237,19 @@ namespace EngineCore::JSON
             });
         }
 
-		static inline void DumpBegin(Detail::JsonFormatter& formatter)
+		static inline void FormatBegin(Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().PushBack('[');
         }
 
-        static inline void DumpEnd(Detail::JsonFormatter& formatter)
+        static inline void FormatEnd(Detail::JsonFormatter& formatter)
         {
             formatter.NewLine();
 		    formatter.BufferOut().PushBack(']');
         }
 
         template <typename SubObject>
-        static inline void DumpObject(const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
+        static inline void FormatObject(const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
             if (idx != 0) formatter.BufferOut().PushBack(',');
 
@@ -262,12 +262,12 @@ namespace EngineCore::JSON
 
 	struct JsonNullSerializer
     {
-        static inline void LoadNull(Detail::JsonParser& parser)
+        static inline void ParseNull(Detail::JsonParser& parser)
         {
             parser.BufferIn().IsSameSeqForwardThrow('n', 'u', 'l', 'l');
         }
 
-		static inline void DumpNull(Detail::JsonFormatter& formatter)
+		static inline void FormatNull(Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().PushBackSeq('n', 'u', 'l', 'l');
         }

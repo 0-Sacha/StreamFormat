@@ -20,11 +20,11 @@ namespace EngineCore::JSON
         }
 
 		static inline void Format(const std::vector<T>& t, Detail::JsonFormatter& formatter) {
-            JsonArraySerializer::DumpBegin(formatter);
+            JsonArraySerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const ArraySubObjectType& subObject : t) 
-                JsonArraySerializer::DumpObject(subObject, idx++, formatter);
-            JsonArraySerializer::DumpEnd(formatter);
+                JsonArraySerializer::FormatObject(subObject, idx++, formatter);
+            JsonArraySerializer::FormatEnd(formatter);
         }
     };
 }

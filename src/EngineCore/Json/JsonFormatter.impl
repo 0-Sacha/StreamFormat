@@ -8,18 +8,18 @@ namespace EngineCore::JSON::Detail
         : Formatter(formatter)
         , Idx(0)
     {
-        JsonStructSerializer::DumpBegin(Formatter);
+        JsonStructSerializer::FormatBegin(Formatter);
     }
 
     inline JsonFormatter::StructIntermediate::~StructIntermediate()
     {
-        JsonStructSerializer::DumpEnd(Formatter);
+        JsonStructSerializer::FormatEnd(Formatter);
     }
 
     template<typename T>
     inline void JsonFormatter::StructIntermediate::Format(const std::string& name, const T& t)
     {
-        JsonStructSerializer::DumpObject(name, t, Idx++, Formatter);
+        JsonStructSerializer::FormatObject(name, t, Idx++, Formatter);
     }
 
 
@@ -27,17 +27,17 @@ namespace EngineCore::JSON::Detail
         : Formatter(formatter)
         , Idx(0)
     {
-        JsonArraySerializer::DumpBegin(Formatter);
+        JsonArraySerializer::FormatBegin(Formatter);
     }
 
     inline JsonFormatter::ArrayIntermediate::~ArrayIntermediate()
     {
-        JsonArraySerializer::DumpEnd(Formatter);
+        JsonArraySerializer::FormatEnd(Formatter);
     }
 
     template<typename T>
     inline void JsonFormatter::ArrayIntermediate::Format(const T& t)
     {
-        JsonArraySerializer::DumpObject(t, Idx++, Formatter);
+        JsonArraySerializer::FormatObject(t, Idx++, Formatter);
     }
 }
