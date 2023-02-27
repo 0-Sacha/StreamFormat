@@ -3,7 +3,7 @@
 #include "EngineCore/FMT/Context/FormatterContext/BasicFormatterContext.h"
 #include "EngineCore/FMT/Detail/Forwarders.h"
 
-namespace EngineCore::FMT::Detail
+namespace EngineCore::FMT
 {
     // Int Forwarders
     template<typename T, typename FormatterContext>

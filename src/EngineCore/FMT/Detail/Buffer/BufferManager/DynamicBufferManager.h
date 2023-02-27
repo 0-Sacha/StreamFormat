@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <iostream>
+#include <cstring>
 
 namespace EngineCore::FMT::Detail {
 

@@ -21,13 +21,14 @@ namespace EngineCore::FMT::Detail {
 	};
 
 	template <typename Char>
-	struct GetIndentInfo {
-		inline GetIndentInfo()
+	struct IndentInfo
+	{
+		inline IndentInfo()
 			: Restore(true)
 			, AddIndent(0)
 		{}
 
-		inline explicit GetIndentInfo(const std::basic_string_view<Char>& txt)
+		inline explicit IndentInfo(const std::basic_string_view<Char>& txt)
 			: Restore(false)
 			, AddIndent(txt.size())
 		{
@@ -46,38 +47,41 @@ namespace EngineCore::FMT::Detail {
 	};
 
 	template <typename FormatterContext>
-	struct RestoreIndentFunction {
+	class RestoreIndentFunction
+	{
 		inline explicit RestoreIndentFunction(FormatterContext& context)
-			: Context(context)
-			, OldIndent(context.GetIndent())
-			, GetIndentInfo()
-			, AddIndentEnd(false)
+			: m_Context(context)
+			, m_OldIndent(context.GetIndent())
+			, m_IndentInfo()
+			, m_AddIndentEnd(false)
 		{}
 
 		template <typename Char>
 		inline RestoreIndentFunction(FormatterContext& context, const std::basic_string_view<Char>& txt, bool addIndentEnd = true)
-			: Context(context)
-			, OldIndent(context.BufferOut().GetIndent())
-			, GetIndentInfo(txt)
-			, AddIndentEnd(addIndentEnd)
+			: m_Context(context)
+			, m_OldIndent(context.BufferOut().GetIndent())
+			, m_IndentInfo(txt)
+			, m_AddIndentEnd(addIndentEnd)
 		{}
 
 		~RestoreIndentFunction() {
-			if (GetIndentInfo.Restore)
-				Context.BufferOut().SetIndent(OldIndent);
-			if (AddIndentEnd)
-				Context.BufferOut().AddIndent(GetIndentInfo.AddIndent);
+			if (m_IndentInfo.Restore)
+				m_Context.BufferOut().SetIndent(m_OldIndent);
+			if (m_AddIndentEnd)
+				m_Context.BufferOut().AddIndent(m_IndentInfo.AddIndent);
 		}
 
-		FormatterContext&											Context;
-		std::size_t 											OldIndent;
-		GetIndentInfo<typename FormatterContext::CharFormatType> 	GetIndentInfo;
-		bool 													AddIndentEnd;
+	private:
+		FormatterContext&										m_Context;
+		std::size_t 											m_OldIndent;
+		IndentInfo<typename FormatterContext::CharFormatType> 	m_IndentInfo;
+		bool 													m_AddIndentEnd;
 	};
 
 	template <typename FormatterContext>
-	struct GetIndentFunction {
-		inline explicit GetIndentFunction(FormatterContext& context)
+	struct IndentFunctionData
+	{
+		inline explicit IndentFunctionData(FormatterContext& context)
 			: Context(context)
 			, OldNoStride(context.BufferOut().GetNoStride())
 			, OldBufferSize(context.BufferOut().GetBufferCurrentSize())
@@ -89,20 +93,22 @@ namespace EngineCore::FMT::Detail {
 		}
 
 		FormatterContext&	Context;
-		std::size_t 	OldNoStride;
-		std::size_t 	OldBufferSize;
+		std::size_t 		OldNoStride;
+		std::size_t 		OldBufferSize;
 	};
 	
 	template <typename FormatterContext>
-	struct IndentFunction {
+	class IndentFunction
+	{
 		explicit inline IndentFunction(FormatterContext& context)
-			: GetIndentFunction(context)
+			: m_IndentFunctionData(context)
 		{}
 
 		~IndentFunction() {
-			GetIndentFunction.Context.AddIndent(GetIndentFunction.GetIndent());
+			m_IndentFunctionData.Context.AddIndent(m_IndentFunctionData.GetIndent());
 		}
 
-		GetIndentFunction<FormatterContext>	GetIndentFunction;
+	private:
+		IndentFunctionData<FormatterContext> 	m_IndentFunctionData;
 	};
 }

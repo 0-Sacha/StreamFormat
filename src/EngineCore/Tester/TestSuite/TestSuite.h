@@ -100,6 +100,12 @@ namespace EngineCore::Tester::Detail
 }
 namespace EngineCore::Tester
 {
+	struct PerformanceTestData
+	{
+		bool Enable = false;
+		std::uint32_t NbSamples = 10;
+	};
+
 	class TestSuitesManager
 	{
 	public:
@@ -108,29 +114,22 @@ namespace EngineCore::Tester
 
 	public:
 		static inline bool Verbose = false;
-
-		struct PerformanceTest
-		{
-			bool Enable = false;
-			std::uint32_t NbSamples = 10;
-		};
-		static inline PerformanceTest PerformanceTest = {};
+		static inline PerformanceTestData PerformanceTest = PerformanceTestData{};
 	};
 }
 namespace EngineCore::Tester::Detail
 {
+	struct TestSuiteData
+	{
+		bool Redirect_stdout = false;
+		bool Redirect_stdin = false;
+		bool Redirect_stderr = false;
+	};
+
 	class TestSuite
 	{
 	public:
-		struct ExtraData
-		{
-			bool Redirect_stdout = false;
-			bool Redirect_stdin = false;
-			bool Redirect_stderr = false;
-		};
-
-	public:
-		TestSuite(std::string&& name, ExtraData extra = {}, TestSuite* parent = nullptr)
+		TestSuite(std::string&& name, TestSuiteData extra = TestSuiteData{}, TestSuite* parent = nullptr)
 			: Name(std::move(name))
 			, Tests()
 			, Extra(extra)
@@ -149,7 +148,7 @@ namespace EngineCore::Tester::Detail
 		std::unordered_map<std::string_view, Test*> Tests;
 		std::unordered_map<std::string_view, TestSuite*> TestSuitesLinked;
 
-		ExtraData Extra;
+		TestSuiteData Extra;
 		LoggerManager::BasicLogger Logger;
 		LoggerManager::BasicLogger TestLogger;
 		Instrumentation::Profiler* Profiler;
@@ -235,7 +234,7 @@ namespace EngineCore::FMT {
 #define ENGINECORE_TESTINTERNAL_SUITE_NAME(TestSuiteName)                 	TestSuite_ ## TestSuiteName
 #define ENGINECORE_TESTINTERNAL_FUNC_NAME(TestSuiteName, TestName)        	TestSuite_ ## TestSuiteName ## TestName
 #define ENGINECORE_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName) 	TestSuite_ ## TestSuiteName ## TestName ## _ExecMethod
-#define ENGINECORE_TESTINTERNAL_SUITE_EXTRA(...)							EngineCore::Tester::Detail::TestSuite::ExtraData{ __VA_ARGS__ }
+#define ENGINECORE_TESTINTERNAL_SUITE_EXTRA(...)							EngineCore::Tester::Detail::TestSuiteData{ __VA_ARGS__ }
 
 //-------------------- TestSuite --------------------//
 #define ECT_TEST_SUITE(TestSuiteName, ...)				EngineCore::Tester::Detail::TestSuite ENGINECORE_TESTINTERNAL_SUITE_NAME(TestSuiteName)(#TestSuiteName, ENGINECORE_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__))

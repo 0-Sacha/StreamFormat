@@ -8,21 +8,6 @@
 #include <string>
 #include <functional>
 
-namespace EngineCore::JSON::Detail
-{
-    template <typename T>
-    void JsonFormatter::Format(const T& t)
-    {
-        JsonSerializer<T>::Format(t, *this);
-    }
-
-    template <typename T>
-    void JsonParser::Parse(T& t)
-    {
-        JsonSerializer<T>::Parse(t, *this);
-    }
-}
-
 namespace EngineCore::JSON
 {
     template<typename T>
@@ -272,6 +257,21 @@ namespace EngineCore::JSON
             formatter.BufferOut().PushBackSeq('n', 'u', 'l', 'l');
         }
     };
+}
+
+namespace EngineCore::JSON::Detail
+{
+    template <typename T>
+    void JsonFormatter::Format(const T& t)
+    {
+        JsonSerializer<T>::Format(t, *this);
+    }
+
+    template <typename T>
+    void JsonParser::Parse(T& t)
+    {
+        JsonSerializer<T>::Parse(t, *this);
+    }
 }
 
 namespace EngineCore::JSON

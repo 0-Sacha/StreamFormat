@@ -33,7 +33,7 @@ namespace EngineCore::FMT::Context {
 	}
 
 	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataBase_ValueIntPrint(const Detail::ValueIntPrint type) {
+	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataBase_ValueIntPrint(const typename Detail::ValueIntPrint type) {
 		m_FormatData.IntPrint = type;
 		if (m_Format.IsEqualToForward('#')) m_FormatData.TrueValue = true;
 		FormatReadParameterThrow(m_FormatData.DigitSize.Value);

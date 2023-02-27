@@ -79,7 +79,7 @@ namespace EngineCore::FMT::Detail {
 		}
 		--shift;
 			
-		if (floatPrecision.IsDefault)
+		if (floatPrecision.IsDefault())
 		{
 			while (IsADigit() && IsEnd() == false) {
 				dec += (GetAndForward() - '0') * decIdx;

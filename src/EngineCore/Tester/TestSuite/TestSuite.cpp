@@ -1,5 +1,3 @@
-#pragma once
-
 #include "TestSuite.h"
 #include "EngineCore/Instrumentation/ProfilerManger/ProfilerManger.h"
 

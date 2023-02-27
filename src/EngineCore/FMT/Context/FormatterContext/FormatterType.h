@@ -4,10 +4,11 @@
 #include "EngineCore/Tools/MapMacro.h"
 
 #define ENGINECORE_FORMATTER_DECLARED
-namespace EngineCore::FMT {
-
+namespace EngineCore::FMT
+{
 	template<typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
-	struct FormatterType {
+	struct FormatterType
+	{
 		static inline void Format(const T& t, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {}{C})", typeid(T).name());
 #ifndef ENGINECORE_COMPILER_VS
