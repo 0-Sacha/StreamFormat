@@ -23,6 +23,7 @@ namespace EngineCore::FMT::Detail
 		using Base::GetBufferEnd;
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
+		using Base::GetBufferRemainingSize;
 		using Base::SetBufferCurrentPos;
 
 		using Base::ReloadBuffer;
@@ -44,6 +45,7 @@ namespace EngineCore::FMT::Detail
 		using Base::Backward;
 		using Base::BackwardNoCheck;
 		using Base::BackwardNoThrow;
+		using Base::Reserve;
 
 		using Base::Get;
 		using Base::GetAndForward;
@@ -127,11 +129,12 @@ namespace EngineCore::FMT::Detail
 		using Base::IgnoreAllSpaces;
 
 	public:
-        explicit FMTBufferIn()                                                                : Base() {}
-		template <std::size_t SIZE>
-		explicit FMTBufferIn(const CharBuffer (&format)[SIZE])                                : Base(format, SIZE) {}
-		explicit FMTBufferIn(const std::basic_string_view<CharBuffer>& format)                : Base(format.data(), format.size()) {}
- 		explicit FMTBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)    : Base(buffer, bufferSize) {}
+        FMTBufferIn() 													: Base() {}
+        FMTBufferIn(const BufferInProperties<CharBuffer>& properties) 	: Base(properties) {}
+
+		FMTBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)
+            : Base(buffer, bufferSize)
+        {}
 
 	public:
         template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});

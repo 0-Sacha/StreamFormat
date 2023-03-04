@@ -5,7 +5,7 @@
 namespace EngineCore::FMT::Detail {
 
     template <typename CharType>
-    class BasicBufferManager
+    class BasicBufferOutManager
     {
 	protected:
 		virtual void BeginContextImpl() {}

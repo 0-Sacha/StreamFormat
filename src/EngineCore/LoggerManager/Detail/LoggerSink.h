@@ -37,7 +37,7 @@ class BasicLoggerSink
         NameType Name = "";
         PatternType Pattern = "{name} >> {data}";
         SeverityValueType SinkSeverity{SeverityValueType::DefaultSeverity};
-        Severity::PatternOverride SeverityPatternOverride;
+        typename Severity::PatternOverride SeverityPatternOverride;
         AsyncSink IsAsync;
     
     protected:

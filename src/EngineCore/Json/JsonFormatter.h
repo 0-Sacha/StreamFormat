@@ -11,8 +11,8 @@ namespace EngineCore::JSON::Detail
         using JsonBufferOut = EngineCore::FMT::Detail::BasicBufferOut<char>;
 
     public:
-        JsonFormatter(EngineCore::FMT::Detail::BasicBufferManager<char>& bufferManager)
-            : m_BufferOut(bufferManager)
+        JsonFormatter(EngineCore::FMT::Detail::BasicBufferOutManager<char>& BufferOutManager)
+            : m_BufferOut(BufferOutManager)
             , m_Indent(0)
             , m_IndentSize(4)
             , m_IndentWithSpaces(true)

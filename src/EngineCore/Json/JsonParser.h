@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineCore/FMT/Detail/Buffer/BasicBufferIn/BasicBufferIn.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferInProperties/BufferInProperties.h"
 
 #include "JsonObjects.h"
 
@@ -9,15 +10,20 @@ namespace EngineCore::JSON::Detail
     class JsonParser
     {
     public:
-        using JsonBufferIn = EngineCore::FMT::Detail::BasicBufferIn<char>;
+        using JsonBufferIn = FMT::Detail::BasicBufferIn<char>;
 
 	public:
-		explicit JsonParser() : m_BufferIn() {}
+		JsonParser()
+            : m_BufferIn()
+        {}
+		
+        JsonParser(const FMT::Detail::BufferInProperties<char>& bufferInProperties)
+            : m_BufferIn(bufferInProperties)
+        {}
 
-		template <std::size_t SIZE>
-		explicit JsonParser(const char(&format)[SIZE])                                : m_BufferIn(format, SIZE) {}
-		explicit JsonParser(const std::string_view& format)                           : m_BufferIn(format.data(), format.size()) {}
-		explicit JsonParser(const char* const buffer, const std::size_t bufferSize)   : m_BufferIn(buffer, bufferSize) {}
+		JsonParser(const char* const buffer, const std::size_t bufferSize)
+            : m_BufferIn(buffer, bufferSize)
+        {}
 
     public:
         inline bool IsJsonStringBegin() const		{ return m_BufferIn.IsEqualTo('"'); }

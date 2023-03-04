@@ -55,6 +55,14 @@ namespace EngineCore::FMT {
 			FormatterType<Detail::ForwardAsInt<std::int32_t>, FormatterContext>::Format(t, context);
 		}
 	};
+#ifdef ENGINECORE_COMPILER_VS
+	template<typename FormatterContext>
+	struct FormatterType<long, FormatterContext> {
+		static inline void Format(const long t, FormatterContext& context) {
+			FormatterType<Detail::ForwardAsInt<long>, FormatterContext>::Format(t, context);
+		}
+	};
+#endif
 	template<typename FormatterContext>
 	struct FormatterType<std::int64_t, FormatterContext> {
 		static inline void Format(const std::int64_t t, FormatterContext& context) {
@@ -82,6 +90,14 @@ namespace EngineCore::FMT {
 			FormatterType<Detail::ForwardAsUInt<std::uint32_t>, FormatterContext>::Format(t, context);
 		}
 	};
+#ifdef ENGINECORE_COMPILER_VS
+	template<typename FormatterContext>
+	struct FormatterType<unsigned long, FormatterContext> {
+		static inline void Format(const unsigned long t, FormatterContext& context) {
+			FormatterType<Detail::ForwardAsInt<unsigned long>, FormatterContext>::Format(t, context);
+		}
+	};
+#endif
 	template<typename FormatterContext>
 	struct FormatterType<std::uint64_t, FormatterContext> {
 		static inline void Format(const std::uint64_t t, FormatterContext& context) {

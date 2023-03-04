@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasicBufferManager.h"
+#include "BasicBufferOutManager.h"
 
 #include <memory>
 #include <iostream>
@@ -9,10 +9,10 @@
 namespace EngineCore::FMT::Detail {
 
     template <typename CharType>
-    class DynamicBufferManager : public BasicBufferManager<CharType>
+    class DynamicBufferOutManager : public BasicBufferOutManager<CharType>
     {
     public:
-		DynamicBufferManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE)
+		DynamicBufferOutManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE)
 		{
 			m_Buffer.reset(new CharType[beginSize]);
 			m_BufferSize = beginSize;
@@ -38,10 +38,10 @@ namespace EngineCore::FMT::Detail {
     };
 
 	template <typename CharType>
-    class ShrinkDynamicBufferManager : public DynamicBufferManager<CharType>
+    class ShrinkDynamicBufferOutManager : public DynamicBufferOutManager<CharType>
 	{
 		public:
-			using Base = DynamicBufferManager<CharType>;
+			using Base = DynamicBufferOutManager<CharType>;
 			using Base::DEFAULT_BEGIN_SIZE;
 			using Base::GROW_UP_BUFFER_SIZE;
 			using Base::DEBUG_RESIZE;
@@ -60,12 +60,12 @@ namespace EngineCore::FMT::Detail {
 			static constexpr float MEAN_CALCFACT_LAST = 1;
 
 		public:
-			ShrinkDynamicBufferManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE)
+			ShrinkDynamicBufferOutManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE)
 				: Base(beginSize)
 				, m_MeanGeneratedSize(beginSize)
 			{}
 			
-			~ShrinkDynamicBufferManager()
+			~ShrinkDynamicBufferOutManager()
 			{}
 
 		protected:
@@ -85,7 +85,7 @@ namespace EngineCore::FMT::Detail {
 	};
 
 	template <typename CharType>
-	bool DynamicBufferManager<CharType>::Resize(const std::size_t targetBufferSize) {
+	bool DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize) {
 		std::size_t newBufferSize = targetBufferSize;
 		
 		if (m_BufferSize < targetBufferSize)

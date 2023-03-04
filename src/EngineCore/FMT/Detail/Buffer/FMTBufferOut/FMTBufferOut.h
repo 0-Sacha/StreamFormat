@@ -12,7 +12,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::m_BufferEnd;
 		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
-		using Base::m_BufferManager;
+		using Base::m_BufferOutManager;
 		
         using Base::UPPER_HEX;
 		using Base::LOWER_HEX;
@@ -26,12 +26,13 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferEnd;
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
+		using Base::GetBufferRemainingSize;
 		using Base::SetBufferCurrentPos;
 
 		using Base::ReloadBuffer;
 		using Base::SetBuffer;
 
-		// using Base::SetBufferManager;
+		// using Base::SetBufferOutManager;
 
 	public:
 		using Base::CanMoveForward;
@@ -50,6 +51,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::Backward;
 		using Base::BackwardNoCheck;
 		using Base::BackwardNoThrow;
+		using Base::Reserve;
 
 		using Base::Get;
 		using Base::GetAndForward;
@@ -62,7 +64,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetPrevNoCheck;
 
 	public:
-		using Base::GetBufferManager;
+		using Base::GetBufferOutManager;
 
 		using Base::FastWriteInt;
 		using Base::FastWriteUInt;
@@ -85,6 +87,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::WriteCharPtr;
 		using Base::Append;
 
+	protected:
 		using Base::GetNumberOfDigitDec;
 
 	private:
@@ -102,8 +105,8 @@ namespace EngineCore::FMT::Detail {
 		void SetIndent() 										{ m_Indent = GetBufferCurrentSize() - GetNoStride(); }
 
 	public:
-		FMTBufferOut(BasicBufferManager<CharBuffer>& bufferManager)
-			: Base(bufferManager)
+		FMTBufferOut(BasicBufferOutManager<CharBuffer>& BufferOutManager)
+			: Base(BufferOutManager)
 			, m_NoStride(0)
 			, m_Indent(0)
 		{}

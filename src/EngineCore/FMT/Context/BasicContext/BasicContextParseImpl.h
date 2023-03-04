@@ -185,23 +185,18 @@ namespace EngineCore::FMT::Context {
 		// VI : { which is a idx to a number
 		if (m_Format.IsEqualToForward('{'))
 		{
-			try {
-				Detail::FormatIndex recIndex = GetFormatIndexThrow();
-				recIndex.SetContext(m_ValuesIndex);
+			Detail::FormatIndex recIndex = GetFormatIndexThrow();
+			recIndex.SetContext(m_ValuesIndex);
 
-				if(recIndex.IsValid())
-				{
-					m_Format.IsEqualToForwardThrow('}');
-					Detail::FormatIndex finalRecIndex = m_ContextArgsInterface->GetFormatIndexAt(recIndex);
-					finalRecIndex.SetContext(m_ValuesIndex);
-					if(finalRecIndex.IsValid())
-						return finalRecIndex;
-				}
-				
-				throw Detail::FMTParseError();
-
-			} catch (const Detail::FMTError&)
-			{}
+			if(recIndex.IsValid())
+			{
+				m_Format.IsEqualToForwardThrow('}');
+				Detail::FormatIndex finalRecIndex = m_ContextArgsInterface->GetFormatIndexAt(recIndex);
+				finalRecIndex.SetContext(m_ValuesIndex);
+				if(finalRecIndex.IsValid())
+					return finalRecIndex;
+			}
+			throw Detail::FMTParseError();
 		}
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 

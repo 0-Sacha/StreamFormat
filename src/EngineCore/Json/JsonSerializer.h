@@ -15,10 +15,10 @@ namespace EngineCore::JSON
     {
 		static inline void Parse(T& t, Detail::JsonParser& parser)
         {
-#ifndef ENGINECORE_COMPILER_VS
-            throw JsonTypeSerializerNotImpl{};
-#else
+#ifdef ENGINECORE_COMPILER_VS
             __debugbreak();
+#else
+            throw JsonTypeSerializerNotImpl{};
 #endif
         }
 
@@ -37,7 +37,7 @@ namespace EngineCore::JSON
     {
         static inline void ParseSTDString(std::string& t, Detail::JsonParser& parser)
         {
-            EngineCore::FMT::Detail::DynamicBufferManager<char> bufferData;
+            EngineCore::FMT::Detail::DynamicBufferOutManager<char> bufferData;
             EngineCore::FMT::Detail::BasicBufferOut<char> buffer(bufferData);
             EngineCore::FMT::BufferUtils<char>::ParseEscapedQuotedString(parser.BufferIn(), buffer);
             t = bufferData.GetLastGeneratedString();
@@ -45,7 +45,8 @@ namespace EngineCore::JSON
 
 		static inline void FormatSTDString(const std::string& t, Detail::JsonFormatter& formatter)
         {
-            EngineCore::FMT::Detail::BasicBufferIn<char> buffer(t.data(), t.size());
+            EngineCore::FMT::Detail::BufferInProperties<char> bufferInProperties(t);
+            EngineCore::FMT::Detail::BasicBufferIn<char> buffer(bufferInProperties);
             EngineCore::FMT::BufferUtils<char>::FormatEscapedQuotedString(formatter.BufferOut(), buffer);
         }
     };
@@ -296,7 +297,7 @@ namespace EngineCore::FMT
 	struct FormatterType<JSON::FormatAsJson<T>, FormatterContext> {
 		static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
 		{
-            JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferManager());
+            JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferOutManager());
 			jsonFormatter.BufferOut().ReloadBuffer(context.BufferOut());
             JSON::JsonSerializer<T>::Format(json.Value, jsonFormatter);
 			context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());

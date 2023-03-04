@@ -35,6 +35,7 @@ namespace EngineCore::FMT::Context {
 		explicit BasicParserContext(const std::basic_string_view<CharBuffer>& buffer);
 
 		~BasicParserContext();
+		void Terminate() override;
 
 	protected:
 		using Base::m_Format;
@@ -70,20 +71,22 @@ namespace EngineCore::FMT::Context {
 		void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }
 
 	public:
-        template<typename CharType, std::size_t SIZE, typename ...NewContextArgs>
-		inline void SubContext(const CharType (&format)[SIZE], NewContextArgs&& ...args)
-		{ SubContextFormat(format, SIZE, std::forward<NewContextArgs>(args)...); }
+        template<typename NewCharFormat, typename ...NewContextArgs>
+        void SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, NewContextArgs&& ...args);
+		
+		template<typename NewCharFormat, std::size_t SIZE, typename ...NewContextArgs>
+		inline void SubContext(const NewCharFormat (&format)[SIZE], NewContextArgs&& ...args)
+		{
+            Detail::BufferInProperties<NewCharFormat> properties(format);
+            return SubContext(properties, std::forward<NewContextArgs>(args)...);
+        }
 
         template<typename NewCharFormat, typename ...NewContextArgs>
-        void SubContext(const std::basic_string_view<NewCharFormat>& format, NewContextArgs&& ...args)
-		{ SubContextFormat(format.data(), format.size(), std::forward<NewContextArgs>(args)...); }
-
-        template<typename NewCharFormat, typename ...NewContextArgs>
-        void SubContext(const std::basic_string<NewCharFormat>& format, NewContextArgs&& ...args)
-		{ SubContextFormat(format.data(), format.size(), std::forward<NewContextArgs>(args)...); }
-
-        template<typename NewCharFormat, typename ...NewContextArgs>
-        void SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, NewContextArgs&& ...args);
+        void SubContext(const NewCharFormat* buffer, std::size_t size, NewContextArgs&& ...args)
+        {
+            Detail::BufferInProperties<NewCharFormat> properties(buffer, size);
+            return SubContext(properties, std::forward<NewContextArgs>(args)...);
+        }
 
 	public:
 		using Base::GetFormatIndexThrow;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineCore/FMT/Detail/Buffer/BasicBuffer.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferInProperties/BufferInProperties.h"
 
 namespace EngineCore::FMT::Detail {
 
@@ -24,6 +25,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferSize;
 		using Base::GetBufferSizeLeft;
         using Base::GetBufferCurrentSize;
+		using Base::GetBufferRemainingSize;
 		using Base::SetBufferCurrentPos;
 
         using Base::ReloadBuffer;
@@ -45,6 +47,7 @@ namespace EngineCore::FMT::Detail {
         using Base::Backward;
         using Base::BackwardNoCheck;
         using Base::BackwardNoThrow;
+		using Base::Reserve;
 
         using Base::Get;
         using Base::GetAndForward;
@@ -57,12 +60,18 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetPrevNoCheck;
 
     public:
-        explicit BasicBufferIn() : Base() {}
+        BasicBufferIn()
+            : Base()
+        {}
 
-		template <std::size_t SIZE>
-		explicit BasicBufferIn(const CharBuffer (&format)[SIZE])                                : Base(format, SIZE) {}
-		explicit BasicBufferIn(const std::basic_string_view<CharBuffer>& format)                : Base(format.data(), format.size()) {}
- 		explicit BasicBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)    : Base(buffer, bufferSize) {}
+		BasicBufferIn(const BufferInProperties<CharBuffer>& properties)
+            : Base(properties.GetBuffer(), properties.GetBufferSize())
+        {}
+
+ 		BasicBufferIn(const CharBuffer* const buffer, const std::size_t bufferSize)
+            : Base(buffer, bufferSize)
+        {}
+
 
     public:
         template<typename T> void FastReadInt	(T& i);

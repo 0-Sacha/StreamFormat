@@ -13,7 +13,7 @@ namespace EngineCore::FMT::Detail {
 			, CurrentContexProperties{baseContextProperties == nullptr ? TextProperties::Properties{} : *baseContextProperties}
 		{}
 
-		~TextPropertiesParser()
+		void Terminate()
 		{
 			Reload(*BaseContextProperties);
 		}
@@ -313,6 +313,7 @@ template<typename FormatterContext>
 			switch (target.Type) {
 			case TextProperties::TextColor::ColorType::Default:
 				Context.RunType(TextProperties::TextColor::BasicColorFG::Default);
+				CurrentContexProperties.Color.Fg.Data.BasicColor = TextProperties::TextColor::BasicColorFG::Default;
 				break;
 			case TextProperties::TextColor::ColorType::BasicColor:
 				Context.RunType(target.Data.BasicColor);

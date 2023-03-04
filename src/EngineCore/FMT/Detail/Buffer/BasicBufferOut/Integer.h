@@ -13,7 +13,7 @@ namespace EngineCore::FMT::Detail {
 		if (i < 0)	{ PushBack('-'); i = -i; }
 
 		DataType nbDigit = GetNumberOfDigitDec(i);
-		Forward(nbDigit - 1);
+		Reserve(nbDigit);
 		while (i > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; }
 		Forward(nbDigit + 1);
 	}
@@ -24,7 +24,7 @@ namespace EngineCore::FMT::Detail {
 		if (i == 0) { PushBack('0'); return; }
 
 		DataType nbDigit = GetNumberOfDigitDec(i);
-		Forward(nbDigit - 1);
+		Reserve(nbDigit);
 		while (i > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; }
 		Forward(nbDigit + 1);
 	}

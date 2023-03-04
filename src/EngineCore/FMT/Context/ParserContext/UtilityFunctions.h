@@ -11,9 +11,11 @@ namespace EngineCore::FMT {
 	void Parse(const BufferStr& buffer, const Format& formatData, Args&& ...args) {
 		using ContextType = Context::BasicParserContext<typename Detail::GetFmtBaseType<Format>::Type, typename Detail::GetFmtBaseType<BufferStr>::Type>;
 		auto childContextArgsInterface = Detail::ParserContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		Detail::FMTFormatBuffer<typename Detail::GetFmtBaseType<Format>::Type> format(formatData);
+		Detail::BufferInProperties<typename Detail::GetFmtBaseType<Format>::Type> formatManager(formatData);
+		Detail::FMTFormatBuffer<typename Detail::GetFmtBaseType<Format>::Type> format(formatManager);
 		ContextType context(buffer);
-		return context.Run(format, &childContextArgsInterface);
+		context.Run(format, &childContextArgsInterface);
+		context.Terminate();
 	}
 	
 }

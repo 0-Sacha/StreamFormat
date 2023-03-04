@@ -3,8 +3,8 @@
 #include "Context/FormatterContext/UtilityFunctions.h"
 #include "Context/ParserContext/UtilityFunctions.h"
 
-#include "Detail/Buffer/BufferManager/DynamicBufferManager.h"
-#include "Detail/Buffer/BufferManager/GivenBufferManager.h"
-#include "Detail/Buffer/BufferManager/StaticBufferManager.h"
+#include "Detail/Buffer/BufferOutManager/DynamicBufferOutManager.h"
+#include "Detail/Buffer/BufferOutManager/GivenBufferOutManager.h"
+#include "Detail/Buffer/BufferOutManager/StaticBufferOutManager.h"
 
 #include "Format/CompilationData.h"

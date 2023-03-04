@@ -13,9 +13,6 @@ namespace EngineCore::FMT::Context {
 	{}
 
 	template<typename CharFormat, typename ContextPackage>
-	BasicContext<CharFormat, ContextPackage>::~BasicContext() { }
-
-	template<typename CharFormat, typename ContextPackage>
 	void BasicContext<CharFormat, ContextPackage>::RunImpl()
 	{
 		while (!m_Format.IsEnd())
@@ -29,7 +26,7 @@ namespace EngineCore::FMT::Context {
 			}
 			FormatToParamsString(beginContinousString, sizeContinousString);
 
-			if (m_Format.IsEqualTo('{'))
+			if (m_Format.IsEqualTo('{') && m_Format.IsEnd() == false)
 				FormatExecParams();
 		}
 	}

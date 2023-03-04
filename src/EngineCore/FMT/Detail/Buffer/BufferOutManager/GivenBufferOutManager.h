@@ -1,15 +1,21 @@
 #pragma once
 
-#include "BasicBufferManager.h"
+#include "BasicBufferOutManager.h"
 
 namespace EngineCore::FMT::Detail {
 
     template <typename CharType>
-    class GivenBufferManager : public BasicBufferManager<CharType>
+    class GivenBufferOutManager : public BasicBufferOutManager<CharType>
     {
         public:
-            GivenBufferManager(CharType* buffer, std::size_t bufferSize)
-                : m_Buffer(buffer)        
+            template<std::size_t SIZE>
+            GivenBufferOutManager(CharType (&buffer)[SIZE])
+                : m_Buffer(buffer)
+                , m_BufferSize(SIZE)
+            {}     
+
+            GivenBufferOutManager(CharType* buffer, std::size_t bufferSize)
+                : m_Buffer(buffer)
                 , m_BufferSize(bufferSize)
             {}        
 

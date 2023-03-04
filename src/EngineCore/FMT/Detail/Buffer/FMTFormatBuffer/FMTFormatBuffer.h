@@ -22,6 +22,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferEnd;
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
+		using Base::GetBufferRemainingSize;
 		using Base::SetBufferCurrentPos;
 
 		using Base::ReloadBuffer;
@@ -43,6 +44,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::Backward;
 		using Base::BackwardNoCheck;
 		using Base::BackwardNoThrow;
+		using Base::Reserve;
 
 		using Base::Get;
 		using Base::GetAndForward;
@@ -143,17 +145,10 @@ namespace EngineCore::FMT::Detail {
 		using Base::SkipShiftEnd;
 
 	public:
-		explicit FMTFormatBuffer()
-			: Base() {}
+	    FMTFormatBuffer() 													: Base() {}
+        FMTFormatBuffer(const BufferInProperties<CharFormat>& properties) 	: Base(properties) {}
 
-		template <std::size_t SIZE>
-		explicit FMTFormatBuffer(const CharFormat (&format)[SIZE])
-			: Base(format, SIZE) {}
-
-		explicit FMTFormatBuffer(const std::basic_string_view<CharFormat>& format)
-			: Base(format.data(), format.size()) {}
-
- 		explicit FMTFormatBuffer(const CharFormat* const buffer, const std::size_t bufferSize)
+		FMTFormatBuffer(const CharFormat* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
 		

@@ -1,7 +1,7 @@
 
 #include "JsonFactory.h"
 
-#include "EngineCore//FMT/Detail/Buffer/BufferManager/DynamicBufferManager.h"
+#include "EngineCore//FMT/Detail/Buffer/BufferOutManager/DynamicBufferOutManager.h"
 
 #include <fstream>
 #include <utility>
@@ -26,7 +26,8 @@ namespace EngineCore::JSON
         file.read(buffer.data(), size);
         file.close();
 
-        Detail::JsonParser parser(buffer.data(), buffer.size());
+        FMT::Detail::BufferInProperties<char> parserProperties(buffer.data(), buffer.size());
+        Detail::JsonParser parser(parserProperties);
         std::unique_ptr<JsonObject> res;
         JsonSerializer<std::unique_ptr<JsonObject>>::Parse(res, parser);
         return res;
@@ -39,11 +40,11 @@ namespace EngineCore::JSON
 		if (file.is_open() == false)
 			throw std::runtime_error("unable to open file");
 
-        FMT::Detail::DynamicBufferManager<char> bufferManager(256);
-        Detail::JsonFormatter formatter(bufferManager);
+        FMT::Detail::DynamicBufferOutManager<char> BufferOutManager(256);
+        Detail::JsonFormatter formatter(BufferOutManager);
         JsonSerializer<JsonObject>::Format(json, formatter);
         
-		file.write(bufferManager.GetBuffer(), bufferManager.GetLastGeneratedDataSize());
+		file.write(BufferOutManager.GetBuffer(), BufferOutManager.GetLastGeneratedDataSize());
 		file.flush();
         file.close();
     }

@@ -24,15 +24,21 @@ namespace EngineCore::FMT::Context
 	{}
 
 	template<typename CharFormat, typename CharBuffer>
-	BasicParserContext<CharFormat, CharBuffer>::~BasicParserContext() {}
+	BasicParserContext<CharFormat, CharBuffer>::~BasicParserContext()
+	{}
+
+	template<typename CharFormat, typename CharBuffer>
+	void BasicParserContext<CharFormat, CharBuffer>::Terminate()
+	{}
 
 	template<typename CharFormat, typename CharBuffer>
 	template<typename NewCharFormat, typename ...Args>
-	void BasicParserContext<CharFormat, CharBuffer>::SubContextFormat(const NewCharFormat* const formatStr, const std::size_t formatStrSize, Args&& ...args) {
+	void BasicParserContext<CharFormat, CharBuffer>::SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, Args&& ...args) {
 		using ContextType = BasicParserContext<NewCharFormat, CharBuffer>;
 		auto childContextArgsInterface = Detail::ParserContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
-		Detail::FMTFormatBuffer<NewCharFormat> format(formatStr, formatStrSize);
+		Detail::FMTFormatBuffer<NewCharFormat> format(bufferInProperties);
 		
+		// TODO : Disable because cause TextProperties to not be restore correctly
 		if constexpr (false && std::is_same_v<NewCharFormat, CharFormat>)
 		{
 			Run(format, &childContextArgsInterface);

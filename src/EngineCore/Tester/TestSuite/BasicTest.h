@@ -29,9 +29,9 @@ namespace EngineCore::Tester::Detail
 	public:
 		void TestAssert(bool assert, const std::string_view assertView, int line);
 		template <typename T>
-		void TestEq(T result, std::equality_comparable_with<T> auto expected, const std::string_view resultView, const std::string_view expectedView, int line);
+		void TestEq(T result, std::equality_comparable_with<T> auto expected, std::string_view testView, int line);
 		template <typename T>
-		void TestNotEq(T result, std::equality_comparable_with<T> auto notExpected, const std::string_view resultView, const std::string_view notExpectedView, int line);
+		void TestNotEq(T result, std::equality_comparable_with<T> auto notExpected, std::string_view testView, int line);
 
 	public:
 		FuncType Func;
@@ -39,27 +39,27 @@ namespace EngineCore::Tester::Detail
 
 
 	template <typename T>
-	void TestFunction::TestEq(T result, std::equality_comparable_with<T> auto expected, const std::string_view resultView, const std::string_view expectedView, int line)
+	void TestFunction::TestEq(T result, std::equality_comparable_with<T> auto expected, std::string_view testView, int line)
 	{
 		if (result != expected)
 		{
-			Link.TestLogger.Error("{C:red}{} return {} instead of {} ; Expected was : {}", resultView, result, expected, expectedView, FORMAT_SV("test_name", Name));
+			Link.TestLogger.Error("{C:red}{} return {} instead of {}", testView, result, expected, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
 		}
 
-		Link.TestLogger.Trace("{C:green}{} return {}", resultView, result, FORMAT_SV("test_name", Name));
+		Link.TestLogger.Trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", Name));
 	}
 
 	template <typename T>
-	void TestFunction::TestNotEq(T result, std::equality_comparable_with<T> auto notExpected, const std::string_view resultView, const std::string_view notExpectedView, int line)
+	void TestFunction::TestNotEq(T result, std::equality_comparable_with<T> auto notExpected, std::string_view testView, int line)
 	{
 		if (result == notExpected)
 		{
-			Link.TestLogger.Error("{C:red}{} return {} but this result was prohibited", resultView, result, FORMAT_SV("test_name", Name));
+			Link.TestLogger.Error("{C:red}{} return {} but this result was prohibited", testView, result, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
 		}
 
-		Link.TestLogger.Trace("{C:green}{} return {} and {} was prohibited", resultView, result, notExpected, FORMAT_SV("test_name", Name));
+		Link.TestLogger.Trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", Name));
 	}
 
 	inline void TestFunction::TestAssert(bool assert, std::string_view assertView, int line)
@@ -84,6 +84,6 @@ namespace EngineCore::Tester::Detail
 
 
 #define ECT_ASSERT(Test)			link.TestAssert(Test, #Test, __LINE__)
-#define ECT_EQ(Test, Expected)		link.TestEq(Test, Expected, #Test, #Expected, __LINE__)
-#define ECT_NEQ(Test, NotExpected)	link.TestNotEq(Test, NotExpected, #Test, #NotExpected, __LINE__)
+#define ECT_EQ(Test, Expected)		link.TestEq(Test, Expected, #Test, __LINE__)
+#define ECT_NEQ(Test, NotExpected)	link.TestNotEq(Test, NotExpected, #Test, __LINE__)
 

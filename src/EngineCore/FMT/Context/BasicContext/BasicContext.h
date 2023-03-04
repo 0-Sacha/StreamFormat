@@ -8,7 +8,6 @@
 #include "Utils/FormatterContextTemplate.h"
 
 namespace EngineCore::FMT::Context {
-
 	template<typename CharFormat, typename ContextPackage>
 	class BasicContext {
 	private:
@@ -28,7 +27,7 @@ namespace EngineCore::FMT::Context {
 
 	public:
 		explicit BasicContext();
-		~BasicContext();
+		virtual void Terminate() {}
 
 	protected:
 		FormatBufferType		m_Format;
@@ -58,6 +57,7 @@ namespace EngineCore::FMT::Context {
 
 	public:
 		void Run(FormatBufferType& format, ContextArgsInterface* argsInterface);
+		void Run(Detail::BufferInProperties<CharFormat>& bufferInProperties, ContextArgsInterface* argsInterface) { return Run(static_cast<FormatBufferType>(bufferInProperties), argsInterface); }
 
 	public:
 		Detail::FormatIndex GetFormatIndexThrow();
@@ -120,4 +120,5 @@ namespace EngineCore::FMT::Context {
 			return res;
 		}
 	};
+
 }

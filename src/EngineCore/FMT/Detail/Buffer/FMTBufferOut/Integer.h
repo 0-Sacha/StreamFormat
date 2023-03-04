@@ -21,8 +21,9 @@ namespace EngineCore::FMT::Detail
 		if (sp.BeforeIsADigit())	PrintShiftRightAll(st, sp, shift);
 
 		if (i == 0)		PushBack('0');
-		else {
-			Forward(nbDigit - 1);
+		else
+		{
+			Reserve(nbDigit);
 			while (i > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; }
 			Forward(nbDigit + 1);
 		}
@@ -42,8 +43,9 @@ namespace EngineCore::FMT::Detail
 		PrintShiftBegin(st, sp, shift);
 
 		if (i == 0)		PushBack('0');
-		else {
-			Forward(nbDigit - 1);
+		else
+		{
+			Reserve(nbDigit);
 			while (i > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; }
 			Forward(nbDigit + 1);
 		}
@@ -72,7 +74,7 @@ namespace EngineCore::FMT::Detail
 
 		if (iInt == 0)		PushBack('0');
 		else {
-			Forward(nbDigit - 1);
+			Reserve(nbDigit);
 			while (iInt > 0) { PushReverseNoCheck(iInt % 10 + '0'); iInt /= 10; }
 			Forward(nbDigit + 1);
 		}
@@ -113,7 +115,7 @@ namespace EngineCore::FMT::Detail
 		if (sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
-		Forward(digitSize - 1);
+		Reserve(digitSize);
 		DataType k = digitSize + 1;
 		while (--k != 0) {
 			if (i & 1)	PushReverseNoCheck('1');
@@ -144,7 +146,7 @@ namespace EngineCore::FMT::Detail
 		if (sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
-		Forward(digitSize - 1);
+		Reserve(digitSize);
 		DataType k = digitSize + 1;
 		if (valueDes == PrintStyle::LowerCase)
 			while (--k != 0) { PushReverseNoCheck(LOWER_HEX[i & 0b1111]); i = i >> 4; }
@@ -174,7 +176,7 @@ namespace EngineCore::FMT::Detail
 		if (sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 
 		// Print value
-		Forward(digitSize - 1);
+		Reserve(digitSize);
 		DataType k = digitSize + 1;
 		while (--k != 0) { PushReverseNoCheck((i & 0b111) + '0'); i = i >> 3; }
 		Forward(digitSize + 1);

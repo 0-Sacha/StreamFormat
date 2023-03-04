@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EngineCore/FMT/Detail/Buffer/BasicBuffer.h"
-#include "EngineCore/FMT/Detail/Buffer/BufferManager/BasicBufferManager.h"
+#include "EngineCore/FMT/Detail/Buffer/BufferOutManager/BasicBufferOutManager.h"
 
 namespace EngineCore::FMT::Detail {
 
@@ -23,6 +23,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::GetBufferEnd;
 		using Base::GetBufferSize;
 		using Base::GetBufferCurrentSize;
+		using Base::GetBufferRemainingSize;
 		using Base::SetBufferCurrentPos;
 
 		using Base::ReloadBuffer;
@@ -45,6 +46,7 @@ namespace EngineCore::FMT::Detail {
 		using Base::Backward;
 		using Base::BackwardNoCheck;
 		using Base::BackwardNoThrow;
+		// using Base::Reserve;
 
 		using Base::Get;
 		// using Base::GetAndForward;
@@ -61,48 +63,45 @@ namespace EngineCore::FMT::Detail {
 		static constexpr char			LOWER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 	
 	protected:
-		BasicBufferManager<CharBuffer>* m_BufferManager;
+		BasicBufferOutManager<CharBuffer>* m_BufferOutManager;
 
 	public:
-		inline BasicBufferManager<CharBuffer>* GetBufferManagerPtr() 				{ return m_BufferManager; }
-		inline const BasicBufferManager<CharBuffer>* GetBufferManagerPtr() const 	{ return m_BufferManager; }
+		inline BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() 				{ return m_BufferOutManager; }
+		inline const BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() const 	{ return m_BufferOutManager; }
 
-		inline BasicBufferManager<CharBuffer>& GetBufferManager() 				{ return *m_BufferManager; }
-		inline const BasicBufferManager<CharBuffer>& GetBufferManager() const 	{ return *m_BufferManager; }
+		inline BasicBufferOutManager<CharBuffer>& GetBufferOutManager() 				{ return *m_BufferOutManager; }
+		inline const BasicBufferOutManager<CharBuffer>& GetBufferOutManager() const 	{ return *m_BufferOutManager; }
 
 	public:
 		BasicBufferOut()
 			: Base()
-			, m_BufferManager(nullptr)
+			, m_BufferOutManager(nullptr)
 		{}
 
-		BasicBufferOut(BasicBufferManager<CharBuffer>& bufferManager)
+		BasicBufferOut(BasicBufferOutManager<CharBuffer>& bufferOutManager)
 			: Base()
-			, m_BufferManager(&bufferManager)
+			, m_BufferOutManager(&bufferOutManager)
 		{
-			if (m_BufferManager != nullptr)
-			{
-				m_BufferManager->BeginContext();
-				SetBuffer(m_BufferManager->GetBuffer(), m_BufferManager->GetBufferSize());
-				SetBufferCurrentPos(m_BufferManager->GetBuffer());
-			}
+			m_BufferOutManager->BeginContext();
+			SetBuffer(m_BufferOutManager->GetBuffer(), m_BufferOutManager->GetBufferSize());
+			SetBufferCurrentPos(m_BufferOutManager->GetBuffer());
 		}
 
-		void SetBufferManager(BasicBufferManager<CharBuffer>& bufferManager)
+		void SetBufferOutManager(BasicBufferOutManager<CharBuffer>& bufferOutManager)
 		{
-			m_BufferManager = &bufferManager;
-			if (m_BufferManager == nullptr)
+			m_BufferOutManager = &bufferOutManager;
+			if (m_BufferOutManager == nullptr)
 				throw Detail::FMTShouldNotEndHere{};
 				
-			m_BufferManager->BeginContext();
-			SetBuffer(m_BufferManager->GetBuffer(), m_BufferManager->GetBufferSize());
-			SetBufferCurrentPos(m_BufferManager->GetBuffer());
+			m_BufferOutManager->BeginContext();
+			SetBuffer(m_BufferOutManager->GetBuffer(), m_BufferOutManager->GetBufferSize());
+			SetBufferCurrentPos(m_BufferOutManager->GetBuffer());
 		}
 
 
 		void EndContext()
 		{
-			m_BufferManager->EndContext(GetBufferCurrentSize());
+			m_BufferOutManager->EndContext(GetBufferCurrentSize());
 		}
 
 	public:
@@ -120,6 +119,10 @@ namespace EngineCore::FMT::Detail {
 		inline void BasicWriteType(const std::uint16_t i)	{ FastWriteUInt(i); }
 		inline void BasicWriteType(const std::int32_t i)	{ FastWriteInt(i); }
 		inline void BasicWriteType(const std::uint32_t i)	{ FastWriteUInt(i); }
+#ifdef ENGINECORE_COMPILER_VS
+		inline void BasicWriteType(const long i)			{ FastWriteInt(i); }
+		inline void BasicWriteType(const unsigned long i)	{ FastWriteUInt(i); }
+#endif
 		inline void BasicWriteType(const std::int64_t i)	{ FastWriteInt(i); }
 		inline void BasicWriteType(const std::uint64_t i)	{ FastWriteUInt(i); }
 
@@ -142,22 +145,22 @@ namespace EngineCore::FMT::Detail {
 	public:
 		bool AddSize(const std::size_t count)
 		{
-			if (m_BufferManager == nullptr)
+			if (m_BufferOutManager == nullptr)
 				throw Detail::FMTShouldNotEndHere{};
-			if (m_CurrentPos >= m_BufferEnd)
+			if (m_CurrentPos > m_BufferEnd)
 				throw Detail::FMTBufferError{};
 			std::size_t currentSize = GetBufferCurrentSize();
-			if (m_BufferManager->AddSize(count) == false)
+			if (m_BufferOutManager->AddSize(count) == false)
 				return false;
-			SetBuffer(m_BufferManager->GetBuffer(), m_BufferManager->GetBufferSize());
-			SetBufferCurrentPos(m_BufferManager->GetBuffer() + currentSize);
+			SetBuffer(m_BufferOutManager->GetBuffer(), m_BufferOutManager->GetBufferSize());
+			SetBufferCurrentPos(m_BufferOutManager->GetBuffer() + currentSize);
 			return true;
 		}
 
-		inline bool CanMoveForward()								{ if (m_CurrentPos + 1 < m_BufferEnd)		return true; return AddSize(1); }
-		inline bool CanMoveForward(const std::size_t count)			{ if (m_CurrentPos + count < m_BufferEnd)	return true; return AddSize(count);}
-		inline void CanMoveForwardThrow()							{ if (CanMoveForward())			return; throw FMTBufferFull(); }
-		inline void CanMoveForwardThrow(const std::size_t count)	{ if (CanMoveForward(count))	return; throw FMTBufferFull(); }
+		inline bool CanMoveForward()								{ if (m_CurrentPos + 1 <= m_BufferEnd)		return true; return AddSize(1); }
+		inline bool CanMoveForward(const std::size_t count)			{ if (m_CurrentPos + count <= m_BufferEnd)	return true; return AddSize(count);}
+		inline void CanMoveForwardThrow()							{ if (CanMoveForward())			return; throw FMTBufferFull{}; }
+		inline void CanMoveForwardThrow(const std::size_t count)	{ if (CanMoveForward(count))	return; throw FMTBufferFull{}; }
 
 		inline void Forward()										{ CanMoveForwardThrow(); ++m_CurrentPos; }
 		inline void Forward(const std::size_t count)				{ CanMoveForwardThrow(count); m_CurrentPos += count; }
@@ -165,6 +168,7 @@ namespace EngineCore::FMT::Detail {
 		inline void ForwardNoThrow(const std::size_t count)			{ if (CanMoveForward(count)) m_CurrentPos += count; }
 		inline CharBuffer GetAndForward()							{ CanMoveForwardThrow(); return *m_CurrentPos++; }
 		inline CharBuffer GetNext()									{ CanMoveForwardThrow(); return *(m_CurrentPos + 1); }
+		inline void Reserve(const std::size_t count)				{ Forward(count); Backward(); }
 
 	public:
 		inline void SetChar(const CharBuffer c)						{ *m_CurrentPos = c; }
@@ -193,7 +197,7 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharStr>
 		inline void WriteCharPtr(const CharStr* str, std::size_t size) {
 			if (CanMoveForward(size) == false)
-				return; // TODO Error recovery
+				return WriteCharPtr(str, GetBufferRemainingSize());
 
 			while (size-- != 0 && *str != 0)
 				PushBackNoCheck(*str++);
@@ -202,7 +206,7 @@ namespace EngineCore::FMT::Detail {
 		template<typename CharStr>
 		inline void Append(const CharStr* begin, const CharStr* end) {
 			if (CanMoveForward(end - begin) == false)
-				return; // TODO Error recovery
+				return WriteCharPtr(begin, GetBufferRemainingSize());
 
 			while (*begin != 0 && begin < end)
 				PushBackNoCheck(*begin++);

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "BasicBufferManager.h"
+#include "BasicBufferOutManager.h"
 
 namespace EngineCore::FMT::Detail {
 
     template <typename CharType, std::size_t Count>
-    class StaticBufferManager : public BasicBufferManager<CharType>
+    class StaticBufferOutManager : public BasicBufferOutManager<CharType>
     {
         public:
             CharType* GetBuffer() override { return m_Buffer; }

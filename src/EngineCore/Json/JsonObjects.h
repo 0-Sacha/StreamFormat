@@ -34,6 +34,8 @@ namespace EngineCore::JSON
     public:
         JsonObject() {}
         JsonObject(ObjectType type) : m_Type(type) {}
+
+        virtual ~JsonObject() = default;
     
     private:
         ObjectType m_Type = ObjectType::Undefined;
@@ -116,7 +118,8 @@ namespace EngineCore::JSON
 		void Add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ std::move(name), std::move(object) }); }
 		JsonObject& Get(const std::string& subObject) override
         {
-            try {
+            try
+            {
                 return *Objects.at(subObject);
             }
             catch(...)

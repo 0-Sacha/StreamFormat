@@ -7,6 +7,9 @@ namespace EngineCore::Instrumentation
     class EventData
     {
     public:
+        virtual ~EventData() = default;
+        
+    public:
         virtual void ToJson(JSON::Detail::JsonFormatter& formatter) const = 0;
         virtual void FromJson(JSON::Detail::JsonParser& parser) = 0;
     };
