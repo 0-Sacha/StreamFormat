@@ -171,7 +171,6 @@ namespace EngineCore::FMT::Context {
 			if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('}'))
 				if (subIndex.IsValid())
 					return subIndex;
-
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
 		// III : A name
@@ -179,7 +178,6 @@ namespace EngineCore::FMT::Context {
 		indexOfNamedArg.SetContext(m_ValuesIndex);
 		if(indexOfNamedArg.IsValid())
 			return indexOfNamedArg;
-
 		m_Format.SetBufferCurrentPos(mainSubFormat);
 
 		// VI : { which is a idx to a number
@@ -188,18 +186,20 @@ namespace EngineCore::FMT::Context {
 			Detail::FormatIndex recIndex = GetFormatIndexThrow();
 			recIndex.SetContext(m_ValuesIndex);
 
-			if(recIndex.IsValid())
+			if(m_Format.IsEqualToForward('}') && recIndex.IsValid())
 			{
-				m_Format.IsEqualToForwardThrow('}');
-				Detail::FormatIndex finalRecIndex = m_ContextArgsInterface->GetFormatIndexAt(recIndex);
-				finalRecIndex.SetContext(m_ValuesIndex);
-				if(finalRecIndex.IsValid())
-					return finalRecIndex;
+				m_Format.IgnoreAllSpaces();
+				if (m_Format.IsEqualTo(':', '}'))
+				{
+					Detail::FormatIndex finalRecIndex = m_ContextArgsInterface->GetFormatIndexAt(recIndex);
+					finalRecIndex.SetContext(m_ValuesIndex);
+					if (finalRecIndex.IsValid())
+						return finalRecIndex;
+					throw Detail::FMTIndexError{};
+				}
 			}
-			throw Detail::FMTParseError();
 		}
 		m_Format.SetBufferCurrentPos(mainSubFormat);
-
 		return Detail::FormatIndex();
 	}
 
@@ -234,14 +234,16 @@ namespace EngineCore::FMT::Context {
 	bool BasicContext<CharFormat, ContextPackage>::Parse() {
 		m_Format.Forward();						// Skip {
 
-		if (m_Format.IsUpperCase()) {
+		if (m_Format.IsUpperCase())
+		{
 			ParseSpecial();
 			m_Format.GoOutOfParameter();		// Skip }
 			return true;
 		}
 
 		Detail::FormatIndex formatIdx = GetFormatIndexThrow();
-		if (formatIdx.IsValid()) {
+		if (formatIdx.IsValid())
+		{
 			ParseVariable(formatIdx);
 			m_Format.GoOutOfParameter();		// Skip }
 			return true;
