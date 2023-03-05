@@ -5,127 +5,166 @@
 
 ECT_TEST_GROUP(FMT, SHIFT);
 
-#define TEST_FMT_SHIFT_OneNumberTests(fmt_test, test_data, expected)  ECT_EQ(EngineCore::FMT::FormatString(fmt_test, test_data), expected);
+#define TEST_FMT(fmt_test, expected, ...)  ECT_EQ(EngineCore::FMT::FormatString(fmt_test, __VA_ARGS__), expected);
 
-ECT_TEST_FUNC(SHIFT, OneNumberTest_OneDigit)
+ECT_TEST_GROUP(SHIFT, ONE_DIGIT);
+ECT_TEST_FUNC(ONE_DIGIT, Right)
 {
-	TEST_FMT_SHIFT_OneNumberTests("|{:>9  }|", 7, "|        7|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>9: }|", 7, "|        7|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>9:0}|", 7, "|000000007|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>9:*}|", 7, "|********7|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<9  }|", 7, "|7        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<9: }|", 7, "|7        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<9:0}|", 7, "|7        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<9:*}|", 7, "|7********|");
+	TEST_FMT("|{:>9  }|", "|        7|", 7);
+	TEST_FMT("|{:>9: }|", "|        7|", 7);
+	TEST_FMT("|{:>9:0}|", "|000000007|", 7);
+	TEST_FMT("|{:>9:*}|", "|********7|", 7);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10    }|", 7, "|     7    |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:-|-}|", 7, "|-----7----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:*|*}|", 7, "|*****7****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:<|>}|", 7, "|<<<<<7>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:>|<}|", 7, "|>>>>>7<<<<|");
+}
+ECT_TEST_FUNC(ONE_DIGIT, Left)
+{
+	TEST_FMT("|{:<9  }|", "|7        |", 7);
+	TEST_FMT("|{:<9: }|", "|7        |", 7);
+	TEST_FMT("|{:<9:0}|", "|7        |", 7);
+	TEST_FMT("|{:<9:*}|", "|7********|", 7);
+}
+ECT_TEST_FUNC(ONE_DIGIT, Center)
+{
+	TEST_FMT("|{:^10    }|", "|     7    |", 7);
+	TEST_FMT("|{:^10:-|-}|", "|-----7----|", 7);
+	TEST_FMT("|{:^10:*|*}|", "|*****7****|", 7);
+	TEST_FMT("|{:^10:<|>}|", "|<<<<<7>>>>|", 7);
+	TEST_FMT("|{:^10:>|<}|", "|>>>>>7<<<<|", 7);
+	
+	TEST_FMT("|{:^11:-|-}|", "|-----7-----|", 7);
+	TEST_FMT("|{:^11:*|*}|", "|*****7*****|", 7);
+	TEST_FMT("|{:^11:<|>}|", "|<<<<<7>>>>>|", 7);
+	TEST_FMT("|{:^11:>|<}|", "|>>>>>7<<<<<|", 7);
+}
+ECT_TEST_FUNC(ONE_DIGIT, CenterRight)
+{
+	TEST_FMT("|{:^>10:-|-}|", "|-----7----|", 7);
+	TEST_FMT("|{:^>10:*|*}|", "|*****7****|", 7);
+	TEST_FMT("|{:^>10:<|>}|", "|<<<<<7>>>>|", 7);
+	TEST_FMT("|{:^>10:>|<}|", "|>>>>>7<<<<|", 7);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:-|-}|", 7, "|-----7----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:*|*}|", 7, "|*****7****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:<|>}|", 7, "|<<<<<7>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:>|<}|", 7, "|>>>>>7<<<<|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:-|-}|", 7, "|----7-----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:*|*}|", 7, "|****7*****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:<|>}|", 7, "|<<<<7>>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:>|<}|", 7, "|>>>>7<<<<<|");
-
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:-|-}|", 7, "|-----7-----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:*|*}|", 7, "|*****7*****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:<|>}|", 7, "|<<<<<7>>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:>|<}|", 7, "|>>>>>7<<<<<|");
-
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:-|-}|", 7, "|-----7-----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:*|*}|", 7, "|*****7*****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:<|>}|", 7, "|<<<<<7>>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:>|<}|", 7, "|>>>>>7<<<<<|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:-|-}|", 7, "|-----7-----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:*|*}|", 7, "|*****7*****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:<|>}|", 7, "|<<<<<7>>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:>|<}|", 7, "|>>>>>7<<<<<|");
+	TEST_FMT("|{:^>11:-|-}|", "|-----7-----|", 7);
+	TEST_FMT("|{:^>11:*|*}|", "|*****7*****|", 7);
+	TEST_FMT("|{:^>11:<|>}|", "|<<<<<7>>>>>|", 7);
+	TEST_FMT("|{:^>11:>|<}|", "|>>>>>7<<<<<|", 7);
+}
+ECT_TEST_FUNC(ONE_DIGIT, CenterLeft)
+{
+	TEST_FMT("|{:^<10:-|-}|", "|----7-----|", 7);
+	TEST_FMT("|{:^<10:*|*}|", "|****7*****|", 7);
+	TEST_FMT("|{:^<10:<|>}|", "|<<<<7>>>>>|", 7);
+	TEST_FMT("|{:^<10:>|<}|", "|>>>>7<<<<<|", 7);
+	
+	TEST_FMT("|{:^<11:-|-}|", "|-----7-----|", 7);
+	TEST_FMT("|{:^<11:*|*}|", "|*****7*****|", 7);
+	TEST_FMT("|{:^<11:<|>}|", "|<<<<<7>>>>>|", 7);
+	TEST_FMT("|{:^<11:>|<}|", "|>>>>>7<<<<<|", 7);
 }
 
-ECT_TEST_FUNC(SHIFT, OneNumberTest_TwoDigit)
+
+ECT_TEST_GROUP(SHIFT, TWO_DIGIT);
+ECT_TEST_FUNC(TWO_DIGIT, Right)
 {
-	TEST_FMT_SHIFT_OneNumberTests("|{:>10  }|", 14, "|        14|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>10: }|", 14, "|        14|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>10:0}|", 14, "|0000000014|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>10:*}|", 14, "|********14|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<10  }|", 14, "|14        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<10: }|", 14, "|14        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<10:0}|", 14, "|14        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<10:*}|", 14, "|14********|");
+	TEST_FMT("|{:>10  }|", "|        14|", 14);
+	TEST_FMT("|{:>10: }|", "|        14|", 14);
+	TEST_FMT("|{:>10:0}|", "|0000000014|", 14);
+	TEST_FMT("|{:>10:*}|", "|********14|", 14);
+}
+ECT_TEST_FUNC(TWO_DIGIT, Left)
+{
+	TEST_FMT("|{:<10  }|", "|14        |", 14);
+	TEST_FMT("|{:<10: }|", "|14        |", 14);
+	TEST_FMT("|{:<10:0}|", "|14        |", 14);
+	TEST_FMT("|{:<10:*}|", "|14********|", 14);
+}
+ECT_TEST_FUNC(TWO_DIGIT, Center)
+{
+	TEST_FMT("|{:^10    }|", "|    14    |", 14);
+	TEST_FMT("|{:^10:-|-}|", "|----14----|", 14);
+	TEST_FMT("|{:^10:*|*}|", "|****14****|", 14);
+	TEST_FMT("|{:^10:<|>}|", "|<<<<14>>>>|", 14);
+	TEST_FMT("|{:^10:>|<}|", "|>>>>14<<<<|", 14);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10    }|", 14, "|    14    |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:-|-}|", 14, "|----14----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:*|*}|", 14, "|****14****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:<|>}|", 14, "|<<<<14>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:>|<}|", 14, "|>>>>14<<<<|");
+	TEST_FMT("|{:^11:-|-}|", "|-----14----|", 14);
+	TEST_FMT("|{:^11:*|*}|", "|*****14****|", 14);
+	TEST_FMT("|{:^11:<|>}|", "|<<<<<14>>>>|", 14);
+	TEST_FMT("|{:^11:>|<}|", "|>>>>>14<<<<|", 14);
+}
+ECT_TEST_FUNC(TWO_DIGIT, CenterRight)
+{
+	TEST_FMT("|{:^>10:-|-}|", "|----14----|", 14);
+	TEST_FMT("|{:^>10:*|*}|", "|****14****|", 14);
+	TEST_FMT("|{:^>10:<|>}|", "|<<<<14>>>>|", 14);
+	TEST_FMT("|{:^>10:>|<}|", "|>>>>14<<<<|", 14);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:-|-}|", 14, "|----14----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:*|*}|", 14, "|****14****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:<|>}|", 14, "|<<<<14>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:>|<}|", 14, "|>>>>14<<<<|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:-|-}|", 14, "|----14----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:*|*}|", 14, "|****14****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:<|>}|", 14, "|<<<<14>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:>|<}|", 14, "|>>>>14<<<<|");
+	TEST_FMT("|{:^>11:-|-}|", "|-----14----|", 14);
+	TEST_FMT("|{:^>11:*|*}|", "|*****14****|", 14);
+	TEST_FMT("|{:^>11:<|>}|", "|<<<<<14>>>>|", 14);
+	TEST_FMT("|{:^>11:>|<}|", "|>>>>>14<<<<|", 14);
+}
+ECT_TEST_FUNC(TWO_DIGIT, CenterLeft)
+{
+	TEST_FMT("|{:^<10:-|-}|", "|----14----|", 14);
+	TEST_FMT("|{:^<10:*|*}|", "|****14****|", 14);
+	TEST_FMT("|{:^<10:<|>}|", "|<<<<14>>>>|", 14);
+	TEST_FMT("|{:^<10:>|<}|", "|>>>>14<<<<|", 14);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:-|-}|", 14, "|-----14----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:*|*}|", 14, "|*****14****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:<|>}|", 14, "|<<<<<14>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:>|<}|", 14, "|>>>>>14<<<<|");
-
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:-|-}|", 14, "|-----14----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:*|*}|", 14, "|*****14****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:<|>}|", 14, "|<<<<<14>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:>|<}|", 14, "|>>>>>14<<<<|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:-|-}|", 14, "|----14-----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:*|*}|", 14, "|****14*****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:<|>}|", 14, "|<<<<14>>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:>|<}|", 14, "|>>>>14<<<<<|");
+	TEST_FMT("|{:^<11:-|-}|", "|----14-----|", 14);
+	TEST_FMT("|{:^<11:*|*}|", "|****14*****|", 14);
+	TEST_FMT("|{:^<11:<|>}|", "|<<<<14>>>>>|", 14);
+	TEST_FMT("|{:^<11:>|<}|", "|>>>>14<<<<<|", 14);
 }
 
-ECT_TEST_FUNC(SHIFT, OneNumberTest_ThreeDigit)
+
+ECT_TEST_GROUP(SHIFT, THREE_DIGIT);
+ECT_TEST_FUNC(THREE_DIGIT, Right)
 {
-	TEST_FMT_SHIFT_OneNumberTests("|{:>11  }|", 105, "|        105|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>11: }|", 105, "|        105|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>11:0}|", 105, "|00000000105|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:>11:*}|", 105, "|********105|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<11  }|", 105, "|105        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<11: }|", 105, "|105        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<11:0}|", 105, "|105        |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:<11:*}|", 105, "|105********|");
+	TEST_FMT("|{:>11  }|", "|        105|", 105);
+	TEST_FMT("|{:>11: }|", "|        105|", 105);
+	TEST_FMT("|{:>11:0}|", "|00000000105|", 105);
+	TEST_FMT("|{:>11:*}|", "|********105|", 105);
+}
+ECT_TEST_FUNC(THREE_DIGIT, Left)
+{
+	TEST_FMT("|{:<11  }|", "|105        |", 105);
+	TEST_FMT("|{:<11: }|", "|105        |", 105);
+	TEST_FMT("|{:<11:0}|", "|105        |", 105);
+	TEST_FMT("|{:<11:*}|", "|105********|", 105);
+}
+ECT_TEST_FUNC(THREE_DIGIT, Center)
+{
+	TEST_FMT("|{:^10    }|", "|    105   |", 105);
+	TEST_FMT("|{:^10:-|-}|", "|----105---|", 105);
+	TEST_FMT("|{:^10:*|*}|", "|****105***|", 105);
+	TEST_FMT("|{:^10:<|>}|", "|<<<<105>>>|", 105);
+	TEST_FMT("|{:^10:>|<}|", "|>>>>105<<<|", 105);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10    }|", 105, "|    105   |");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:-|-}|", 105, "|----105---|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:*|*}|", 105, "|****105***|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:<|>}|", 105, "|<<<<105>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^10:>|<}|", 105, "|>>>>105<<<|");
+	TEST_FMT("|{:^11:-|-}|", "|----105----|", 105);
+	TEST_FMT("|{:^11:*|*}|", "|****105****|", 105);
+	TEST_FMT("|{:^11:<|>}|", "|<<<<105>>>>|", 105);
+	TEST_FMT("|{:^11:>|<}|", "|>>>>105<<<<|", 105);
+}
+ECT_TEST_FUNC(THREE_DIGIT, CenterRight)
+{
+	TEST_FMT("|{:^>10:-|-}|", "|----105---|", 105);
+	TEST_FMT("|{:^>10:*|*}|", "|****105***|", 105);
+	TEST_FMT("|{:^>10:<|>}|", "|<<<<105>>>|", 105);
+	TEST_FMT("|{:^>10:>|<}|", "|>>>>105<<<|", 105);
+	
+	TEST_FMT("|{:^>11:-|-}|", "|----105----|", 105);
+	TEST_FMT("|{:^>11:*|*}|", "|****105****|", 105);
+	TEST_FMT("|{:^>11:<|>}|", "|<<<<105>>>>|", 105);
+	TEST_FMT("|{:^>11:>|<}|", "|>>>>105<<<<|", 105);
+}
+ECT_TEST_FUNC(THREE_DIGIT, CenterLeft)
+{
+	TEST_FMT("|{:^<10:-|-}|", "|---105----|", 105);
+	TEST_FMT("|{:^<10:*|*}|", "|***105****|", 105);
+	TEST_FMT("|{:^<10:<|>}|", "|<<<105>>>>|", 105);
+	TEST_FMT("|{:^<10:>|<}|", "|>>>105<<<<|", 105);
 
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:-|-}|", 105, "|----105---|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:*|*}|", 105, "|****105***|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:<|>}|", 105, "|<<<<105>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>10:>|<}|", 105, "|>>>>105<<<|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:-|-}|", 105, "|---105----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:*|*}|", 105, "|***105****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:<|>}|", 105, "|<<<105>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<10:>|<}|", 105, "|>>>105<<<<|");
-
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:-|-}|", 105, "|----105----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:*|*}|", 105, "|****105****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:<|>}|", 105, "|<<<<105>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^11:>|<}|", 105, "|>>>>105<<<<|");
-
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:-|-}|", 105, "|----105----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:*|*}|", 105, "|****105****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:<|>}|", 105, "|<<<<105>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^>11:>|<}|", 105, "|>>>>105<<<<|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:-|-}|", 105, "|----105----|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:*|*}|", 105, "|****105****|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:<|>}|", 105, "|<<<<105>>>>|");
-	TEST_FMT_SHIFT_OneNumberTests("|{:^<11:>|<}|", 105, "|>>>>105<<<<|");
+	TEST_FMT("|{:^<11:-|-}|", "|----105----|", 105);
+	TEST_FMT("|{:^<11:*|*}|", "|****105****|", 105);
+	TEST_FMT("|{:^<11:<|>}|", "|<<<<105>>>>|", 105);
+	TEST_FMT("|{:^<11:>|<}|", "|>>>>105<<<<|", 105);
 }

@@ -1,4 +1,5 @@
 #include "EngineCore/Tester/TestSuite/AllTestSuite.h"
+#include "EngineCore/FMT/FMT.h"
 
 #include "BaseFMTTests.h"
 
