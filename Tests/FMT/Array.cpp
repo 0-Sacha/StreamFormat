@@ -1,13 +1,13 @@
-#include "EngineCore/Tester/TestSuite/AllTestSuite.h"
-#include "EngineCore/FMT/FMT.h"
+#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "ProjectCore/FMT/FMT.h"
 
 #include "BaseFMTTests.h"
 
-ECT_TEST_GROUP(FMT, ARRAY);
+PCT_TEST_GROUP(FMT, ARRAY);
 
-#define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected)  ECT_EQ(EngineCore::FMT::FormatString(fmt_test, test_data), expected);
+#define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, test_data), expected);
 
-ECT_TEST_FUNC(ARRAY, BEGIN_END)
+PCT_TEST_FUNC(ARRAY, BEGIN_END)
 {
 	int data[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	TEST_FMT_ARRAY_SPECIFIERS("{}", data, "{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }");

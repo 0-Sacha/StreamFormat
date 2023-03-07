@@ -1,10 +1,12 @@
 
-Solution.ProjectsInfo.Includes["EngineCore"] = {
-	"%{Solution.Projects.EngineCore}/src/",
-	"%{Solution.Projects.EngineCore}/src/EngineCore",
+Solution.ProjectsInfo.Includes["ProjectCore"] = {
+	"%{Solution.Projects.ProjectCore}/src/",
+	"%{Solution.Projects.ProjectCore}/src/ProjectCore",
 }
 
-project "EngineCore"
+Solution.ProjectsInfo.PlatformDefineName["ProjectCore"] = "PROJECTCORE"
+
+project "ProjectCore"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
@@ -20,15 +22,15 @@ project "EngineCore"
 		"src/**.cpp",
 	}
 	
-	Solution.IncludeProject("EngineCore")
+	Solution.IncludeProject("ProjectCore")
 
 	defines {
-		"ENGINECORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
+		"PROJECTCORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
 	}
 
-if (EngineCoreTestsEnable)
+if (ProjectCoreTestsEnable)
 then
-project "EngineCoreTests"
+project "ProjectCoreTests"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
@@ -44,6 +46,6 @@ project "EngineCoreTests"
 		"Tests/**.cpp",
 	}
 	
-	Solution.IncludeAndLinkProject("EngineCore")
+	Solution.IncludeAndLinkProject("ProjectCore")
 end
 	

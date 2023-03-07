@@ -1,8 +1,8 @@
 
-#include "EngineCore/Tester/TestSuite/AllTestSuite.h"
+#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
 
 int main()
 {
-	EngineCore::Tester::TestSuitesManager::Verbose = false;
-	EngineCore::Tester::TestSuitesManager::ExecAllTestSuites();
+	ProjectCore::Tester::TestSuitesManager::Verbose = false;
+	ProjectCore::Tester::TestSuitesManager::ExecAllTestSuites();
 }

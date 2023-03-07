@@ -1,7 +1,7 @@
-#include "EngineCore/Tester/TestSuite/AllTestSuite.h"
-#include "EngineCore/FMT/FMT.h"
+#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "ProjectCore/FMT/FMT.h"
 
 #include "BaseFMTTests.h"
 
-ECT_TEST_GROUP(FMT, BASE_TYPES);
+PCT_TEST_GROUP(FMT, BASE_TYPES);
 

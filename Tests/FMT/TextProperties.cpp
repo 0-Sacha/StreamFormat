@@ -1,10 +1,10 @@
-#include "EngineCore/Tester/TestSuite/AllTestSuite.h"
-#include "EngineCore/FMT/FMT.h"
+#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "ProjectCore/FMT/FMT.h"
 
 #include "BaseFMTTests.h"
 
-ECT_TEST_GROUP(FMT, TEXT_PROPERTIES);
+PCT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-ECT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
+PCT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
 {
 }

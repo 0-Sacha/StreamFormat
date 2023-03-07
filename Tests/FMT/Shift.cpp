@@ -1,14 +1,14 @@
-#include "EngineCore/Tester/TestSuite/AllTestSuite.h"
-#include "EngineCore/FMT/FMT.h"
+#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "ProjectCore/FMT/FMT.h"
 
 #include "BaseFMTTests.h"
 
-ECT_TEST_GROUP(FMT, SHIFT);
+PCT_TEST_GROUP(FMT, SHIFT);
 
-#define TEST_FMT(fmt_test, expected, ...)  ECT_EQ(EngineCore::FMT::FormatString(fmt_test, __VA_ARGS__), expected);
+#define TEST_FMT(fmt_test, expected, ...)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, __VA_ARGS__), expected);
 
-ECT_TEST_GROUP(SHIFT, ONE_DIGIT);
-ECT_TEST_FUNC(ONE_DIGIT, Right)
+PCT_TEST_GROUP(SHIFT, ONE_DIGIT);
+PCT_TEST_FUNC(ONE_DIGIT, Right)
 {
 	TEST_FMT("|{:>9  }|", "|        7|", 7);
 	TEST_FMT("|{:>9: }|", "|        7|", 7);
@@ -16,14 +16,14 @@ ECT_TEST_FUNC(ONE_DIGIT, Right)
 	TEST_FMT("|{:>9:*}|", "|********7|", 7);
 
 }
-ECT_TEST_FUNC(ONE_DIGIT, Left)
+PCT_TEST_FUNC(ONE_DIGIT, Left)
 {
 	TEST_FMT("|{:<9  }|", "|7        |", 7);
 	TEST_FMT("|{:<9: }|", "|7        |", 7);
 	TEST_FMT("|{:<9:0}|", "|7        |", 7);
 	TEST_FMT("|{:<9:*}|", "|7********|", 7);
 }
-ECT_TEST_FUNC(ONE_DIGIT, Center)
+PCT_TEST_FUNC(ONE_DIGIT, Center)
 {
 	TEST_FMT("|{:^10    }|", "|     7    |", 7);
 	TEST_FMT("|{:^10:-|-}|", "|-----7----|", 7);
@@ -36,7 +36,7 @@ ECT_TEST_FUNC(ONE_DIGIT, Center)
 	TEST_FMT("|{:^11:<|>}|", "|<<<<<7>>>>>|", 7);
 	TEST_FMT("|{:^11:>|<}|", "|>>>>>7<<<<<|", 7);
 }
-ECT_TEST_FUNC(ONE_DIGIT, CenterRight)
+PCT_TEST_FUNC(ONE_DIGIT, CenterRight)
 {
 	TEST_FMT("|{:^>10:-|-}|", "|-----7----|", 7);
 	TEST_FMT("|{:^>10:*|*}|", "|*****7****|", 7);
@@ -48,7 +48,7 @@ ECT_TEST_FUNC(ONE_DIGIT, CenterRight)
 	TEST_FMT("|{:^>11:<|>}|", "|<<<<<7>>>>>|", 7);
 	TEST_FMT("|{:^>11:>|<}|", "|>>>>>7<<<<<|", 7);
 }
-ECT_TEST_FUNC(ONE_DIGIT, CenterLeft)
+PCT_TEST_FUNC(ONE_DIGIT, CenterLeft)
 {
 	TEST_FMT("|{:^<10:-|-}|", "|----7-----|", 7);
 	TEST_FMT("|{:^<10:*|*}|", "|****7*****|", 7);
@@ -62,22 +62,22 @@ ECT_TEST_FUNC(ONE_DIGIT, CenterLeft)
 }
 
 
-ECT_TEST_GROUP(SHIFT, TWO_DIGIT);
-ECT_TEST_FUNC(TWO_DIGIT, Right)
+PCT_TEST_GROUP(SHIFT, TWO_DIGIT);
+PCT_TEST_FUNC(TWO_DIGIT, Right)
 {
 	TEST_FMT("|{:>10  }|", "|        14|", 14);
 	TEST_FMT("|{:>10: }|", "|        14|", 14);
 	TEST_FMT("|{:>10:0}|", "|0000000014|", 14);
 	TEST_FMT("|{:>10:*}|", "|********14|", 14);
 }
-ECT_TEST_FUNC(TWO_DIGIT, Left)
+PCT_TEST_FUNC(TWO_DIGIT, Left)
 {
 	TEST_FMT("|{:<10  }|", "|14        |", 14);
 	TEST_FMT("|{:<10: }|", "|14        |", 14);
 	TEST_FMT("|{:<10:0}|", "|14        |", 14);
 	TEST_FMT("|{:<10:*}|", "|14********|", 14);
 }
-ECT_TEST_FUNC(TWO_DIGIT, Center)
+PCT_TEST_FUNC(TWO_DIGIT, Center)
 {
 	TEST_FMT("|{:^10    }|", "|    14    |", 14);
 	TEST_FMT("|{:^10:-|-}|", "|----14----|", 14);
@@ -90,7 +90,7 @@ ECT_TEST_FUNC(TWO_DIGIT, Center)
 	TEST_FMT("|{:^11:<|>}|", "|<<<<<14>>>>|", 14);
 	TEST_FMT("|{:^11:>|<}|", "|>>>>>14<<<<|", 14);
 }
-ECT_TEST_FUNC(TWO_DIGIT, CenterRight)
+PCT_TEST_FUNC(TWO_DIGIT, CenterRight)
 {
 	TEST_FMT("|{:^>10:-|-}|", "|----14----|", 14);
 	TEST_FMT("|{:^>10:*|*}|", "|****14****|", 14);
@@ -102,7 +102,7 @@ ECT_TEST_FUNC(TWO_DIGIT, CenterRight)
 	TEST_FMT("|{:^>11:<|>}|", "|<<<<<14>>>>|", 14);
 	TEST_FMT("|{:^>11:>|<}|", "|>>>>>14<<<<|", 14);
 }
-ECT_TEST_FUNC(TWO_DIGIT, CenterLeft)
+PCT_TEST_FUNC(TWO_DIGIT, CenterLeft)
 {
 	TEST_FMT("|{:^<10:-|-}|", "|----14----|", 14);
 	TEST_FMT("|{:^<10:*|*}|", "|****14****|", 14);
@@ -116,22 +116,22 @@ ECT_TEST_FUNC(TWO_DIGIT, CenterLeft)
 }
 
 
-ECT_TEST_GROUP(SHIFT, THREE_DIGIT);
-ECT_TEST_FUNC(THREE_DIGIT, Right)
+PCT_TEST_GROUP(SHIFT, THREE_DIGIT);
+PCT_TEST_FUNC(THREE_DIGIT, Right)
 {
 	TEST_FMT("|{:>11  }|", "|        105|", 105);
 	TEST_FMT("|{:>11: }|", "|        105|", 105);
 	TEST_FMT("|{:>11:0}|", "|00000000105|", 105);
 	TEST_FMT("|{:>11:*}|", "|********105|", 105);
 }
-ECT_TEST_FUNC(THREE_DIGIT, Left)
+PCT_TEST_FUNC(THREE_DIGIT, Left)
 {
 	TEST_FMT("|{:<11  }|", "|105        |", 105);
 	TEST_FMT("|{:<11: }|", "|105        |", 105);
 	TEST_FMT("|{:<11:0}|", "|105        |", 105);
 	TEST_FMT("|{:<11:*}|", "|105********|", 105);
 }
-ECT_TEST_FUNC(THREE_DIGIT, Center)
+PCT_TEST_FUNC(THREE_DIGIT, Center)
 {
 	TEST_FMT("|{:^10    }|", "|    105   |", 105);
 	TEST_FMT("|{:^10:-|-}|", "|----105---|", 105);
@@ -144,7 +144,7 @@ ECT_TEST_FUNC(THREE_DIGIT, Center)
 	TEST_FMT("|{:^11:<|>}|", "|<<<<105>>>>|", 105);
 	TEST_FMT("|{:^11:>|<}|", "|>>>>105<<<<|", 105);
 }
-ECT_TEST_FUNC(THREE_DIGIT, CenterRight)
+PCT_TEST_FUNC(THREE_DIGIT, CenterRight)
 {
 	TEST_FMT("|{:^>10:-|-}|", "|----105---|", 105);
 	TEST_FMT("|{:^>10:*|*}|", "|****105***|", 105);
@@ -156,7 +156,7 @@ ECT_TEST_FUNC(THREE_DIGIT, CenterRight)
 	TEST_FMT("|{:^>11:<|>}|", "|<<<<105>>>>|", 105);
 	TEST_FMT("|{:^>11:>|<}|", "|>>>>105<<<<|", 105);
 }
-ECT_TEST_FUNC(THREE_DIGIT, CenterLeft)
+PCT_TEST_FUNC(THREE_DIGIT, CenterLeft)
 {
 	TEST_FMT("|{:^<10:-|-}|", "|---105----|", 105);
 	TEST_FMT("|{:^<10:*|*}|", "|***105****|", 105);
