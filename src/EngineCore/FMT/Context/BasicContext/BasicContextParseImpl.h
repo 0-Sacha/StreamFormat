@@ -5,8 +5,8 @@
 
 namespace EngineCore::FMT::Context {
 
-	template<typename CharFormat, typename ContextPackage>
-	std::basic_string_view<CharFormat> BasicContext<CharFormat, ContextPackage>::ParseNextOverrideFormatData() {
+	template<typename CharFormat>
+	std::basic_string_view<CharFormat> BasicContext<CharFormat>::ParseNextOverrideFormatData() {
 		m_Format.IgnoreAllSpaces();
 		m_Format.ParamGoTo('{', '=', ':');
 		m_Format.IgnoreAllSpaces();
@@ -32,19 +32,19 @@ namespace EngineCore::FMT::Context {
 		return std::basic_string_view<CharFormat>(begin, end);
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataBase_ValueIntPrint(const typename Detail::ValueIntPrint type) {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseFormatDataBase_ValueIntPrint(const typename Detail::ValueIntPrint type) {
 		m_FormatData.IntPrint = type;
 		if (m_Format.IsEqualToForward('#')) m_FormatData.TrueValue = true;
 		FormatReadParameterThrow(m_FormatData.DigitSize.Value);
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataBase() {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseFormatDataBase() {
 
-			 if (m_Format.IsEqualToForward('C')) { ParseFormatDataColor(); }
-		else if (m_Format.IsEqualToForward('S')) { ParseFormatDataStyle(); }
-		else if (m_Format.IsEqualToForward('F')) { ParseFormatDataFront(); }
+			 if (m_Format.IsEqualToForward('C')) { m_TextPropertiesParser.ParseColor(); }
+		else if (m_Format.IsEqualToForward('S')) { m_TextPropertiesParser.ParseStyle(); }
+		else if (m_Format.IsEqualToForward('F')) { m_TextPropertiesParser.ParseFront(); }
 
 		else if (m_Format.IsEqualToForward('B')) { ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Bin); }
 		else if (m_Format.IsEqualToForward('X')) { ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Hex); }
@@ -61,8 +61,8 @@ namespace EngineCore::FMT::Context {
 		else if (m_Format.IsEqualToForward('N')) { m_FormatData.NextOverride = ParseNextOverrideFormatData(); }
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type) {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type) {
 		m_FormatData.ShiftType = type;
 		FormatReadParameterThrow(m_FormatData.ShiftSize.Value);
 		if (m_Format.IsEqualToForward(':'))
@@ -75,8 +75,8 @@ namespace EngineCore::FMT::Context {
 		}
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataSpecial() {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseFormatDataSpecial() {
 		if (m_Format.IsEqualToForward('{'))
 		{
 			Detail::FormatIndex formatIndex = GetFormatIndexThrow();
@@ -107,8 +107,8 @@ namespace EngineCore::FMT::Context {
 			} }
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatDataCustom() {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseFormatDataCustom() {
 		StringViewFormat name = GetStringViewParamUntil(' ', '=', '\'', '{', ',');
 		m_Format.ParamGoTo('=', '\'', '{', ',');
 		m_Format.IsEqualToForward('=');
@@ -134,8 +134,8 @@ namespace EngineCore::FMT::Context {
 	}
 
 	/////---------- Impl ----------/////
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseFormatData() {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseFormatData() {
 		// ':' for classic use ; '{' for NextOverride
 		if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('{')) {
 			m_FormatData.HasSpec = true;
@@ -155,8 +155,8 @@ namespace EngineCore::FMT::Context {
 		}
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	Detail::FormatIndex BasicContext<CharFormat, ContextPackage>::GetFormatIndexThrow() {
+	template<typename CharFormat>
+	Detail::FormatIndex BasicContext<CharFormat>::GetFormatIndexThrow() {
 		const CharFormat* mainSubFormat = m_Format.GetBufferCurrentPos();
 
 		// I : if there is no number specified : ':' or '}'
@@ -203,21 +203,21 @@ namespace EngineCore::FMT::Context {
 		return Detail::FormatIndex();
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseSpecial() {
-			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseColor(); 	}
-		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseStyle(); 	}
-		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseFront(); 	}
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseSpecial() {
+			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualToForward(':', '}'))	{ m_TextPropertiesParser.ParseColor(); 	}
+		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualToForward(':', '}'))	{ m_TextPropertiesParser.ParseStyle(); 	}
+		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualToForward(':', '}'))	{ m_TextPropertiesParser.ParseFront(); 	}
 		else if (m_Format.IsEqualTo('T') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseTimer(); 	}
 		else if (m_Format.IsEqualTo('D') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseDate(); 		}
 		else if (m_Format.IsEqualTo('K') && m_Format.NextIsEqualToForward(':'))			{ ParseSetter();	}
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	void BasicContext<CharFormat, ContextPackage>::ParseVariable(Detail::FormatIndex formatIdx) {
+	template<typename CharFormat>
+	void BasicContext<CharFormat>::ParseVariable(Detail::FormatIndex formatIdx) {
 		FormatDataType saveFormatData = m_FormatData;
 		m_FormatData = FormatDataType{};
-		ContextPackage savePackage = ContextStyleSave();
+		Detail::TextProperties::Properties saveTextProperties = m_TextPropertiesParser.Save();
 
 		if (!m_FormatData.IsInit)
 			ParseFormatData();
@@ -225,13 +225,13 @@ namespace EngineCore::FMT::Context {
 		m_ContextArgsInterface->RunTypeAtIndex(formatIdx);
 
 		if (m_FormatData.KeepNewStyle == false)
-			ContextStyleRestore(savePackage);
+			m_TextPropertiesParser.Reload(saveTextProperties);
 
 		m_FormatData = saveFormatData;
 	}
 
-	template<typename CharFormat, typename ContextPackage>
-	bool BasicContext<CharFormat, ContextPackage>::Parse() {
+	template<typename CharFormat>
+	bool BasicContext<CharFormat>::Parse() {
 		m_Format.Forward();						// Skip {
 
 		if (m_Format.IsUpperCase())

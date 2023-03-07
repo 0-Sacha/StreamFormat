@@ -8,17 +8,17 @@
 #include "Utils/IndexArgs.h"
 #include "Utils/STDEnumerable.h"
 
-#include "EngineCore/FMT/Context/BasicContext/TextPropertiesParser.h"
+#include "FormatterTextPropertiesExecutor/IFormatterTextPropertiesExecutor.h"
 
 #include "FormatterContextArgsTuple.h"
 
 namespace EngineCore::FMT::Context {
    
     template<typename CharFormat, typename CharBuffer>
-    class BasicFormatterContext : public BasicContext<CharFormat, Detail::TextProperties::Properties>
+    class BasicFormatterContext : public BasicContext<CharFormat>
     {
     public:
-        using Base = BasicContext<CharFormat, Detail::TextProperties::Properties>;
+        using Base = BasicContext<CharFormat>;
         using M_Type = BasicFormatterContext<CharFormat, CharBuffer>;
 
         friend Base;
@@ -28,25 +28,23 @@ namespace EngineCore::FMT::Context {
         using typename Base::StringViewFormat;
         using typename Base::FormatBufferType;
         using typename Base::ContextArgsInterface;
+        using typename Base::TextPropertiesParser;
         
         using StringViewBuffer 	    = std::basic_string_view<CharBuffer>;
         using BufferOutType 	    = Detail::FMTBufferOut<CharBuffer>;
-        using TextPropertiesParser  = Detail::TextPropertiesParser<M_Type>;
 
     public:
-        BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager);
-	    BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager, const Detail::TextProperties::Properties* parentContextProperties);
-	    ~BasicFormatterContext();
-        void Terminate() override;
+	    BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager, Detail::IFormatterTextPropertiesExecutor<BufferOutType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
+	    ~BasicFormatterContext() override;
 
     protected:
         using Base::m_Format;
         using Base::m_ValuesIndex;
         using Base::m_FormatData;
         using Base::m_ContextArgsInterface;
+        using Base::m_TextPropertiesParser;
 
         BufferOutType 		                    m_BufferOut;
-        TextPropertiesParser 	                m_TextPropertiesParser;
 
     public:
         using Base::Format;
@@ -57,9 +55,6 @@ namespace EngineCore::FMT::Context {
 
         inline BufferOutType&			    BufferOut()			    { return m_BufferOut; }
         inline const BufferOutType&		    BufferOut() const	    { return m_BufferOut; }
-
-        inline TextPropertiesParser&			GetTextPropertiesParser()		{ return m_TextPropertiesParser; }
-        inline const TextPropertiesParser&		GetTextPropertiesParser() const	{ return m_TextPropertiesParser; }
 
     public:
         using Base::Run;
@@ -96,40 +91,17 @@ namespace EngineCore::FMT::Context {
 		using Base::ParseFormatDataCustom;
 		using Base::ParseFormatData;
 
-		using Base::ParseFormatDataColor;
-		using Base::ParseFormatDataStyle;
-		using Base::ParseFormatDataFront;
-		using Base::ContextStyleSave;
-		using Base::ContextStyleRestore;
-
 		using Base::ParseSpecial;
 		using Base::ParseVariable;
 		using Base::Parse;
 
-        void ParseFormatDataColor() override { m_TextPropertiesParser.ParseColor(); }
-        void ParseFormatDataStyle() override { m_TextPropertiesParser.ParseStyle(); }
-        void ParseFormatDataFront() override { m_TextPropertiesParser.ParseFront(); }
-
-        Detail::TextProperties::Properties ContextStyleSave() override { return m_TextPropertiesParser.Save(); }
-        void ContextStyleRestore(const Detail::TextProperties::Properties& data) override { m_TextPropertiesParser.Reload(data); }
-
     protected:
     	using Base::ParseTimer;
 		using Base::ParseDate;
-
-		using Base::ParseColor;
-		using Base::ParseStyle;
-		using Base::ParseFront;
-
 		using Base::ParseSetter;
 
         void ParseTimer() override;
         void ParseDate() override;
-
-        void ParseColor() override          { m_TextPropertiesParser.ParseColor(); }
-        void ParseStyle() override          { m_TextPropertiesParser.ParseStyle(); }
-        void ParseFront() override          { m_TextPropertiesParser.ParseFront(); }
-
         void ParseSetter() override;
 
     public:
@@ -205,7 +177,9 @@ namespace EngineCore::FMT::Context {
 #include "BaseFormatter/FormatTextPropertiesColor.h"
 #include "BaseFormatter/FormatTextPropertiesStyle.h"
 #include "BaseFormatter/FormatTextPropertiesFront.h"
-
 #include "BaseFormatter/BaseFormat.h"
 #include "BaseFormatter/FormatSTDLib.h"
 #include "BaseFormatter/FormatChrono.h"
+
+#include "FormatterTextPropertiesExecutor/FormatterNOTextPropertiesExecutor.h"
+#include "FormatterTextPropertiesExecutor/FormatterANSITextPropertiesExecutor.h"

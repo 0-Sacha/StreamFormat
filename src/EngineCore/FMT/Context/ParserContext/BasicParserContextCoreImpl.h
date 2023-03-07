@@ -5,24 +5,13 @@
 namespace EngineCore::FMT::Context
 {
 	template<typename CharFormat, typename CharBuffer>
-	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const CharBuffer* const buffer, const std::size_t size)
-		: Base()
-		, m_BufferIn(buffer, size)
-	{}
+	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(Detail::BufferInProperties<CharBuffer> bufferProperties, Detail::IParserTextPropertiesExecutor<BufferInType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties)
+		: Base(textPropertiesExecutor, parentContextProperties)
+		, m_BufferIn(bufferProperties)
+	{
+		textPropertiesExecutor.SetBuffer(m_BufferIn);
+	}
 	
-	template<typename CharFormat, typename CharBuffer>
-	template <std::size_t SIZE>
-	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const CharBuffer (&buffer)[SIZE])
-		: Base()
-		, m_BufferIn(buffer, SIZE)
-	{}
-
-	template<typename CharFormat, typename CharBuffer>
-	BasicParserContext<CharFormat, CharBuffer>::BasicParserContext(const std::basic_string_view<CharBuffer>& buffer)
-		: Base()
-		, m_BufferIn(buffer.data(), buffer.size())
-	{}
-
 	template<typename CharFormat, typename CharBuffer>
 	BasicParserContext<CharFormat, CharBuffer>::~BasicParserContext()
 	{}
@@ -45,10 +34,15 @@ namespace EngineCore::FMT::Context
 		}
 		else
 		{
-			ContextType child(m_BufferIn.GetBuffer(), m_BufferIn.GetBufferSize());
+			Detail::IParserTextPropertiesExecutor<BufferInType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IParserTextPropertiesExecutor<BufferInType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());;
+
+			Detail::BufferInProperties<CharBuffer> properties(m_BufferIn.GetBuffer(), m_BufferIn.GetBufferSize());
+			ContextType child(properties, cm_TextPropertiesExecutor, &m_TextPropertiesParser.GetCurrentContextProperties());
 			child.BufferIn().ReloadBuffer(m_BufferIn);
 			child.Run(format, &childContextArgsInterface);
 			m_BufferIn.ReloadBuffer(child.BufferIn());
+
+			cm_TextPropertiesExecutor.SetBuffer(&m_BufferIn);
 		}
 	}
 }

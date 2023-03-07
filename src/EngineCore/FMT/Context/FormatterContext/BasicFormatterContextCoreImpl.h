@@ -5,30 +5,18 @@
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
-	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager)
-		: Base()
+	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager, Detail::IFormatterTextPropertiesExecutor<BufferOutType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties)
+		: Base(textPropertiesExecutor, parentContextProperties)
 		, m_BufferOut(BufferOutManager)
-		, m_TextPropertiesParser(*this)
-	{}
-
-	template<typename CharFormat, typename CharBuffer>
-	BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager, const Detail::TextProperties::Properties* parentContextProperties)
-		: Base()
-		, m_BufferOut(BufferOutManager)
-		, m_TextPropertiesParser(*this, parentContextProperties)
-	{}
+	{
+		textPropertiesExecutor.SetBuffer(&m_BufferOut);
+	}
 
 	template<typename CharFormat, typename CharBuffer>
 	BasicFormatterContext<CharFormat, CharBuffer>::~BasicFormatterContext()
 	{
 		m_BufferOut.EndContext();
 		m_BufferOut.PushBackEndChar();
-	}
-
-	template<typename CharFormat, typename CharBuffer>
-	void BasicFormatterContext<CharFormat, CharBuffer>::Terminate()
-	{
-		m_TextPropertiesParser.Terminate();
 	}
 
 	template<typename CharFormat, typename CharBuffer>
@@ -46,10 +34,13 @@ namespace EngineCore::FMT::Context {
 		}
 		else
 		{
-			ContextType child(m_BufferOut.GetBufferOutManager(), &m_TextPropertiesParser.CurrentContexProperties);
+			Detail::IFormatterTextPropertiesExecutor<BufferOutType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IFormatterTextPropertiesExecutor<BufferOutType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());
+
+			ContextType child(m_BufferOut.GetBufferOutManager(), cm_TextPropertiesExecutor, &m_TextPropertiesParser.GetCurrentContextProperties());
 			child.BufferOut().ReloadBuffer(m_BufferOut);
 			child.Run(format, &childContextArgsInterface);
 			m_BufferOut.ReloadBuffer(child.BufferOut());
+			cm_TextPropertiesExecutor.SetBuffer(&m_BufferOut);
 		}
 	}
 }

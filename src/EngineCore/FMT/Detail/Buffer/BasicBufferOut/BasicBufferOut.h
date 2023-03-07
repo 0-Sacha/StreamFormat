@@ -111,20 +111,32 @@ namespace EngineCore::FMT::Detail {
 
 	public:
 		// Basic types
-		template<typename T> void BasicWriteType(T i) {}
+		template<typename Type, typename ...Rest>
+		inline void BasicWriteType(Type&& type, Rest&& ...rest) 	{ BasicWriteType(type); if (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...); };
+		
+		template<typename T> void BasicWriteType(T i) 				{}
 
+#if 0
 		inline void BasicWriteType(const std::int8_t i)		{ FastWriteInt(i); }
 		inline void BasicWriteType(const std::uint8_t i)	{ FastWriteUInt(i); }
 		inline void BasicWriteType(const std::int16_t i)	{ FastWriteInt(i); }
 		inline void BasicWriteType(const std::uint16_t i)	{ FastWriteUInt(i); }
 		inline void BasicWriteType(const std::int32_t i)	{ FastWriteInt(i); }
 		inline void BasicWriteType(const std::uint32_t i)	{ FastWriteUInt(i); }
-#ifdef ENGINECORE_COMPILER_VS
-		inline void BasicWriteType(const long i)			{ FastWriteInt(i); }
-		inline void BasicWriteType(const unsigned long i)	{ FastWriteUInt(i); }
-#endif
 		inline void BasicWriteType(const std::int64_t i)	{ FastWriteInt(i); }
 		inline void BasicWriteType(const std::uint64_t i)	{ FastWriteUInt(i); }
+#endif
+
+		inline void BasicWriteType(const signed char i)			{ FastWriteInt(i); }
+		inline void BasicWriteType(const unsigned char i)		{ FastWriteUInt(i); }
+		inline void BasicWriteType(const short i)				{ FastWriteInt(i); }
+		inline void BasicWriteType(const unsigned short i)		{ FastWriteUInt(i); }
+		inline void BasicWriteType(const int i)					{ FastWriteInt(i); }
+		inline void BasicWriteType(const unsigned int i)		{ FastWriteUInt(i); }
+		inline void BasicWriteType(const long i)				{ FastWriteInt(i); }
+		inline void BasicWriteType(const unsigned long i)		{ FastWriteUInt(i); }
+		inline void BasicWriteType(const long long i)			{ FastWriteInt(i); }
+		inline void BasicWriteType(const unsigned long long i)	{ FastWriteUInt(i); }
 
 		inline void BasicWriteType(const float i)		{ FastWriteFloat(i); }
 		inline void BasicWriteType(const double i)		{ FastWriteFloat(i); }

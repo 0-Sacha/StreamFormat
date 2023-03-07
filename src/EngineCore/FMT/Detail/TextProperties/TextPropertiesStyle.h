@@ -7,7 +7,8 @@ namespace EngineCore::FMT::Detail {
 
 	struct TextProperties::TextStyle
 	{
-		struct Reset {};
+		struct ResetStyle {};
+
 		enum class Intensity : std::uint8_t;
 		enum class Italic : std::uint8_t;
 		enum class Blink : std::uint8_t;
@@ -106,8 +107,6 @@ namespace EngineCore::FMT::Detail {
 
 	struct TextProperties::TextStyle::UnderlineColor
 	{
-		struct Reset {};
-
 		struct ColorCube;
 		struct Color24b;
 		enum class ColorType : std::uint8_t;
@@ -204,17 +203,19 @@ namespace EngineCore::FMT::Detail {
 		TextProperties::TextStyle::Underline				Underline			= TextProperties::TextStyle::Underline::Disable;
 		TextProperties::TextStyle::UnderlineColor::Color	UnderlineColor;
 
+		void ModifyReset() { *this = Style{}; }
+		
 		template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
 
+		void ModifyThrow(const TextProperties::TextStyle::ResetStyle& given) 		{ ModifyReset(); }
 		void ModifyThrow(const Style& given)										{ *this = given; }
-
-		void ModifyThrow(const TextProperties::TextStyle::Intensity& given) 		{ Intensity = given; 	}
-		void ModifyThrow(const TextProperties::TextStyle::Italic& given) 			{ Italic = given; 		}
-		void ModifyThrow(const TextProperties::TextStyle::Underline& given)			{ Underline = given;	}
-		void ModifyThrow(const TextProperties::TextStyle::Blink& given) 			{ Blink = given; 	}
+		void ModifyThrow(const TextProperties::TextStyle::Intensity& given) 		{ Intensity = given; }
+		void ModifyThrow(const TextProperties::TextStyle::Italic& given) 			{ Italic = given; }
+		void ModifyThrow(const TextProperties::TextStyle::Underline& given)			{ Underline = given; }
+		void ModifyThrow(const TextProperties::TextStyle::Blink& given) 			{ Blink = given; }
 		void ModifyThrow(const TextProperties::TextStyle::Inverted& given) 			{ Inverted = given; }
 		void ModifyThrow(const TextProperties::TextStyle::Ideogram& given) 			{ Ideogram = given; }
-		void ModifyThrow(const TextProperties::TextStyle::Script& given) 			{ Script = given; 	}
+		void ModifyThrow(const TextProperties::TextStyle::Script& given) 			{ Script = given; }
 
 		void ModifyThrow(const TextProperties::TextStyle::UnderlineColor::Color& given)		{ UnderlineColor = given; }
 		void ModifyThrow(const TextProperties::TextStyle::UnderlineColor::ColorCube& given) { UnderlineColor.Type = TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube; 	UnderlineColor.Data.ColorCube = given; }

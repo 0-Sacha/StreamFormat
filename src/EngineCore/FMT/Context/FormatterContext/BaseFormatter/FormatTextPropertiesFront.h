@@ -5,15 +5,18 @@
 namespace EngineCore::FMT {
 
 	template<typename FormatterContext>
-	struct FormatterType<Detail::TextProperties::TextFront::Front, FormatterContext>
+	struct FormatterType<Detail::TextProperties::TextFront::ResetFront, FormatterContext>
 	{
-		static void Format(const Detail::TextProperties::TextFront::Front t, FormatterContext& context) {
-			Detail::NoStrideFunction nostride(context.BufferOut());
-			context.BasicWriteType('\033', '[', t.FrontId, 'm');
-			context.GetTextPropertiesParser().FrontModif(t);
+		static void Format(const Detail::TextProperties::TextFront::ResetFront t, FormatterContext& context) {
+			context.GetTextPropertiesParser().FrontModifReset();
 		}
 	};
 
+	template<typename FormatterContext>
+	struct FormatterType<Detail::TextProperties::TextFront::FrontID, FormatterContext>
+	{
+		static void Format(const Detail::TextProperties::TextFront::FrontID t, FormatterContext& context) {
+			context.GetTextPropertiesParser().FrontModif(t);
+		}
+	};
 }
-
-

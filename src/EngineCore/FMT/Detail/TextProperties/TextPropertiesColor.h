@@ -6,7 +6,7 @@ namespace EngineCore::FMT::Detail
 {
 	struct TextProperties::TextColor
 	{
-		struct Reset {};
+		struct ResetColor {};
 	
 		enum class BasicColorFG : std::uint8_t;
 		enum class BasicColorBG : std::uint8_t;
@@ -414,13 +414,19 @@ namespace EngineCore::FMT::Detail
 		TextProperties::TextColor::ColorBG Bg;
 
 	public:
+		void ModifyReset()
+		{
+			Fg = TextProperties::TextColor::ColorFG{};
+			Bg = TextProperties::TextColor::ColorBG{};
+		}
+
 		template <typename T> void ModifyThrow(const T&) { throw FMTGivenTypeError(); }
 
 		void ModifyThrow(const Color& given) { *this = given; }
 
-		void ModifyThrow(const TextProperties::TextColor::Reset& given) {
-			Fg = TextProperties::TextColor::ColorFG{};
-			Bg = TextProperties::TextColor::ColorBG{};
+		void ModifyThrow(const TextProperties::TextColor::ResetColor& given)
+		{
+			ModifyReset();
 		}
 
 		void ModifyThrow(const TextProperties::TextColor::BasicColorFG& given) {

@@ -8,7 +8,7 @@ namespace EngineCore::FMT::Detail
 {
     struct TextProperties
     {
-        struct Reset {};
+		struct ResetProperties {};
 
         struct TextColor;
         struct TextStyle;

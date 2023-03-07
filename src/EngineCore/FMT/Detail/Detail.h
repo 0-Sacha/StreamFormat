@@ -15,20 +15,12 @@
 
 // TODO :
 //
-// 		Reformat Profiler / LoggerManager
-//
-//		/ same as # % 
-//
 // 		Check for escape char
 //
 //		Macro PackSave ; PackSave (foreshadowing for constexpr)
 //
-//		-- NOT POSSIBLE -- => FAST compile
-// 
-//		TOKEN bufferIn
+//		TOKENIZER bufferIn
 //
-//		JSON
-// 
 //		GLOBBER
 // 
 //		REGEX		
@@ -39,7 +31,8 @@
 //		End writing all writer and reader (string / char pt)
 //		
 
-namespace EngineCore::FMT::Context {
+namespace EngineCore::FMT::Context
+{
 	template<typename CharFormat = char, typename CharBuffer = CharFormat>
 	class BasicFormatterContext;
 

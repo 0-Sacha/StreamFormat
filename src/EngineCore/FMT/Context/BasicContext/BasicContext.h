@@ -7,11 +7,15 @@
 #include "Utils/BasicContextArgsTupleInterface.h"
 #include "Utils/FormatterContextTemplate.h"
 
-namespace EngineCore::FMT::Context {
-	template<typename CharFormat, typename ContextPackage>
-	class BasicContext {
+#include "TextPropertiesParser.h"
+
+namespace EngineCore::FMT::Context
+{
+	template<typename CharFormat>
+	class BasicContext
+	{
 	private:
-		using M_Type 				= BasicContext<CharFormat, ContextPackage>;
+		using M_Type 				= BasicContext<CharFormat>;
 	
 	public:
 		using CharFormatType 		= CharFormat;
@@ -25,15 +29,19 @@ namespace EngineCore::FMT::Context {
 
         using ContextArgsInterface 	= Detail::BasicArgsTupleInterface<CharFormatType>;
 
+		using TextPropertiesParser 	= Detail::BasicTextPropertiesParser<M_Type>;
+
 	public:
-		explicit BasicContext();
-		virtual void Terminate() {}
+		BasicContext(Detail::ITextPropertiesExecutor& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
+		virtual ~BasicContext() {}
+		void Terminate();
 
 	protected:
 		FormatBufferType		m_Format;
 		Detail::FormatIndex		m_ValuesIndex;
 		FormatDataType			m_FormatData;
 		ContextArgsInterface* 	m_ContextArgsInterface;
+		TextPropertiesParser 	m_TextPropertiesParser;
 
 	public:
 		inline FormatBufferType&		Format()					{ return m_Format; }
@@ -46,6 +54,9 @@ namespace EngineCore::FMT::Context {
 
 		inline ContextArgsInterface&		GetContextArgsInterface()						{ return *m_ContextArgsInterface; }
 		inline const ContextArgsInterface&	GetContextArgsInterface() const					{ return *m_ContextArgsInterface; }
+
+		inline TextPropertiesParser&			GetTextPropertiesParser()		{ return m_TextPropertiesParser; }
+        inline const TextPropertiesParser&		GetTextPropertiesParser() const	{ return m_TextPropertiesParser; }
 
 	protected:
 		virtual void SetArgsInterfaceCurrentContex() = 0;
@@ -75,12 +86,6 @@ namespace EngineCore::FMT::Context {
 		void ParseFormatDataCustom();
 		void ParseFormatData();
 
-		virtual void ParseFormatDataColor() = 0;
-		virtual void ParseFormatDataStyle() = 0;
-		virtual void ParseFormatDataFront() = 0;
-		virtual ContextPackage ContextStyleSave() = 0;
-		virtual void ContextStyleRestore(const ContextPackage& package) = 0;
-
 		void ParseSpecial();
 		void ParseVariable(typename Detail::FormatIndex formatIdx);
 		bool Parse();
@@ -88,11 +93,6 @@ namespace EngineCore::FMT::Context {
 	protected:
 		virtual void ParseTimer() = 0;
 		virtual void ParseDate() = 0;
-
-		virtual void ParseColor() = 0;
-		virtual void ParseStyle() = 0;
-		virtual void ParseFront() = 0;
-		
 		virtual void ParseSetter() = 0;
 
 	public:
@@ -120,5 +120,6 @@ namespace EngineCore::FMT::Context {
 			return res;
 		}
 	};
-
 }
+
+#include "TextPropertiesParserImpl.h"

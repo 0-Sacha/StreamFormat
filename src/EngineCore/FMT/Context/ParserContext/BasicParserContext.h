@@ -8,13 +8,15 @@
 
 #include "ParserContextArgsTuple.h"
 
+#include "ParserTextPropertiesExecutor/IParserTextPropertiesExecutor.h"
+
 namespace EngineCore::FMT::Context {
 
 	template<typename CharFormat, typename CharBuffer>
-	class BasicParserContext : public BasicContext<CharFormat, int>
+	class BasicParserContext : public BasicContext<CharFormat>
 	{
 	public:
-		using Base = BasicContext<CharFormat, int>;
+		using Base = BasicContext<CharFormat>;
 		using M_Type = BasicParserContext<CharFormat, CharBuffer>;
 
 		friend Base;
@@ -24,17 +26,14 @@ namespace EngineCore::FMT::Context {
 		using typename Base::StringViewFormat;
 		using typename Base::FormatBufferType;
 		using typename Base::ContextArgsInterface;
+        using typename Base::TextPropertiesParser;
 
 		using StringViewBuffer	= std::basic_string_view<CharBuffer>;
 		using BufferInType		= Detail::FMTBufferIn<CharBuffer>;
 
 	public:
-		template <std::size_t SIZE>
-		explicit BasicParserContext(const CharBuffer (&buffer)[SIZE]);
-		explicit BasicParserContext(const CharBuffer* const buffer, const std::size_t size);
-		explicit BasicParserContext(const std::basic_string_view<CharBuffer>& buffer);
-
-		~BasicParserContext();
+		BasicParserContext(Detail::BufferInProperties<CharBuffer> bufferProperties, Detail::IParserTextPropertiesExecutor<BufferInType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
+		~BasicParserContext() override;
 		void Terminate() override;
 
 	protected:
@@ -42,6 +41,7 @@ namespace EngineCore::FMT::Context {
 		using Base::m_ValuesIndex;
 		using Base::m_FormatData;
 		using Base::m_ContextArgsInterface;
+        using Base::m_TextPropertiesParser;
 
 		BufferInType 		m_BufferIn;
 
@@ -97,41 +97,17 @@ namespace EngineCore::FMT::Context {
 		using Base::ParseFormatDataCustom;
 		using Base::ParseFormatData;
 
-		using Base::ParseFormatDataColor;
-		using Base::ParseFormatDataStyle;
-		using Base::ParseFormatDataFront;
-		using Base::ContextStyleSave;
-		using Base::ContextStyleRestore;
-
 		using Base::ParseSpecial;
 		using Base::ParseVariable;
 		using Base::Parse;
 
-
-		void ParseFormatDataColor() override {}
-		void ParseFormatDataStyle() override {}
-		void ParseFormatDataFront() override {}
-
-		int ContextStyleSave()						{ return 0; }
-		void ContextStyleRestore(const int& data)	{ }
-
 	protected:
 		using Base::ParseTimer;
 		using Base::ParseDate;
-
-		using Base::ParseColor;
-		using Base::ParseStyle;
-		using Base::ParseFront;
-
 		using Base::ParseSetter;
 
 		void ParseTimer() override;
 		void ParseDate() override;
-
-		void ParseColor() override			{}
-		void ParseStyle() override			{}
-		void ParseFront() override			{}
-
 		void ParseSetter() override;
 
 	public:
@@ -193,7 +169,9 @@ namespace EngineCore::FMT::Context {
 #include "BaseParse/ParseTextPropertiesColor.h"
 #include "BaseParse/ParseTextPropertiesStyle.h"
 #include "BaseParse/ParseTextPropertiesFront.h"
-
 #include "BaseParse/BaseParser.h"
 #include "BaseParse/ParseSTDLib.h"
 #include "BaseParse/ParseChrono.h"
+
+#include "ParserTextPropertiesExecutor/ParserNOTextPropertiesExecutor.h"
+#include "ParserTextPropertiesExecutor/ParserANSITextPropertiesExecutor.h"

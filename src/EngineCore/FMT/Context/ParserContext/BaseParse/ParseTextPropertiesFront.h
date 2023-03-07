@@ -5,14 +5,18 @@
 namespace EngineCore::FMT {
 
 	template<typename ParserContext>
-	struct ParserType<Detail::TextProperties::TextFront::Front, ParserContext>
+	struct ParserType<Detail::TextProperties::TextFront::ResetFront, ParserContext>
 	{
-		static void Read(const Detail::TextProperties::TextFront::Front t, ParserContext& context) {
-			Detail::NoStrideFunction nostride(context.BufferOut());
-			context.BasicReadType('\033', '[', t.FrontId, 'm');
+		static void Format(const Detail::TextProperties::TextFront::ResetFront t, ParserContext& context) {
+			context.GetTextPropertiesParser().FrontModifReset();
 		}
 	};
 
+	template<typename ParserContext>
+	struct ParserType<Detail::TextProperties::TextFront::FrontID, ParserContext>
+	{
+		static void Format(const Detail::TextProperties::TextFront::FrontID t, ParserContext& context) {
+			context.GetTextPropertiesParser().FrontModif(t);
+		}
+	};
 }
-
-

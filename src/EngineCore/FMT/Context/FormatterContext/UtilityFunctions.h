@@ -20,7 +20,8 @@ namespace EngineCore::FMT {
 		void FormatInBufferOutManager(Detail::BasicBufferOutManager<CharBuffer>& bufferOutManager, const Detail::BufferInProperties<CharFormat>& bufferInProperties, bool newline, Args&& ...args)
 		{
 			using ContextType = Context::BasicFormatterContext<CharFormat, CharBuffer>;
-			ContextType context(bufferOutManager);
+			Detail::FormatterANSITextPropertiesExecutor<typename ContextType::BufferOutType> textPropertiesExecutor;
+			ContextType context(bufferOutManager, textPropertiesExecutor);
 
 			auto contextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
 			Detail::FMTFormatBuffer<CharFormat> format(bufferInProperties);
@@ -33,7 +34,9 @@ namespace EngineCore::FMT {
 		template<typename CharBuffer = char, typename T>
 		void FormatInBufferOutManager(Detail::BasicBufferOutManager<CharBuffer>& bufferOutManager, bool newline, T&& t)
 		{
-			Context::BasicFormatterContext<char, CharBuffer> context(bufferOutManager);
+			using ContextType = Context::BasicFormatterContext<char, CharBuffer>;
+			Detail::FormatterANSITextPropertiesExecutor<typename ContextType::BufferOutType> textPropertiesExecutor;
+			ContextType context(bufferOutManager, textPropertiesExecutor);
 			context.WriteType(t);
 			if (newline)
 				context.BufferOut().PushBack('\n');
