@@ -6,7 +6,8 @@
 namespace ProjectCore::FMT::Detail {
 
     template<typename CharBuffer>
-    class BasicBufferIn : public BasicBuffer<const CharBuffer> {
+    class BasicBufferIn : public BasicBuffer<const CharBuffer>
+    {
         
     protected:
         using Base = BasicBuffer<const CharBuffer>;
@@ -72,6 +73,7 @@ namespace ProjectCore::FMT::Detail {
             : Base(buffer, bufferSize)
         {}
 
+        ~BasicBufferIn() override = default;
 
     public:
         template<typename T> void FastReadInt	(T& i);

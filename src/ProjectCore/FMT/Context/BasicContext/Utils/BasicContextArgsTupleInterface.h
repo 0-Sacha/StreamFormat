@@ -14,6 +14,7 @@ namespace ProjectCore::FMT::Detail {
     {
         public:
             BasicArgsTupleInterface() {}
+            virtual ~BasicArgsTupleInterface() = default;
 
         public:
             virtual size_t Size() = 0;
@@ -71,7 +72,9 @@ namespace ProjectCore::FMT::Detail {
             BasicContextArgsTupleInterface()
                 : m_Context(nullptr)
             {}
+            ~BasicContextArgsTupleInterface() override = default;
 
+        public:
             void SetContext(std::any context) override { m_Context = std::any_cast<Context*>(context); }
             
         protected:
@@ -83,6 +86,7 @@ namespace ProjectCore::FMT::Detail {
     {
         public:
             EmptyContextArgsTupleInterface() {}
+            ~EmptyContextArgsTupleInterface() override = default;
 
         public:
             size_t Size() override { return 0; }

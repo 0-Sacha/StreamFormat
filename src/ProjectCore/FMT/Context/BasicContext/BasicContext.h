@@ -33,7 +33,7 @@ namespace ProjectCore::FMT::Context
 
 	public:
 		BasicContext(Detail::ITextPropertiesExecutor& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
-		virtual ~BasicContext() {}
+		virtual ~BasicContext() = default;
 		void Terminate();
 
 	protected:

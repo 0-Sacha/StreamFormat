@@ -8,6 +8,9 @@ namespace ProjectCore::FMT::Detail
 	class FormatterNOTextPropertiesExecutor : public IFormatterTextPropertiesExecutor<BufferOutType>
     {
     public:
+        ~FormatterNOTextPropertiesExecutor() override = default;
+        
+    public:
         using Base = IFormatterTextPropertiesExecutor<BufferOutType>;
         using Base::SetBuffer;
         

@@ -17,6 +17,7 @@ namespace ProjectCore::FMT::Detail {
 			m_Buffer.reset(new CharType[beginSize]);
 			m_BufferSize = beginSize;
 		}
+		~DynamicBufferOutManager() override = default;
 
     public:
 		static constexpr std::size_t	DEFAULT_BEGIN_SIZE	= 128;
@@ -65,8 +66,7 @@ namespace ProjectCore::FMT::Detail {
 				, m_MeanGeneratedSize(beginSize)
 			{}
 			
-			~ShrinkDynamicBufferOutManager()
-			{}
+			~ShrinkDynamicBufferOutManager() override = default;
 
 		protected:
 			void BeginContextImpl() override { ShrinkIfNeeded(); }

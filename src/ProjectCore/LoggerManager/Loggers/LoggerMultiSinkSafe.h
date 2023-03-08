@@ -23,6 +23,8 @@ namespace ProjectCore::LoggerManager::Detail {
 			: Base(std::forward<std::basic_string<CharType>>(name))
 		{}
 
+		~BasicLoggerMultiSinkSafeImpl() override = default;
+
 	public:
 		template<typename Format = std::string_view, typename ...Args>
 		requires FMT::Detail::IsFmtConvertible<Format>::Value

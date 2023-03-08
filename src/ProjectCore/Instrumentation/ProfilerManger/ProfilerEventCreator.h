@@ -19,7 +19,7 @@ namespace ProjectCore::Instrumentation
 			, m_Profiler(profiler)
 		{ Start(); }
 
-        ~ScopeProfile();
+        ~ScopeProfile() override;
     
     private:
         Profiler& m_Profiler;
@@ -30,7 +30,7 @@ namespace ProjectCore::Instrumentation
     public:
 		ObjectTracker(Profiler& profiler, const std::string& name, const std::string& category = "Tracker");
 		ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category = "Tracker");
-        ~ObjectTracker();
+        virtual ~ObjectTracker();
 
     public:
         void Snapshot();

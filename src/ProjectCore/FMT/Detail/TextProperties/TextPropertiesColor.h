@@ -199,6 +199,7 @@ namespace ProjectCore::FMT::Detail
 		}
 	};
 
+	// No need of virtual destructor since ColorCubeFG is purely a renaming of BaseColorCube
 	struct TextProperties::TextColor::ColorCubeFG : public TextProperties::TextColor::BaseColorCube
 	{
 	public:
@@ -232,6 +233,7 @@ namespace ProjectCore::FMT::Detail
 		}
 	};
 	
+	// No need of virtual destructor since ColorCubeBG is purely a renaming of BaseColorCube
 	struct TextProperties::TextColor::ColorCubeBG : public TextProperties::TextColor::BaseColorCube
 	{
 		constexpr explicit ColorCubeBG()														: TextProperties::TextColor::BaseColorCube() 		{}
@@ -303,12 +305,14 @@ namespace ProjectCore::FMT::Detail
 		return lhs.R == rhs.R && lhs.G == rhs.G && lhs.B == rhs.B;
 	}
 
+	// No need of virtual destructor since Color24bFG is purely a renaming of BaseColor24b
 	struct TextProperties::TextColor::Color24bFG : public TextProperties::TextColor::BaseColor24b
 	{
 		constexpr Color24bFG(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
 			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
 	};
 
+	// No need of virtual destructor since Color24bBG is purely a renaming of BaseColor24b
 	struct TextProperties::TextColor::Color24bBG : public TextProperties::TextColor::BaseColor24b
 	{
 		constexpr Color24bBG(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)

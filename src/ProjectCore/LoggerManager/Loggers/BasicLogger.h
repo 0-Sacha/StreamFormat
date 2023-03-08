@@ -30,6 +30,8 @@ namespace ProjectCore::LoggerManager::Detail {
 			SetPattern(format);
 		}
 
+		virtual ~BasicLoggerImpl() = default;
+
 	public:
 		void SetSeverity(const SeverityValueType& severity)	{ m_Severity = severity; }
 		void SetName(const std::string& name)				{ m_Name = name; }

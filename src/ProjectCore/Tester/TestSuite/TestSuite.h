@@ -32,6 +32,8 @@ namespace ProjectCore::Tester::Detail
 			, Location(location)
 		{}
 
+		virtual ~Test() = default;
+
 	protected:
 		virtual TestStatus RunImpl() = 0;
 

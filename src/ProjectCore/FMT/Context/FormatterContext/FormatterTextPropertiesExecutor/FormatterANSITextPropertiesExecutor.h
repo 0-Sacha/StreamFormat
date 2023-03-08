@@ -8,6 +8,9 @@ namespace ProjectCore::FMT::Detail
 	class FormatterANSITextPropertiesExecutor : public IFormatterTextPropertiesExecutor<BufferOutType>
     {
     public:
+        ~FormatterANSITextPropertiesExecutor() override = default;
+
+    public:
         using Base = IFormatterTextPropertiesExecutor<BufferOutType>;
         using Base::SetBuffer;
         

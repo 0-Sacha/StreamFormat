@@ -7,6 +7,9 @@ namespace ProjectCore::FMT::Detail {
     template <typename CharType>
     class BasicBufferOutManager
     {
+	public:
+		virtual ~BasicBufferOutManager() = default;
+
 	protected:
 		virtual void BeginContextImpl() {}
 		virtual void EndContextImpl(std::size_t totalGeneratedLength) {}

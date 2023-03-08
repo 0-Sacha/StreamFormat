@@ -126,6 +126,7 @@ namespace ProjectCore::FMT::Detail {
                 : Base()
                 , m_contextArgs(std::forward<Args>(args)...)
             {}
+            ~FormatterContextArgsTupleInterface() override = default;
             
         public:
             size_t Size() override

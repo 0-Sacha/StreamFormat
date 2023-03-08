@@ -8,6 +8,9 @@ namespace ProjectCore::FMT::Detail
 	class ParserNOTextPropertiesExecutor : public IParserTextPropertiesExecutor<ParserContext>
     {
     public:
+        ~ParserNOTextPropertiesExecutor() override = default;
+
+    public:
         using Base = IParserTextPropertiesExecutor<ParserContext>;
         using Base::SetContext;
         

@@ -114,12 +114,14 @@ namespace ProjectCore::FMT::Detail {
 		struct Color;
 	};
 
+	// No need of virtual destructor since Color24b is purely a renaming of BaseColor24b
 	struct TextProperties::TextStyle::UnderlineColor::Color24b : public TextProperties::TextColor::BaseColor24b
 	{
 		constexpr Color24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
 			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
 	};
 
+	// No need of virtual destructor since ColorCube is purely a renaming of BaseColorCube
 	struct TextProperties::TextStyle::UnderlineColor::ColorCube : public TextProperties::TextColor::BaseColorCube
 	{
 		constexpr ColorCube()															: TextProperties::TextColor::BaseColorCube() 	{}

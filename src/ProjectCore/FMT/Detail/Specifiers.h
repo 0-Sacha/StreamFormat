@@ -66,6 +66,7 @@ namespace ProjectCore::FMT::Detail {
 	static constexpr ShiftPrint ShiftPrint_Zeros = ShiftPrint('0', ' ');
 	static constexpr ShiftPrint ShiftPrint_Chevron = ShiftPrint('>', '<');
 
+	// No need of virtual destructor since DigitSize is purely a renaming of BasicCustomDataType<DataType, -1, -2>
 	struct DigitSize : public BasicCustomDataType<DataType, -1, -2>
 	{ 
 	public:
@@ -83,6 +84,7 @@ namespace ProjectCore::FMT::Detail {
 		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
+	// No need of virtual destructor since ShiftSize is purely a renaming of BasicCustomDataType<DataType, 0, -1>
 	struct ShiftSize : public BasicCustomDataType<DataType, 0, -1>
 	{ 
 	public:
@@ -100,7 +102,9 @@ namespace ProjectCore::FMT::Detail {
 		inline constexpr ShiftSize& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
-	struct FloatPrecision : public BasicCustomDataType<DataType, -1, -2> { 
+	// No need of virtual destructor since FloatPrecision is purely a renaming of BasicCustomDataType<DataType, -1, -2>
+	struct FloatPrecision : public BasicCustomDataType<DataType, -1, -2>
+	{ 
 	public:
 		static constexpr DataType BASIC_DECIMAL_SIZE = 2;
 

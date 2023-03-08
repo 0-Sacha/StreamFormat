@@ -121,7 +121,8 @@ namespace ProjectCore::FMT::Detail {
                 : Base()
                 , m_contextArgs(std::forward<Args>(args)...)
             {}
-            
+            ~ParserContextArgsTupleInterface() override = default;
+
         public:
             std::size_t Size() override
                     { return m_contextArgs.Size(); }

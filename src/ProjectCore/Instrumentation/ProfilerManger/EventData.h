@@ -17,6 +17,9 @@ namespace ProjectCore::Instrumentation
     class EventDataJsonObject final : public EventData
     {
     public:
+        ~EventDataJsonObject() override = default;
+        
+    public:
         void ToJson(JSON::Detail::JsonFormatter& formatter) const override
         {
             JSON::JsonSerializer<JSON::JsonStructObject>::Format(Data, formatter);

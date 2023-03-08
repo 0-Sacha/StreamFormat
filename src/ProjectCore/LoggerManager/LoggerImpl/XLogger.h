@@ -69,6 +69,8 @@ namespace ProjectCore::LoggerManager::Detail {
 			: Master(std::forward<Args>(args)...)
 		{}
 
+		~XLogger() override = default;
+
 	public:
 		template<typename Severity, typename Format = std::string_view, typename ...Args>
 			requires FMT::Detail::IsFmtConvertible<Format>::Value

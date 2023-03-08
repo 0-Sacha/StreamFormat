@@ -7,6 +7,9 @@ namespace ProjectCore::FMT::Detail
 	class ITextPropertiesExecutor
     {
     public:
+        virtual ~ITextPropertiesExecutor() = default;
+        
+    public:
         virtual void AllPropertiesReset() = 0;
 
     public:

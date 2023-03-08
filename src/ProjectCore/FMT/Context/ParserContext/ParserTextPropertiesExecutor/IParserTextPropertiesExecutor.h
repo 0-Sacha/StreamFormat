@@ -9,6 +9,9 @@ namespace ProjectCore::FMT::Detail
 	class IParserTextPropertiesExecutor : public ITextPropertiesExecutor
     {
     public:
+        ~IParserTextPropertiesExecutor() override = default;
+        
+    public:
         void SetBuffer(BufferInType* buffer) { m_Buffer = buffer; }
 
     protected:

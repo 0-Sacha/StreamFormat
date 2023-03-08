@@ -33,6 +33,8 @@ class BasicLoggerSink
                 , IsAsync(isAsync)
             {}
 
+        virtual ~BasicLoggerSink() = default;
+
     public:
         NameType Name = "";
         PatternType Pattern = "{name} >> {data}";

@@ -13,14 +13,6 @@ namespace ProjectCore::FMT::Context
 	}
 	
 	template<typename CharFormat, typename CharBuffer>
-	BasicParserContext<CharFormat, CharBuffer>::~BasicParserContext()
-	{}
-
-	template<typename CharFormat, typename CharBuffer>
-	void BasicParserContext<CharFormat, CharBuffer>::Terminate()
-	{}
-
-	template<typename CharFormat, typename CharBuffer>
 	template<typename NewCharFormat, typename ...Args>
 	void BasicParserContext<CharFormat, CharBuffer>::SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, Args&& ...args) {
 		using ContextType = BasicParserContext<NewCharFormat, CharBuffer>;

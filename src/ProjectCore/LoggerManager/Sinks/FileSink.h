@@ -28,6 +28,8 @@ namespace ProjectCore::LoggerManager::Sinks
                 , m_Stream(stream)
             {}
 
+            ~BasicConsoleSink() override = default;
+
         public:
             std::basic_ostream<CharType>& GetStream() { return m_Stream; }
         
@@ -57,6 +59,8 @@ namespace ProjectCore::LoggerManager::Sinks
                 : Base(std::forward<NameType>(name), isAsync)
                 , m_Stream(filePath, std::ios::out)
             {}
+
+            ~BasicFileSink() override = default;
 
         public:
             std::basic_ostream<CharType>& GetStream() { return m_Stream; }

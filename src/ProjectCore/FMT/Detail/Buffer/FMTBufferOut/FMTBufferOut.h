@@ -111,6 +111,8 @@ namespace ProjectCore::FMT::Detail {
 			, m_Indent(0)
 		{}
 
+		~FMTBufferOut() override = default;
+
 	public:
 		template<typename T> void BasicWriteInt		(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
 		template<typename T> void BasicWriteUInt	(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});

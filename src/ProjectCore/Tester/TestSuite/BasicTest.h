@@ -19,6 +19,8 @@ namespace ProjectCore::Tester::Detail
 			Link.Tests.insert({Name, this});
 		}
 
+		~TestFunction() override = default;
+
 	protected:
 		TestStatus RunImpl() override
 		{

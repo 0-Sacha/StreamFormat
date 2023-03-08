@@ -9,6 +9,9 @@ namespace ProjectCore::FMT::Detail
 	class IFormatterTextPropertiesExecutor : public ITextPropertiesExecutor
     {
     public:
+        ~IFormatterTextPropertiesExecutor() override = default;
+    
+    public:
         void SetBuffer(BufferOutType* buffer) { m_Buffer = buffer; }
 
     protected:

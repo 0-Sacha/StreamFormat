@@ -4,8 +4,8 @@
 
 #include <exception>
 
-namespace ProjectCore::FMT::Detail {
-
+namespace ProjectCore::FMT::Detail
+{
 	class FMTException 			: public std::exception {};
 	class FMTError				: public FMTException {};
 	class FMTUtilityException	: public FMTException {};
@@ -25,5 +25,4 @@ namespace ProjectCore::FMT::Detail {
 	class FMTImplError			: public FMTError {};
 	class FMTShouldNotEndHere 	: public FMTImplError {};
 	class FMTNotImplYet 		: public FMTImplError {};
-
 }

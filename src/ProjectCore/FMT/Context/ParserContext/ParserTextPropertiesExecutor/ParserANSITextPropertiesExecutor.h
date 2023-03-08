@@ -8,6 +8,9 @@ namespace ProjectCore::FMT::Detail
 	class ParserANSITextPropertiesExecutor : public IParserTextPropertiesExecutor<ParserContext>
     {
     public:
+        ~ParserANSITextPropertiesExecutor() override = default;
+        
+    public:
         using Base = IParserTextPropertiesExecutor<ParserContext>;
         using Base::SetBuffer;
         

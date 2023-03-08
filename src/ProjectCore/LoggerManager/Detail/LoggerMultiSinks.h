@@ -15,7 +15,8 @@ namespace ProjectCore::LoggerManager::Detail {
 	public:
 		BasicLoggerMultiSinkImpl() : m_Name("Logger:{sink}") {}
 		BasicLoggerMultiSinkImpl(std::basic_string<CharType>&& name) : m_Name(std::forward<std::basic_string<CharType>>(name)) {}
-
+		virtual ~BasicLoggerMultiSinkImpl() = default;
+		
 	public:
 		void SetName(std::basic_string<CharType>&& name)	{ m_Name = std::forward<std::basic_string<CharType>>(name); }
 

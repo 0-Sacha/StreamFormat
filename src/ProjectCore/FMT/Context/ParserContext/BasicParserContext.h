@@ -33,8 +33,7 @@ namespace ProjectCore::FMT::Context {
 
 	public:
 		BasicParserContext(Detail::BufferInProperties<CharBuffer> bufferProperties, Detail::IParserTextPropertiesExecutor<BufferInType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
-		~BasicParserContext() override;
-		void Terminate() override;
+		~BasicParserContext() override = default;
 
 	protected:
 		using Base::m_Format;

@@ -136,6 +136,8 @@ namespace ProjectCore::FMT::Detail
             : Base(buffer, bufferSize)
         {}
 
+        ~FMTBufferIn() override = default;
+
 	public:
         template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
         template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});

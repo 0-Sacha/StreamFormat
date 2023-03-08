@@ -31,19 +31,21 @@ namespace ProjectCore::FMT::Detail {
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
 
 	public:
-		explicit BasicBuffer()
+		BasicBuffer()
 			: m_Buffer(nullptr)
 			, m_CurrentPos(nullptr)
 			, m_BufferEnd(nullptr)
 			, m_BufferSize(0)
 		{}
 
-		explicit BasicBuffer(CharBuffer *const buffer, const std::size_t size)
+		BasicBuffer(CharBuffer *const buffer, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(m_Buffer)
 			, m_BufferEnd(m_Buffer + size)
 			, m_BufferSize(size)
 		{}
+
+		virtual ~BasicBuffer() = default;
 
 	public:
 		template <typename OtherBuffer>

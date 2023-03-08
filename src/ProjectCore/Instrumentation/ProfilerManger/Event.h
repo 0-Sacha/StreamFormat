@@ -86,7 +86,7 @@ namespace ProjectCore::Instrumentation
 			, Data(data)
 		{}
 
-		~Event() {}
+		virtual ~Event() = default;
 
 	public:
         void Trigger() { TimeOfEvent = Instrumentation::GetMicroseconds(); }

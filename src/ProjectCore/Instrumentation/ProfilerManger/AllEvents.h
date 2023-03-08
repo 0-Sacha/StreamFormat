@@ -15,6 +15,8 @@ namespace ProjectCore::Instrumentation
             : Event(std::move(name), std::move(category), EventType::Complete)
         {}
 
+        ~DurationEvent() override = default;
+
     public:
         void Start()    { Trigger(); }
         void Stop()     { Duration = Instrumentation::GetMicroseconds() - TimeOfEvent; }
@@ -30,5 +32,8 @@ namespace ProjectCore::Instrumentation
         SampleEvent(std::string&& name, std::string&& category)
             : Event(std::move(name), std::move(category), EventType::Sample)
         {}
+
+        ~SampleEvent() override = default;
+
     };
 }

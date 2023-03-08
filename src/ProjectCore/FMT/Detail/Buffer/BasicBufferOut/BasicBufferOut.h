@@ -87,6 +87,9 @@ namespace ProjectCore::FMT::Detail {
 			SetBufferCurrentPos(m_BufferOutManager->GetBuffer());
 		}
 
+		~BasicBufferOut() override = default;
+
+	public:
 		void SetBufferOutManager(BasicBufferOutManager<CharBuffer>& bufferOutManager)
 		{
 			m_BufferOutManager = &bufferOutManager;

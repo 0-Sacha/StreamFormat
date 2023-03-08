@@ -151,6 +151,8 @@ namespace ProjectCore::FMT::Detail {
 		FMTFormatBuffer(const CharFormat* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
+
+		~FMTFormatBuffer() override = default;
 		
 	public:
 		template<typename T> bool ReadInt(T& t);
