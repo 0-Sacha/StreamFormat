@@ -107,5 +107,62 @@ namespace ProjectCore::FMT::Detail
 		ITextPropertiesExecutor& 			m_TextPropertiesExecutor;
 		const TextProperties::Properties* 	m_BaseContextProperties;
 		TextProperties::Properties 			m_CurrentContextProperties;
+	
+	public:
+		template <typename T>
+		inline void AskColorModif(const T& modif) { if (m_CurrentContextProperties.Color.NeedModif(modif)) ColorModif(modif); }
+		template <typename T>
+		inline void AskStyleModif(const T& modif) { if (m_CurrentContextProperties.Style.NeedModif(modif)) StyleModif(modif); }
+		template <typename T>
+		inline void AskFrontModif(const T& modif) { if (m_CurrentContextProperties.Front.NeedModif(modif)) FrontModif(modif); }
+
+		void AskColorModif(const TextProperties::TextColor::BasicColor modif)
+		{
+			if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+			{
+				if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+					return ColorModif(modif);
+				return ColorModif(modif.Fg);
+			}
+			if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+				return ColorModif(modif.Bg);
+		}
+
+		void AskColorModif(const TextProperties::TextColor::ColorCube& modif)
+		{
+			if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+			{
+				if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+					return ColorModif(modif);
+				return ColorModif(modif.Fg);
+			}
+			if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+				return ColorModif(modif.Bg);
+		}
+
+		void AskColorModif(const TextProperties::TextColor::Color24b& modif)
+		{
+			if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+			{
+				if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+					return ColorModif(modif);
+				return ColorModif(modif.Fg);
+			}
+			if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+				return ColorModif(modif.Bg);
+		}
+
+		void AskColorModif(const TextProperties::TextColor::ColorFG modif)
+		{
+			ReloadColorFG(modif);
+		}
+		void AskColorModif(const TextProperties::TextColor::ColorBG modif)
+		{
+			ReloadColorBG(modif);
+		}
+		void AskColorModif(const TextProperties::TextColor::Color& modif)
+		{
+			ReloadColor(modif);
+		}
 	};
 }

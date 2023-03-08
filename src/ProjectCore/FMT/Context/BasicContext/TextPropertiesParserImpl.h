@@ -8,35 +8,35 @@ namespace ProjectCore::FMT::Detail
 	void BasicTextPropertiesParser<BasicContext>::ColorExecuteOnIndex(const FormatIndex& index)
 	{
 		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color>(			index, [this](const TextProperties::TextColor::Color& data) 				{ this->ReloadColor(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorFG>(	index, [this](const TextProperties::TextColor::BasicColorFG& data) 			{ this->ColorModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorBG>(	index, [this](const TextProperties::TextColor::BasicColorBG& data) 			{ this->ColorModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::ColorCubeFG>(	index, [this](const Detail::TextProperties::TextColor::ColorCubeFG& data) 	{ this->ColorModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::ColorCubeBG>(	index, [this](const Detail::TextProperties::TextColor::ColorCubeBG& data) 	{ this->ColorModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color24bFG>(		index, [this](const Detail::TextProperties::TextColor::Color24bFG& data) 	{ this->ColorModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color24bBG>(		index, [this](const Detail::TextProperties::TextColor::Color24bBG& data) 	{ this->ColorModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorFG>(	index, [this](const TextProperties::TextColor::BasicColorFG& data) 			{ this->AskColorModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::BasicColorBG>(	index, [this](const TextProperties::TextColor::BasicColorBG& data) 			{ this->AskColorModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::ColorCubeFG>(	index, [this](const Detail::TextProperties::TextColor::ColorCubeFG& data) 	{ this->AskColorModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::ColorCubeBG>(	index, [this](const Detail::TextProperties::TextColor::ColorCubeBG& data) 	{ this->AskColorModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color24bFG>(		index, [this](const Detail::TextProperties::TextColor::Color24bFG& data) 	{ this->AskColorModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextColor::Color24bBG>(		index, [this](const Detail::TextProperties::TextColor::Color24bBG& data) 	{ this->AskColorModif(data); } );
 	}
 
 	template <typename BasicContext>
 	void BasicTextPropertiesParser<BasicContext>::FrontExecuteOnIndex(const FormatIndex& index)
 	{
 		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextFront::Front>(		index, [this](const TextProperties::TextFront::Front& data) 	{ this->ReloadFront(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextFront::FrontID>(	index, [this](const TextProperties::TextFront::FrontID& data) 	{ this->FrontModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextFront::FrontID>(	index, [this](const TextProperties::TextFront::FrontID& data) 	{ this->AskFrontModif(data); } );
 	}
 	
 	template <typename BasicContext>
 	void BasicTextPropertiesParser<BasicContext>::StyleExecuteOnIndex(const FormatIndex& index)
 	{
 		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Style>(		index, [this](const TextProperties::TextStyle::Style& data) 		{ this->ReloadStyle(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Intensity>(	index, [this](const TextProperties::TextStyle::Intensity& data) 	{ this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Italic>(		index, [this](const TextProperties::TextStyle::Italic& data) 		{ this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Underline>(	index, [this](const TextProperties::TextStyle::Underline& data) 	{ this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Blink>(		index, [this](const TextProperties::TextStyle::Blink& data) 		{ this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Inverted>(	index, [this](const TextProperties::TextStyle::Inverted& data) 		{ this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Ideogram>(	index, [this](const TextProperties::TextStyle::Ideogram& data) 		{ this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Script>(		index, [this](const TextProperties::TextStyle::Script& data) 		{ this->StyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Intensity>(	index, [this](const TextProperties::TextStyle::Intensity& data) 	{ this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Italic>(		index, [this](const TextProperties::TextStyle::Italic& data) 		{ this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Underline>(	index, [this](const TextProperties::TextStyle::Underline& data) 	{ this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Blink>(		index, [this](const TextProperties::TextStyle::Blink& data) 		{ this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Inverted>(	index, [this](const TextProperties::TextStyle::Inverted& data) 		{ this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Ideogram>(	index, [this](const TextProperties::TextStyle::Ideogram& data) 		{ this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::Script>(		index, [this](const TextProperties::TextStyle::Script& data) 		{ this->AskStyleModif(data); } );
 
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::ColorCube>(	index, [this](const TextProperties::TextStyle::UnderlineColor::ColorCube& data) { this->StyleModif(data); } );
-		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::Color24b>(	index, [this](const TextProperties::TextStyle::UnderlineColor::Color24b& data) 	{ this->StyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::ColorCube>(	index, [this](const TextProperties::TextStyle::UnderlineColor::ColorCube& data) { this->AskStyleModif(data); } );
+		m_Context.GetContextArgsInterface().template RunFuncFromTypeAtIndex<TextProperties::TextStyle::UnderlineColor::Color24b>(	index, [this](const TextProperties::TextStyle::UnderlineColor::Color24b& data) 	{ this->AskStyleModif(data); } );
 	}
 
 
@@ -62,14 +62,14 @@ namespace ProjectCore::FMT::Detail
 					TextProperties::TextColor::BasicColorBG colorBg;
 					bool colorBgFound = GetColorCode(colorBg);
 					if (colorBgFound && colorFgFound)
-						ColorModif(TextProperties::TextColor::BasicColor{ colorFg, colorBg });
+						AskColorModif(TextProperties::TextColor::BasicColor{ colorFg, colorBg });
 					else
 						ReloadDefaultColor();
 				}
 				else
 				{
 					if (colorFgFound)
-						ColorModif(colorFg);
+						AskColorModif(colorFg);
 					else
 						ReloadDefaultColor();
 				}
@@ -219,51 +219,36 @@ namespace ProjectCore::FMT::Detail
 	template <typename BasicContext>
 	void BasicTextPropertiesParser<BasicContext>::ReloadColorFG(const TextProperties::TextColor::ColorFG& target)
 	{
-		if (target.Type != m_CurrentContextProperties.Color.Fg.Type) {
-			switch (target.Type) {
-			case TextProperties::TextColor::ColorType::Default:
-				ColorModif(TextProperties::TextColor::BasicColorFG::Default);
-				m_CurrentContextProperties.Color.Fg.Data.BasicColor = TextProperties::TextColor::BasicColorFG::Default;
-				break;
+		if (target.Type != m_CurrentContextProperties.Color.Fg.Type)
+		{
+			switch (target.Type)
+			{
 			case TextProperties::TextColor::ColorType::BasicColor:
 				ColorModif(target.Data.BasicColor);
-				m_CurrentContextProperties.Color.Fg.Data.BasicColor = target.Data.BasicColor;
 				break;
 			case TextProperties::TextColor::ColorType::ColorCube:
 				ColorModif(target.Data.ColorCube);
-				m_CurrentContextProperties.Color.Fg.Data.ColorCube = target.Data.ColorCube;
 				break;
 			case TextProperties::TextColor::ColorType::Color24b:
 				ColorModif(target.Data.Color24b);
-				m_CurrentContextProperties.Color.Fg.Data.Color24b = target.Data.Color24b;
 				break;
 			}
-			m_CurrentContextProperties.Color.Fg.Type = target.Type;
 		}
-		else {
-			switch (target.Type) {
-			case TextProperties::TextColor::ColorType::Default:
-				break;
+		else
+		{
+			switch (target.Type)
+			{
 			case TextProperties::TextColor::ColorType::BasicColor:
 				if (m_CurrentContextProperties.Color.Fg.Data.BasicColor != target.Data.BasicColor)
-				{
 					ColorModif(target.Data.BasicColor);
-					m_CurrentContextProperties.Color.Fg.Data.BasicColor = target.Data.BasicColor;
-				}
 				break;
 			case TextProperties::TextColor::ColorType::ColorCube:
 				if (m_CurrentContextProperties.Color.Fg.Data.ColorCube != target.Data.ColorCube)
-				{
 					ColorModif(target.Data.ColorCube);
-					m_CurrentContextProperties.Color.Fg.Data.ColorCube = target.Data.ColorCube;
-				}
 				break;
 			case TextProperties::TextColor::ColorType::Color24b:
 				if (m_CurrentContextProperties.Color.Fg.Data.Color24b != target.Data.Color24b)
-				{
 					ColorModif(target.Data.Color24b);
-					m_CurrentContextProperties.Color.Fg.Data.Color24b = target.Data.Color24b;
-				}
 				break;
 			}
 		}
@@ -276,51 +261,32 @@ namespace ProjectCore::FMT::Detail
 		{
 			switch (target.Type)
 			{
-				case TextProperties::TextColor::ColorType::Default:
-					ColorModif(TextProperties::TextColor::BasicColorBG::Default);
-					m_CurrentContextProperties.Color.Bg.Data.BasicColor = TextProperties::TextColor::BasicColorBG::Default;
-					break;
 				case TextProperties::TextColor::ColorType::BasicColor:
 					ColorModif(target.Data.BasicColor);
-					m_CurrentContextProperties.Color.Bg.Data.BasicColor = target.Data.BasicColor;
 					break;
 				case TextProperties::TextColor::ColorType::ColorCube:
 					ColorModif(target.Data.ColorCube);
-					m_CurrentContextProperties.Color.Bg.Data.ColorCube = target.Data.ColorCube;
 					break;
 				case TextProperties::TextColor::ColorType::Color24b:
 					ColorModif(target.Data.Color24b);
-					m_CurrentContextProperties.Color.Bg.Data.Color24b = target.Data.Color24b;
 					break;
 			}
-			m_CurrentContextProperties.Color.Bg.Type = target.Type;
 		}
 		else
 		{
 			switch (target.Type)
 			{
-				case TextProperties::TextColor::ColorType::Default:
-					break;
 				case TextProperties::TextColor::ColorType::BasicColor:
 					if (m_CurrentContextProperties.Color.Bg.Data.BasicColor != target.Data.BasicColor)
-					{
 						ColorModif(target.Data.BasicColor);
-						m_CurrentContextProperties.Color.Bg.Data.BasicColor = target.Data.BasicColor;
-					}
 					break;
 				case TextProperties::TextColor::ColorType::ColorCube:
 					if (m_CurrentContextProperties.Color.Bg.Data.ColorCube != target.Data.ColorCube)
-					{
 						ColorModif(target.Data.ColorCube);
-						m_CurrentContextProperties.Color.Bg.Data.ColorCube = target.Data.ColorCube;
-					}
 					break;
 				case TextProperties::TextColor::ColorType::Color24b:
 					if (m_CurrentContextProperties.Color.Bg.Data.Color24b != target.Data.Color24b) 
-					{
 						ColorModif(target.Data.Color24b);
-						m_CurrentContextProperties.Color.Bg.Data.Color24b = target.Data.Color24b;
-					}
 					break;
 			}
 		}
@@ -329,14 +295,14 @@ namespace ProjectCore::FMT::Detail
 	template <typename BasicContext>
 	void BasicTextPropertiesParser<BasicContext>::ReloadStyle(const TextProperties::TextStyle::Style& target)
 	{
-		if (target.Intensity != m_CurrentContextProperties.Style.Intensity) 	{ StyleModif(target.Intensity); 	m_CurrentContextProperties.Style.Intensity = target.Intensity; 	}
+		if (target.Intensity != m_CurrentContextProperties.Style.Intensity) { StyleModif(target.Intensity); 	m_CurrentContextProperties.Style.Intensity = target.Intensity; 	}
 		if (target.Italic != m_CurrentContextProperties.Style.Italic) 		{ StyleModif(target.Italic); 		m_CurrentContextProperties.Style.Italic = target.Italic; 		}
-		if (target.Blink != m_CurrentContextProperties.Style.Blink) 			{ StyleModif(target.Blink); 		m_CurrentContextProperties.Style.Blink = target.Blink; 			}
+		if (target.Blink != m_CurrentContextProperties.Style.Blink) 		{ StyleModif(target.Blink); 		m_CurrentContextProperties.Style.Blink = target.Blink; 			}
 		if (target.Inverted != m_CurrentContextProperties.Style.Inverted) 	{ StyleModif(target.Inverted); 	m_CurrentContextProperties.Style.Inverted = target.Inverted; 	}
 		if (target.Ideogram != m_CurrentContextProperties.Style.Ideogram) 	{ StyleModif(target.Ideogram); 	m_CurrentContextProperties.Style.Ideogram = target.Ideogram; 	}
 		if (target.Script != m_CurrentContextProperties.Style.Script) 		{ StyleModif(target.Script); 		m_CurrentContextProperties.Style.Script = target.Script; 		}
 
-		if (target.Underline != m_CurrentContextProperties.Style.Underline) 	{ StyleModif(target.Underline); 	m_CurrentContextProperties.Style.Underline = target.Underline; }
+		if (target.Underline != m_CurrentContextProperties.Style.Underline) { StyleModif(target.Underline); 	m_CurrentContextProperties.Style.Underline = target.Underline; }
 
 		if (target.UnderlineColor.Type != m_CurrentContextProperties.Style.UnderlineColor.Type)
 		{

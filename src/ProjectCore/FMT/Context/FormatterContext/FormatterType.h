@@ -20,15 +20,15 @@ namespace ProjectCore::FMT
 
 #define PROJECTCORE_INTERNAL_ADDVALUE(x) value.x
 #define PROJECTCORE_AUTO_FORMATTER_X(Type, fmt, ...)	template<typename FormatterContext>\
-													struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
-														static void Format(const Type& value, FormatterContext& context) {\
-															context.SubContext(fmt, FOR_EACH(PROJECTCORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
-														}\
-													};
+														struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
+															static void Format(const Type& value, FormatterContext& context) {\
+																context.SubContext(fmt __VA_OPT__(,) FOR_EACH(PROJECTCORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
+															}\
+														};
 
 #define PROJECTCORE_AUTO_FORMATTER(Type, fmt, ...)	template<typename FormatterContext>\
 													struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
 														static void Format(const Type& value, FormatterContext& context) {\
-															context.SubContext(fmt, __VA_ARGS__);\
+															context.SubContext(fmt __VA_OPT__(,) __VA_ARGS__);\
 														}\
 													};

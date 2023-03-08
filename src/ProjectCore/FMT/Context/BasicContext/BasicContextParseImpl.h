@@ -135,9 +135,11 @@ namespace ProjectCore::FMT::Context {
 
 	/////---------- Impl ----------/////
 	template<typename CharFormat>
-	void BasicContext<CharFormat>::ParseFormatData() {
+	void BasicContext<CharFormat>::ParseFormatData()
+	{
 		// ':' for classic use ; '{' for NextOverride
-		if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('{')) {
+		if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('{'))
+		{
 			m_FormatData.HasSpec = true;
 			while (!m_Format.IsEndOfParameter()) {
 				m_Format.Forward();
@@ -204,13 +206,14 @@ namespace ProjectCore::FMT::Context {
 	}
 
 	template<typename CharFormat>
-	void BasicContext<CharFormat>::ParseSpecial() {
-			 if (m_Format.IsEqualTo('C') && m_Format.NextIsEqualToForward(':', '}'))	{ m_TextPropertiesParser.ParseColor(); 	}
-		else if (m_Format.IsEqualTo('S') && m_Format.NextIsEqualToForward(':', '}'))	{ m_TextPropertiesParser.ParseStyle(); 	}
-		else if (m_Format.IsEqualTo('F') && m_Format.NextIsEqualToForward(':', '}'))	{ m_TextPropertiesParser.ParseFront(); 	}
-		else if (m_Format.IsEqualTo('T') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseTimer(); 	}
-		else if (m_Format.IsEqualTo('D') && m_Format.NextIsEqualToForward(':', '}'))	{ ParseDate(); 		}
-		else if (m_Format.IsEqualTo('K') && m_Format.NextIsEqualToForward(':'))			{ ParseSetter();	}
+	void BasicContext<CharFormat>::ParseSpecial()
+	{
+			 if (m_Format.IsEqualToForward('C'))	{ m_TextPropertiesParser.ParseColor(); 	}
+		else if (m_Format.IsEqualToForward('S'))	{ m_TextPropertiesParser.ParseStyle(); 	}
+		else if (m_Format.IsEqualToForward('F'))	{ m_TextPropertiesParser.ParseFront(); 	}
+		else if (m_Format.IsEqualToForward('T'))	{ ParseTimer(); 	}
+		else if (m_Format.IsEqualToForward('D'))	{ ParseDate(); 		}
+		else if (m_Format.IsEqualToForward('K'))	{ ParseSetter();	}
 	}
 
 	template<typename CharFormat>

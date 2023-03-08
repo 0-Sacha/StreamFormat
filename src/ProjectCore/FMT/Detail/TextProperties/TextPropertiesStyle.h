@@ -190,6 +190,7 @@ namespace ProjectCore::FMT::Detail {
 		return false;
 	}
 
+	bool operator==(const TextProperties::TextStyle::Style& lhs, const TextProperties::TextStyle::Style& rhs);
 	struct TextProperties::TextStyle::Style
 	{
 	public:
@@ -205,6 +206,7 @@ namespace ProjectCore::FMT::Detail {
 		TextProperties::TextStyle::Underline				Underline			= TextProperties::TextStyle::Underline::Disable;
 		TextProperties::TextStyle::UnderlineColor::Color	UnderlineColor;
 
+	public:
 		void ModifyReset() { *this = Style{}; }
 		
 		template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
@@ -222,6 +224,23 @@ namespace ProjectCore::FMT::Detail {
 		void ModifyThrow(const TextProperties::TextStyle::UnderlineColor::Color& given)		{ UnderlineColor = given; }
 		void ModifyThrow(const TextProperties::TextStyle::UnderlineColor::ColorCube& given) { UnderlineColor.Type = TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube; 	UnderlineColor.Data.ColorCube = given; }
 		void ModifyThrow(const TextProperties::TextStyle::UnderlineColor::Color24b& given) 	{ UnderlineColor.Type = TextProperties::TextStyle::UnderlineColor::ColorType::Color24b; 	UnderlineColor.Data.Color24b = given; }
+	
+	public:
+		template <typename T> bool NeedModif(const T&) { throw Detail::FMTGivenTypeError{}; }
+
+		bool NeedModif(const TextProperties::TextStyle::ResetStyle& given) 		{ return true; }
+		bool NeedModif(const Style& given)										{ return *this != given; }
+		bool NeedModif(const TextProperties::TextStyle::Intensity& given) 		{ return Intensity != given; }
+		bool NeedModif(const TextProperties::TextStyle::Italic& given) 			{ return Italic != given; }
+		bool NeedModif(const TextProperties::TextStyle::Underline& given)		{ return Underline != given; }
+		bool NeedModif(const TextProperties::TextStyle::Blink& given) 			{ return Blink != given; }
+		bool NeedModif(const TextProperties::TextStyle::Inverted& given) 		{ return Inverted != given; }
+		bool NeedModif(const TextProperties::TextStyle::Ideogram& given) 		{ return Ideogram != given; }
+		bool NeedModif(const TextProperties::TextStyle::Script& given) 			{ return Script != given; }
+
+		bool NeedModif(const TextProperties::TextStyle::UnderlineColor::Color& given)		{ return UnderlineColor != given; }
+		bool NeedModif(const TextProperties::TextStyle::UnderlineColor::ColorCube& given) 	{ return UnderlineColor.Type != TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube || UnderlineColor.Data.ColorCube != given; }
+		bool NeedModif(const TextProperties::TextStyle::UnderlineColor::Color24b& given) 	{ return UnderlineColor.Type != TextProperties::TextStyle::UnderlineColor::ColorType::Color24b || UnderlineColor.Data.Color24b != given; }
 	};
 
 	inline bool operator==(const TextProperties::TextStyle::Style& lhs, const TextProperties::TextStyle::Style& rhs)

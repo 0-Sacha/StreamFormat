@@ -336,7 +336,6 @@ namespace ProjectCore::FMT::Detail
 
 	enum class TextProperties::TextColor::ColorType : std::uint8_t
 	{
-		Default,
 		BasicColor,
 		ColorCube,
 		Color24b
@@ -367,13 +366,13 @@ namespace ProjectCore::FMT::Detail
 	struct TextProperties::TextColor::ColorFG
 	{
 		TextProperties::TextColor::ColorFGData 	Data;
-		TextProperties::TextColor::ColorType	Type { TextProperties::TextColor::ColorType::Default };
+		TextProperties::TextColor::ColorType	Type { TextProperties::TextColor::ColorType::BasicColor };
 	};
 
 	struct TextProperties::TextColor::ColorBG
 	{
 		TextProperties::TextColor::ColorBGData 	Data;
-		TextProperties::TextColor::ColorType	Type { TextProperties::TextColor::ColorType::Default };
+		TextProperties::TextColor::ColorType	Type { TextProperties::TextColor::ColorType::BasicColor };
 	};
 
 	inline bool operator==(const TextProperties::TextColor::ColorFG& lhs, const TextProperties::TextColor::ColorFG& rhs)
@@ -382,7 +381,6 @@ namespace ProjectCore::FMT::Detail
 			return false;
 		switch(lhs.Type)
 		{
-			case TextProperties::TextColor::ColorType::Default:		return true;
 			case TextProperties::TextColor::ColorType::BasicColor: 	return lhs.Data.BasicColor == rhs.Data.BasicColor;
 			case TextProperties::TextColor::ColorType::ColorCube: 	return lhs.Data.ColorCube == rhs.Data.ColorCube;
 			case TextProperties::TextColor::ColorType::Color24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
@@ -396,7 +394,6 @@ namespace ProjectCore::FMT::Detail
 			return false;
 		switch(lhs.Type)
 		{
-			case TextProperties::TextColor::ColorType::Default:		return true;
 			case TextProperties::TextColor::ColorType::BasicColor: 	return lhs.Data.BasicColor == rhs.Data.BasicColor;
 			case TextProperties::TextColor::ColorType::ColorCube: 	return lhs.Data.ColorCube == rhs.Data.ColorCube;
 			case TextProperties::TextColor::ColorType::Color24b: 	return lhs.Data.Color24b == rhs.Data.Color24b;
@@ -428,39 +425,57 @@ namespace ProjectCore::FMT::Detail
 
 		void ModifyThrow(const Color& given) { *this = given; }
 
-		void ModifyThrow(const TextProperties::TextColor::ResetColor& given)
-		{
+		void ModifyThrow(const TextProperties::TextColor::ResetColor& given) {
 			ModifyReset();
 		}
-
 		void ModifyThrow(const TextProperties::TextColor::BasicColorFG& given) {
 			Fg.Type = TextProperties::TextColor::ColorType::BasicColor;
 			Fg.Data.BasicColor = given;
 		}
-
 		void ModifyThrow(const TextProperties::TextColor::BasicColorBG& given) {
 			Bg.Type = TextProperties::TextColor::ColorType::BasicColor;
 			Bg.Data.BasicColor = given;
 		}
-
 		void ModifyThrow(const TextProperties::TextColor::ColorCubeFG& given) {
 			Fg.Type = TextProperties::TextColor::ColorType::ColorCube;
 			Fg.Data.ColorCube = given;
 		}
-
 		void ModifyThrow(const TextProperties::TextColor::ColorCubeBG& given) {
 			Bg.Type = TextProperties::TextColor::ColorType::ColorCube;
 			Bg.Data.ColorCube = given;
 		}
-
 		void ModifyThrow(const TextProperties::TextColor::Color24bFG& given) {
 			Fg.Type = TextProperties::TextColor::ColorType::Color24b;
 			Fg.Data.Color24b = given;
 		}
-
 		void ModifyThrow(const TextProperties::TextColor::Color24bBG& given) {
 			Bg.Type = TextProperties::TextColor::ColorType::Color24b;
 			Bg.Data.Color24b = given;
+		}
+
+	public:
+		template <typename T> bool NeedModif(const T&) { throw FMTGivenTypeError(); }
+
+		bool NeedModif(const TextProperties::TextColor::ResetColor& given) {
+			return true;
+		}
+		bool NeedModif(const TextProperties::TextColor::BasicColorFG& given) {
+			return Fg.Type != TextProperties::TextColor::ColorType::BasicColor || Fg.Data.BasicColor != given;
+		}
+		bool NeedModif(const TextProperties::TextColor::BasicColorBG& given) {
+			return Bg.Type != TextProperties::TextColor::ColorType::BasicColor || Bg.Data.BasicColor != given;
+		}
+		bool NeedModif(const TextProperties::TextColor::ColorCubeFG& given) {
+			return Fg.Type != TextProperties::TextColor::ColorType::ColorCube || Fg.Data.ColorCube != given;
+		}
+		bool NeedModif(const TextProperties::TextColor::ColorCubeBG& given) {
+			return Bg.Type != TextProperties::TextColor::ColorType::ColorCube || Bg.Data.ColorCube != given;
+		}
+		bool NeedModif(const TextProperties::TextColor::Color24bFG& given) {
+			return Fg.Type != TextProperties::TextColor::ColorType::Color24b || Fg.Data.Color24b != given;
+		}
+		bool NeedModif(const TextProperties::TextColor::Color24bBG& given) {
+			return Bg.Type != TextProperties::TextColor::ColorType::Color24b || Bg.Data.Color24b != given;
 		}
 	};
 	

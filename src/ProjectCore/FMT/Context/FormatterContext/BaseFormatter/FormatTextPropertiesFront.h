@@ -16,7 +16,7 @@ namespace ProjectCore::FMT {
 	struct FormatterType<Detail::TextProperties::TextFront::FrontID, FormatterContext>
 	{
 		static void Format(const Detail::TextProperties::TextFront::FrontID t, FormatterContext& context) {
-			context.GetTextPropertiesParser().FrontModif(t);
+			context.GetTextPropertiesParser().AskFrontModif(t);
 		}
 	};
 }

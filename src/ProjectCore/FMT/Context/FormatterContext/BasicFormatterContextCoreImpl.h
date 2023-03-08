@@ -34,13 +34,13 @@ namespace ProjectCore::FMT::Context {
 		}
 		else
 		{
-			Detail::IFormatterTextPropertiesExecutor<BufferOutType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IFormatterTextPropertiesExecutor<BufferOutType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());
+			Detail::IFormatterTextPropertiesExecutor<BufferOutType>& am_TextPropertiesExecutor = reinterpret_cast<Detail::IFormatterTextPropertiesExecutor<BufferOutType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());
 
-			ContextType child(m_BufferOut.GetBufferOutManager(), cm_TextPropertiesExecutor, &m_TextPropertiesParser.GetCurrentContextProperties());
+			ContextType child(m_BufferOut.GetBufferOutManager(), am_TextPropertiesExecutor, &m_TextPropertiesParser.GetCurrentContextProperties());
 			child.BufferOut().ReloadBuffer(m_BufferOut);
 			child.Run(format, &childContextArgsInterface);
 			m_BufferOut.ReloadBuffer(child.BufferOut());
-			cm_TextPropertiesExecutor.SetBuffer(&m_BufferOut);
+			am_TextPropertiesExecutor.SetBuffer(&m_BufferOut);
 		}
 	}
 }

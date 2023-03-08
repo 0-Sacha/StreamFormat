@@ -47,7 +47,13 @@ namespace ProjectCore::FMT::Detail {
 		void ModifyThrow(const ResetFront& given)			{ ModifyReset(); }
 		void ModifyThrow(const Front& given)				{ *this = given; }
 		void ModifyThrow(const FrontID& given) 				{ CurrentID = given; }
-
+	
+	public:
+		template <typename T> bool NeedModif(const T&) 	{ throw Detail::FMTGivenTypeError{}; }
+		bool NeedModif(const ResetFront& given)			{ return true; }
+		bool NeedModif(const Front& given)				{ return *this != given; }
+		bool NeedModif(const FrontID& given) 			{ return CurrentID != given; }
+	
 	public:
 		bool operator==(const Front& other) const { return CurrentID == other.CurrentID; }
 	};
