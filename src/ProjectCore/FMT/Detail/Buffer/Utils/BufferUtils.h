@@ -25,7 +25,7 @@ namespace ProjectCore::FMT
                 const CharBuffer* beginString = buffer.GetBufferCurrentPos();
                 buffer.GoTo('"', '\\');
                 const CharBuffer* endString = buffer.GetBufferCurrentPos();
-                stringOut.Append(beginString, endString);
+                stringOut.FastWriteCharBound(beginString, endString);
 
                 if (buffer.IsEqualTo('"'))
                     break;
@@ -52,7 +52,7 @@ namespace ProjectCore::FMT
                 const CharBuffer* beginString = stringIn.GetBufferCurrentPos();
                 stringIn.GoTo('\\');
                 const CharBuffer* endString = stringIn.GetBufferCurrentPos();
-                buffer.Append(beginString, endString);
+                buffer.FastWriteCharBound(beginString, endString);
 
                 if (stringIn.IsEnd()) break;
                 

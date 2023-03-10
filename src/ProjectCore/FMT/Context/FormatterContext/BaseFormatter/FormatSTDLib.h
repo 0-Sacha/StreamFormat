@@ -16,14 +16,14 @@ namespace ProjectCore::FMT {
 	template<typename FormatterContext, typename Char>
 	struct FormatterType<std::basic_string<Char>, FormatterContext> {
 		inline static void Format(const std::basic_string<Char>& t, FormatterContext& context) {
-			context.BufferOut().WriteCharPtr(t.data(), t.size());
+			context.BufferOut().FastWriteCharPtr(t.data(), t.size());
 		}
 	};
 
 	template<typename FormatterContext, typename Char>
 	struct FormatterType<std::basic_string_view<Char>, FormatterContext> {
 		inline static void Format(const std::basic_string_view<Char>& t, FormatterContext& context) {
-			context.BufferOut().WriteCharPtr(t.data(), t.size());
+			context.BufferOut().FastWriteCharPtr(t.data(), t.size());
 		}
 	};
 
@@ -31,7 +31,7 @@ namespace ProjectCore::FMT {
 	template<typename FormatterContext, typename Char>
 	struct FormatterType<std::basic_stringstream<Char>, FormatterContext> {
 		inline static void Format(const std::basic_stringstream<Char>& t, FormatterContext& context) {
-			context.BufferOut().WriteCharPtr(t.str(), t.size());
+			context.BufferOut().FastWriteCharPtr(t.str(), t.size());
 		}
 	};
 

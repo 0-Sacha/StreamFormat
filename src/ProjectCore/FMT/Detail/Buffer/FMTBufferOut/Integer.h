@@ -8,13 +8,15 @@ namespace ProjectCore::FMT::Detail
 {
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferOut<CharBuffer>::BasicWriteInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferOut<CharBuffer>::WriteInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+		sp.ValidateForNumber();
 
 		DataType nbDigit = GetNumberOfDigitDec(i);
 		shift -= nbDigit;
 		if (i < 0) --shift;
 
-		if (shift < 0) return FastWriteInt(i);
+		if (shift <= 0)
+			return FastWriteInt(i);
 
 		if (!sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 		if (i < 0) { PushBack('-'); i = -i; }
@@ -34,11 +36,14 @@ namespace ProjectCore::FMT::Detail
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferOut<CharBuffer>::BasicWriteUInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferOut<CharBuffer>::WriteUInt(T i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+		sp.ValidateForNumber();
+
 		DataType nbDigit = GetNumberOfDigitDec(i);
 		shift -= nbDigit;
 
-		if (shift < 0) return FastWriteUInt(i);
+		if (shift <= 0)
+			return FastWriteUInt(i);
 
 		PrintShiftBegin(st, sp, shift);
 
@@ -55,9 +60,10 @@ namespace ProjectCore::FMT::Detail
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferOut<CharBuffer>::BasicWriteFloat(T i, FloatPrecision nbDecimal, ShiftType st, ShiftSize shift, ShiftPrint sp) {
-
+	void FMTBufferOut<CharBuffer>::WriteFloat(T i, FloatPrecision nbDecimal, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i);
+
+		sp.ValidateForNumber();
 
 		DataType nbDigit = GetNumberOfDigitDec(iInt);
 
@@ -66,7 +72,8 @@ namespace ProjectCore::FMT::Detail
 		shift -= nbDigit + nbDecimal + 1;
 		if (iInt < 0) --shift;
 
-		if (shift < 0) return FastWriteFloat(i, nbDecimal);
+		if (shift <= 0)
+			return FastWriteFloat(i, nbDecimal);
 
 		if (!sp.BeforeIsADigit())	PrintShiftBegin(st, sp, shift);
 		if (iInt < 0) { PushBack('-'); iInt = -iInt; }
@@ -98,7 +105,9 @@ namespace ProjectCore::FMT::Detail
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferOut<CharBuffer>::BasicWriteIntAsBin(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+	void FMTBufferOut<CharBuffer>::WriteIntAsBin(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+		sp.ValidateForNumber();
+
 		// Compute shift and "TureValue" print
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 8;
@@ -129,7 +138,9 @@ namespace ProjectCore::FMT::Detail
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferOut<CharBuffer>::BasicWriteIntAsHex(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void FMTBufferOut<CharBuffer>::WriteIntAsHex(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+		sp.ValidateForNumber();
+
 		// Compute shift and "TureValue" print
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 2;
@@ -159,7 +170,9 @@ namespace ProjectCore::FMT::Detail
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferOut<CharBuffer>::BasicWriteIntAsOct(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+	void FMTBufferOut<CharBuffer>::WriteIntAsOct(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+		sp.ValidateForNumber();
+
 		// Compute shift and "TureValue" print
 		if (digitSize.IsDefault())
 			digitSize = std::ceil(static_cast<float>(sizeof(T) * 8) / 3);

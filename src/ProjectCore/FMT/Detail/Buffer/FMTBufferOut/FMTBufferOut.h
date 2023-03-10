@@ -33,6 +33,7 @@ namespace ProjectCore::FMT::Detail {
 		using Base::SetBuffer;
 
 		// using Base::SetBufferOutManager;
+		using Base::GetBufferOutManager;
 
 	public:
 		using Base::CanMoveForward;
@@ -64,14 +65,24 @@ namespace ProjectCore::FMT::Detail {
 		using Base::GetPrevNoCheck;
 
 	public:
-		using Base::GetBufferOutManager;
-
 		using Base::FastWriteInt;
 		using Base::FastWriteUInt;
     	using Base::FastWriteFloat;
 
+		using Base::FastWriteCharPtr;
+		using Base::FastWriteCharPtrNSize;
+		using Base::FastWriteCharArray;
+		using Base::FastWriteCharBound;
+		using Base::FastWriteStringView;
+		using Base::FastWriteString;
+
+	public:
 		using Base::BasicWriteType;
 
+	protected:
+		using Base::GetNumberOfDigitDec;
+
+	public:
 		using Base::AddSize;
 
 		using Base::SetChar;
@@ -82,13 +93,6 @@ namespace ProjectCore::FMT::Detail {
 
 		using Base::PushBackEndChar;
 		using Base::AddSpaces;
-		using Base::WriteCharArray;
-		using Base::WriteStringView;
-		using Base::WriteCharPtr;
-		using Base::Append;
-
-	protected:
-		using Base::GetNumberOfDigitDec;
 
 	private:
 		std::size_t 					m_NoStride;
@@ -114,53 +118,45 @@ namespace ProjectCore::FMT::Detail {
 		~FMTBufferOut() override = default;
 
 	public:
-		template<typename T> void BasicWriteInt		(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-		template<typename T> void BasicWriteUInt	(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-		template<typename T> void BasicWriteFloat	(T i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+		template<typename T> void WriteInt		(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+		template<typename T> void WriteUInt		(T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+		template<typename T> void WriteFloat	(T i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
 
-		template<typename T> void BasicWriteIntAsBin	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
-		template<typename T> void BasicWriteIntAsHex	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-		template<typename T> void BasicWriteIntAsOct	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+		template<typename T> void WriteIntAsBin	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+		template<typename T> void WriteIntAsHex	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+		template<typename T> void WriteIntAsOct	(T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
 
 	public:
-		template<typename T, typename FormatDataCharBuffer> void WriteIntFormatData	(T i, const FormatData<FormatDataCharBuffer>& formatData);
+		template<typename T, typename FormatDataCharBuffer> void WriteIntFormatData		(T i, const FormatData<FormatDataCharBuffer>& formatData);
 		template<typename T, typename FormatDataCharBuffer> void WriteUIntFormatData	(T i, const FormatData<FormatDataCharBuffer>& formatData);
 		template<typename T, typename FormatDataCharBuffer> void WriteFloatFormatData	(T i, const FormatData<FormatDataCharBuffer>& formatData);
 
 	public:
-		inline void NewLineIndent()											{ PushBack('\n'); PushBack(' ', m_Indent); }
-
-		inline void SetCharIndent(const CharBuffer c)						{ SetChar(c);  if (c == '\n') PushBack(' ', m_Indent); }
-		inline void PushBackIndent(const CharBuffer c)						{ PushBack(c);  if (c == '\n') PushBack(' ', m_Indent); }
-
-		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str) {
-			while (*str != 0)
-			{
-				if (*str == '\n')
-				{
-					PushBack('\n');
-					PushBack(' ', m_Indent);
-				}
-				else
-					PushBack(*str++);
-			}
-		}
-		template<typename CharStr>	inline void WriteCharPtIndent(const CharStr* str, std::size_t size) {
-			if (CanMoveForward(size))
-				while (size-- != 0 && *str != 0)
-				{
-					if (*str == '\n')
-					{
-						PushBack('\n');
-						PushBack(' ', m_Indent);
-					}
-					else
-						PushBackNoCheck(*str++);
-				}
-		}
+		template<typename CharStr>
+		inline void WriteCharPtr(const CharStr* str, std::size_t size, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
 		
-		// Shift
+		template<typename CharStr> 						inline void WriteCharPtrNSize(const CharStr* str, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}) 						{ WriteStringView(std::basic_string_view<CharStr>(str), st, shift, sp); }
+		template<typename CharStr, std::size_t SIZE>	inline void WriteCharArray(const CharStr(&str)[SIZE], ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})					{ WriteCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE, st, shift, sp); }
+    	template<typename CharStr> 						inline void WriteCharBound(const CharStr* begin, const CharStr* end, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}) 	{ WriteCharPtr(begin, end - begin,  st, shift, sp); }
+		template<typename CharStr>						inline void WriteStringView(const std::basic_string_view<CharStr>& str, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})	{ WriteCharPtr(str.data(), str.size(), st, shift, sp); }
+		template<typename CharStr>						inline void WriteString(const std::basic_string<CharStr>& str, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})			{ WriteCharPtr(str.data(), str.size(), st, shift, sp); }
+
 	public:
+		inline void NewLineIndent()								{ PushBack('\n'); PushBack(' ', m_Indent); }
+		inline void SetCharCheckIndent(const CharBuffer c)		{ SetChar(c);  if (c == '\n') PushBack(' ', m_Indent); }
+		inline void PushBackCheckIndent(const CharBuffer c)		{ PushBack(c);  if (c == '\n') PushBack(' ', m_Indent); }
+
+		template<typename CharStr>
+		inline void WriteIndentCharPtr(const CharStr* str, std::size_t size);
+
+		template<typename CharStr> 						inline void WriteIndentCharPtrNSize(const CharStr* str) 						{ WriteIndentStringView(std::basic_string_view<CharStr>(str)); }
+		template<typename CharStr, std::size_t SIZE>	inline void WriteIndentCharArray(const CharStr(&str)[SIZE])						{ WriteIndentCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
+    	template<typename CharStr> 						inline void WriteIndentCharBound(const CharStr* begin, const CharStr* end) 		{ WriteIndentCharPtr(begin, end - begin); }
+		template<typename CharStr>						inline void WriteIndentStringView(const std::basic_string_view<CharStr>& str)	{ WriteIndentCharPtr(str.data(), str.size()); }
+		template<typename CharStr>						inline void WriteIndentString(const std::basic_string<CharStr>& str)			{ WriteIndentCharPtr(str.data(), str.size()); }
+
+	public:
+		// Shift
 		template<typename T>
 		inline void PrintShiftCenterBegin(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
 			if(st == Detail::ShiftType::CenterRight || st == Detail::ShiftType::CenterLeft)
@@ -207,3 +203,4 @@ namespace ProjectCore::FMT::Detail {
 
 #include "Integer.h"
 #include "FromFormatData.h"
+#include "String.h"

@@ -24,8 +24,8 @@ namespace ProjectCore::JSON
 
 		static inline void Format(const T& t, Detail::JsonFormatter& formatter)
         {
-            formatter.BufferOut().WriteCharArray("Unkown JsonFormatter for type : ");
-            formatter.BufferOut().WriteCharPtr(typeid(T).name());
+            formatter.BufferOut().FastWriteCharArray("Unkown JsonFormatter for type : ");
+            formatter.BufferOut().FastWriteCharPtrNSize(typeid(T).name());
 
 #ifndef PROJECTCORE_COMPILER_VS
             throw JsonTypeSerializerNotImpl{};

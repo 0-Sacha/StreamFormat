@@ -7,17 +7,18 @@ namespace ProjectCore::FMT::Detail {
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
 	void FMTBufferOut<CharBuffer>::WriteIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
-		if (formatData.HasSpec) {
+		if (formatData.HasSpec)
+		{
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Dec:
 				if (formatData.ShiftType == ShiftType::Nothing) return FastWriteInt(i);
-				else											return BasicWriteInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+				else											return WriteInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
-				return BasicWriteIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				return WriteIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			case ValueIntPrint::Hex:
-				return BasicWriteIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+				return WriteIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
 			case ValueIntPrint::Oct:
-				return BasicWriteIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				return WriteIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			}
 		}
 		return FastWriteInt(i);
@@ -26,17 +27,18 @@ namespace ProjectCore::FMT::Detail {
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
 	void FMTBufferOut<CharBuffer>::WriteUIntFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
-		if (formatData.HasSpec) {
+		if (formatData.HasSpec)
+		{
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Dec:
 				if (formatData.ShiftType == ShiftType::Nothing) return FastWriteUInt(i);
-				else											return BasicWriteUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+				else											return WriteUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
-				return BasicWriteIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				return WriteIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			case ValueIntPrint::Hex:
-				return BasicWriteIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+				return WriteIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
 			case ValueIntPrint::Oct:
-				return BasicWriteIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				return WriteIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			}
 		}
 		return FastWriteUInt(i);
@@ -45,10 +47,12 @@ namespace ProjectCore::FMT::Detail {
 	template<typename CharBuffer>
 	template<typename T, typename FormatDataCharType>
 	void FMTBufferOut<CharBuffer>::WriteFloatFormatData(T i, const FormatData<FormatDataCharType>& formatData) {
-		if (formatData.HasSpec) {
-			if (formatData.ShiftType == ShiftType::Nothing)	return FastWriteFloat(i, formatData.FloatPrecision);
-			else											return BasicWriteFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
-		} else
-			return FastWriteFloat(i, formatData.FloatPrecision);
+		if (formatData.HasSpec)
+		{
+			if (formatData.ShiftType != ShiftType::Nothing)
+				return WriteFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+		}
+
+		return FastWriteFloat(i, formatData.FloatPrecision);
 	}
 }

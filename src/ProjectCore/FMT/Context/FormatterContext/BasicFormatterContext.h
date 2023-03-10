@@ -60,7 +60,7 @@ namespace ProjectCore::FMT::Context {
         using Base::Run;
     
     protected:
-        void FormatToParamsString(const CharFormat* buffer, std::size_t size) override  { Print(buffer, size); }
+        void FormatToParamsString(const CharFormat* buffer, std::size_t size) override  { m_BufferOut.FastWriteCharPtr(buffer, size); }
 		void FormatExecParams() override                                                { if (!Parse()) m_BufferOut.PushBack('{'); }
 		void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }
 
@@ -160,17 +160,6 @@ namespace ProjectCore::FMT::Context {
 
     public:
         void CheckEndStr();
-
-        template<typename CharStr>						inline void PrintCharPtr(const CharStr* str)					{ m_BufferOut.WriteCharPtr(str); }
-        template<typename CharStr>						inline void Print(const CharStr* str, std::size_t size)	        { m_BufferOut.WriteCharPtr(str, size); }
-        template<typename CharStr, std::size_t SIZE>	inline void Print(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPtr(str, SIZE); }
-        template<typename CharStr>						inline void Print(const std::basic_string_view<CharStr>& str)	{ m_BufferOut.WriteCharPtr(str.data(), str.size()); }
-        template<typename CharStr>						inline void Print(const std::basic_string<CharStr>& str)		{ Print(static_cast<std::basic_string_view<CharStr>>(str)); }
-
-        template<typename CharStr>						inline void PrintCharPtrIndent(const CharStr* str)					{ m_BufferOut.WriteCharPtIndent(str); }
-        template<typename CharStr>						inline void PrintIndent(const CharStr* str, std::size_t size)       { m_BufferOut.WriteCharPtIndent(str, size); }
-        template<typename CharStr, std::size_t SIZE>	inline void PrintIndent(const CharStr(&str)[SIZE])					{ m_BufferOut.WriteCharPtIndent(str, SIZE); }
-        template<typename CharStr>						inline void PrintIndent(const std::basic_string_view<CharStr>& str) { m_BufferOut.WriteCharPtIndent(str.data(), str.size()); }
     };
 }
 

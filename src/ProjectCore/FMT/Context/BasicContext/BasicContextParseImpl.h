@@ -71,7 +71,6 @@ namespace ProjectCore::FMT::Context {
 			m_FormatData.ShiftPrint.After = m_FormatData.ShiftPrint.Before;
 			if (m_Format.IsEqualToForward('|'))
 				m_FormatData.ShiftPrint.After = m_Format.GetAndForward();
-			m_FormatData.ShiftPrint.Validate();
 		}
 	}
 

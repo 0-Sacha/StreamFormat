@@ -44,10 +44,18 @@ namespace ProjectCore::FMT
 			const auto& data = context.GetFormatData();
 
 			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-			auto size = context.GetFormatData().GetSpecifierAsNumber("size", SIZE - begin);
+			auto size = context.GetFormatData().GetSpecifierAsNumber("size", (t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin);
+
+			if (data.HasSpecifier("indent"))
+				return context.BufferOut().WriteIndentCharPtr(t + begin, size);
 
 			if (data.TrueValue)	context.BufferOut().PushBack('\"');
-			context.BufferOut().WriteCharPtr(t + begin, size);
+			
+			if (data.HasSpec == false)
+				context.BufferOut().FastWriteCharPtr(t + begin, size);
+			else
+				context.BufferOut().WriteCharPtr(t + begin, size, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+
 			if (data.TrueValue)	context.BufferOut().PushBack('\"');
 		}
 	};
@@ -56,20 +64,35 @@ namespace ProjectCore::FMT
 	template<typename T, typename FormatterContext>
 	struct FormatterType<Detail::ForwardAsCharPointer<T>, FormatterContext> {
 		static void Format(const T* t, FormatterContext& context) {
-			if (t == nullptr)
-				return context.Print(context.GetFormatData().GetSpecifierAsText("null", "[nullptr string]"));
-
 			const auto& data = context.GetFormatData();
 
-			if (data.TrueValue)										context.BufferOut().PushBack('\"');
+			if (t == nullptr)
+				return context.BufferOut().FastWriteStringView(data.GetSpecifierAsText("null", "[nullptr string]"));
 
 			auto begin = data.GetSpecifierAsNumber("begin", 0);
 			auto size = data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
-			if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.Print(t + begin, size);
-			else											context.PrintCharPtr(t + begin);
+			if (data.HasSpecifier("indent"))
+			{
+				if (size == Detail::FORMAT_DATA_NOT_SPECIFIED)
+					return context.BufferOut().WriteIndentCharPtrNSize(t + begin);
+				return context.BufferOut().WriteIndentCharPtr(t + begin, size);
+			}
 
-			if (data.TrueValue)										context.BufferOut().PushBack('\"');
+			if (data.TrueValue) context.BufferOut().PushBack('\"');
+
+			if (data.HasSpec == false)
+			{
+				if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.BufferOut().FastWriteCharPtr(t + begin, size);
+				else											context.BufferOut().FastWriteCharPtrNSize(t + begin);
+			}
+			else
+			{
+				if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)	context.BufferOut().WriteCharPtr(t + begin, size, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+				else											context.BufferOut().WriteCharPtrNSize(t + begin, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+			}
+
+			if (data.TrueValue) context.BufferOut().PushBack('\"');
 		}
 	};
 }

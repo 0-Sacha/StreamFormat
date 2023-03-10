@@ -31,7 +31,7 @@ namespace ProjectCore::FMT {
 	struct FormatterType<ProjectCore::LoggerManager::AddIndentInFormat<FormatStr>, FormatterContext>
 	{
 		static void Format(const ProjectCore::LoggerManager::AddIndentInFormat<FormatStr>& format, FormatterContext& context) {
-			context.Print("{K:indent}");
+			context.BufferOut().FastWriteCharArray("{K:indent}");
 			context.RunType(format.Format);
 		}
 	};

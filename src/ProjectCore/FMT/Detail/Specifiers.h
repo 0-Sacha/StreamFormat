@@ -17,6 +17,14 @@ namespace ProjectCore::FMT::Detail {
 		Default = Dec
 	};
 
+	/*
+	enum class IndentStyle : DataType
+	{
+		None,
+		Indent
+	};
+	*/
+
 	enum class ShiftType : DataType
 	{
 		Nothing,
@@ -44,12 +52,12 @@ namespace ProjectCore::FMT::Detail {
 
 		constexpr ShiftPrint(char c)
 			: Before(c)
-			, After(c == '0' ? ' ' : c)
+			, After(c)
 		{}
 
 		constexpr ShiftPrint(char before, char after)
 			: Before(before)
-			, After(after == '0' ? ' ' : after)
+			, After(after)
 		{}
 
 	public:
@@ -59,7 +67,7 @@ namespace ProjectCore::FMT::Detail {
 	public:
 		constexpr bool BeforeIsADigit() const 	{ return Before >= '0' && Before <= '9'; }
 
-		constexpr void Validate()  				{ if (After >= '0' && After <= '9') After = ' '; }
+		constexpr void ValidateForNumber()  	{ if (After >= '0' && After <= '9') After = ' '; }
 	};
 
 	static constexpr ShiftPrint ShiftPrint_Space = ShiftPrint(' ');
@@ -223,42 +231,46 @@ namespace ProjectCore::FMT::Detail {
 		static inline constexpr std::uint8_t NotFound() { return (std::numeric_limits<std::uint8_t>::max)(); }
 
 		FormatSpecifierType* GetSpecifier(const std::basic_string_view<CharFormat>& name) {
-			for (std::uint8_t i{}; i < SpecifierCount; ++i)
+			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].Name == name)
 					return &Specifier[i];
 			return nullptr;
 		}
 
 		FormatSpecifierType* GetSpecifierOnlyText(const std::basic_string_view<CharFormat>& name) {
-			for (std::uint8_t i{}; i < SpecifierCount; ++i)
+			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueHasText && Specifier[i].Name == name)
 					return &Specifier[i];
 			return nullptr;
 		}
 
 		FormatSpecifierType* GetSpecifierOnlyNumber(const std::basic_string_view<CharFormat>& name) {
-			for (std::uint8_t i{}; i < SpecifierCount; ++i)
+			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueHasNumber && Specifier[i].Name == name)
 					return &Specifier[i];
 			return nullptr;
 		}
 
 		const FormatSpecifierType* GetSpecifier(const std::basic_string_view<CharFormat>& name) const {
-			for (std::uint8_t i{}; i < SpecifierCount; ++i)
+			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].Name == name)
 					return &Specifier[i];
 			return nullptr;
 		}
 
+		bool HasSpecifier(const std::basic_string_view<CharFormat>& name) const {
+			return GetSpecifier(name) != nullptr;
+		}
+
 		const FormatSpecifierType* GetSpecifierOnlyText(const std::basic_string_view<CharFormat>& name) const {
-			for (std::uint8_t i{}; i < SpecifierCount; ++i)
+			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueHasText && Specifier[i].Name == name)
 					return &Specifier[i];
 			return nullptr;
 		}
 
 		const FormatSpecifierType* GetSpecifierOnlyNumber(const std::basic_string_view<CharFormat>& name) const {
-			for (std::uint8_t i{}; i < SpecifierCount; ++i)
+			for (std::uint8_t i = 0; i < SpecifierCount; ++i)
 				if (Specifier[i].ValueHasNumber && Specifier[i].Name == name)
 					return &Specifier[i];
 			return nullptr;

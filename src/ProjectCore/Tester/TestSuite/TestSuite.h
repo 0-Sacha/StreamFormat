@@ -177,7 +177,7 @@ namespace ProjectCore::FMT {
 	{
 		static void Format(const ProjectCore::Tester::Detail::TestSuite& t, FormatContext& context)
 		{
-			context.Print(t.Name);
+			context.BufferOut().FastWriteString(t.Name);
 		}
 	};
 
@@ -185,9 +185,9 @@ namespace ProjectCore::FMT {
 	struct FormatterType<ProjectCore::Tester::Detail::Test, FormatContext>
 	{
 		static void Format(const ProjectCore::Tester::Detail::Test& t, FormatContext& context) {
-			context.Print(t.Link.Name);
-			context.Print("::");
-			context.Print(t.Name);
+			context.BufferOut().FastWriteString(t.Link.Name);
+			context.BufferOut().FastWriteCharArray("::");
+			context.BufferOut().FastWriteString(t.Name);
 		}
 	};
 
@@ -208,22 +208,22 @@ namespace ProjectCore::FMT {
 	struct FormatterType<ProjectCore::Tester::Detail::TestStatusBank, FormatContext>
 	{
 		static void Format(const ProjectCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {
-			context.Print("TestsDone ");
+			context.BufferOut().FastWriteCharArray("TestsDone ");
 			context.SubContext("{:C:white}", statusBank.TestsDone);
 
-			context.Print(" | TestsOK ");
+			context.BufferOut().FastWriteCharArray(" | TestsOK ");
 			if (statusBank.TestsOk == statusBank.TestsDone)
 				context.SubContext("{:C:green}", statusBank.TestsOk);
 			else
 				context.SubContext("{:C:yellow}", statusBank.TestsOk);
 
-			context.Print(" | TestsFAIL ");
+			context.BufferOut().FastWriteCharArray(" | TestsFAIL ");
 			if (statusBank.TestsFail == 0)
 				context.SubContext("{:C:green}", statusBank.TestsFail);
 			else
 				context.SubContext("{:C:red}", statusBank.TestsFail);
 
-			context.Print(" | TestCrash ");
+			context.BufferOut().FastWriteCharArray(" | TestCrash ");
 			if (statusBank.TestsCrash == 0)
 				context.SubContext("{:C:green}", statusBank.TestsCrash);
 			else

@@ -80,18 +80,18 @@ PCT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
 
 
 class TEST_FMT_ContextOut {};
-PROJECTCORE_AUTO_FORMATTER(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut ")
+PROJECTCORE_AUTO_FORMATTER(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
 #define TEST_FMT_CONTEXT(fmt_test, expected)  PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{})), Escaper(expected));
 
 PCT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 {
-    TEST_FMT_CONTEXT("{}", "\033[31m TEST_FMT_ContextOut \033[39m");
+    TEST_FMT_CONTEXT("{}", "\033[31m TEST_FMT_ContextOut 0 \033[39m");
 
-    TEST_FMT_CONTEXT("{} 123 ", "\033[31m TEST_FMT_ContextOut \033[39m 123 ");
+    TEST_FMT_CONTEXT("{} 123 ", "\033[31m TEST_FMT_ContextOut 0 \033[39m 123 ");
     
     // TODO : check before doing a TextPropertiesExecution, should only have one \033[31m
-    TEST_FMT_CONTEXT("{C:red}{} 123 ", "\033[31m TEST_FMT_ContextOut  123 \033[39m");
+    TEST_FMT_CONTEXT("{C:red}{} 123 ", "\033[31m TEST_FMT_ContextOut 0  123 \033[39m");
     
-    TEST_FMT_CONTEXT("{C:+red}{} 123 ", "\033[91m\033[31m TEST_FMT_ContextOut \033[91m 123 \033[39m");
+    TEST_FMT_CONTEXT("{C:+red}{} 123 ", "\033[91m\033[31m TEST_FMT_ContextOut 0 \033[91m 123 \033[39m");
 }

@@ -27,8 +27,8 @@ namespace ProjectCore::FMT {
 	struct FormatterType<bool, FormatterContext> {
 		static void Format(const bool t, FormatterContext& context) {
 			if (!context.GetFormatData().TrueValue) {
-				if (t == true)	context.Print("True");
-				else			context.Print("False");
+				if (t == true)	context.BufferOut().FastWriteCharPtr("True");
+				else			context.BufferOut().FastWriteCharPtr("False");
 			} else {
 				if (t == true)	context.BufferOut().PushBack('1');
 				else			context.BufferOut().PushBack('0');
@@ -278,7 +278,7 @@ namespace ProjectCore::FMT {
 	struct FormatterType<void*, FormatterContext>
 	{
 		static void Format(const void* const t, FormatterContext& context) {
-			if (t == nullptr)	context.Print(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+			if (t == nullptr)	context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 			else				context.SubContext("{:X,=,U}", (std::size_t)t);
 		}
 	};
@@ -289,7 +289,7 @@ namespace ProjectCore::FMT {
 		static void Format(const T* const t, FormatterContext& context) {
 
 			if (t == nullptr)
-				return context.Print(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+				return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 
 			auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
@@ -301,7 +301,7 @@ namespace ProjectCore::FMT {
 				return;
 			}
 
-			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
+			context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
 			const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
 
@@ -317,7 +317,7 @@ namespace ProjectCore::FMT {
 				context.WriteType(*begin++);
 			}
 
-			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
+			context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
 		}
 	};
 
@@ -326,7 +326,7 @@ namespace ProjectCore::FMT {
 	{
 		static void Format(T const (&t)[SIZE], FormatterContext& context) {
 
-			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
+			context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
 			const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
 
@@ -338,11 +338,11 @@ namespace ProjectCore::FMT {
 			while(begin < end)
 			{
 				if (first)	first = false;
-				else		context.PrintIndent(join);
+				else		context.BufferOut().WriteIndentStringView(join);
 				context.WriteType(*begin++);
 			}
 
-			context.BufferOut().WriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
+			context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
 		}
 	};
 }
