@@ -72,6 +72,10 @@ namespace ProjectCore::FMT::Detail {
             : Base(buffer, bufferSize)
         {}
 
+        BasicBufferIn(const CharBuffer* const begin, const CharBuffer* const end)
+            : Base(begin, end - begin)
+        {}
+
         ~BasicBufferIn() override = default;
 
     public:
@@ -79,11 +83,22 @@ namespace ProjectCore::FMT::Detail {
         template<typename T> void FastReadUInt	(T& i);
         template<typename T> void FastReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{});
 
-        template<typename CharPtr> void FastReadCharPtr(CharPtr* str, std::size_t size);
+        template<typename CharPtr> void FastReadCharPtr(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite = 0);
 
 		template<typename CharStr, std::size_t SIZE>	inline void FastReadCharArray(CharStr(&str)[SIZE])					    { FastReadCharPtr(str, SIZE); }
     	template<typename CharStr> 						inline void FastReadCharBound(CharStr* begin, CharStr* end) 	        { FastReadCharPtr(begin, end - begin); }
-		template<typename CharStr>						inline void FastReadStringView(std::basic_string_view<CharStr>& str)	{ FastReadCharPtr(str.data(), str.size()); }
+
+        template<typename CharPtr, typename CharPattern>
+        void FastReadCharPtrGlobber(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> globPattern);
+        template<typename CharPtr, typename CharPattern>
+        void FastReadCharPtrRegex(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> regexPattern);
+
+        template<typename CharStr, std::size_t SIZE, typename CharPattern>	inline void FastReadCharArrayGlobber(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> globPattern)					    { FastReadCharPtrGlobber(str, SIZE, globPattern); }
+    	template<typename CharStr, typename CharPattern> 					inline void FastReadCharBoundGlobber(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> globPattern) 	        { FastReadCharPtrGlobber(begin, end - begin, globPattern); }
+		template<typename CharStr, typename CharPattern>					inline void FastReadStringViewGlobber(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> globPattern)	{ FastReadCharPtrGlobber(str.data(), str.size(), globPattern); }
+        template<typename CharStr, std::size_t SIZE, typename CharPattern>	inline void FastReadCharArrayRegex(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> regexPattern)					    { FastReadCharPtrRegex(str, SIZE, regexPattern); }
+    	template<typename CharStr, typename CharPattern> 					inline void FastReadCharBoundRegex(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> regexPattern) 	            { FastReadCharPtrRegex(begin, end - begin, regexPattern); }
+		template<typename CharStr, typename CharPattern>					inline void FastReadStringViewRegex(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> regexPattern)	    { FastReadCharPtrRegex(str.data(), str.size(), regexPattern); }
 
     public:
         // Format check

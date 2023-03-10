@@ -64,7 +64,13 @@ namespace ProjectCore::FMT::Detail
 		using Base::FastReadCharPtr;
 		using Base::FastReadCharArray;
 		using Base::FastReadCharBound;
-		using Base::FastReadStringView;
+
+		using Base::FastReadCharPtrGlobber;
+		using Base::FastReadCharArrayGlobber;
+		using Base::FastReadCharBoundGlobber;
+		using Base::FastReadCharPtrRegex;
+		using Base::FastReadCharArrayRegex;
+		using Base::FastReadCharBoundRegex;
 
 		using Base::BasicReadType;
 
