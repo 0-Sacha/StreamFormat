@@ -8,7 +8,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::BasicReadInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferIn<CharBuffer>::ReadInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		T res = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -32,7 +32,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::BasicReadUInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferIn<CharBuffer>::ReadUInt(T& i, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		T res = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -53,7 +53,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::BasicReadFloat(T& i, FloatPrecision floatPrecision, ShiftType st, ShiftSize shift, ShiftPrint sp) {
+	void FMTBufferIn<CharBuffer>::ReadFloat(T& i, FloatPrecision floatPrecision, ShiftType st, ShiftSize shift, ShiftPrint sp) {
 		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = 0;
 
 		SkipShiftBeginSpace(st, sp, shift);
@@ -110,7 +110,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::BasicReadIntAsBin(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+	void FMTBufferIn<CharBuffer>::ReadIntAsBin(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 8;
 
@@ -141,7 +141,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::BasicReadIntAsHex(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void FMTBufferIn<CharBuffer>::ReadIntAsHex(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 2;
 
@@ -174,7 +174,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::BasicReadIntAsOct(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+	void FMTBufferIn<CharBuffer>::ReadIntAsOct(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
 		if (digitSize.IsDefault())
 			digitSize = std::ceil(static_cast<float>(sizeof(T) * 8) / 3);
 

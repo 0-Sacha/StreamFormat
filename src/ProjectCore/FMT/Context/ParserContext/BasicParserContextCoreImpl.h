@@ -9,7 +9,8 @@ namespace ProjectCore::FMT::Context
 		: Base(textPropertiesExecutor, parentContextProperties)
 		, m_BufferIn(bufferProperties)
 	{
-		textPropertiesExecutor.SetBuffer(m_BufferIn);
+		// TODO
+		// textPropertiesExecutor.SetBuffer(m_BufferIn);
 	}
 	
 	template<typename CharFormat, typename CharBuffer>

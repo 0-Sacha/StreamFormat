@@ -7,7 +7,7 @@ namespace ProjectCore::FMT::Detail
 {
     template<typename CharBuffer>
 	template<typename CharPtr>
-	void BasicBufferIn<CharBuffer>::FastReadCharPtr(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite)
+	bool BasicBufferIn<CharBuffer>::FastReadCharPtr(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite)
     {
         if (sizeToWrite == 0)
             sizeToWrite = sizeContainer - 1;
@@ -22,11 +22,13 @@ namespace ProjectCore::FMT::Detail
         while (sizeToWrite-- != 0)
             *str++ = GetAndForward();
         *str = 0;
+
+        return true;
     }
 
     template<typename CharBuffer>
     template<typename CharPtr, typename CharPattern>
-    void BasicBufferIn<CharBuffer>::FastReadCharPtrGlobber(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> globPattern)
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtrGlobber(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> globPattern)
     {
         BasicBufferIn<CharPattern> globber;
         const CharBuffer* begin = GetBufferCurrentPos();
@@ -34,12 +36,12 @@ namespace ProjectCore::FMT::Detail
         const CharBuffer* end = GetBufferCurrentPos();
 
         BasicBufferIn<CharPattern> subContext(begin, end);
-        subContext.FastReadCharPtr(str, sizeContainer);
+        return subContext.FastReadCharPtr(str, sizeContainer);
     }
 
     template<typename CharBuffer>
     template<typename CharPtr, typename CharPattern>
-    void BasicBufferIn<CharBuffer>::FastReadCharPtrRegex(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> regexPattern)
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtrRegex(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> regexPattern)
     {
         throw FMTImplError{};
     }

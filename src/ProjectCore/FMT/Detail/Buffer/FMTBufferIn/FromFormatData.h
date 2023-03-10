@@ -12,17 +12,17 @@ namespace ProjectCore::FMT::Detail {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Dec:
-				if (formatData.ShiftType == ShiftType::Nothing) FastReadInt(i);
-				else											BasicReadInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+				if (formatData.ShiftType == ShiftType::Nothing) FastReadIntThrow(i);
+				else											ReadInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
-				BasicReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				ReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			case ValueIntPrint::Hex:
-				BasicReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+				ReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
 			case ValueIntPrint::Oct:
-				BasicReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				ReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			}
 		}
-		FastReadInt(i);
+		FastReadIntThrow(i);
 	}
 
 	//------------------ Buffer Read UInt ------------------//
@@ -32,17 +32,17 @@ namespace ProjectCore::FMT::Detail {
 		if (formatData.HasSpec) {
 			switch (formatData.IntPrint) {
 			case ValueIntPrint::Dec:
-				if (formatData.ShiftType == ShiftType::Nothing) FastReadUInt(i);
-				else											BasicReadUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+				if (formatData.ShiftType == ShiftType::Nothing) FastReadUIntThrow(i);
+				else											ReadUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 			case ValueIntPrint::Bin:
-				BasicReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				ReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			case ValueIntPrint::Hex:
-				BasicReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+				ReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
 			case ValueIntPrint::Oct:
-				BasicReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+				ReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
 			}
 		}
-		FastReadUInt(i);
+		FastReadUIntThrow(i);
 	}
 
 	//------------------ Buffer Read Float ------------------//
@@ -50,9 +50,9 @@ namespace ProjectCore::FMT::Detail {
 	template<typename T, typename FormatDataCharType>
 	void FMTBufferIn<CharBuffer>::ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
 		if (formatData.HasSpec) {
-			if (formatData.ShiftType == ShiftType::Nothing)	FastReadFloat(i, formatData.FloatPrecision);
-			else											BasicReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+			if (formatData.ShiftType == ShiftType::Nothing)	FastReadFloatThrow(i, formatData.FloatPrecision);
+			else											ReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
 		}
-		FastReadFloat(i, formatData.FloatPrecision);
+		FastReadFloatThrow(i, formatData.FloatPrecision);
 	}
 }

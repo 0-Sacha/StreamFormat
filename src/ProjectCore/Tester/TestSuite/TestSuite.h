@@ -242,3 +242,6 @@ namespace ProjectCore::FMT {
 //-------------------- TestSuite --------------------//
 #define PCT_TEST_SUITE(TestSuiteName, ...)				ProjectCore::Tester::Detail::TestSuite PROJECTCORE_TESTINTERNAL_SUITE_NAME(TestSuiteName)(#TestSuiteName, PROJECTCORE_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__))
 #define PCT_TEST_GROUP(TestSuiteName, GroupName, ...)	ProjectCore::Tester::Detail::TestSuite PROJECTCORE_TESTINTERNAL_SUITE_NAME(GroupName)(#GroupName, PROJECTCORE_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__), &PROJECTCORE_TESTINTERNAL_SUITE_NAME(TestSuiteName))
+
+#define PCT_TEST_SUITE_DECLARATION(TestSuiteName, ...)				ProjectCore::Tester::Detail::TestSuite PROJECTCORE_TESTINTERNAL_SUITE_NAME(TestSuiteName)
+#define PCT_TEST_GROUP_DECLARATION(TestSuiteName, GroupName, ...)	ProjectCore::Tester::Detail::TestSuite PROJECTCORE_TESTINTERNAL_SUITE_NAME(GroupName)

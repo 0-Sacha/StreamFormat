@@ -108,6 +108,7 @@ namespace ProjectCore::FMT::Detail {
 		}
 
 	public:
+		// TODO : need to have throw version od those to have secure call
 		template<typename T> void FastWriteInt	(T i);
 		template<typename T> void FastWriteUInt	(T i);
 		template<typename T> void FastWriteFloat(T i, FloatPrecision floatPrecision = FloatPrecision{});

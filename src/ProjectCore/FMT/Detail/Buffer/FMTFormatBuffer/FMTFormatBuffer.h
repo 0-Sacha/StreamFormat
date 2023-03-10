@@ -56,24 +56,28 @@ namespace ProjectCore::FMT::Detail {
 		using Base::GetPrevNoCheck;
 
 	public:
-		using Base::FastReadInt;
-		using Base::FastReadUInt;
-		using Base::FastReadFloat;
+		using Base::FastReadIntThrow;
+		using Base::FastReadUIntThrow;
+		using Base::FastReadFloatThrow;
 
-		using Base::BasicReadInt;
-		using Base::BasicReadUInt;
-		using Base::BasicReadFloat;
-
-		using Base::BasicReadIntAsBin;
-		using Base::BasicReadIntAsHex;
-		using Base::BasicReadIntAsOct;
+		using Base::ReadInt;
+		using Base::ReadUInt;
+		using Base::ReadFloat;
+		using Base::ReadIntAsBin;
+		using Base::ReadIntAsHex;
+		using Base::ReadIntAsOct;
 
 		using Base::ReadIntFormatData;
 		using Base::ReadUIntFormatData;
 		using Base::ReadFloatFormatData;
 
+		using Base::ReadCharPtr;
+		using Base::ReadCharArray;
+		using Base::ReadCharBound;
+
 		using Base::BasicReadType;
 
+	public:
 		using Base::IsEqualTo;
 		using Base::IsNotEqualTo;
 		using Base::IsEqualToForward;
@@ -154,10 +158,6 @@ namespace ProjectCore::FMT::Detail {
 		~FMTFormatBuffer() override = default;
 		
 	public:
-		template<typename T> bool ReadInt(T& t);
-		template<typename T> bool ReadUInt(T& t);
-
-	public:
 		// Format commands in parameter (add check to '}' to avoid skip the end of the format specifier)
 		template<typename ...CharToTest> inline void ParamGoTo(const CharToTest ...ele)			{ GoTo(ele..., '}'); }
 		template<typename ...CharToTest> inline void ParamGoToForward(const CharToTest ...ele)	{ GoToForward(ele..., '}'); }
@@ -202,5 +202,3 @@ namespace ProjectCore::FMT::Detail {
         }
 	};
 }
-
-#include "Integer.h"

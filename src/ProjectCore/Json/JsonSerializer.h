@@ -56,7 +56,7 @@ namespace ProjectCore::JSON
         template <typename FloatType>
         static inline void ParseFloat(FloatType& t, Detail::JsonParser& parser)
         {
-            parser.BufferIn().FastReadFloat<FloatType>(t);
+            parser.BufferIn().FastReadFloatThrow<FloatType>(t);
         }
 
         template <typename IntType>
@@ -64,11 +64,11 @@ namespace ProjectCore::JSON
         {
             const char* begin = parser.BufferIn().GetBufferCurrentPos();
             float tmp = 0;
-            parser.BufferIn().FastReadFloat<float>(tmp);
+            parser.BufferIn().FastReadFloatThrow<float>(tmp);
             const char* end = parser.BufferIn().GetBufferCurrentPos();
             
             parser.BufferIn().SetBufferCurrentPos(begin);
-            parser.BufferIn().FastReadInt(t);
+            parser.BufferIn().FastReadIntThrow(t);
 
             parser.BufferIn().SetBufferCurrentPos(end);
         }
@@ -78,11 +78,11 @@ namespace ProjectCore::JSON
         {
             const char* begin = parser.BufferIn().GetBufferCurrentPos();
             float tmp = 0;
-            parser.BufferIn().FastReadFloat<float>(tmp);
+            parser.BufferIn().FastReadFloatThrow<float>(tmp);
             const char* end = parser.BufferIn().GetBufferCurrentPos();
             
             parser.BufferIn().SetBufferCurrentPos(begin);
-            parser.BufferIn().FastReadUInt(t);
+            parser.BufferIn().FastReadUIntThrow(t);
 
             parser.BufferIn().SetBufferCurrentPos(end);
         }

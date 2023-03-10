@@ -168,7 +168,7 @@ namespace ProjectCore::FMT::Context {
 		// II: A number(idx)
 		Detail::FormatIndex subIndex;
 		subIndex.SetContext(m_ValuesIndex);
-		if (m_Format.ReadUInt(subIndex.Index))
+		if (m_Format.FastReadUInt(subIndex.Index))
 			if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('}'))
 				if (subIndex.IsValid())
 					return subIndex;

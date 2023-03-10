@@ -60,12 +60,16 @@ namespace ProjectCore::FMT::Detail
 		using Base::FastReadInt;
 		using Base::FastReadUInt;
 		using Base::FastReadFloat;
+		
+		using Base::FastReadIntThrow;
+		using Base::FastReadUIntThrow;
+		using Base::FastReadFloatThrow;
 
-		using Base::FastReadCharPtr;
-		using Base::FastReadCharArray;
-		using Base::FastReadCharBound;
+		using Base::FastReadCharPtrThrow;
+		using Base::FastReadCharArrayThrow;
+		using Base::FastReadCharBoundThrow;
 
-		using Base::FastReadCharPtrGlobber;
+		using Base::FastReadCharPtrGlobberThrow;
 		using Base::FastReadCharArrayGlobber;
 		using Base::FastReadCharBoundGlobber;
 		using Base::FastReadCharPtrRegex;
@@ -150,18 +154,25 @@ namespace ProjectCore::FMT::Detail
         ~FMTBufferIn() override = default;
 
 	public:
-        template<typename T> void BasicReadInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        template<typename T> void BasicReadUInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        template<typename T> void BasicReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template<typename T> void ReadInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template<typename T> void ReadUInt		(T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template<typename T> void ReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
         
-        template<typename T> void BasicReadIntAsBin	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
-        template<typename T> void BasicReadIntAsHex	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-        template<typename T> void BasicReadIntAsOct	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+        template<typename T> void ReadIntAsBin	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+        template<typename T> void ReadIntAsHex	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+        template<typename T> void ReadIntAsOct	(T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
 
     public:
         template<typename T, typename FormatDataCharType> void ReadIntFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
         template<typename T, typename FormatDataCharType> void ReadUIntFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
         template<typename T, typename FormatDataCharType> void ReadFloatFormatData	(T& i, const FormatData<FormatDataCharType>& formatData);
+
+
+    public:
+		template<typename CharStr> void ReadCharPtr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+
+		template<typename CharStr, std::size_t SIZE>	inline void ReadCharArray(const CharStr(&str)[SIZE], ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})					{ ReadCharPtr(str, SIZE, 0, st, shift, sp); }
+    	template<typename CharStr> 						inline void ReadCharBound(const CharStr* begin, const CharStr* end, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}) 	{ ReadCharPtr(begin, end - begin, 0, st, shift, sp); }
 
     protected:
         template<typename T>
@@ -188,3 +199,4 @@ namespace ProjectCore::FMT::Detail
 
 #include "Integer.h"
 #include "FromFormatData.h"
+#include "String.h"

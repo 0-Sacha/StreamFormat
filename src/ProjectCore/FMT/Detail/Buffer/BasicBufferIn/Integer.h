@@ -8,38 +8,40 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicBufferIn<CharBuffer>::FastReadInt(T& i) {
+	bool BasicBufferIn<CharBuffer>::FastReadInt(T& i) {
 		T res = 0;
 
 		bool sign = IsEqualToForward('-');
 		if (!IsADigit())
-			throw FMTParseError();
+			return false;
 
 		while (IsADigit())
 			res = res * 10 + (GetAndForward() - '0');
 
 		i = sign ? -res : res;
+		return true;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicBufferIn<CharBuffer>::FastReadUInt(T& i) {
+	bool BasicBufferIn<CharBuffer>::FastReadUInt(T& i) {
 		T res = (T)0;
 
 		if(!IsADigit())
-			throw FMTParseError();
+			return false;
 
 		while (IsADigit())
 			res = res * 10 + (GetAndForward() - '0');
 
 		i = res;
+		return true;
 	}
 
 	template<typename CharBuffer>
 	template<typename T>
-	void BasicBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision) {
+	bool BasicBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision) {
 		typename Detail::TypesInfo::FloatDetail<T>::IntType iInt;
-		FastReadInt(iInt);
+		FastReadIntThrow(iInt);
 
 		T dec = 0;
 		T decIdx = 0.1f;
@@ -49,9 +51,9 @@ namespace ProjectCore::FMT::Detail {
 			if (floatPrecision == 0 || floatPrecision.IsDefault())
 			{
 				i = static_cast<T>(iInt);
-				return;
+				return true;
 			}
-			throw Detail::FMTParseError{};
+			return false;
 		}
 
 		if (floatPrecision.IsDefault())
@@ -71,5 +73,6 @@ namespace ProjectCore::FMT::Detail {
 		}
 
 		i = iInt + dec;
+		return true;
 	}
 }

@@ -39,7 +39,23 @@ namespace ProjectCore::FMT
 	template<std::size_t SIZE, typename T, typename ParserContext>
 	struct ParserType<Detail::ForwardAsCharArray<T, SIZE>, ParserContext> {
 		static inline void Read(T(&t)[SIZE], ParserContext& context) {
-			// FIXME
+			const auto& data = context.GetFormatData();
+
+			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
+			auto size = context.GetFormatData().GetSpecifierAsNumber("size", (t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin);
+
+			// if (data.HasSpecifier("indent"))
+			// 	return context.BufferIn().ReadIndentCharPtr(t + begin, size);
+
+			if (data.TrueValue)	context.BufferIn().Skip('\"');
+			
+			if (data.HasSpec == false)
+				context.BufferIn().FastReadCharPtrThrow(t + begin, size);
+			else
+				context.BufferIn().FastReadCharPtrThrow(t + begin, size);
+				// context.BufferIn().ReadCharPtr(t + begin, size, 0, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+
+			if (data.TrueValue)	context.BufferIn().Skip('\"');
 		}
 	};
 	template<typename T, typename ParserContext>

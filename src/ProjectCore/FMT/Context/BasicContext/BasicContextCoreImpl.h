@@ -64,7 +64,7 @@ namespace ProjectCore::FMT::Context {
 	template<typename T>
 	void BasicContext<CharFormat>::FormatReadParameterThrow(T& i) {
 		if (!m_Format.IsEqualTo('{'))
-			if (m_Format.ReadUInt(i))
+			if (m_Format.FastReadUInt(i))
 				return;
 
 		Detail::FormatIndex formatIdx = GetFormatIndexThrow();

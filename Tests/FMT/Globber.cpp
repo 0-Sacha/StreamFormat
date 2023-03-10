@@ -14,3 +14,17 @@ PCT_TEST_FUNC(GLOBBER, BASIC_WILDCARD)
 
     PCT_ASSERT(buffer.IsEnd());
 }
+
+PCT_TEST_GROUP(FMT, PARSE_GLOBBER);
+PCT_TEST_FUNC(PARSE_GLOBBER, PG_BASIC_WILDCARD)
+{
+    int k = 0;
+    ProjectCore::FMT::Parse("|123|", "|{}|", k);
+    PCT_EQ(k, 123);
+
+    char test[5];
+    ProjectCore::FMT::Parse("|test|", "|{}|", test);
+    std::string res = test;
+    PCT_EQ(test, "test");
+}
+
