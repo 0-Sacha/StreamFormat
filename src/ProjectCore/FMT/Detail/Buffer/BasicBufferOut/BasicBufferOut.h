@@ -12,7 +12,6 @@ namespace ProjectCore::FMT::Detail {
 		using Base = BasicBuffer<CharBuffer>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
-		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
 
 	public:
@@ -116,6 +115,12 @@ namespace ProjectCore::FMT::Detail {
 		template<typename CharStr>
 		void FastWriteCharPtr(const CharStr* str, std::size_t size);
 
+		template<typename CharStr> 						inline void FastWriteCharPtrNSize(const CharStr* str) 						{ FastWriteStringView(std::basic_string_view<CharStr>(str)); }
+		template<typename CharStr, std::size_t SIZE>	inline void FastWriteCharArray(const CharStr(&str)[SIZE])					{ FastWriteCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
+    	template<typename CharStr> 						inline void FastWriteCharBound(const CharStr* begin, const CharStr* end) 	{ FastWriteCharPtr(begin, end - begin); }
+		template<typename CharStr>						inline void FastWriteStringView(const std::basic_string_view<CharStr>& str)	{ FastWriteCharPtr(str.data(), str.size()); }
+		template<typename CharStr>						inline void FastWriteString(const std::basic_string<CharStr>& str)			{ FastWriteCharPtr(str.data(), str.size()); }
+
 	protected:
 		template<typename T>
 		static DataType GetNumberOfDigitDec(T value);
@@ -205,12 +210,6 @@ namespace ProjectCore::FMT::Detail {
 		inline void BasicWriteType(const wchar_t i)		{ PushBack(i); }
 		inline void BasicWriteType(const char16_t i)	{ PushBack(i); }
 		inline void BasicWriteType(const char32_t i)	{ PushBack(i); }
-
-		template<typename CharStr> 						inline void FastWriteCharPtrNSize(const CharStr* str) 						{ FastWriteStringView(std::basic_string_view<CharStr>(str)); }
-		template<typename CharStr, std::size_t SIZE>	inline void FastWriteCharArray(const CharStr(&str)[SIZE])					{ FastWriteCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
-    	template<typename CharStr> 						inline void FastWriteCharBound(const CharStr* begin, const CharStr* end) 	{ FastWriteCharPtr(begin, end - begin); }
-		template<typename CharStr>						inline void FastWriteStringView(const std::basic_string_view<CharStr>& str)	{ FastWriteCharPtr(str.data(), str.size()); }
-		template<typename CharStr>						inline void FastWriteString(const std::basic_string<CharStr>& str)			{ FastWriteCharPtr(str.data(), str.size()); }
 
 		template<std::size_t SIZE> inline void BasicWriteType(const char (&i)[SIZE])		{ FastWriteCharArray(i); }
 		template<std::size_t SIZE> inline void BasicWriteType(const wchar_t (&i)[SIZE])		{ FastWriteCharArray(i); }

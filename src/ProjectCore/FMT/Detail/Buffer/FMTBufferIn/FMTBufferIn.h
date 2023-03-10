@@ -11,7 +11,6 @@ namespace ProjectCore::FMT::Detail
         using Base = ProjectCore::FMT::Detail::BasicBufferIn<CharBuffer>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
-		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
 
 	public:
@@ -62,8 +61,14 @@ namespace ProjectCore::FMT::Detail
 		using Base::FastReadUInt;
 		using Base::FastReadFloat;
 
+		using Base::FastReadCharPtr;
+		using Base::FastReadCharArray;
+		using Base::FastReadCharBound;
+		using Base::FastReadStringView;
+
 		using Base::BasicReadType;
 
+	public:
 		using Base::IsEqualTo;
 		using Base::IsNotEqualTo;
 		using Base::IsEqualToForward;

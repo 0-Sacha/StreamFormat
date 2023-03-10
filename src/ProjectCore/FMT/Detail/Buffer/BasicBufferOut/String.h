@@ -11,6 +11,7 @@ namespace ProjectCore::FMT::Detail
         if (CanMoveForward(size) == false)
             return FastWriteCharPtr(str, GetBufferRemainingSize());
 
+        // TODO : Opti with bigger types
         while (size-- != 0 && *str != 0)
             PushBackNoCheck(*str++);
     }

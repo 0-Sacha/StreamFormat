@@ -13,7 +13,6 @@ namespace ProjectCore::FMT::Detail {
         using Base = BasicBuffer<const CharBuffer>;
         using Base::m_Buffer;
         using Base::m_BufferEnd;
-        using Base::m_BufferSize;
         using Base::m_CurrentPos;
 
     public:
@@ -80,34 +79,11 @@ namespace ProjectCore::FMT::Detail {
         template<typename T> void FastReadUInt	(T& i);
         template<typename T> void FastReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{});
 
-    public:
-        // Basic types
-        template<typename T> bool BasicReadType(T& i) { return false; }
+        template<typename CharPtr> void FastReadCharPtr(CharPtr* str, std::size_t size);
 
-        inline void BasicReadType(std::int8_t& i)	{ return FastReadInt(i); 	}
-        inline void BasicReadType(std::uint8_t& i)	{ return FastReadUInt(i); 	}
-        inline void BasicReadType(std::int16_t& i)	{ return FastReadInt(i);	}
-        inline void BasicReadType(std::uint16_t& i)	{ return FastReadUInt(i); 	}
-        inline void BasicReadType(std::int32_t& i)	{ return FastReadInt(i);	}
-        inline void BasicReadType(std::uint32_t& i)	{ return FastReadUInt(i); 	}
-        inline void BasicReadType(std::int64_t& i)	{ return FastReadInt(i);	}
-        inline void BasicReadType(std::uint64_t& i)	{ return FastReadUInt(i); 	}
-
-        inline void BasicReadType(float& i)			{ return FastReadFloat(i);	}
-        inline void BasicReadType(double& i)		{ return FastReadFloat(i);	}
-        inline void BasicReadType(long double& i)	{ return FastReadFloat(i);	}
-
-        inline void BasicReadType(char& i)		{ i = Base::GetAndForward(); return; }
-        inline void BasicReadType(wchar_t& i)	{ i = Base::GetAndForward(); return; }
-        inline void BasicReadType(char16_t& i)	{ i = Base::GetAndForward(); return; }
-        inline void BasicReadType(char32_t& i)	{ i = Base::GetAndForward(); return; }
-
-        template<std::size_t SIZE> inline void BasicReadType(char(&i)[SIZE])		{ /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType(wchar_t(&i)[SIZE])		{ /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ /* TODO */ return; }
-
-        template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType>& i) { /* TODO */ return true; }
+		template<typename CharStr, std::size_t SIZE>	inline void FastReadCharArray(CharStr(&str)[SIZE])					    { FastReadCharPtr(str, SIZE); }
+    	template<typename CharStr> 						inline void FastReadCharBound(CharStr* begin, CharStr* end) 	        { FastReadCharPtr(begin, end - begin); }
+		template<typename CharStr>						inline void FastReadStringView(std::basic_string_view<CharStr>& str)	{ FastReadCharPtr(str.data(), str.size()); }
 
     public:
         // Format check
@@ -270,7 +246,6 @@ namespace ProjectCore::FMT::Detail {
         inline void IgnoreAllBlanks()	{ IgnoreAll(' ', '\t', '\n'); }
 
     public:
-        // TODO Better way
         template<typename ...CharToTest>
         StringView GoToAndGetStr(const CharToTest ...args)
         {
@@ -298,7 +273,35 @@ namespace ProjectCore::FMT::Detail {
             const CharBuffer* end = GetBufferCurrentPos();
             return StringView(begin, end); 
         }
-    
+
+    public:
+        // Basic types
+        template<typename T> bool BasicReadType(T& i) { return false; }
+
+        inline void BasicReadType(std::int8_t& i)	{ return FastReadInt(i); 	}
+        inline void BasicReadType(std::uint8_t& i)	{ return FastReadUInt(i); 	}
+        inline void BasicReadType(std::int16_t& i)	{ return FastReadInt(i);	}
+        inline void BasicReadType(std::uint16_t& i)	{ return FastReadUInt(i); 	}
+        inline void BasicReadType(std::int32_t& i)	{ return FastReadInt(i);	}
+        inline void BasicReadType(std::uint32_t& i)	{ return FastReadUInt(i); 	}
+        inline void BasicReadType(std::int64_t& i)	{ return FastReadInt(i);	}
+        inline void BasicReadType(std::uint64_t& i)	{ return FastReadUInt(i); 	}
+
+        inline void BasicReadType(float& i)			{ return FastReadFloat(i);	}
+        inline void BasicReadType(double& i)		{ return FastReadFloat(i);	}
+        inline void BasicReadType(long double& i)	{ return FastReadFloat(i);	}
+
+        inline void BasicReadType(char& i)		{ i = Base::GetAndForward(); return; }
+        inline void BasicReadType(wchar_t& i)	{ i = Base::GetAndForward(); return; }
+        inline void BasicReadType(char16_t& i)	{ i = Base::GetAndForward(); return; }
+        inline void BasicReadType(char32_t& i)	{ i = Base::GetAndForward(); return; }
+
+        template<std::size_t SIZE> inline void BasicReadType(char(&i)[SIZE])		{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType(wchar_t(&i)[SIZE])		{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ /* TODO */ return; }
+
+        template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType>& i) { /* TODO */ return true; }
     };
 }
 

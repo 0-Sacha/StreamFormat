@@ -14,7 +14,6 @@ namespace ProjectCore::FMT::Detail {
 		CharBuffer*			m_Buffer;
 		CharBuffer*			m_CurrentPos;
 		CharBuffer*			m_BufferEnd;			// Point to the end char of the format
-		std::size_t			m_BufferSize;			// Do not count the end char
 
 	protected:
 		inline CharBuffer*			GetBuffer()											{ return m_Buffer; }
@@ -23,7 +22,7 @@ namespace ProjectCore::FMT::Detail {
 		inline const CharBuffer*	GetBufferCurrentPos() const							{ return m_CurrentPos; }
 		inline CharBuffer*			GetBufferEnd()										{ return m_BufferEnd; }
 		inline const CharBuffer*	GetBufferEnd() const								{ return m_BufferEnd; }
-		inline std::size_t			GetBufferSize() const								{ return m_BufferSize; }
+		inline std::size_t			GetBufferSize() const								{ return m_BufferEnd - m_Buffer; }
 		inline std::size_t			GetBufferSizeLeft() const							{ return m_BufferEnd - m_CurrentPos; }
 		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
 		inline std::size_t			GetBufferRemainingSize() const						{ return m_BufferEnd - m_CurrentPos; }
@@ -35,14 +34,12 @@ namespace ProjectCore::FMT::Detail {
 			: m_Buffer(nullptr)
 			, m_CurrentPos(nullptr)
 			, m_BufferEnd(nullptr)
-			, m_BufferSize(0)
 		{}
 
 		BasicBuffer(CharBuffer *const buffer, const std::size_t size)
 			: m_Buffer(buffer)
 			, m_CurrentPos(m_Buffer)
 			, m_BufferEnd(m_Buffer + size)
-			, m_BufferSize(size)
 		{}
 
 		virtual ~BasicBuffer() = default;
@@ -60,7 +57,6 @@ namespace ProjectCore::FMT::Detail {
  			m_Buffer = buffer;
 			m_CurrentPos = buffer;
 			m_BufferEnd = buffer + size;
-			m_BufferSize = size;
 		}
 
 		void SetBuffer(const std::basic_string_view<Detail::GetBaseType<CharBuffer>>& buffer)		{ SetBuffer(buffer.data(), buffer.size()); }

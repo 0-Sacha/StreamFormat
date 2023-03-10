@@ -10,7 +10,6 @@ namespace ProjectCore::FMT::Detail {
 		using Base = BasicBufferOut<CharBuffer>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
-		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
 		using Base::m_BufferOutManager;
 		

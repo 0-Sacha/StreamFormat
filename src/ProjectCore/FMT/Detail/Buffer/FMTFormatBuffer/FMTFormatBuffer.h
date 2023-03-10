@@ -10,7 +10,6 @@ namespace ProjectCore::FMT::Detail {
 		using Base = FMTBufferIn<CharFormat>;
 		using Base::m_Buffer;
 		using Base::m_BufferEnd;
-		using Base::m_BufferSize;
 		using Base::m_CurrentPos;
 
 	public:
