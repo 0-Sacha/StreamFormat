@@ -3,11 +3,11 @@
 
 #include "BaseFMTTests.h"
 
-PCT_TEST_GROUP(FMT, ARRAY);
+PCT_TEST_GROUP(FMT, SPECIFIER);
 
 #define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, test_data), expected);
 
-PCT_TEST_FUNC(ARRAY, BEGIN_END)
+PCT_TEST_FUNC(SPECIFIER, BEGIN_END)
 {
 	int data[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	TEST_FMT_ARRAY_SPECIFIERS("{}", data, "{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }");

@@ -40,9 +40,11 @@ namespace ProjectCore::Tester::Detail
 		{
 			firstTestSuite = false;
 			Instrumentation::DurationEvent currentTestDuration(test->Name, "Profile");
-			currentTestDuration.Start();
 			TestStatus testStatus;
-			if (TestSuitesManager::PerformanceTest.Enable)
+			currentTestDuration.Start();
+			if (TestSuitesManager::PerformanceTest.Enable == false)
+				testStatus = test->Run();
+			else
 			{
 				for (std::uint32_t i = 0; i < TestSuitesManager::PerformanceTest.NbSamples; ++i)
 				{
@@ -51,8 +53,6 @@ namespace ProjectCore::Tester::Detail
 						break;
 				}
 			}
-			else
-				testStatus = test->Run();
 			currentTestDuration.Stop();
 			if (testStatus != TestStatus::Ok)
 			{
@@ -106,21 +106,25 @@ namespace ProjectCore::Tester::Detail
 			TestLogger.SetSeverity(LoggerManager::LogSeverity::Trace);
 		}
 
+		std::string timePattern = "";
+		if (TestSuitesManager::PrintTime)
+			timePattern = "[{T:pattern='%h:%m:%s:%ms'}] ";
+
 		if (Parent == nullptr)
 		{
 			Logger.SetName(Name);
-			Logger.SetRealPattern("{C:+black}[{T:pattern='%h:%m:%s:%ms'}] {name} >> {color}{data}");
+			Logger.SetRealPattern("{C:+black}" + timePattern + "{name} >> {color}{data}");
 			TestLogger.SetName(Name + ".{test_name}");
-			TestLogger.SetRealPattern("{C:+black}[{T:pattern='%h:%m:%s:%ms'}] {name} >> {color}{data}");
+			TestLogger.SetRealPattern("{C:+black}" + timePattern + "{name} >> {color}{data}");
 		}
 		else
 		{
 			std::string indent = GetIndent();
 			std::string correctedName = GetCorrectedSizeName();
 			Logger.SetName(correctedName);
-			Logger.SetRealPatternStrmv(indent + "{C:+black}[{T:pattern='%h:%m:%s:%ms'}] {name} >> {color}{data}");
+			Logger.SetRealPatternStrmv(indent + "{C:+black}" + timePattern + "{name} >> {color}{data}");
 			TestLogger.SetName(correctedName + ".{test_name}");
-			TestLogger.SetRealPatternStrmv(indent + "{C:+black}[{T:pattern='%h:%m:%s:%ms'}] {name} >> {color}{data}");
+			TestLogger.SetRealPatternStrmv(indent + "{C:+black}" + timePattern + "{name} >> {color}{data}");
 		}
 	}
 

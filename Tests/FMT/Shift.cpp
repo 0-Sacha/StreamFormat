@@ -170,22 +170,23 @@ PCT_TEST_FUNC(THREE_DIGIT, CenterLeft)
 	TEST_FMT("|{:^<11:>|<}|", "|>>>>105<<<<|", 105);
 }
 
-PCT_TEST_GROUP(NUMBER_SHIFT, STRING_SHIFT);
-PCT_TEST_FUNC(STRING_SHIFT, Right)
+PCT_TEST_GROUP(SHIFT, STRING_SHIFT);
+PCT_TEST_GROUP(STRING_SHIFT, ARRAY);
+PCT_TEST_FUNC(ARRAY, Right)
 {
 	TEST_FMT("|{:>10  }|", "|      test|", "test");
 	TEST_FMT("|{:>10: }|", "|      test|", "test");
 	TEST_FMT("|{:>10:0}|", "|000000test|", "test");
 	TEST_FMT("|{:>10:*}|", "|******test|", "test");
 }
-PCT_TEST_FUNC(STRING_SHIFT, Left)
+PCT_TEST_FUNC(ARRAY, Left)
 {
 	TEST_FMT("|{:<10  }|", "|test      |", "test");
 	TEST_FMT("|{:<10: }|", "|test      |", "test");
 	TEST_FMT("|{:<10:0}|", "|test000000|", "test");
 	TEST_FMT("|{:<10:*}|", "|test******|", "test");
 }
-PCT_TEST_FUNC(STRING_SHIFT, Center)
+PCT_TEST_FUNC(ARRAY, Center)
 {
 	TEST_FMT("|{:^10    }|", "|   test   |", "test");
 	TEST_FMT("|{:^10:-|-}|", "|---test---|", "test");
@@ -198,7 +199,7 @@ PCT_TEST_FUNC(STRING_SHIFT, Center)
 	TEST_FMT("|{:^11:<|>}|", "|<<<<test>>>|", "test");
 	TEST_FMT("|{:^11:>|<}|", "|>>>>test<<<|", "test");
 }
-PCT_TEST_FUNC(STRING_SHIFT, CenterRight)
+PCT_TEST_FUNC(ARRAY, CenterRight)
 {
 	TEST_FMT("|{:^>10:-|-}|", "|---test---|", "test");
 	TEST_FMT("|{:^>10:*|*}|", "|***test***|", "test");
@@ -210,7 +211,7 @@ PCT_TEST_FUNC(STRING_SHIFT, CenterRight)
 	TEST_FMT("|{:^>11:<|>}|", "|<<<<test>>>|", "test");
 	TEST_FMT("|{:^>11:>|<}|", "|>>>>test<<<|", "test");
 }
-PCT_TEST_FUNC(STRING_SHIFT, CenterLeft)
+PCT_TEST_FUNC(ARRAY, CenterLeft)
 {
 	TEST_FMT("|{:^<10:-|-}|", "|---test---|", "test");
 	TEST_FMT("|{:^<10:*|*}|", "|***test***|", "test");
@@ -221,4 +222,108 @@ PCT_TEST_FUNC(STRING_SHIFT, CenterLeft)
 	TEST_FMT("|{:^<11:*|*}|", "|***test****|", "test");
 	TEST_FMT("|{:^<11:<|>}|", "|<<<test>>>>|", "test");
 	TEST_FMT("|{:^<11:>|<}|", "|>>>test<<<<|", "test");
+}
+
+PCT_TEST_GROUP(STRING_SHIFT, POINTER);
+PCT_TEST_FUNC(POINTER, Right)
+{
+	const char *test = "test";
+	TEST_FMT("|{:>10  }|", "|      test|", test);
+	TEST_FMT("|{:>10: }|", "|      test|", test);
+	TEST_FMT("|{:>10:0}|", "|000000test|", test);
+	TEST_FMT("|{:>10:*}|", "|******test|", test);
+
+	const char *test_with_size = "test_with_size";
+	TEST_FMT("|{:>10  , size=4}|", "|      test|", test_with_size);
+	TEST_FMT("|{:>10: , size=4}|", "|      test|", test_with_size);
+	TEST_FMT("|{:>10:0, size=4}|", "|000000test|", test_with_size);
+	TEST_FMT("|{:>10:*, size=4}|", "|******test|", test_with_size);
+}
+PCT_TEST_FUNC(POINTER, Left)
+{
+	const char *test = "test";
+	TEST_FMT("|{:<10  }|", "|test      |", test);
+	TEST_FMT("|{:<10: }|", "|test      |", test);
+	TEST_FMT("|{:<10:0}|", "|test000000|", test);
+	TEST_FMT("|{:<10:*}|", "|test******|", test);
+
+	const char *test_with_size = "test_with_size";
+	TEST_FMT("|{:<10  , size=4}|", "|test      |", test_with_size);
+	TEST_FMT("|{:<10: , size=4}|", "|test      |", test_with_size);
+	TEST_FMT("|{:<10:0, size=4}|", "|test000000|", test_with_size);
+	TEST_FMT("|{:<10:*, size=4}|", "|test******|", test_with_size);
+}
+PCT_TEST_FUNC(POINTER, Center)
+{
+	const char *test = "test";
+	TEST_FMT("|{:^10    }|", "|   test   |", test);
+	TEST_FMT("|{:^10:-|-}|", "|---test---|", test);
+	TEST_FMT("|{:^10:*|*}|", "|***test***|", test);
+	TEST_FMT("|{:^10:<|>}|", "|<<<test>>>|", test);
+	TEST_FMT("|{:^10:>|<}|", "|>>>test<<<|", test);
+
+	TEST_FMT("|{:^11:-|-}|", "|----test---|", test);
+	TEST_FMT("|{:^11:*|*}|", "|****test***|", test);
+	TEST_FMT("|{:^11:<|>}|", "|<<<<test>>>|", test);
+	TEST_FMT("|{:^11:>|<}|", "|>>>>test<<<|", test);
+
+	const char *test_with_size = "test_with_size";
+	TEST_FMT("|{:^10    , size=4}|", "|   test   |", test_with_size);
+	TEST_FMT("|{:^10:-|-, size=4}|", "|---test---|", test_with_size);
+	TEST_FMT("|{:^10:*|*, size=4}|", "|***test***|", test_with_size);
+	TEST_FMT("|{:^10:<|>, size=4}|", "|<<<test>>>|", test_with_size);
+	TEST_FMT("|{:^10:>|<, size=4}|", "|>>>test<<<|", test_with_size);
+
+	TEST_FMT("|{:^11:-|-, size=4}|", "|----test---|", test_with_size);
+	TEST_FMT("|{:^11:*|*, size=4}|", "|****test***|", test_with_size);
+	TEST_FMT("|{:^11:<|>, size=4}|", "|<<<<test>>>|", test_with_size);
+	TEST_FMT("|{:^11:>|<, size=4}|", "|>>>>test<<<|", test_with_size);
+}
+PCT_TEST_FUNC(POINTER, CenterRight)
+{
+	const char *test = "test";
+	TEST_FMT("|{:^>10:-|-}|", "|---test---|", test);
+	TEST_FMT("|{:^>10:*|*}|", "|***test***|", test);
+	TEST_FMT("|{:^>10:<|>}|", "|<<<test>>>|", test);
+	TEST_FMT("|{:^>10:>|<}|", "|>>>test<<<|", test);
+
+	TEST_FMT("|{:^>11:-|-}|", "|----test---|", test);
+	TEST_FMT("|{:^>11:*|*}|", "|****test***|", test);
+	TEST_FMT("|{:^>11:<|>}|", "|<<<<test>>>|", test);
+	TEST_FMT("|{:^>11:>|<}|", "|>>>>test<<<|", test);
+
+	const char *test_with_size = "test_with_size";
+	TEST_FMT("|{:^>10:-|-, size=4}|", "|---test---|", test_with_size);
+	TEST_FMT("|{:^>10:*|*, size=4}|", "|***test***|", test_with_size);
+	TEST_FMT("|{:^>10:<|>, size=4}|", "|<<<test>>>|", test_with_size);
+	TEST_FMT("|{:^>10:>|<, size=4}|", "|>>>test<<<|", test_with_size);
+
+	TEST_FMT("|{:^>11:-|-, size=4}|", "|----test---|", test_with_size);
+	TEST_FMT("|{:^>11:*|*, size=4}|", "|****test***|", test_with_size);
+	TEST_FMT("|{:^>11:<|>, size=4}|", "|<<<<test>>>|", test_with_size);
+	TEST_FMT("|{:^>11:>|<, size=4}|", "|>>>>test<<<|", test_with_size);
+}
+PCT_TEST_FUNC(POINTER, CenterLeft)
+{
+	const char *test = "test";
+	TEST_FMT("|{:^<10:-|-}|", "|---test---|", test);
+	TEST_FMT("|{:^<10:*|*}|", "|***test***|", test);
+	TEST_FMT("|{:^<10:<|>}|", "|<<<test>>>|", test);
+	TEST_FMT("|{:^<10:>|<}|", "|>>>test<<<|", test);
+
+	TEST_FMT("|{:^<11:-|-}|", "|---test----|", test);
+	TEST_FMT("|{:^<11:*|*}|", "|***test****|", test);
+	TEST_FMT("|{:^<11:<|>}|", "|<<<test>>>>|", test);
+	TEST_FMT("|{:^<11:>|<}|", "|>>>test<<<<|", test);
+
+	const char *test_with_size = "test_with_size";
+	TEST_FMT("|{:^<10:-|-, size=4}|", "|---test---|", test_with_size);
+	TEST_FMT("|{:^<10:*|*, size=4}|", "|***test***|", test_with_size);
+	TEST_FMT("|{:^<10:<|>, size=4}|", "|<<<test>>>|", test_with_size);
+	TEST_FMT("|{:^<10:>|<, size=4}|", "|>>>test<<<|", test_with_size);
+
+	TEST_FMT("|{:^<11:-|-, size=4}|", "|---test----|", test_with_size);
+	TEST_FMT("|{:^<11:*|*, size=4}|", "|***test****|", test_with_size);
+	TEST_FMT("|{:^<11:<|>, size=4}|", "|<<<test>>>>|", test_with_size);
+	TEST_FMT("|{:^<11:>|<, size=4}|", "|>>>test<<<<|", test_with_size);
 }

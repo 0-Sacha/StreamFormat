@@ -116,6 +116,7 @@ namespace ProjectCore::Tester
 
 	public:
 		static inline bool Verbose = false;
+		static inline bool PrintTime = false;
 		static inline PerformanceTestData PerformanceTest = PerformanceTestData{};
 	};
 }
@@ -197,9 +198,9 @@ namespace ProjectCore::FMT {
 		static void Format(const ProjectCore::Tester::TestStatus& status, FormatContext& context) {
 			switch (status)
 			{
-				case ProjectCore::Tester::TestStatus::Ok 		: context.SubContext("[  {C:green}OK{C}  ]"); break;
+				case ProjectCore::Tester::TestStatus::Ok 	: context.SubContext("[  {C:green}OK{C}  ]"); break;
 				case ProjectCore::Tester::TestStatus::Fail 	: context.SubContext("[ {C:red}FAIL{C} ]"); break;
-				case ProjectCore::Tester::TestStatus::Crash 	: context.SubContext("[{C:magenta}Crash{C} ]"); break;
+				case ProjectCore::Tester::TestStatus::Crash : context.SubContext("[{C:magenta}Crash{C} ]"); break;
 			}
 		}
 	};
