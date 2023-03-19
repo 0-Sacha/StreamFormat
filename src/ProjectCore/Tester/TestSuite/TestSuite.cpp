@@ -119,20 +119,12 @@ namespace ProjectCore::Tester::Detail
 		}
 		else
 		{
-			std::string indent = GetIndent();
 			std::string correctedName = GetCorrectedSizeName();
 			Logger.SetName(correctedName);
-			Logger.SetRealPatternStrmv(indent + "{C:+black}" + timePattern + "{name} >> {color}{data}");
+			Logger.SetRealPatternStrmv("{C:+black}" + timePattern + "{name} >> {color}{data}");
 			TestLogger.SetName(correctedName + ".{test_name}");
-			TestLogger.SetRealPatternStrmv(indent + "{C:+black}" + timePattern + "{name} >> {color}{data}");
+			TestLogger.SetRealPatternStrmv("{C:+black}" + timePattern + "{name} >> {color}{data}");
 		}
-	}
-
-	std::string TestSuite::GetIndent()
-	{
-		if (Parent == nullptr)
-			return {};
-		return "    " + Parent->GetIndent();
 	}
 
 	std::string TestSuite::GetFullName()

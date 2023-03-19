@@ -83,20 +83,18 @@ namespace ProjectCore::FMT::Detail {
         template<typename T> bool FastReadUInt	(T& i);
         template<typename T> bool FastReadFloat	(T& i, FloatPrecision floatPrecision = FloatPrecision{});
 
-        template<typename CharPtr> bool FastReadCharPtr(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite = 0);
-		template<typename CharStr, std::size_t SIZE>	inline bool FastReadCharArray(CharStr(&str)[SIZE])					    { FastReadCharPtr(str, SIZE); }
-    	template<typename CharStr> 						inline bool FastReadCharBound(CharStr* begin, CharStr* end) 	        { FastReadCharPtr(begin, end - begin); }
+        template<typename CharPtr> bool FastReadCharPtr(CharPtr* str, std::size_t sizeToCopy, bool addZero = true);
+		template<typename CharStr, std::size_t SIZE>	inline bool FastReadCharArray(CharStr(&str)[SIZE], bool addZero = true)				{ FastReadCharPtr(str, SIZE - (addZero ? 1 : 0), addZero); }
+    	template<typename CharStr> 						inline bool FastReadCharBound(CharStr* begin, CharStr* end, bool addZero = true)    { FastReadCharPtr(begin, end - begin - (addZero ? 1 : 0), addZero); }
 
         template<typename CharPtr, typename CharPattern>
-        bool FastReadCharPtrGlobber(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> globPattern);
+        bool FastReadCharPtrGlobber(std::basic_string_view<CharPattern> globPattern, CharPtr* str, std::size_t sizeToCopy, bool addZero = true);
         template<typename CharPtr, typename CharPattern>
-        bool FastReadCharPtrRegex(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> regexPattern);
-        template<typename CharStr, std::size_t SIZE, typename CharPattern>	inline bool FastReadCharArrayGlobber(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> globPattern)					    { FastReadCharPtrGlobber(str, SIZE, globPattern); }
-    	template<typename CharStr, typename CharPattern> 					inline bool FastReadCharBoundGlobber(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> globPattern) 	        { FastReadCharPtrGlobber(begin, end - begin, globPattern); }
-		template<typename CharStr, typename CharPattern>					inline bool FastReadStringViewGlobber(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> globPattern)	{ FastReadCharPtrGlobber(str.data(), str.size(), globPattern); }
-        template<typename CharStr, std::size_t SIZE, typename CharPattern>	inline bool FastReadCharArrayRegex(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> regexPattern)					    { FastReadCharPtrRegex(str, SIZE, regexPattern); }
-    	template<typename CharStr, typename CharPattern> 					inline bool FastReadCharBoundRegex(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> regexPattern) 	            { FastReadCharPtrRegex(begin, end - begin, regexPattern); }
-		template<typename CharStr, typename CharPattern>					inline bool FastReadStringViewRegex(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> regexPattern)	    { FastReadCharPtrRegex(str.data(), str.size(), regexPattern); }
+        bool FastReadCharPtrRegex(std::basic_string_view<CharPattern> regexPattern, CharPtr* str, std::size_t sizeToCopy, bool addZero = true);
+        template<typename CharStr, std::size_t SIZE, typename CharPattern>	inline bool FastReadCharArrayGlobber(std::basic_string_view<CharPattern> globPattern, CharStr(&str)[SIZE], bool addZero = true)					    { FastReadCharPtrGlobber(globPattern, str, SIZE - (addZero ? 1 : 0), addZero); }
+    	template<typename CharStr, typename CharPattern> 					inline bool FastReadCharBoundGlobber(std::basic_string_view<CharPattern> globPattern, CharStr* begin, CharStr* end, bool addZero = true) 	        { FastReadCharPtrGlobber(globPattern, begin, end - begin - (addZero ? 1 : 0), addZero); }
+        template<typename CharStr, std::size_t SIZE, typename CharPattern>	inline bool FastReadCharArrayRegex(std::basic_string_view<CharPattern> regexPattern, CharStr(&str)[SIZE], bool addZero = true)					    { FastReadCharPtrRegex(regexPattern, str, SIZE - (addZero ? 1 : 0), addZero); }
+    	template<typename CharStr, typename CharPattern> 					inline bool FastReadCharBoundRegex(std::basic_string_view<CharPattern> regexPattern, CharStr* begin, CharStr* end, bool addZero = true) 	        { FastReadCharPtrRegex(regexPattern, begin, end - begin - (addZero ? 1 : 0), addZero); }
 
 
     public:

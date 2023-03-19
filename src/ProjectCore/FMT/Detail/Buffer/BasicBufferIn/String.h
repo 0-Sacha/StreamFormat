@@ -7,41 +7,36 @@ namespace ProjectCore::FMT::Detail
 {
     template<typename CharBuffer>
 	template<typename CharPtr>
-	bool BasicBufferIn<CharBuffer>::FastReadCharPtr(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite)
+	bool BasicBufferIn<CharBuffer>::FastReadCharPtr(CharPtr* str, std::size_t sizeToCopy, bool addZero)
     {
-        if (sizeToWrite == 0)
-            sizeToWrite = sizeContainer - 1;
-
-        if (CanMoveForward(sizeToWrite) == false)
-            return FastReadCharPtr(str, sizeContainer, GetBufferRemainingSize());
-
-        if (sizeToWrite >= sizeContainer)
-            sizeToWrite = sizeContainer - 1;
+        if (CanMoveForward(sizeToCopy) == false)
+            return FastReadCharPtr(str, GetBufferRemainingSize(), addZero);
 
         // TODO : Opti with bigger types
-        while (sizeToWrite-- != 0)
+        while (sizeToCopy-- != 0)
             *str++ = GetAndForward();
-        *str = 0;
+        if (addZero)
+            *str = 0;
 
         return true;
     }
 
     template<typename CharBuffer>
     template<typename CharPtr, typename CharPattern>
-    bool BasicBufferIn<CharBuffer>::FastReadCharPtrGlobber(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> globPattern)
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtrGlobber(std::basic_string_view<CharPattern> globPattern, CharPtr* str, std::size_t sizeToCopy, bool addZero)
     {
-        BasicBufferIn<CharPattern> globber;
+        BasicBufferIn<CharPattern> globber(globPattern);
         const CharBuffer* begin = GetBufferCurrentPos();
         Globber<CharBuffer, CharPattern>::BufferInExecGlob(*this, globber);
         const CharBuffer* end = GetBufferCurrentPos();
 
         BasicBufferIn<CharPattern> subContext(begin, end);
-        return subContext.FastReadCharPtr(str, sizeContainer);
+        return subContext.FastReadCharPtr(str, sizeToCopy);
     }
 
     template<typename CharBuffer>
     template<typename CharPtr, typename CharPattern>
-    bool BasicBufferIn<CharBuffer>::FastReadCharPtrRegex(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> regexPattern)
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtrRegex(std::basic_string_view<CharPattern> regexPattern, CharPtr* str, std::size_t sizeToCopy, bool addZero)
     {
         throw FMTImplError{};
     }

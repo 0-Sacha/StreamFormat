@@ -42,18 +42,31 @@ namespace ProjectCore::FMT
 			const auto& data = context.GetFormatData();
 
 			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-			auto size = context.GetFormatData().GetSpecifierAsNumber("size", (t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin);
+			bool isZeroEnded = context.GetFormatData().HasSpecifier("no-zero-end");
+			auto size = context.GetFormatData().GetSpecifierAsNumber("size", SIZE - (isZeroEnded ? 0 : 1) - begin);
 
 			// if (data.HasSpecifier("indent"))
 			// 	return context.BufferIn().ReadIndentCharPtr(t + begin, size);
 
 			if (data.TrueValue)	context.BufferIn().Skip('\"');
-			
-			if (data.HasSpec == false)
-				context.BufferIn().FastReadCharPtrThrow(t + begin, size);
+
+			if (context.GetFormatData().HasSpecifier("glob"))
+			{
+				auto globberPattern = context.GetFormatData().GetSpecifierAsText("glob");
+				context.BufferIn().FastReadCharPtrGlobber(globberPattern, t + begin, size, isZeroEnded);
+			}
+			else if (context.GetFormatData().HasSpecifier("regex"))
+			{
+				throw Detail::FMTImplError{};
+			}
 			else
-				context.BufferIn().FastReadCharPtrThrow(t + begin, size);
-				// context.BufferIn().ReadCharPtr(t + begin, size, 0, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+			{
+				if (data.HasSpec == false)
+					context.BufferIn().FastReadCharPtrThrow(t + begin, size, isZeroEnded);
+				else
+					context.BufferIn().FastReadCharPtrThrow(t + begin, size, isZeroEnded);
+					// context.BufferIn().ReadCharPtr(t + begin, size, 0, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+			}
 
 			if (data.TrueValue)	context.BufferIn().Skip('\"');
 		}

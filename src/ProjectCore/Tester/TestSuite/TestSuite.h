@@ -162,7 +162,6 @@ namespace ProjectCore::Tester::Detail
 		void InitLogger();
 
 	private:
-		std::string GetIndent();
 		std::string GetFullName();
 		std::string GetCorrectedSizeName();
 		Instrumentation::Profiler& GetProfiler();

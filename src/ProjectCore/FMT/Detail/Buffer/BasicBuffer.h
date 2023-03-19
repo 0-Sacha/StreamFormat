@@ -27,7 +27,7 @@ namespace ProjectCore::FMT::Detail {
 		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
 		inline std::size_t			GetBufferRemainingSize() const						{ return m_BufferEnd - m_CurrentPos; }
 		
-		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos < GetBufferEnd()) m_CurrentPos = pos; }
+		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos <= GetBufferEnd()) m_CurrentPos = pos; }
 
 	public:
 		BasicBuffer()

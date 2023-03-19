@@ -9,7 +9,7 @@ namespace ProjectCore::FMT::Detail {
     {
 	public:
 		template <std::size_t SIZE>
-		BufferInProperties(const CharType (&format)[SIZE]) 								: m_Buffer(format), m_BufferSize(SIZE) {}
+		BufferInProperties(const CharType (&format)[SIZE]) 								: m_Buffer(format), m_BufferSize(format[SIZE - 1] == 0 ? SIZE - 1 : SIZE) {}
 		BufferInProperties(const std::basic_string_view<CharType>& format) 				: m_Buffer(format.data()), m_BufferSize(format.size()) {}
 		BufferInProperties(const std::basic_string<CharType>& format) 					: m_Buffer(format.data()), m_BufferSize(format.size()) {}
  		BufferInProperties(const CharType* const buffer, const std::size_t bufferSize) 	: m_Buffer(buffer), m_BufferSize(bufferSize) {}

@@ -26,14 +26,14 @@ namespace ProjectCore::FMT::Context {
 		{
 			const CharFormat* beginContinousString = m_Format.GetBufferCurrentPos();
 			std::size_t sizeContinousString = 0;
-			while (m_Format.IsEqualTo('{') == false && m_Format.IsEnd() == false)
+			while (m_Format.IsEnd() == false && m_Format.IsEqualTo('{') == false)
 			{
 				++sizeContinousString;
 				m_Format.Forward();
 			}
 			FormatToParamsString(beginContinousString, sizeContinousString);
 
-			if (m_Format.IsEqualTo('{') && m_Format.IsEnd() == false)
+			if (m_Format.IsEnd() == false && m_Format.IsEqualTo('{'))
 				FormatExecParams();
 		}
 	}

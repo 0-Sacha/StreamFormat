@@ -21,8 +21,9 @@ namespace ProjectCore::FMT::ChronoDetail {
 	template<typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
 	void WriteSubTimeMod(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context) {
 		Detail::ShiftSize nbDigit;
-		pattern.ReadUInt(nbDigit.Value);
-		bool isDefault = nbDigit.IsDefault();
+		bool isDefault = false;
+		if (pattern.FastReadUInt(nbDigit.Value))
+		  isDefault = nbDigit.IsDefault();
 
 		if (isDefault) nbDigit.Value = 3;
 		if (pattern.IsSameSeqForward('n', 's')) return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()	% 1000), 	Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
