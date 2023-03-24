@@ -96,8 +96,8 @@ namespace ProjectCore::FMT::Detail
 			"default"
 		};
 
-		std::size_t step = static_cast<std::size_t>(m_Context.Format().IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
-		std::size_t code = m_Context.Format().GetWordFromList(colorCode);
+		std::uint8_t step = static_cast<std::uint8_t>(m_Context.Format().IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
+		std::uint8_t code = m_Context.Format().GetWordFromList(colorCode);
 		if (code == m_Context.Format().GET_WORD_FROM_LIST_NOT_FOUND) 	return false;
 		t = static_cast<T>(code + step);
 		return true;
