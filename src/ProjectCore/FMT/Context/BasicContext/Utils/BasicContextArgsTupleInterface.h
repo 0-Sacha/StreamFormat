@@ -2,7 +2,7 @@
 #pragma once
 
 #include "ProjectCore/FMT/Detail/Detail.h"
-#include "FormatterContextTemplate.h"
+#include "FMTContextTemplate.h"
 
 #include <any>
 #include <functional>
@@ -21,20 +21,20 @@ namespace ProjectCore::FMT::Detail {
             virtual void SetContext(std::any context) = 0;
 
         public:
-            virtual void RunTypeAtIndex(const Detail::FormatIndex& idx) = 0;
+            virtual void RunTypeAtIndex(Detail::FormatIndex idx) = 0;
             virtual Detail::FormatIndex GetIndexOfCurrentNameArg() = 0;
 
-            virtual std::any GetTypeAtIndexImpl(const Detail::FormatIndex& idx) = 0;
+            virtual std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) = 0;
 
-            virtual Detail::FormatIndex GetFormatIndexAt(const Detail::FormatIndex& idx) = 0;
-            virtual typename std::basic_string_view<CharFormat> GetStringAt(const Detail::FormatIndex& idx) = 0;
-            virtual int64_t GetIntAt(const Detail::FormatIndex& idx) = 0;
+            virtual Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) = 0;
+            virtual typename std::basic_string_view<CharFormat> GetStringAt(Detail::FormatIndex idx) = 0;
+            virtual int64_t GetIntAt(Detail::FormatIndex idx) = 0;
 
-            virtual void RunFuncAtImpl(const Detail::FormatIndex& idx, std::function<void(std::any)> func) = 0;
+            virtual void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) = 0;
 
         public:
             template <typename T>
-            const T* GetTypeAtIndex(const Detail::FormatIndex& idx)
+            const T* GetTypeAtIndex(Detail::FormatIndex idx)
             {
                 try
                 {
@@ -47,7 +47,7 @@ namespace ProjectCore::FMT::Detail {
             }
 
             template <typename T>
-            const T& GetTypeAtIndexThrow(const Detail::FormatIndex& idx)
+            const T& GetTypeAtIndexThrow(Detail::FormatIndex idx)
             {
                 const T* value = GetTypeAtIndex<T>(idx);
                 if (value != nullptr)
@@ -57,7 +57,7 @@ namespace ProjectCore::FMT::Detail {
 
 
             template <typename T>
-            void RunFuncFromTypeAtIndex(const Detail::FormatIndex& idx, std::function<void(const T&)> func)
+            void RunFuncFromTypeAtIndex(Detail::FormatIndex idx, std::function<void(const T&)> func)
             {
                 const T* value = GetTypeAtIndex<T>(idx);
                 if (value != nullptr)
@@ -91,16 +91,16 @@ namespace ProjectCore::FMT::Detail {
         public:
             size_t Size() override { return 0; }
 
-            void RunTypeAtIndex(const Detail::FormatIndex& idx) override { }
+            void RunTypeAtIndex(Detail::FormatIndex idx) override { }
 
             Detail::FormatIndex GetIndexOfCurrentNameArg() override { return Detail::FormatIndex{}; }
 
-            std::any GetTypeAtIndexImpl(const Detail::FormatIndex& idx) override { return {}; }
+            std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) override { return {}; }
 
-            void RunFuncAtImpl(const Detail::FormatIndex& idx, std::function<void(std::any)> func) override { }
+            void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) override { }
 
-            Detail::FormatIndex GetFormatIndexAt(const Detail::FormatIndex& idx) override { return Detail::FormatIndex{}; }
-            typename Context::StringViewFormat GetStringAt(const Detail::FormatIndex& idx) override { return ""; }
-            int64_t GetIntAt(const Detail::FormatIndex& idx) override { return 0; }
+            Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) override { return Detail::FormatIndex{}; }
+            typename Context::StringViewFormat GetStringAt(Detail::FormatIndex idx) override { return ""; }
+            std::int64_t GetIntAt(Detail::FormatIndex idx) override { return 0; }
     };
 }

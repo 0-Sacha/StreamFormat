@@ -49,7 +49,7 @@ namespace ProjectCore::FMT::Detail
 		constexpr FormatIndex PrevAndGet() 		{ --Index; return *this; }
 		constexpr FormatIndex GetPrev() const	{ FormatIndex res = *this; --res.Index; return res; }
 
-		void SetContext(FormatIndex sameContext)
+		constexpr void SetContext(FormatIndex sameContext)
 		{
 			MaxValue = sameContext.MaxValue;
 		}		

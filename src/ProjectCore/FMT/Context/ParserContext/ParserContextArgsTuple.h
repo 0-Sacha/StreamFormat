@@ -21,22 +21,22 @@ namespace ProjectCore::FMT::Detail {
 
     public:
         template <typename FormatterContext>
-        inline void RunTypeAtIndex(FormatterContext &context, const Detail::FormatIndex& idx)
+        inline void RunTypeAtIndex(FormatterContext &context, Detail::FormatIndex idx)
                     { throw Detail::FMTBufferWrongIndex(); }
 
         template <typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, const Detail::FormatIndex& beginSearchIndex)
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex)
                     { return Detail::FormatIndex(); }
 
-        inline std::any GetTypeAtIndex(const Detail::FormatIndex& idx)
+        inline std::any GetTypeAtIndex(Detail::FormatIndex idx)
                     { return {}; }
 
         template <typename T>
-        inline void GetTypeAtIndexCast(T* value, const Detail::FormatIndex& idx)
+        inline void GetTypeAtIndexCast(T* value, Detail::FormatIndex idx)
                     { }
 
         template <typename T>
-        inline void GetTypeAtIndexConvert(T* value, const Detail::FormatIndex& idx)
+        inline void GetTypeAtIndexConvert(T* value, Detail::FormatIndex idx)
                     { }
     };
 
@@ -57,7 +57,7 @@ namespace ProjectCore::FMT::Detail {
 
     public:
         template <typename FormatterContext>
-        inline void RunTypeAtIndex(FormatterContext &context, const Detail::FormatIndex& idx) {
+        inline void RunTypeAtIndex(FormatterContext &context, Detail::FormatIndex idx) {
             if (idx.Is0())
                 return context.RunType(m_Value);
             return ParserContextArgsTuple<Rest...>::RunTypeAtIndex(context, idx.GetPrev());
@@ -65,7 +65,7 @@ namespace ProjectCore::FMT::Detail {
 
     public:
         template<typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, const Detail::FormatIndex& beginSearchIndex) {
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex) {
             if constexpr (Detail::IsANamedArgs<Detail::GetBaseType<TypeWithoutRef>>::value)
             {
                 if (context.Format().NextIsANamedArgs(m_Value.GetName()))
@@ -75,7 +75,7 @@ namespace ProjectCore::FMT::Detail {
         }
 
     public:
-        inline std::any GetTypeAtIndex(const Detail::FormatIndex& idx)
+        inline std::any GetTypeAtIndex(Detail::FormatIndex idx)
         {
             if (idx.Is0())
                 return std::any{&m_Value};
@@ -84,23 +84,38 @@ namespace ProjectCore::FMT::Detail {
 
     public:
         template <typename T>
-        inline void GetTypeAtIndexCast(T* value, const Detail::FormatIndex& idx)
+        inline void GetTypeAtIndexCast(T* value, Detail::FormatIndex idx)
         {
             if (idx.Is0())
             {
-                if constexpr (FormatterContextArgsTupleSameAs<T, T>::SameAs)
+                if constexpr ( FMTIsContextSame<TypeWithoutRef, T> )
+                {
                     return *value = m_Value;
+                }
+                else
+                {
+                    // Warrning : Need to transmit : 'Could not convert'
+                    return;
+                }
             }
             return ParserContextArgsTuple<Rest...>::template GetTypeAtIndexCast<T>(value, idx.GetPrev());
         }
 
         template <typename T>
-        inline void GetTypeAtIndexConvert(T* value, const Detail::FormatIndex& idx)
+        inline void GetTypeAtIndexConvert(T* value, Detail::FormatIndex idx)
         {
             if (idx.Is0())
             {
-                if constexpr (FormatterContextArgsTupleConvertFunc<TypeWithoutRef, T>::IsConvertible)
-                    return *value = FormatterContextArgsTupleConvertFunc<TypeWithoutRef, T>::Convert(m_Value);;
+                if constexpr (FMTCanContextConvert<TypeWithoutRef, T>)
+                {
+                    *value = FMTContextConvert<TypeWithoutRef, T>::Convert(m_Value);
+                    return;
+                }
+                else
+                {
+                    // Warrning : Need to transmit : 'Could not convert'
+                    return;
+                }
             }
             return ParserContextArgsTuple<Rest...>::template GetTypeAtIndexConvert<T>(value, idx.GetPrev());
         }
@@ -127,36 +142,36 @@ namespace ProjectCore::FMT::Detail {
             std::size_t Size() override
                     { return m_contextArgs.Size(); }
 
-            void RunTypeAtIndex(const Detail::FormatIndex& idx) override
+            void RunTypeAtIndex(Detail::FormatIndex idx) override
                     { return m_contextArgs.RunTypeAtIndex(*m_Context, idx); }
 
             Detail::FormatIndex GetIndexOfCurrentNameArg() override
                     { return m_contextArgs.GetIndexOfCurrentNameArg(*m_Context, Detail::FormatIndex{0}); }
 
-            std::any GetTypeAtIndexImpl(const Detail::FormatIndex& idx) override
+            std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) override
                     { return m_contextArgs.GetTypeAtIndex(idx); }
 
-            void RunFuncAtImpl(const Detail::FormatIndex& idx, std::function<void(std::any)> func) override
+            void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) override
             {
                 return func(m_contextArgs.GetTypeAtIndex(idx));
             }
 
         public:
             template <typename T>
-            T GetTAtConvert(const Detail::FormatIndex& idx)
+            T GetTAtConvert(Detail::FormatIndex idx)
             {
                 T res;
                 m_contextArgs.template GetTypeAtIndexConvert<T>(&res, idx);
                 return res;
             }
 
-            Detail::FormatIndex GetFormatIndexAt(const Detail::FormatIndex& idx) override
+            Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) override
                     { return GetTAtConvert<Detail::FormatIndex>(idx); }
 
-            typename Context::StringViewFormat GetStringAt(const Detail::FormatIndex& idx) override
+            typename Context::StringViewFormat GetStringAt(Detail::FormatIndex idx) override
                     { return GetTAtConvert<typename Context::StringViewFormat>(idx); }
 
-            int64_t GetIntAt(const Detail::FormatIndex& idx) override
+            int64_t GetIntAt(Detail::FormatIndex idx) override
                     { return GetTAtConvert<int64_t>(idx); }
 
         protected:

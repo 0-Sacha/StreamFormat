@@ -5,7 +5,7 @@
 
 #include "ProjectCore/FMT/Detail/FormatterHandler/FormatterHandler.h"
 #include "Utils/BasicContextArgsTupleInterface.h"
-#include "Utils/FormatterContextTemplate.h"
+#include "Utils/FMTContextTemplate.h"
 
 #include "TextPropertiesParser.h"
 
