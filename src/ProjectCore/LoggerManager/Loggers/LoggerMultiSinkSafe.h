@@ -27,7 +27,7 @@ namespace ProjectCore::LoggerManager::Detail {
 
 	public:
 		template<typename Format = std::string_view, typename ...Args>
-		requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		void Log(const SeverityValueType& severity, const Format& format, Args&& ...args) {
             // FIXME maybe add : name ; indent ???
             for (auto& sink : m_Sinks)

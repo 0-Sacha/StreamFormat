@@ -34,7 +34,8 @@ namespace ProjectCore::FMT::Detail {
 
 
 	template<typename T>
-	struct IsCharType {
+	struct IsCharType
+	{
 		using BaseType = GetBaseType<T>;
 		static constexpr bool Value = std::is_same_v<BaseType, char>
 								   || std::is_same_v<BaseType, wchar_t>
@@ -44,61 +45,32 @@ namespace ProjectCore::FMT::Detail {
 	};
 
 	template<typename T>
-	struct IsFmtConvertible {
-		static constexpr bool Value = std::is_convertible_v<T, std::basic_string_view<char>>
-				  				   || std::is_convertible_v<T, std::basic_string_view<wchar_t>>
-				  				   || std::is_convertible_v<T, std::basic_string_view<char8_t>>
-				  				   || std::is_convertible_v<T, std::basic_string_view<char16_t>>
-				  				   || std::is_convertible_v<T, std::basic_string_view<char32_t>>;
-	};
-
-	template<typename T>
-	struct IsFmtConvertible<std::basic_string<T>> {
-		static constexpr bool Value = true;
-	};
-
-	template<typename T>
-	struct IsFmtConvertible<std::basic_string_view<T>> {
-		static constexpr bool Value = true;
-	};
-
-	template<typename T, std::size_t SIZE>
-	requires IsCharType<T>::Value
-	struct IsFmtConvertible<T[SIZE]> {
-		static constexpr bool Value = true;
-	};
-
-	template<typename T>
-	requires IsCharType<T>::Value
-		struct IsFmtConvertible<T*> {
-		static constexpr bool Value = true;
-	};
-
-
-	template<typename T>
-	struct GetFmtBaseType {
+	struct FMTCharTypeFromBuffer
+	{
 		using Type = void;
 	};
 	
 	template<typename T>
-	struct GetFmtBaseType<std::basic_string<T>> {
+	struct FMTCharTypeFromBuffer<std::basic_string<T>> {
 		using Type = GetBaseType<T>;
 	};
 
 	template<typename T>
-	struct GetFmtBaseType<std::basic_string_view<T>> {
+	struct FMTCharTypeFromBuffer<std::basic_string_view<T>> {
 		using Type = GetBaseType<T>;
 	};
 
 	template<typename T, std::size_t SIZE>
 	requires IsCharType<T>::Value
-		struct GetFmtBaseType<T[SIZE]> {
+	struct FMTCharTypeFromBuffer<T[SIZE]>
+	{
 		using Type = GetBaseType<T>;
 	};
 
 	template<typename T>
 	requires IsCharType<T>::Value
-		struct GetFmtBaseType<T*> {
+	struct FMTCharTypeFromBuffer<T*>
+	{
 		using Type = GetBaseType<T>;
 	};
 }

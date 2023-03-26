@@ -2,7 +2,8 @@
 
 #include "ProjectCore/FMT/Detail/Detail.h"
 
-namespace ProjectCore::FMT::Detail {
+namespace ProjectCore::FMT::Detail
+{
 
 	template <typename CharType>
     class BufferInProperties
@@ -22,5 +23,13 @@ namespace ProjectCore::FMT::Detail {
 		const CharType* const m_Buffer;
 		const std::size_t m_BufferSize;
     };
+
+    template<class BufferDataType>
+    concept CanBeUseForFMTBufferIn = requires()
+	{
+		requires !std::is_same_v<typename FMTCharTypeFromBuffer<BufferDataType>::Type, void>;
+		
+		requires std::is_constructible_v<BufferInProperties<typename FMTCharTypeFromBuffer<BufferDataType>::Type>, BufferDataType>;
+	};
 
 }

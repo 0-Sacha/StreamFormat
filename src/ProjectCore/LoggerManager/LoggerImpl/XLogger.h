@@ -73,7 +73,7 @@ namespace ProjectCore::LoggerManager::Detail {
 
 	public:
 		template<typename Severity, typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+			requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		void Log(Severity status, const Format& format, Args&& ...args) { Master::template Log(status, format, std::forward<Args>(args)...); }
 
 		template<typename Severity, typename T>
@@ -82,22 +82,22 @@ namespace ProjectCore::LoggerManager::Detail {
 	public:
 		/////---------- Logger Severity with array as format ----------/////
 		template<typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		inline void Trace(const Format& format, Args&& ...args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
 		template<typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		inline void Debug(const Format& format, Args&& ...args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
 		template<typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		inline void Info(const Format& format, Args&& ...args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
 		template<typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		inline void Warn(const Format& format, Args&& ...args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
 		template<typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		inline void Error(const Format& format, Args&& ...args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
 		template<typename Format = std::string_view, typename ...Args>
-			requires FMT::Detail::IsFmtConvertible<Format>::Value
+		requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
 		inline void Fatal(const Format& format, Args&& ...args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
 
 		/////---------- NO-FORMAT Logger Severity ----------/////
