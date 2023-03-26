@@ -14,8 +14,9 @@
 #define PROJECTCORE_ONLY_ON_DEBUG(x)
 #endif /* PROJECTCORE_DEBUG */
 
+// TODO : BETTER ASSERT
 #ifdef PROJECTCORE_ASSERT_ENABLE
-	#define PROJECTCORE_ASSERT(x)	if(!(x)) PROJECTCORE_FATAL("ASSERT FAILED! : {}", #x)
+	#define PROJECTCORE_ASSERT(x)	if(!(x)) { std::cerr << "ASSERT FAILED! : {}" << #x << std::endl; }
 #else
 	#define PROJECTCORE_ASSERT(x)
 #endif

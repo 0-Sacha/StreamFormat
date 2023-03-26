@@ -30,6 +30,12 @@ project "ProjectCore"
 
 if (ProjectCoreTestsEnable)
 then
+
+ProjectCoreTestsLaunch = {}
+ProjectCoreTestsLaunch.project = "ProjectCoreTests"
+
+Solution.Launch["ProjectCoreTests"] = ProjectCoreTestsLaunch
+
 project "ProjectCoreTests"
 	kind "ConsoleApp"
 	language "C++"
