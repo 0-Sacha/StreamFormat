@@ -108,6 +108,11 @@ namespace ProjectCore::Tester
 		std::uint32_t NbSamples = 10;
 	};
 
+	struct ConcurenceSpecificationData
+	{
+		bool Enable = false;
+	};
+
 	class TestSuitesManager
 	{
 	public:
@@ -118,6 +123,7 @@ namespace ProjectCore::Tester
 		static inline bool Verbose = false;
 		static inline bool PrintTime = false;
 		static inline PerformanceTestData PerformanceTest = PerformanceTestData{};
+		static inline ConcurenceSpecificationData ConcurenceSpecification = ConcurenceSpecificationData{};
 	};
 }
 namespace ProjectCore::Tester::Detail
