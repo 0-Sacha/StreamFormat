@@ -55,14 +55,14 @@ namespace ProjectCore::FMT::Detail
 		}		
 	};
 
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE>
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE>
 	struct BasicCustomDataType {
 	public:
 		using ValueType = T;
 		
 	public:
 		static constexpr T DEFAULT		= DEFAULT_VALUE;
-		static constexpr T NON_VALID	= NON_VALID_VALUE;
+		static constexpr T INVALID	= INVALID_VALUE;
 
 	public:
 		T Value;
@@ -73,7 +73,7 @@ namespace ProjectCore::FMT::Detail
 		{}
 
 	public:
-		inline constexpr bool IsValid() 	{ return Value != NON_VALID; };
+		inline constexpr bool IsValid() 	{ return Value != INVALID; };
 		inline constexpr bool IsDefault() 	{ return Value == DEFAULT; };
 
 	public:
@@ -125,50 +125,50 @@ namespace ProjectCore::FMT::Detail
 		inline constexpr BasicCustomDataType& operator/=(const K i)	{ Value /= static_cast<T>(i); return *this; }
 
 		// operator =
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<T>(i.Value); return *this; }
+		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<T>(i.Value); return *this; }
 		// operator +=
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator+=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value += static_cast<T>(i.Value); return *this; }
+		inline constexpr BasicCustomDataType& operator+=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value += static_cast<T>(i.Value); return *this; }
 		// operator -=
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator-=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value -= static_cast<T>(i.Value); return *this; }
+		inline constexpr BasicCustomDataType& operator-=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value -= static_cast<T>(i.Value); return *this; }
 		// operator *=
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator*=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value *= static_cast<T>(i.Value); return *this; }
+		inline constexpr BasicCustomDataType& operator*=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value *= static_cast<T>(i.Value); return *this; }
 		// operator /=
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator/=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value /= static_cast<T>(i.Value); return *this; }
+		inline constexpr BasicCustomDataType& operator/=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value /= static_cast<T>(i.Value); return *this; }
 	};
 
 	// operator +
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator+(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs) + rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator+(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value + static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) + rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value + static_cast<T>(rhs)); }
 	// operator -
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator-(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs) - rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator-(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value - static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) - rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value - static_cast<T>(rhs)); }
 	// operator *
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator*(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs) * rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator*(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value * static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) * rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value * static_cast<T>(rhs)); }
 	// operator /
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator/(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs) / rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator/(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value / static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) / rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value / static_cast<T>(rhs)); }
 
 	// operator +
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator+(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs.Value) + rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator+(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value + static_cast<T>(rhs.Value)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) + rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value + static_cast<T>(rhs.Value)); }
 	// operator -
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator-(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs.Value) - rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator-(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value - static_cast<T>(rhs.Value)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) - rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value - static_cast<T>(rhs.Value)); }
 	// operator *
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator*(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs.Value) * rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator*(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value * static_cast<T>(rhs.Value)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) * rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value * static_cast<T>(rhs.Value)); }
 	// operator /
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator/(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(static_cast<T>(lhs.Value) / rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T NON_VALID_VALUE, typename K, K KDEFAULT, K KNON_VALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE> operator/(const BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, NON_VALID_VALUE>(lhs.Value / static_cast<T>(rhs.Value)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) / rhs.Value); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value / static_cast<T>(rhs.Value)); }
 }

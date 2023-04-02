@@ -87,9 +87,9 @@ namespace ProjectCore::FMT::Detail {
 		requires std::is_convertible_v<DataType, K>
 		inline constexpr DigitSize& operator=(const K i)	{ Value = static_cast<DataType>(i); return *this; }
 
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<DataType, K>
-		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
+		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
 	// No need of virtual destructor since ShiftSize is purely a renaming of BasicCustomDataType<DataType, 0, -1>
@@ -105,9 +105,9 @@ namespace ProjectCore::FMT::Detail {
 		requires std::is_convertible_v<DataType, K>
 		inline constexpr ShiftSize& operator=(const K i)	{ Value = static_cast<DataType>(i); return *this; }
 
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<DataType, K>
-		inline constexpr ShiftSize& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
+		inline constexpr ShiftSize& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
 	// No need of virtual destructor since FloatPrecision is purely a renaming of BasicCustomDataType<DataType, -1, -2>
@@ -129,9 +129,9 @@ namespace ProjectCore::FMT::Detail {
 		requires std::is_convertible_v<DataType, K>
 		inline constexpr FloatPrecision& operator=(const K i)	{ Value = static_cast<DataType>(i); return *this; }
 
-		template <typename K, K KDEFAULT, K KNON_VALID>
+		template <typename K, K KDEFAULT, K KINVALID>
 		requires std::is_convertible_v<DataType, K>
-		inline constexpr FloatPrecision& operator=(const BasicCustomDataType<K, KDEFAULT, KNON_VALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
+		inline constexpr FloatPrecision& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
 	};
 
 }

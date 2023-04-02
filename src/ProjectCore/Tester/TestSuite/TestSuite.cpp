@@ -17,7 +17,7 @@ namespace ProjectCore::Tester
 		else
 			logger.Error("{C:white}RESULT => {C:+black}{}", status);
 
-		return status.IsAllOk();
+		return status.ErrorStatus();
 	}
 }
 namespace ProjectCore::Tester::Detail

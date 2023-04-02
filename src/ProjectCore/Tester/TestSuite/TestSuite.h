@@ -92,6 +92,8 @@ namespace ProjectCore::Tester::Detail
 
 		bool IsAllOk() { return TestsDone == TestsOk && TestsCrash == 0 && TestsFail == 0; }
 
+		int ErrorStatus() { return TestsDone - TestsOk; }
+
 		std::uint32_t TestsDone = 0;
 		std::uint32_t TestsOk = 0;
 		std::uint32_t TestsFail = 0;
