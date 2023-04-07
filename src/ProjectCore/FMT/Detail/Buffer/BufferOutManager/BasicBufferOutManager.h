@@ -12,7 +12,7 @@ namespace ProjectCore::FMT::Detail {
 
 	protected:
 		virtual void BeginContextImpl() {}
-		virtual void EndContextImpl(std::size_t totalGeneratedLength) {}
+		virtual void EndContextImpl(const std::size_t /* totalGeneratedLength */) {}
 
 	public:
 		void BeginContext() { BeginContextImpl(); }
@@ -39,7 +39,7 @@ namespace ProjectCore::FMT::Detail {
 		void SetLastGeneratedDataSize(const std::size_t size) { m_LastGeneratedDataSize = size; }
 
 	protected:
-		std::size_t m_LastGeneratedDataSize;
+		std::size_t m_LastGeneratedDataSize{ 0 };
     };
 
 }

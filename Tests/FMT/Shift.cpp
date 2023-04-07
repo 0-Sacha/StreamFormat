@@ -5,7 +5,7 @@
 
 PCT_TEST_GROUP(FMT, SHIFT);
 
-#define TEST_FMT(fmt_test, expected, ...)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, __VA_ARGS__), expected);
+#define TEST_FMT(fmt_test, expected, ...)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, __VA_ARGS__), expected)
 
 PCT_TEST_GROUP(SHIFT, NUMBER_SHIFT);
 PCT_TEST_GROUP(NUMBER_SHIFT, ONE_DIGIT);

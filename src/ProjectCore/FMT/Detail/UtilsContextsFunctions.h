@@ -18,4 +18,5 @@ namespace ProjectCore::FMT::Detail {
 		FormatterContext&							Context;
         typename FormatterContext::FormatDataType  FormatData;
 	};
+
 }

@@ -27,7 +27,7 @@ namespace ProjectCore::FMT::Context
 		}
 		else
 		{
-			Detail::IParserTextPropertiesExecutor<BufferInType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IParserTextPropertiesExecutor<BufferInType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());;
+			Detail::IParserTextPropertiesExecutor<BufferInType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IParserTextPropertiesExecutor<BufferInType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());
 
 			Detail::BufferInProperties<CharBuffer> properties(m_BufferIn.GetBuffer(), m_BufferIn.GetBufferSize());
 			ContextType child(properties, cm_TextPropertiesExecutor, &m_TextPropertiesParser.GetCurrentContextProperties());

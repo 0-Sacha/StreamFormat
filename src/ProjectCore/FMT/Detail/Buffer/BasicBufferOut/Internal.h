@@ -24,7 +24,7 @@ namespace ProjectCore::FMT::Detail
             else if (value < 10000)
                 return nb + 4;
             else {
-                value /= (T)10000;
+                value /= static_cast<T>(10000);
                 nb += 4;
             }
         }

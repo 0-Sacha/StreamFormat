@@ -73,8 +73,8 @@ namespace ProjectCore::FMT::Detail
 		{}
 
 	public:
-		inline constexpr bool IsValid() 	{ return Value != INVALID; };
-		inline constexpr bool IsDefault() 	{ return Value == DEFAULT; };
+		inline constexpr bool IsValid() 	{ return Value != INVALID; }
+		inline constexpr bool IsDefault() 	{ return Value == DEFAULT; }
 
 	public:
 		template <typename K>

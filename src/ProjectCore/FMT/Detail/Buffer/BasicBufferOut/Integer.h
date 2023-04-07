@@ -35,12 +35,12 @@ namespace ProjectCore::FMT::Detail {
 		FastWriteInt<typename Detail::TypesInfo::FloatDetail<T>::IntType>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
 		PushBack('.');
 		if (i < 0)	i = -i;
-		i = i - (typename Detail::TypesInfo::FloatDetail<T>::IntType)i;
+		i = i - static_cast<T>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
 
 		nbDecimal.SetToBasicSizeIfDefault();
 
 		while (nbDecimal-- != 0) {
-			char intPart = static_cast<char>(i *= 10);
+			CharBuffer intPart = static_cast<CharBuffer>(i *= 10);
 			PushBack(intPart + '0');
 			i -= intPart;
 		}

@@ -118,7 +118,7 @@ namespace ProjectCore::FMT::Detail {
 
 		template<typename CharStr> 						inline void FastWriteCharPtrNSize(const CharStr* str) 						{ FastWriteStringView(std::basic_string_view<CharStr>(str)); }
 		template<typename CharStr, std::size_t SIZE>	inline void FastWriteCharArray(const CharStr(&str)[SIZE])					{ FastWriteCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
-    	template<typename CharStr> 						inline void FastWriteCharBound(const CharStr* begin, const CharStr* end) 	{ FastWriteCharPtr(begin, end - begin); }
+    	template<typename CharStr> 						inline void FastWriteCharBound(const CharStr* begin, const CharStr* end) 	{ FastWriteCharPtr(begin, static_cast<std::size_t>(end - begin)); }
 		template<typename CharStr>						inline void FastWriteStringView(const std::basic_string_view<CharStr>& str)	{ FastWriteCharPtr(str.data(), str.size()); }
 		template<typename CharStr>						inline void FastWriteString(const std::basic_string<CharStr>& str)			{ FastWriteCharPtr(str.data(), str.size()); }
 
@@ -142,17 +142,17 @@ namespace ProjectCore::FMT::Detail {
 		}
 
 		inline bool CanMoveForward()								{ if (m_CurrentPos + 1 <= m_BufferEnd)		return true; return AddSize(1); }
-		inline bool CanMoveForward(const std::size_t count)			{ if (m_CurrentPos + count <= m_BufferEnd)	return true; return AddSize(count);}
+		inline bool CanMoveForward(const auto count)				{ if (m_CurrentPos + count <= m_BufferEnd)	return true; return AddSize(static_cast<std::size_t>(count));}
 		inline void CanMoveForwardThrow()							{ if (CanMoveForward())			return; throw FMTBufferFull{}; }
-		inline void CanMoveForwardThrow(const std::size_t count)	{ if (CanMoveForward(count))	return; throw FMTBufferFull{}; }
+		inline void CanMoveForwardThrow(const auto count)			{ if (CanMoveForward(count))	return; throw FMTBufferFull{}; }
 
 		inline void Forward()										{ CanMoveForwardThrow(); ++m_CurrentPos; }
-		inline void Forward(const std::size_t count)				{ CanMoveForwardThrow(count); m_CurrentPos += count; }
+		inline void Forward(const auto count)						{ CanMoveForwardThrow(count); m_CurrentPos += count; }
 		inline void ForwardNoThrow()								{ if (CanMoveForward()) ++m_CurrentPos; }
-		inline void ForwardNoThrow(const std::size_t count)			{ if (CanMoveForward(count)) m_CurrentPos += count; }
+		inline void ForwardNoThrow(const auto count)				{ if (CanMoveForward(count)) m_CurrentPos += count; }
 		inline CharBuffer GetAndForward()							{ CanMoveForwardThrow(); return *m_CurrentPos++; }
 		inline CharBuffer GetNext()									{ CanMoveForwardThrow(); return *(m_CurrentPos + 1); }
-		inline void Reserve(const std::size_t count)				{ Forward(count); Backward(); }
+		inline void Reserve(const auto count)						{ Forward(count); Backward(); }
 
 	public:
 		inline void SetChar(const CharBuffer c)						{ *m_CurrentPos = c; }
@@ -160,11 +160,11 @@ namespace ProjectCore::FMT::Detail {
 		inline void PushReverse(const CharBuffer c)					{ if (CanMoveBackward()) *m_CurrentPos-- = c; }
 		inline void PushBackNoCheck(const CharBuffer c)				{ *m_CurrentPos++ = c; }
 		inline void PushReverseNoCheck(const CharBuffer c)			{ *m_CurrentPos-- = c; }
-		inline void PushBack(const CharBuffer c, std::size_t count)			{ if (CanMoveForward(count)) 	while (count-- > 0) PushBackNoCheck(c); }
-		inline void PushReverse(const CharBuffer c, std::size_t count)		{ if (CanMoveBackward(count)) 	while (count-- > 0) PushReverseNoCheck(c); }
+		inline void PushBack(const CharBuffer c, auto count)		{ if (CanMoveForward(count)) 	while (count-- > 0) PushBackNoCheck(c); }
+		inline void PushReverse(const CharBuffer c, auto count)		{ if (CanMoveBackward(count)) 	while (count-- > 0) PushReverseNoCheck(c); }
 
 		inline void PushBackEndChar()								{ PushBack('\0'); }
-		inline void AddSpaces(const std::size_t count)				{ PushBack(' ', count); }
+		inline void AddSpaces(const auto count)						{ PushBack(' ', count); }
 
 	protected:
 		template<typename ...Rest>
@@ -177,9 +177,9 @@ namespace ProjectCore::FMT::Detail {
 	public:
 		// Basic types
 		template<typename Type, typename ...Rest>
-		inline void BasicWriteType(Type&& type, Rest&& ...rest) 	{ BasicWriteType(type); if (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...); };
+		inline void BasicWriteType(Type&& type, Rest&& ...rest) 	{ BasicWriteType(type); if (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...); }
 		
-		template<typename T> void BasicWriteType(T i) 				{}
+		template<typename T> void BasicWriteType(T) 		{}
 
 #if 0
 		inline void BasicWriteType(const std::int8_t i)		{ FastWriteInt(i); }

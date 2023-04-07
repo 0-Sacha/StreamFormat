@@ -141,7 +141,7 @@ namespace ProjectCore::FMT::Detail {
 
 	template<typename CharBuffer>
 	template<typename T>
-	void FMTBufferIn<CharBuffer>::ReadIntAsHex(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+	void FMTBufferIn<CharBuffer>::ReadIntAsHex(T& i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, [[maybe_unused]] Detail::PrintStyle printStyle) {
 		if (digitSize.IsDefault())
 			digitSize = sizeof(T) * 2;
 

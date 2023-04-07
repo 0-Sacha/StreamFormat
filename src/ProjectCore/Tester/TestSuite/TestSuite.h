@@ -30,6 +30,7 @@ namespace ProjectCore::Tester::Detail
 			: Name(std::move(name))
 			, Link(link)
 			, Location(location)
+			, LastStatus(TestStatus::Ok)
 		{}
 
 		virtual ~Test() = default;
@@ -44,7 +45,7 @@ namespace ProjectCore::Tester::Detail
 			{
 				return LastStatus = RunImpl();
 			}
-			catch (const TestFailure& onFailure)
+			catch (const TestFailure&)
 			{
 				return LastStatus = TestStatus::Fail;
 			}
@@ -92,7 +93,7 @@ namespace ProjectCore::Tester::Detail
 
 		bool IsAllOk() { return TestsDone == TestsOk && TestsCrash == 0 && TestsFail == 0; }
 
-		int ErrorStatus() { return TestsDone - TestsOk; }
+		std::uint32_t ErrorStatus() { return TestsDone - TestsOk; }
 
 		std::uint32_t TestsDone = 0;
 		std::uint32_t TestsOk = 0;

@@ -20,9 +20,9 @@ namespace ProjectCore::JSON
         std::string buffer;
 
         file.seekg(0, std::ios::end);
-        std::size_t size = file.tellg();
+        std::streamsize size = file.tellg();
         file.seekg(0, std::ios::beg);
-        buffer.resize(size);
+        buffer.resize(static_cast<std::size_t>(size));
         file.read(buffer.data(), size);
         file.close();
 
@@ -44,7 +44,7 @@ namespace ProjectCore::JSON
         Detail::JsonFormatter formatter(BufferOutManager);
         JsonSerializer<JsonObject>::Format(json, formatter);
         
-		file.write(BufferOutManager.GetBuffer(), BufferOutManager.GetLastGeneratedDataSize());
+		file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));
 		file.flush();
         file.close();
     }

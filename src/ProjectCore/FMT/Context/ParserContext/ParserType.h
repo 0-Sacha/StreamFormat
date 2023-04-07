@@ -7,7 +7,7 @@ namespace ProjectCore::FMT {
 
 	template<typename T, typename ParserContext = Context::BasicParserContext<char, char>>
 	struct ParserType {
-		static inline auto Read(T& t, ParserContext& context) {
+		static inline auto Read(T&, ParserContext&) {
 			// PROJECTCORE_IF_MSVC(static_assert(false, __FUNCSIG__));
 			return false;
 		}
@@ -16,8 +16,8 @@ namespace ProjectCore::FMT {
 }
 
 #define PROJECTCORE_AUTO_PARSER(Type, fmt, ...)	template<typename ParserContext>\
-													struct ProjectCore::FMT::ParserType<Type, ParserContext> {\
-														static bool Read(Type& value, ParserContext& context) {\
-															return context.SubContext(fmt, __VA_ARGS__);\
-														}\
-													};
+												struct ProjectCore::FMT::ParserType<Type, ParserContext> {\
+													static bool Read(Type& value, ParserContext& context) {\
+														return context.SubContext(fmt, __VA_ARGS__);\
+													}\
+												};

@@ -31,9 +31,9 @@ namespace ProjectCore::Tester::Detail
 	public:
 		void TestAssert(bool assert, const std::string_view assertView, int line);
 		template <typename T>
-		void TestEq(T result, std::equality_comparable_with<T> auto expected, std::string_view testView, int line);
+		void TestEq(T result, std::convertible_to<T> auto expected, std::string_view testView, int line);
 		template <typename T>
-		void TestNotEq(T result, std::equality_comparable_with<T> auto notExpected, std::string_view testView, int line);
+		void TestNotEq(T result, std::convertible_to<T> auto notExpected, std::string_view testView, int line);
 
 	public:
 		FuncType Func;
@@ -41,9 +41,9 @@ namespace ProjectCore::Tester::Detail
 
 
 	template <typename T>
-	void TestFunction::TestEq(T result, std::equality_comparable_with<T> auto expected, std::string_view testView, int line)
+	void TestFunction::TestEq(T result, std::convertible_to<T> auto expected, std::string_view testView, [[maybe_unused]] int line)
 	{
-		if (result != expected)
+		if (result != static_cast<T>(expected))
 		{
 			Link.TestLogger.Error("{C:red}{} return {} instead of {}", testView, result, expected, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
@@ -53,9 +53,9 @@ namespace ProjectCore::Tester::Detail
 	}
 
 	template <typename T>
-	void TestFunction::TestNotEq(T result, std::equality_comparable_with<T> auto notExpected, std::string_view testView, int line)
+	void TestFunction::TestNotEq(T result, std::convertible_to<T> auto notExpected, std::string_view testView, [[maybe_unused]] int line)
 	{
-		if (result == notExpected)
+		if (result == static_cast<T>(notExpected))
 		{
 			Link.TestLogger.Error("{C:red}{} return {} but this result was prohibited", testView, result, FORMAT_SV("test_name", Name));
 			throw TestFailure{};
@@ -64,7 +64,7 @@ namespace ProjectCore::Tester::Detail
 		Link.TestLogger.Trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", Name));
 	}
 
-	inline void TestFunction::TestAssert(bool assert, std::string_view assertView, int line)
+	inline void TestFunction::TestAssert(bool assert, std::string_view assertView, [[maybe_unused]] int line)
 	{
 		if (assert == false)
 		{

@@ -73,7 +73,7 @@ namespace ProjectCore::FMT::Detail {
         {}
 
         BasicBufferIn(const CharBuffer* const begin, const CharBuffer* const end)
-            : Base(begin, end - begin)
+            : Base(begin, static_cast<std::size_t>(end - begin))
         {}
 
         ~BasicBufferIn() override = default;
@@ -100,7 +100,7 @@ namespace ProjectCore::FMT::Detail {
     public:
         template<typename T> void FastReadIntThrow      (T& i)                                                      { if (FastReadInt(i) == false) throw FMTParseError{}; }
         template<typename T> void FastReadUIntThrow     (T& i)                                                      { if (FastReadUInt(i) == false) throw FMTParseError{}; }
-        template<typename T> void FastReadFloatThrow    (T& i, FloatPrecision floatPrecision = FloatPrecision{})    { if (FastReadFloat(i) == false) throw FMTParseError{}; }
+        template<typename T> void FastReadFloatThrow    (T& i, FloatPrecision floatPrecision = FloatPrecision{})    { if (FastReadFloat(i, floatPrecision) == false) throw FMTParseError{}; }
         template<typename CharPtr> void FastReadCharPtrThrow(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite = 0)  { if (FastReadCharPtr(str, sizeContainer, sizeToWrite) == false) throw FMTParseError{}; }
 		template<typename CharStr, std::size_t SIZE>	inline void FastReadCharArrayThrow(CharStr(&str)[SIZE])					    { if (FastReadCharArray(str) == false) throw FMTParseError{}; }
     	template<typename CharStr> 						inline void FastReadCharBoundThrow(CharStr* begin, CharStr* end) 	        { if (FastReadCharBound(begin, end) == false) throw FMTParseError{}; }
@@ -307,7 +307,7 @@ namespace ProjectCore::FMT::Detail {
 
     public:
         // Basic types
-        template<typename T> bool BasicReadType(T& i) { return false; }
+        template<typename T> bool BasicReadType(T&) { return false; }
 
         inline void BasicReadType(std::int8_t& i)	{ return FastReadIntThrow(i); 	}
         inline void BasicReadType(std::uint8_t& i)	{ return FastReadUIntThrow(i); 	}
@@ -327,12 +327,12 @@ namespace ProjectCore::FMT::Detail {
         inline void BasicReadType(char16_t& i)	{ i = Base::GetAndForward(); return; }
         inline void BasicReadType(char32_t& i)	{ i = Base::GetAndForward(); return; }
 
-        template<std::size_t SIZE> inline void BasicReadType(char(&i)[SIZE])		{ /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType(wchar_t(&i)[SIZE])		{ /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType(char16_t(&i)[SIZE])	{ /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType(char32_t(&i)[SIZE])	{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] char(&i)[SIZE])		{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] wchar_t(&i)[SIZE])	{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] char16_t(&i)[SIZE])	{ /* TODO */ return; }
+        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] char32_t(&i)[SIZE])	{ /* TODO */ return; }
 
-        template<typename CharType> inline bool BasicReadType(std::basic_string_view<CharType>& i) { /* TODO */ return true; }
+        template<typename CharType> inline bool BasicReadType([[maybe_unused]] std::basic_string_view<CharType>& i) { /* TODO */ return true; }
     };
 }
 

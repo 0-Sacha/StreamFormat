@@ -5,8 +5,8 @@
 
 namespace ProjectCore::FMT::ChronoDetail {
 
-} // namespace CPPTools::FMT::ChronoDetail
+}
 
 namespace ProjectCore::FMT {
 
-} // namespace CPPTools::FMT
+}

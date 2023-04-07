@@ -103,14 +103,14 @@ namespace ProjectCore::FMT::Context
 		inline StringViewFormat GetStringViewParamUntil(CharToTest ...c) {
 			const char* namePos = m_Format.GetBufferCurrentPos();
 			m_Format.ParamGoTo(c...);
-			return StringViewFormat(namePos, m_Format.GetBufferCurrentPos() - namePos);
+			return StringViewFormat(namePos, static_cast<std::size_t>(m_Format.GetBufferCurrentPos() - namePos));
 		}
 
 		template <typename ...CharToTest>
 		inline StringViewFormat GetStringViewUntil(CharToTest ...c) {
 			const char* namePos = m_Format.GetBufferCurrentPos();
 			m_Format.GoTo(c...);
-			return StringViewFormat(namePos, m_Format.GetBufferCurrentPos() - namePos);
+			return StringViewFormat(namePos, static_cast<std::size_t>(m_Format.GetBufferCurrentPos() - namePos));
 		}
 
 		inline typename Detail::DataType ReadDataType()

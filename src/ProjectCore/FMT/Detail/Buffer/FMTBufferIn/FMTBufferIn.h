@@ -187,7 +187,7 @@ namespace ProjectCore::FMT::Detail
         }
 
         template<typename T>
-        void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
+        void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint, T& shift) {
             if (st == ShiftType::Left || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
                 while (Base::Get() == ' ' && shift > 0) {
                     Base::Forward();

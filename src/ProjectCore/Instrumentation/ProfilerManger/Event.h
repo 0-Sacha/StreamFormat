@@ -98,7 +98,8 @@ namespace ProjectCore::Instrumentation
         std::size_t Id;
 		double TimeOfEvent, ThreadTimeOfEvent;
 		double Duration;
-		std::size_t PID, TID;
+		int PID;
+        std::size_t TID;
         std::shared_ptr<EventData> Data;
 	};
 }

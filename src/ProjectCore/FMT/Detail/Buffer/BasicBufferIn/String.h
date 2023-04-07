@@ -23,7 +23,7 @@ namespace ProjectCore::FMT::Detail
 
     template<typename CharBuffer>
     template<typename CharPtr, typename CharPattern>
-    bool BasicBufferIn<CharBuffer>::FastReadCharPtrGlobber(std::basic_string_view<CharPattern> globPattern, CharPtr* str, std::size_t sizeToCopy, bool addZero)
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtrGlobber(std::basic_string_view<CharPattern> globPattern, CharPtr* str, std::size_t sizeToCopy, [[maybe_unused]] bool addZero)
     {
         BasicBufferIn<CharPattern> globber(globPattern);
         const CharBuffer* begin = GetBufferCurrentPos();
@@ -36,7 +36,7 @@ namespace ProjectCore::FMT::Detail
 
     template<typename CharBuffer>
     template<typename CharPtr, typename CharPattern>
-    bool BasicBufferIn<CharBuffer>::FastReadCharPtrRegex(std::basic_string_view<CharPattern> regexPattern, CharPtr* str, std::size_t sizeToCopy, bool addZero)
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtrRegex([[maybe_unused]] std::basic_string_view<CharPattern> regexPattern, [[maybe_unused]] CharPtr* str, [[maybe_unused]] std::size_t sizeToCopy, [[maybe_unused]] bool addZero)
     {
         throw FMTImplError{};
     }

@@ -18,35 +18,35 @@ namespace ProjectCore::FMT::Detail
         using Base::m_Buffer;
 
     public:
-        void AllPropertiesReset() override                                              {}
+        void AllPropertiesReset() override                                            {}
 
     public:
-        void ResetColor() override                                                      {}
-        void ExecuteColor(const TextProperties::TextColor::BasicColorFG& t) override    {}
-        void ExecuteColor(const TextProperties::TextColor::BasicColorBG& t) override    {}
-        void ExecuteColor(const TextProperties::TextColor::BasicColor& t) override      {}
-        void ExecuteColor(const TextProperties::TextColor::Color24bFG& t) override      {}
-        void ExecuteColor(const TextProperties::TextColor::Color24bBG& t) override      {}
-        void ExecuteColor(const TextProperties::TextColor::Color24b& t) override        {}
-        void ExecuteColor(const TextProperties::TextColor::ColorCubeFG& t) override     {}
-        void ExecuteColor(const TextProperties::TextColor::ColorCubeBG& t) override     {}
-        void ExecuteColor(const TextProperties::TextColor::ColorCube& t) override       {}
+        void ResetColor() override                                                    {}
+        void ExecuteColor(const TextProperties::TextColor::BasicColorFG&) override    {}
+        void ExecuteColor(const TextProperties::TextColor::BasicColorBG&) override    {}
+        void ExecuteColor(const TextProperties::TextColor::BasicColor&) override      {}
+        void ExecuteColor(const TextProperties::TextColor::Color24bFG&) override      {}
+        void ExecuteColor(const TextProperties::TextColor::Color24bBG&) override      {}
+        void ExecuteColor(const TextProperties::TextColor::Color24b&) override        {}
+        void ExecuteColor(const TextProperties::TextColor::ColorCubeFG&) override     {}
+        void ExecuteColor(const TextProperties::TextColor::ColorCubeBG&) override     {}
+        void ExecuteColor(const TextProperties::TextColor::ColorCube&) override       {}
 
     public:
-        void ResetFront() override                                                      {}
-        void ExecuteFront(const TextProperties::TextFront::FrontID& t) override         {}
+        void ResetFront() override                                                    {}
+        void ExecuteFront(const TextProperties::TextFront::FrontID&) override         {}
 
     public:
         void ResetStyle() override                                                                  {}
-        void ExecuteStyle(const TextProperties::TextStyle::Intensity& t) override                   {}
-        void ExecuteStyle(const TextProperties::TextStyle::Italic& t) override                      {}
-        void ExecuteStyle(const TextProperties::TextStyle::Underline& t) override                   {}
-        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color& t) override       {}
-        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::ColorCube& t) override   {}
-        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color24b& t) override    {}
-        void ExecuteStyle(const TextProperties::TextStyle::Blink& t) override                       {}
-        void ExecuteStyle(const TextProperties::TextStyle::Inverted& t) override                    {}
-        void ExecuteStyle(const TextProperties::TextStyle::Ideogram& t) override                    {}
-        void ExecuteStyle(const TextProperties::TextStyle::Script& t) override                      {}
+        void ExecuteStyle(const TextProperties::TextStyle::Intensity&) override                   {}
+        void ExecuteStyle(const TextProperties::TextStyle::Italic&) override                      {}
+        void ExecuteStyle(const TextProperties::TextStyle::Underline&) override                   {}
+        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color&) override       {}
+        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::ColorCube&) override   {}
+        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color24b&) override    {}
+        void ExecuteStyle(const TextProperties::TextStyle::Blink&) override                       {}
+        void ExecuteStyle(const TextProperties::TextStyle::Inverted&) override                    {}
+        void ExecuteStyle(const TextProperties::TextStyle::Ideogram&) override                    {}
+        void ExecuteStyle(const TextProperties::TextStyle::Script&) override                      {}
     };
 }

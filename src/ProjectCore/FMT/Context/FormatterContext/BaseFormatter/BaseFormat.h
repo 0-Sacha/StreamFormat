@@ -17,7 +17,7 @@ namespace ProjectCore::FMT {
 
 	template<typename FormatterContext>
 	struct FormatterType<typename FormatterContext::DataType, FormatterContext> {
-		static void Format(const typename FormatterContext::DataType& t, FormatterContext& context) {
+		static void Format(const typename FormatterContext::DataType&, FormatterContext& context) {
 			context.SubContext("{:C:red}", "Missing '{' or '}' because currently the format data is used as a parameter");
 		}
 	};
@@ -295,7 +295,7 @@ namespace ProjectCore::FMT {
 
 			if(size == Detail::FORMAT_DATA_NOT_SPECIFIED) {
 				if (context.GetFormatData().TrueValue)
-					context.SubContext("{} -> {:{}}", (void*)t, *t, context.ForwardFormatData());
+					context.SubContext("{} -> {:{}}", static_cast<void*>(t), *t, context.ForwardFormatData());
 				else
 					context.WriteType(*t);
 				return;
@@ -331,9 +331,10 @@ namespace ProjectCore::FMT {
 			const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
 
 			bool first = true;
-			std::size_t beginValue = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
+			std::size_t beginValue = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
 			const T* begin 	= t + beginValue;
-			const T* end  	= begin + context.GetFormatData().GetSpecifierAsNumber("size", SIZE - beginValue);
+			// FIXME : all thoses static_cast<Detail::DataType> for size of string are dangerous
+			const T* end  	= begin + context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - beginValue));
 
 			while(begin < end)
 			{

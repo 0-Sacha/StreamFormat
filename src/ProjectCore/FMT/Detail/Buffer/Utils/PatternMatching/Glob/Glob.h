@@ -98,7 +98,7 @@ namespace ProjectCore::FMT::Detail
         }
 
     public:
-        static void BufferInExecGlob(BufferInType& bufferIn, PatternType glob, PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest)
+        static void BufferInExecGlob(BufferInType& bufferIn, PatternType glob, [[maybe_unused]] PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest)
         {
             const CharBuffer* furtherPointMatched = BufferInExecGlob_(bufferIn, glob);
             if (furtherPointMatched != nullptr)

@@ -46,8 +46,8 @@ namespace ProjectCore::JSON
         JsonObject& operator[](const std::size_t index)         { return Get(index); }
         JsonObject& operator[](const std::string& subObject)    { return Get(subObject); }
 
-        virtual JsonObject& Get(const std::size_t index)        { throw JsonIndexingError{}; }
-        virtual JsonObject& Get(const std::string& subObject)   { throw JsonIndexingError{}; }
+        virtual JsonObject& Get(const std::size_t)    { throw JsonIndexingError{}; }
+        virtual JsonObject& Get(const std::string&)   { throw JsonIndexingError{}; }
 
     public:
         template <typename T>

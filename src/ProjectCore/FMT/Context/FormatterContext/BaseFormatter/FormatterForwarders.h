@@ -43,20 +43,20 @@ namespace ProjectCore::FMT
 		static void Format(const T(&t)[SIZE], FormatterContext& context) {
 			const auto& data = context.GetFormatData();
 
-			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-			auto size = context.GetFormatData().GetSpecifierAsNumber("size", (t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin);
+			std::size_t begin = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
+			std::size_t size = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>((t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin));
 
 			if (data.HasSpecifier("indent"))
-				return context.BufferOut().WriteIndentCharPtr(t + begin, size);
+				return context.BufferOut().WriteIndentCharPtr(t + begin, static_cast<std::size_t>(size));
 
 			if (data.TrueValue)	context.BufferOut().PushBack('\"');
 			
 			// TODO : this check is false becquse it need to check for a custom ShiftType/ShiftSize/ShiftPrint an no a HasSpec
 			// Cause this check will use the costly one even when it is not needed
 			if (data.HasSpec == false)
-				context.BufferOut().FastWriteCharPtr(t + begin, size);
+				context.BufferOut().FastWriteCharPtr(t + begin, static_cast<std::size_t>(size));
 			else
-				context.BufferOut().WriteCharPtr(t + begin, size, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+				context.BufferOut().WriteCharPtr(t + begin, static_cast<std::size_t>(size), data.ShiftType, data.ShiftSize, data.ShiftPrint);
 
 			if (data.TrueValue)	context.BufferOut().PushBack('\"');
 		}
@@ -71,8 +71,8 @@ namespace ProjectCore::FMT
 			if (t == nullptr)
 				return context.BufferOut().FastWriteStringView(data.GetSpecifierAsText("null", "[nullptr string]"));
 
-			auto begin = data.GetSpecifierAsNumber("begin", 0);
-			auto size = data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
+			std::size_t begin = (std::size_t)data.GetSpecifierAsNumber("begin", 0);
+			std::size_t size = (std::size_t)data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
 			if (data.HasSpecifier("indent"))
 			{

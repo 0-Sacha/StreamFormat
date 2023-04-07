@@ -7,22 +7,22 @@
 namespace ProjectCore::FMT::Detail
 {
 	class FMTException 			: public std::exception {};
-	class FMTError				: public FMTException {};
-	class FMTUtilityException	: public FMTException {};
+	class FMTError				: public FMTException 			{ public: const char* what() const noexcept override { return "FMTError"; } };
+	class FMTUtilityException	: public FMTException 			{ public: const char* what() const noexcept override { return "FMTUtilityException"; } };
 
-	class FMTBufferError	: public FMTError {};
-	class FMTBufferFull		: public FMTBufferError {};
-	class FMTBufferLock		: public FMTBufferError {};
-	class FMTBufferEnd		: public FMTBufferError {};
+	class FMTBufferError	: public FMTError 					{ public: const char* what() const noexcept override { return "FMTBufferError"; } };
+	class FMTBufferFull		: public FMTBufferError 			{ public: const char* what() const noexcept override { return "FMTBufferFull"; } };
+	class FMTBufferLock		: public FMTBufferError 			{ public: const char* what() const noexcept override { return "FMTBufferLock"; } };
+	class FMTBufferEnd		: public FMTBufferError 			{ public: const char* what() const noexcept override { return "FMTBufferEnd"; } };
 	
-	class FMTIndexError				: public FMTError {};
-	class FMTBufferWrongIndex 		: public FMTIndexError {};
-	class FMTBufferIndexOutOfRange 	: public FMTIndexError {};
+	class FMTIndexError				: public FMTError 			{ public: const char* what() const noexcept override { return "FMTIndexError"; } };
+	class FMTBufferWrongIndex 		: public FMTIndexError 		{ public: const char* what() const noexcept override { return "FMTBufferWrongIndex"; } };
+	class FMTBufferIndexOutOfRange 	: public FMTIndexError 		{ public: const char* what() const noexcept override { return "FMTBufferIndexOutOfRange"; } };
 
-	class FMTParseError			: public FMTError {};
-	class FMTGivenTypeError		: public FMTParseError {};
+	class FMTParseError			: public FMTError 				{ public: const char* what() const noexcept override { return "FMTParseError"; } };
+	class FMTGivenTypeError		: public FMTParseError 			{ public: const char* what() const noexcept override { return "FMTGivenTypeError"; } };
 
-	class FMTImplError			: public FMTError {};
-	class FMTShouldNotEndHere 	: public FMTImplError {};
-	class FMTNotImplYet 		: public FMTImplError {};
+	class FMTImplError			: public FMTError 				{ public: const char* what() const noexcept override { return "FMTImplError"; } };
+	class FMTShouldNotEndHere 	: public FMTImplError 			{ public: const char* what() const noexcept override { return "FMTShouldNotEndHere"; } };
+	class FMTNotImplYet 		: public FMTImplError 			{ public: const char* what() const noexcept override { return "FMTNotImplYet"; } };
 }

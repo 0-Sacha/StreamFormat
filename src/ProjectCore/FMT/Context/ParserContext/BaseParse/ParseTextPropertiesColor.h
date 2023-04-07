@@ -7,7 +7,7 @@ namespace ProjectCore::FMT {
 	template<typename ParserContext>
 	struct ParserType<Detail::TextProperties::TextColor::ResetColor, ParserContext>
 	{
-		static void Format(const Detail::TextProperties::TextColor::ResetColor t, ParserContext& context) {
+		static void Format(const Detail::TextProperties::TextColor::ResetColor, ParserContext& context) {
 			context.GetTextPropertiesParser().ColorModifReset();
 		}
 	};

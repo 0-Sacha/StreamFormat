@@ -27,7 +27,7 @@ namespace ProjectCore::FMT::Detail {
         std::size_t GetBufferSize() const override { return m_BufferSize; }
     
     public:
-        bool AddSize(const std::size_t count) override { return false; }
+        bool AddSize(const std::size_t /* count */) override { return false; }
 
     private:
         CharType* m_Buffer;

@@ -62,6 +62,9 @@ namespace ProjectCore::FMT::Detail
                     ExecuteStyle(static_cast<TextProperties::TextStyle::Underline>(t));
                     break;
 
+                case TextProperties::TextStyle::BasicStyle::Underline_SelectColor:
+                    break;
+
                 case TextProperties::TextStyle::BasicStyle::Blink_SlowBlink:
                 case TextProperties::TextStyle::BasicStyle::Blink_FastBlink:
                 case TextProperties::TextStyle::BasicStyle::Blink_Disable:

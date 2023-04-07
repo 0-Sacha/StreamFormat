@@ -54,8 +54,8 @@ namespace ProjectCore::FMT::Detail {
 			using Base::m_Buffer;
 			using Base::m_BufferSize;
 
-			static constexpr float MEAN_SIZE_OVERFLOW = 4.2;
-			static constexpr float MEAN_SIZE_RESIZE = 1.4;
+			static constexpr float MEAN_SIZE_OVERFLOW = 4.2f;
+			static constexpr float MEAN_SIZE_RESIZE = 1.4f;
 
 			static constexpr float MEAN_CALCFACT_OLD = 5;
 			static constexpr float MEAN_CALCFACT_LAST = 1;

@@ -8,8 +8,8 @@
 
 namespace ProjectCore::LoggerManager
 {
-	static BasicLogger& GetLoggerCore()		{ static BasicLogger instance(PROJECTCORE_BASE_LOGGER_NAME "-Core", LogSeverity::Trace); return instance; }
-	static BasicLogger& GetLoggerClient()	{ static BasicLogger instance(PROJECTCORE_BASE_LOGGER_NAME "-Client", LogSeverity::Trace); return instance; }
+	[[maybe_unused]] static BasicLogger& GetLoggerCore()		{ static BasicLogger instance(PROJECTCORE_BASE_LOGGER_NAME "-Core", LogSeverity::Trace); return instance; }
+	[[maybe_unused]] static BasicLogger& GetLoggerClient()	{ static BasicLogger instance(PROJECTCORE_BASE_LOGGER_NAME "-Client", LogSeverity::Trace); return instance; }
 }
 
 

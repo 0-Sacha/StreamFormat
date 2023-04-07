@@ -127,7 +127,7 @@ namespace ProjectCore::FMT::Context {
 
 		// Only support basic type that are considered as basic by Buffer class
 		template<typename Type, typename ...Rest>
-		inline void BasicRunType(Type&& type, Rest&& ...rest) 			    { BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); };
+		inline void BasicRunType(Type&& type, Rest&& ...rest) 			    { BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); }
 		template<typename Type> inline void BasicRunType(Type&& type)	    { m_BufferOut.BasicWriteType(type); }
 
         template<typename Type, typename ...Rest>

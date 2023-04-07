@@ -40,7 +40,7 @@ namespace ProjectCore::Tester::Detail
 		{
 			firstTestSuite = false;
 			Instrumentation::DurationEvent currentTestDuration(test->Name, "Profile");
-			TestStatus testStatus;
+			TestStatus testStatus = TestStatus::Fail;
 			currentTestDuration.Start();
 			if (TestSuitesManager::PerformanceTest.Enable == false)
 				testStatus = test->Run();

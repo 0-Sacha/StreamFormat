@@ -139,10 +139,9 @@ namespace ProjectCore::FMT::Detail
 		std::uint8_t Color;
 
 	public:
-		std::uint8_t GetColor() const { return Color; }
-
-		std::uint8_t GetColorRef()				{ return Color; }
-		const std::uint8_t GetColorRef() const	{ return Color; }
+		std::uint8_t GetColor() const 		{ return Color; }
+		std::uint8_t GetColorRef()			{ return Color; }
+		std::uint8_t GetColorRef() const 	{ return Color; }
 	
 	public:
 		constexpr BaseColorCube(const std::uint8_t color)
@@ -309,14 +308,14 @@ namespace ProjectCore::FMT::Detail
 	struct TextProperties::TextColor::Color24bFG : public TextProperties::TextColor::BaseColor24b
 	{
 		constexpr Color24bFG(std::uint8_t r = 255, std::uint8_t g = 255, std::uint8_t b = 255)
-			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
+			: TextProperties::TextColor::BaseColor24b(r, g, b) {}
 	};
 
 	// No need of virtual destructor since Color24bBG is purely a renaming of BaseColor24b
 	struct TextProperties::TextColor::Color24bBG : public TextProperties::TextColor::BaseColor24b
 	{
 		constexpr Color24bBG(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
-			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
+			: TextProperties::TextColor::BaseColor24b(r, g, b) {}
 	};
 
 
@@ -425,7 +424,7 @@ namespace ProjectCore::FMT::Detail
 
 		void ModifyThrow(const Color& given) { *this = given; }
 
-		void ModifyThrow(const TextProperties::TextColor::ResetColor& given) {
+		void ModifyThrow(const TextProperties::TextColor::ResetColor&) {
 			ModifyReset();
 		}
 		void ModifyThrow(const TextProperties::TextColor::BasicColorFG& given) {
@@ -456,7 +455,7 @@ namespace ProjectCore::FMT::Detail
 	public:
 		template <typename T> bool NeedModif(const T&) { throw FMTGivenTypeError(); }
 
-		bool NeedModif(const TextProperties::TextColor::ResetColor& given) {
+		bool NeedModif(const TextProperties::TextColor::ResetColor&) {
 			return true;
 		}
 		bool NeedModif(const TextProperties::TextColor::BasicColorFG& given) {

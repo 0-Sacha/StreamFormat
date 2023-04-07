@@ -9,7 +9,7 @@ namespace ProjectCore::FMT
 	template<typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
 	struct FormatterType
 	{
-		static inline void Format(const T& t, FormatterContext& context) {
+		static inline void Format(const T&, FormatterContext& context) {
 			context.SubContext("({C:red}FMT unknow type: {})", typeid(T).name());
 #ifndef PROJECTCORE_COMPILER_VS
 			throw Detail::FMTShouldNotEndHere{};
@@ -32,3 +32,11 @@ namespace ProjectCore::FMT
 															context.SubContext(fmt, __VA_ARGS__);\
 														}\
 													};
+
+#define PROJECTCORE_AUTO_FORMATTER_T(Type, fmt, ...)	template<typename FormatterContext>\
+														struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
+															static void Format(const Type&, FormatterContext& context) {\
+																context.SubContext(fmt, __VA_ARGS__);\
+															}\
+														};
+

@@ -41,9 +41,9 @@ namespace ProjectCore::FMT
 		static inline void Read(T(&t)[SIZE], ParserContext& context) {
 			const auto& data = context.GetFormatData();
 
-			auto begin = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
+			std::size_t begin = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
 			bool isZeroEnded = context.GetFormatData().HasSpecifier("no-zero-end");
-			auto size = context.GetFormatData().GetSpecifierAsNumber("size", SIZE - (isZeroEnded ? 0 : 1) - begin);
+			std::size_t size = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - static_cast<std::size_t>(isZeroEnded ? 0 : 1) - begin));
 
 			// if (data.HasSpecifier("indent"))
 			// 	return context.BufferIn().ReadIndentCharPtr(t + begin, size);
@@ -73,7 +73,7 @@ namespace ProjectCore::FMT
 	};
 	template<typename T, typename ParserContext>
 	struct ParserType<Detail::ForwardAsCharPointer<T>, ParserContext> {
-		static inline void Read(T* const t, ParserContext& context) {
+		static inline void Read(T* const, ParserContext&) {
 			// FIXME
 		}
 	};

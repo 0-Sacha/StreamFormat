@@ -5,9 +5,9 @@
 
 PCT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-#define TEST_FMT(fmt_test, expected)  PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, 0)), Escaper(expected));
+#define TEST_FMT(fmt_test, expected)  PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, 0)), Escaper(expected))
 
-std::string Escaper(const std::string& str)
+static std::string Escaper(const std::string& str)
 {
     std::string res;
     for (char c : str)
@@ -25,7 +25,7 @@ std::string Escaper(const std::string& str)
 }
 
 PCT_TEST_GROUP(TEXT_PROPERTIES, ESCAPER_VALIDATING);
-#define TEST_ESCAPER(str, str_res)  PCT_EQ(Escaper(str), str_res);
+#define TEST_ESCAPER(str, str_res)  PCT_EQ(Escaper(str), str_res)
 PCT_TEST_FUNC(ESCAPER_VALIDATING, BasicTest)
 {
     TEST_ESCAPER("\033", "\\e");
@@ -80,9 +80,9 @@ PCT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
 
 
 class TEST_FMT_ContextOut {};
-PROJECTCORE_AUTO_FORMATTER(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
+PROJECTCORE_AUTO_FORMATTER_T(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
-#define TEST_FMT_CONTEXT(fmt_test, expected)  PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{})), Escaper(expected));
+#define TEST_FMT_CONTEXT(fmt_test, expected)  PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{})), Escaper(expected))
 
 PCT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 {

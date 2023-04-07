@@ -7,7 +7,7 @@ namespace ProjectCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<Detail::TextProperties::TextFront::ResetFront, FormatterContext>
 	{
-		static void Format(const Detail::TextProperties::TextFront::ResetFront t, FormatterContext& context) {
+		static void Format(const Detail::TextProperties::TextFront::ResetFront, FormatterContext& context) {
 			context.GetTextPropertiesParser().FrontModifReset();
 		}
 	};

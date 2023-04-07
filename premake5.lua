@@ -12,6 +12,8 @@ project "ProjectCore"
 	cppdialect "C++20"
 	staticruntime "on"
 
+	Solution.HighWarnings()
+
 	targetdir 	(Solution.Path.ProjectTargetDirectory)
 	objdir 		(Solution.Path.ProjectObjectDirectory)
 
@@ -41,6 +43,8 @@ project "ProjectCoreTests"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "on"
+
+	Solution.HighWarnings()
 
 	targetdir 	(Solution.Path.ProjectTargetDirectory)
 	objdir 		(Solution.Path.ProjectObjectDirectory)

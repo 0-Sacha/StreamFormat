@@ -118,7 +118,7 @@ namespace ProjectCore::FMT::Detail {
 	struct TextProperties::TextStyle::UnderlineColor::Color24b : public TextProperties::TextColor::BaseColor24b
 	{
 		constexpr Color24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
-			: TextProperties::TextColor::BaseColor24b(r, g, b) {};
+			: TextProperties::TextColor::BaseColor24b(r, g, b) {}
 	};
 
 	// No need of virtual destructor since ColorCube is purely a renaming of BaseColorCube
@@ -211,7 +211,7 @@ namespace ProjectCore::FMT::Detail {
 		
 		template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
 
-		void ModifyThrow(const TextProperties::TextStyle::ResetStyle& given) 		{ ModifyReset(); }
+		void ModifyThrow(const TextProperties::TextStyle::ResetStyle&) 				{ ModifyReset(); }
 		void ModifyThrow(const Style& given)										{ *this = given; }
 		void ModifyThrow(const TextProperties::TextStyle::Intensity& given) 		{ Intensity = given; }
 		void ModifyThrow(const TextProperties::TextStyle::Italic& given) 			{ Italic = given; }
@@ -228,7 +228,7 @@ namespace ProjectCore::FMT::Detail {
 	public:
 		template <typename T> bool NeedModif(const T&) { throw Detail::FMTGivenTypeError{}; }
 
-		bool NeedModif(const TextProperties::TextStyle::ResetStyle& given) 		{ return true; }
+		bool NeedModif(const TextProperties::TextStyle::ResetStyle&) 			{ return true; }
 		bool NeedModif(const Style& given)										{ return *this != given; }
 		bool NeedModif(const TextProperties::TextStyle::Intensity& given) 		{ return Intensity != given; }
 		bool NeedModif(const TextProperties::TextStyle::Italic& given) 			{ return Italic != given; }

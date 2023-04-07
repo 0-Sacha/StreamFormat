@@ -91,16 +91,16 @@ namespace ProjectCore::FMT::Detail {
         public:
             size_t Size() override { return 0; }
 
-            void RunTypeAtIndex(Detail::FormatIndex idx) override { }
+            void RunTypeAtIndex(Detail::FormatIndex) override { }
 
             Detail::FormatIndex GetIndexOfCurrentNameArg() override { return Detail::FormatIndex{}; }
 
-            std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) override { return {}; }
+            std::any GetTypeAtIndexImpl(Detail::FormatIndex) override { return {}; }
 
-            void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) override { }
+            void RunFuncAtImpl(Detail::FormatIndex, std::function<void(std::any)>) override { }
 
-            Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) override { return Detail::FormatIndex{}; }
-            typename Context::StringViewFormat GetStringAt(Detail::FormatIndex idx) override { return ""; }
-            std::int64_t GetIntAt(Detail::FormatIndex idx) override { return 0; }
+            Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex) override { return Detail::FormatIndex{}; }
+            typename Context::StringViewFormat GetStringAt(Detail::FormatIndex) override { return ""; }
+            std::int64_t GetIntAt(Detail::FormatIndex) override { return 0; }
     };
 }

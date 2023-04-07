@@ -13,7 +13,7 @@ namespace ProjectCore::JSON
     template<typename T>
 	struct JsonSerializer
     {
-		static inline void Parse(T& t, Detail::JsonParser& parser)
+		static inline void Parse(T&, Detail::JsonParser&)
         {
 #ifdef PROJECTCORE_COMPILER_VS
             __debugbreak();
@@ -22,7 +22,7 @@ namespace ProjectCore::JSON
 #endif
         }
 
-		static inline void Format(const T& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const T&, Detail::JsonFormatter& formatter)
         {
             formatter.BufferOut().FastWriteCharArray("Unkown JsonFormatter for type : ");
             formatter.BufferOut().FastWriteCharPtrNSize(typeid(T).name());
@@ -155,12 +155,12 @@ namespace ProjectCore::JSON
         }
 
         template <typename T>
-        static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser)
+        static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parserObject)
         {
-            LoadAllSubObjects<T>(t, parser, [](T& t, std::size_t idx, std::string&& name, Detail::JsonParser& parser){
+            LoadAllSubObjects<T>(t, parserObject, [](T& mainObject, std::size_t idx, std::string&& name, Detail::JsonParser& parser){
                 typename JsonSerializer<T>::StructSubObjectType subObject;
                 parser.Parse(subObject);
-                JsonSerializer<T>::AddStructSubObject(t, idx, std::move(name), std::move(subObject));
+                JsonSerializer<T>::AddStructSubObject(mainObject, idx, std::move(name), std::move(subObject));
             });
         }
 
@@ -216,10 +216,10 @@ namespace ProjectCore::JSON
         template <typename T>
         static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser)
         {
-            LoadAllSubObjects<T>(t, parser, [](T& t, std::size_t idx, Detail::JsonParser& parser){
+            LoadAllSubObjects<T>(t, parser, [](T& mainObject, std::size_t idx, Detail::JsonParser& jsonParser){
                 typename JsonSerializer<T>::ArraySubObjectType subObject;
-                parser.Parse(subObject);
-                JsonSerializer<T>::AddArraySubObject(t, idx, std::move(subObject));
+                jsonParser.Parse(subObject);
+                JsonSerializer<T>::AddArraySubObject(mainObject, idx, std::move(subObject));
             });
         }
 

@@ -5,7 +5,7 @@
 
 PCT_TEST_GROUP(FMT, SPECIFIER);
 
-#define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, test_data), expected);
+#define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected)  PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, test_data), expected)
 
 PCT_TEST_FUNC(SPECIFIER, BEGIN_END)
 {

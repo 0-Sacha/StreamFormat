@@ -61,7 +61,7 @@ namespace ProjectCore::LoggerManager::Detail {
 			FMT::Detail::FormatInBufferOutManager(preFormatBufferOutManager, preFormatBufferInProperties, false, FORMAT_SV("name", m_Name), FORMAT_SV("data", LoggerManager::AddIndentInFormat(format)));
 			FMT::Detail::BufferInProperties<char> fullFormatBufferInProperties(preFormatBufferOutManager.GetLastGeneratedStringView());
 			FMT::Detail::FormatInBufferOutManager(fullFormatBufferOutManager, fullFormatBufferInProperties, true, std::forward<Args>(args)..., FORMAT_SV("color", severity));
-			m_Stream.write(fullFormatBufferOutManager.GetBuffer(), fullFormatBufferOutManager.GetLastGeneratedDataSize());
+			m_Stream.write(fullFormatBufferOutManager.GetBuffer(), static_cast<std::streamsize>(fullFormatBufferOutManager.GetLastGeneratedDataSize()));
 			m_Stream.flush();
 		}
 
@@ -73,7 +73,7 @@ namespace ProjectCore::LoggerManager::Detail {
 
 			FMT::Detail::BufferInProperties<char> fullFormatBufferInProperties(m_Pattern);
 			FMT::Detail::FormatInBufferOutManager(fullFormatBufferOutManager, fullFormatBufferInProperties, true, FORMAT_SV("data", t), FORMAT_SV("color", severity), FORMAT_SV("name", m_Name));
-			m_Stream.write(fullFormatBufferOutManager.GetBuffer(), fullFormatBufferOutManager.GetLastGeneratedDataSize());
+			m_Stream.write(fullFormatBufferOutManager.GetBuffer(), static_cast<std::streamsize>(fullFormatBufferOutManager.GetLastGeneratedDataSize()));
 			m_Stream.flush();
 		}
 	};

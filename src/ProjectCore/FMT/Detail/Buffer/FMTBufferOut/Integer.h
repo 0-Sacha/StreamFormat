@@ -88,7 +88,7 @@ namespace ProjectCore::FMT::Detail
 
 		PushBack('.');
 		if (i < 0)	i = -i;
-		i = i - (typename Detail::TypesInfo::FloatDetail<T>::IntType)i;
+		i = i - static_cast<T>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
 		while (nbDecimal-- != 0) {
 			const char intPart = static_cast<const char>(i *= 10);
 			PushBack(intPart + '0');

@@ -169,7 +169,7 @@ namespace ProjectCore::FMT {
 		Detail::DynamicBufferOutManager<CharBuffer> bufferOutManager(32);
 		Detail::FormatInBufferOutManager(bufferOutManager, false, std::forward<T>(t));
 
-		std::fwrite(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize(), 1, stream);
+		std::fwrite(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()), 1, stream);
 		std::fflush(stream);
 	}
 
@@ -179,7 +179,7 @@ namespace ProjectCore::FMT {
 		Detail::DynamicBufferOutManager<CharBuffer> bufferOutManager(32);
 		Detail::FormatInBufferOutManager(bufferOutManager, true, std::forward<T>(t));
 
-		std::fwrite(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize(), 1, stream);
+		std::fwrite(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()), 1, stream);
 		std::fflush(stream);
 	}
 
@@ -190,7 +190,7 @@ namespace ProjectCore::FMT {
 		Detail::DynamicBufferOutManager<CharBuffer> bufferOutManager(32);
 		Detail::FormatInBufferOutManager(bufferOutManager, false, std::forward<T>(t));
 
-		stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());
+		stream.write(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()));
 		stream.flush();
 	}
 
@@ -200,7 +200,7 @@ namespace ProjectCore::FMT {
 		Detail::DynamicBufferOutManager<CharBuffer> bufferOutManager(32);
 		Detail::FormatInBufferOutManager(bufferOutManager, true, std::forward<T>(t));
 
-		stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());
+		stream.write(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()));
 		stream.flush();
 	}
 

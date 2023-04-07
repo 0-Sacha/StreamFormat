@@ -41,7 +41,7 @@ namespace ProjectCore::FMT::Detail
         void ExecuteStyle(const TextProperties::TextStyle::Intensity& t) override                   { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm'); }
         void ExecuteStyle(const TextProperties::TextStyle::Italic& t) override                      { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm'); }
         void ExecuteStyle(const TextProperties::TextStyle::Underline& t) override                   { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm'); }
-        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color& t) override       { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType("\033[59m"); }
+        void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color&) override         { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType("\033[59m"); }
         void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::ColorCube& t) override   { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType("\033[58;5;", t.GetColorRef(), 'm'); }
         void ExecuteStyle(const TextProperties::TextStyle::UnderlineColor::Color24b& t) override    { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType("\033[58;2;", t.R, ';', t.G, ';', t.B, 'm'); }
         void ExecuteStyle(const TextProperties::TextStyle::Blink& t) override                       { NoStrideFunction noStride(*m_Buffer); m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm'); }

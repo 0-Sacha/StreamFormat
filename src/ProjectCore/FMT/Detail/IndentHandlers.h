@@ -3,9 +3,6 @@
 #include "ProjectCore/FMT/Detail/Detail.h"
 
 namespace ProjectCore::FMT::Detail {
-	template<typename T, typename CharFormat>	struct CopyFormatData										{ static void Copy(FormatData<CharFormat>& data, const T& t) { } };
-	template<typename CharFormat>				struct CopyFormatData<FormatData<CharFormat>, CharFormat>	{ static void Copy(FormatData<CharFormat>& data, const FormatData<CharFormat>& t) { data = t; } };
-	
 	template <typename BufferContext>
 	struct NoStrideFunction {
 		inline explicit NoStrideFunction(BufferContext& buffer)

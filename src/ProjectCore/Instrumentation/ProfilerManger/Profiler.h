@@ -26,7 +26,7 @@ namespace ProjectCore::Instrumentation
 	public:
 		DurationEvent& GetProfilerProfile() 						{ return *reinterpret_cast<DurationEvent*>(&Events[0]); }
 		void AddEvent(const Event& event) 							{ Events.push_back(event); }
-		inline ProjectCore::LoggerManager::BasicLogger& GetLogger() 	{ return Logger; }
+		inline ProjectCore::LoggerManager::BasicLogger& GetLogger() { return Logger; }
 
 	public:
 		static Profiler& GetInstance()								{ static Profiler profiler("Profiler"); return profiler; }

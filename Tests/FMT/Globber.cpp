@@ -15,15 +15,15 @@ PCT_TEST_GROUP(FMT, GLOBBER);
 
 PCT_TEST_FUNC(GLOBBER, BASIC_WILDCARD)
 {
-    TEST_GLOBBER("qwerty", "qwerty");
-    TEST_GLOBBER("qwerty", "q?erty");
-    TEST_GLOBBER("qwerty", "q?????");
-    TEST_GLOBBER("qwerty", "qwer?y");
-    TEST_GLOBBER("qwerty", "qwert?");
-    TEST_GLOBBER("qwerty", "??????");
-    TEST_GLOBBER("qwerty", "*");
-    TEST_GLOBBER("qwerty", "******");
-    TEST_GLOBBER("qwerty", "*?**?*");
+    TEST_GLOBBER("qwerty", "qwerty")
+    TEST_GLOBBER("qwerty", "q?erty")
+    TEST_GLOBBER("qwerty", "q?????")
+    TEST_GLOBBER("qwerty", "qwer?y")
+    TEST_GLOBBER("qwerty", "qwert?")
+    TEST_GLOBBER("qwerty", "??????")
+    TEST_GLOBBER("qwerty", "*")
+    TEST_GLOBBER("qwerty", "******")
+    TEST_GLOBBER("qwerty", "*?**?*")
 }
 
 PCT_TEST_GROUP(FMT, PARSE_GLOBBER);

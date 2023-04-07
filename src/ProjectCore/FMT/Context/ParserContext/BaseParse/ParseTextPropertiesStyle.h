@@ -7,7 +7,7 @@ namespace ProjectCore::FMT {
 	template<typename ParserContext>
 	struct ParserType<Detail::TextProperties::ResetProperties, ParserContext>
 	{
-		static void Format(const Detail::TextProperties::ResetProperties t, ParserContext& context) {
+		static void Format(const Detail::TextProperties::ResetProperties, ParserContext& context) {
 			context.GetTextPropertiesParser().AllPropertiesReset();
 		}
 	};
@@ -15,7 +15,7 @@ namespace ProjectCore::FMT {
 	template<typename ParserContext>
 	struct ParserType<Detail::TextProperties::TextStyle::ResetStyle, ParserContext>
 	{
-		static void Format(const Detail::TextProperties::TextStyle::ResetStyle t, ParserContext& context) {
+		static void Format(const Detail::TextProperties::TextStyle::ResetStyle, ParserContext& context) {
 			context.GetTextPropertiesParser().StyleModifReset();
 		}
 	};

@@ -133,23 +133,23 @@ namespace ProjectCore::JSON
     {
         static inline void Parse(Char& t, Detail::JsonParser& parser) {
             parser.BufferIn().Skip('"');
-            t = parser.BufferIn().GetAndForward();
+            t = static_cast<Char>(parser.BufferIn().GetAndForward());
             parser.BufferIn().Skip('"'); 
         }
 		static inline void Format(const Char& t, Detail::JsonFormatter& formatter) {
             formatter.BufferOut().PushBack('"');
-            formatter.BufferOut().PushBack(t);
+            formatter.BufferOut().PushBack(static_cast<char>(t));
             formatter.BufferOut().PushBack('"');
         }
     };
     template <typename Char, std::size_t SIZE>
 	struct JsonSerializer<FMT::Detail::ForwardAsCharArray<Char, SIZE>>
     {
-        static inline void Parse(Char(&t)[SIZE], Detail::JsonParser& parser) {
+        static inline void Parse([[maybe_unused]] Char(&t)[SIZE], Detail::JsonParser& parser) {
             parser.BufferIn().Skip('"');
             parser.BufferIn().Skip('"'); 
         }
-		static inline void Format(const Char(&t)[SIZE], Detail::JsonFormatter& formatter) {
+		static inline void Format([[maybe_unused]] const Char(&t)[SIZE], Detail::JsonFormatter& formatter) {
             formatter.BufferOut().PushBack('"');
             formatter.BufferOut().PushBack('"');
         }
@@ -157,11 +157,11 @@ namespace ProjectCore::JSON
     template <typename Char>
 	struct JsonSerializer<FMT::Detail::ForwardAsCharPointer<Char>>
     {
-        static inline void Parse(Char* t, Detail::JsonParser& parser) {
+        static inline void Parse([[maybe_unused]] Char* t, Detail::JsonParser& parser) {
             parser.BufferIn().Skip('"');
             parser.BufferIn().Skip('"'); 
         }
-		static inline void Format(const Char* t, Detail::JsonFormatter& formatter) {
+		static inline void Format([[maybe_unused]] const Char* t, Detail::JsonFormatter& formatter) {
             formatter.BufferOut().PushBack('"');
             formatter.BufferOut().PushBack('"');
         }

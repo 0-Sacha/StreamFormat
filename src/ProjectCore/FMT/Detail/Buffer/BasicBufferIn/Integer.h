@@ -16,7 +16,7 @@ namespace ProjectCore::FMT::Detail {
 			return false;
 
 		while (IsADigit())
-			res = res * 10 + (GetAndForward() - '0');
+			res = res * static_cast<T>(10) + static_cast<T>(GetAndForward() - static_cast<CharBuffer>('0'));
 
 		i = sign ? -res : res;
 		return true;
@@ -31,7 +31,7 @@ namespace ProjectCore::FMT::Detail {
 			return false;
 
 		while (IsADigit())
-			res = res * 10 + (GetAndForward() - '0');
+			res = res * static_cast<T>(10) + static_cast<T>(GetAndForward() - static_cast<CharBuffer>('0'));
 
 		i = res;
 		return true;
@@ -44,7 +44,7 @@ namespace ProjectCore::FMT::Detail {
 		FastReadIntThrow(iInt);
 
 		T dec = 0;
-		T decIdx = 0.1f;
+		T decIdx = static_cast<T>(0.1l);
 
 		if (IsEqualToForward('.') == false)
 		{
@@ -60,7 +60,7 @@ namespace ProjectCore::FMT::Detail {
 		{
 			while (IsADigit() && IsEnd() == false) {
 				dec += (GetAndForward() - '0') * decIdx;
-				decIdx *= 0.1f;
+				decIdx *= static_cast<T>(0.1l);
 			}
 		}
 		else
@@ -68,11 +68,11 @@ namespace ProjectCore::FMT::Detail {
 			++floatPrecision;
 			while (IsADigit() && --floatPrecision != 0) {
 				dec += (GetAndForward() - '0') * decIdx;
-				decIdx *= 0.1f;
+				decIdx *= static_cast<T>(0.1l);
 			}
 		}
 
-		i = iInt + dec;
+		i = static_cast<T>(iInt) + dec;
 		return true;
 	}
 }

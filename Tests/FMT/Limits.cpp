@@ -98,8 +98,8 @@ PCT_TEST_FUNC(LIMITS, LowBufferSizeArray10FMT30)
 	ProjectCore::FMT::Detail::BufferInProperties<char> properties(fmtBuffer, 30);
 	ProjectCore::FMT::Detail::GivenBufferOutManager<char> manager(buffer, 10);
 	ProjectCore::FMT::Detail::FormatInBufferOutManager(manager, properties, false);
-	for (int i = 0; i < 10; ++i)
-		PCT_EQ(buffer[i] - '0', i);
+	for (int k = 0; k < 10; ++k)
+		PCT_EQ(buffer[k] - '0', k);
 }
 
 
@@ -110,6 +110,6 @@ PCT_TEST_FUNC(LIMITS, LowBufferSizeArray5Number9)
 	ProjectCore::FMT::Detail::GivenBufferOutManager<char> manager(buffer, 10);
 	std::uint64_t i = 9'876'543'210;
 	ProjectCore::FMT::Detail::FormatInBufferOutManager(manager, properties, false, i);
-	for (int i = 0; i < 10; ++i)
-		PCT_EQ(buffer[i] - '0', 9 - i);
+	for (int k = 0; k < 10; ++k)
+		PCT_EQ(buffer[k] - '0', 9 - k);
 }

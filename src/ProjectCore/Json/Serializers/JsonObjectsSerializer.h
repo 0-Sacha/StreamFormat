@@ -91,12 +91,12 @@ namespace ProjectCore::JSON
     template <>
 	struct JsonSerializer<JsonNullObject>
     {
-        static inline void Parse(JsonNullObject& t, Detail::JsonParser& parser)
+        static inline void Parse(JsonNullObject&, Detail::JsonParser& parser)
         {
             JsonNullSerializer::ParseNull(parser);
         }
 
-		static inline void Format(const JsonNullObject& t, Detail::JsonFormatter& formatter)
+		static inline void Format(const JsonNullObject&, Detail::JsonFormatter& formatter)
         {
             JsonNullSerializer::FormatNull(formatter);
         }

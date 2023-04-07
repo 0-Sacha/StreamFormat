@@ -21,22 +21,22 @@ namespace ProjectCore::FMT::Detail {
 
     public:
         template <typename FormatterContext>
-        inline void RunTypeAtIndex(FormatterContext &context, Detail::FormatIndex idx)
+        inline void RunTypeAtIndex(FormatterContext&, Detail::FormatIndex)
                     { throw Detail::FMTBufferWrongIndex(); }
 
         template <typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex)
+        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext&, Detail::FormatIndex)
                     { return Detail::FormatIndex(); }
 
-        inline std::any GetTypeAtIndex(Detail::FormatIndex idx)
+        inline std::any GetTypeAtIndex(Detail::FormatIndex)
                     { return {}; }
 
         template <typename T>
-        inline void GetTypeAtIndexCast(T* value, Detail::FormatIndex idx)
+        inline void GetTypeAtIndexCast(T*, Detail::FormatIndex)
                     { }
 
         template <typename T>
-        inline void GetTypeAtIndexConvert(T* value, Detail::FormatIndex idx)
+        inline void GetTypeAtIndexConvert(T*, Detail::FormatIndex)
                     { }
     };
 

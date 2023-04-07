@@ -121,8 +121,8 @@ namespace ProjectCore::FMT::Detail {
 			: BasicCustomDataType<DataType, -1, -2>(value)
 		{}
 
-		inline constexpr void SetToBasicSizeIfDefault() 	{ if (IsDefault()) Value = BASIC_DECIMAL_SIZE; };
-		inline constexpr bool IsBasicSize() 				{ return Value == BASIC_DECIMAL_SIZE; };
+		inline constexpr void SetToBasicSizeIfDefault() 	{ if (IsDefault()) Value = BASIC_DECIMAL_SIZE; }
+		inline constexpr bool IsBasicSize() 				{ return Value == BASIC_DECIMAL_SIZE; }
 
 		// operator =
 		template <typename K>

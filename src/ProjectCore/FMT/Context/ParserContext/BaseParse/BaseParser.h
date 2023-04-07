@@ -7,7 +7,7 @@ namespace ProjectCore::FMT {
 
 	template<typename ParserContext>
 	struct ParserType<typename ParserContext::DataType, ParserContext> {
-		static inline void Read(typename ParserContext::DataType& t, ParserContext& context) {
+		static inline void Read(typename ParserContext::DataType&, ParserContext&) {
 			// FIXME
 		}
 	};
@@ -199,22 +199,25 @@ namespace ProjectCore::FMT {
 
 	template<typename ParserContext>
 	struct ParserType<void*, ParserContext> {
-		static inline void Read(void*& t, ParserContext& context) {
-			// FIXME		
+		static inline void Read(void*&, ParserContext&) {
+			// FIXME
+			// TODO
 		}
 	};
 
 	template<typename T, typename ParserContext>
 	struct ParserType<T*, ParserContext> {
-		static inline void Read(T*& t, ParserContext& context) {
-			// FIXME		
+		static inline void Read(T*&, ParserContext&) {
+			// FIXME
+			// TODO
 		}
 	};
 
 	template<std::size_t SIZE, typename T, typename ParserContext>
 	struct ParserType<T[SIZE], ParserContext> {
-		static inline void Read(T (&t)[SIZE], ParserContext& context) {
-			// FIXME		
+		static inline void Read(T (&)[SIZE], ParserContext&) {
+			// FIXME
+			// TODO		
 		}
 	};
 }

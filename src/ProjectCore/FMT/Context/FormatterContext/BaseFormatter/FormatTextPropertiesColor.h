@@ -7,7 +7,7 @@ namespace ProjectCore::FMT {
 	template<typename FormatterContext>
 	struct FormatterType<Detail::TextProperties::TextColor::ResetColor, FormatterContext>
 	{
-		static void Format(const Detail::TextProperties::TextColor::ResetColor t, FormatterContext& context) {
+		static void Format(const Detail::TextProperties::TextColor::ResetColor, FormatterContext& context) {
 			context.GetTextPropertiesParser().ColorModifReset();
 		}
 	};

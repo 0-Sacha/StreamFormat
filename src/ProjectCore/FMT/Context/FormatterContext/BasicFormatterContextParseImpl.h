@@ -34,7 +34,7 @@ namespace ProjectCore::FMT::Context {
 		if (indent != nullptr)
 		{
 			if (indent->ValueHasNumber == true)
-				BufferOut().SetIndent(indent->ValueAsNumber);
+				BufferOut().SetIndent(static_cast<std::size_t>(indent->ValueAsNumber));
 			else
 				BufferOut().SetIndent();
 		}

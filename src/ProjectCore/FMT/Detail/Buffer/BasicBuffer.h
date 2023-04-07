@@ -22,10 +22,10 @@ namespace ProjectCore::FMT::Detail {
 		inline const CharBuffer*	GetBufferCurrentPos() const							{ return m_CurrentPos; }
 		inline CharBuffer*			GetBufferEnd()										{ return m_BufferEnd; }
 		inline const CharBuffer*	GetBufferEnd() const								{ return m_BufferEnd; }
-		inline std::size_t			GetBufferSize() const								{ return m_BufferEnd - m_Buffer; }
-		inline std::size_t			GetBufferSizeLeft() const							{ return m_BufferEnd - m_CurrentPos; }
-		inline std::size_t			GetBufferCurrentSize() const						{ return m_CurrentPos - m_Buffer; }
-		inline std::size_t			GetBufferRemainingSize() const						{ return m_BufferEnd - m_CurrentPos; }
+		inline std::size_t			GetBufferSize() const								{ return static_cast<std::size_t>(m_BufferEnd - m_Buffer); }
+		inline std::size_t			GetBufferSizeLeft() const							{ return static_cast<std::size_t>(m_BufferEnd - m_CurrentPos); }
+		inline std::size_t			GetBufferCurrentSize() const						{ return static_cast<std::size_t>(m_CurrentPos - m_Buffer); }
+		inline std::size_t			GetBufferRemainingSize() const						{ return static_cast<std::size_t>(m_BufferEnd - m_CurrentPos); }
 		
 		inline void					SetBufferCurrentPos(CharBuffer* const pos)			{ if (pos >= GetBuffer() && pos <= GetBufferEnd()) m_CurrentPos = pos; }
 
