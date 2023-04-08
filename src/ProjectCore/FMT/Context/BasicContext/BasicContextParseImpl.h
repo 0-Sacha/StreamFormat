@@ -122,7 +122,7 @@ namespace ProjectCore::FMT::Context {
 			m_FormatData.AddSpecifier(name, value);
 		}
 		else if (m_Format.IsEqualToForward('{')) {
-			Detail::FormatIndex idx = GetFormatIndexThrow();
+			[[maybe_unused]] Detail::FormatIndex idx = GetFormatIndexThrow();
 			// FIXME
 			// m_FormatData.AddSpecifier(name, GetTypeAtIndexAuto(idx));
 			m_Format.IsEqualToForward('}');

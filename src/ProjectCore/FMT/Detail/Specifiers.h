@@ -82,14 +82,18 @@ namespace ProjectCore::FMT::Detail {
 			: BasicCustomDataType<DataType, -1, -2>(value)
 		{}
 
-		// operator =
-		template <typename K>
-		requires std::is_convertible_v<DataType, K>
-		inline constexpr DigitSize& operator=(const K i)	{ Value = static_cast<DataType>(i); return *this; }
+	public:
+		using Base = BasicCustomDataType<DataType, -1, -2>;
+		using Base::operator+;
+		using Base::operator-;
+		using Base::operator++;
+		using Base::operator--;
 
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<DataType, K>
-		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
+		using Base::operator=;
+		using Base::operator+=;
+		using Base::operator-=;
+		using Base::operator*=;
+		using Base::operator/=;
 	};
 
 	// No need of virtual destructor since ShiftSize is purely a renaming of BasicCustomDataType<DataType, 0, -1>
@@ -100,14 +104,18 @@ namespace ProjectCore::FMT::Detail {
 			: BasicCustomDataType<DataType, 0, -1>(value)
 		{}
 
-		// operator =
-		template <typename K>
-		requires std::is_convertible_v<DataType, K>
-		inline constexpr ShiftSize& operator=(const K i)	{ Value = static_cast<DataType>(i); return *this; }
+	public:
+		using Base = BasicCustomDataType<DataType, 0, -1>;
+		using Base::operator+;
+		using Base::operator-;
+		using Base::operator++;
+		using Base::operator--;
 
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<DataType, K>
-		inline constexpr ShiftSize& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
+		using Base::operator=;
+		using Base::operator+=;
+		using Base::operator-=;
+		using Base::operator*=;
+		using Base::operator/=;
 	};
 
 	// No need of virtual destructor since FloatPrecision is purely a renaming of BasicCustomDataType<DataType, -1, -2>
@@ -124,14 +132,18 @@ namespace ProjectCore::FMT::Detail {
 		inline constexpr void SetToBasicSizeIfDefault() 	{ if (IsDefault()) Value = BASIC_DECIMAL_SIZE; }
 		inline constexpr bool IsBasicSize() 				{ return Value == BASIC_DECIMAL_SIZE; }
 
-		// operator =
-		template <typename K>
-		requires std::is_convertible_v<DataType, K>
-		inline constexpr FloatPrecision& operator=(const K i)	{ Value = static_cast<DataType>(i); return *this; }
-
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<DataType, K>
-		inline constexpr FloatPrecision& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<DataType>(i.Value); return *this; }
+	public:
+		using Base = BasicCustomDataType<DataType, -1, -2>;
+		using Base::operator+;
+		using Base::operator-;
+		using Base::operator++;
+		using Base::operator--;
+		
+		using Base::operator=;
+		using Base::operator+=;
+		using Base::operator-=;
+		using Base::operator*=;
+		using Base::operator/=;
 	};
 
 }

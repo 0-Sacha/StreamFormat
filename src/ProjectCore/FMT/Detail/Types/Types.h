@@ -3,6 +3,7 @@
 #include "ProjectCore/Core/Core.h"
 
 #include <limits>
+#include <concepts>
 
 namespace ProjectCore::FMT::Detail
 {
@@ -55,13 +56,50 @@ namespace ProjectCore::FMT::Detail
 		}		
 	};
 
+
 	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE>
-	struct BasicCustomDataType {
+	struct BasicCustomDataType;
+
+	template <typename From, typename To> concept EqualOperator = requires(const From& from, To& to) 				{ to = from; };
+	template <typename From, typename To> concept AddEqualOperator = requires(const From& from, To& to) 			{ to += from; };
+	template <typename From, typename To> concept MinusEqualOperator = requires(const From& from, To& to) 			{ to -= from; };
+	template <typename From, typename To> concept MultEqualOperator = requires(const From& from, To& to) 			{ to *= from; };
+	template <typename From, typename To> concept DivEqualOperator = requires(const From& from, To& to) 			{ to /= from; };
+	template <typename From, typename To> concept IsEqualOperator = requires(const From& from, const To& to) 		{ to == from; };
+	template <typename From, typename To> concept NotIsEqualOperator = requires(const From& from, const To& to) 	{ to != from; };
+	template <typename From, typename To> concept LessThanOperator = requires(const From& from, const To& to) 		{ to < from; };
+	template <typename From, typename To> concept LessEqualOperator = requires(const From& from, const To& to) 		{ to <= from; };
+	template <typename From, typename To> concept GreaterThanOperator = requires(const From& from, const To& to) 	{ to > from; };
+	template <typename From, typename To> concept GreaterEqualOperator = requires(const From& from, const To& to) 	{ to >= from; };
+	template <typename From, typename To> concept AddOperator = requires(const From& from, const To& to) 			{ to + from; };
+	template <typename From, typename To> concept MinusOperator = requires(const From& from, const To& to) 			{ to - from; };
+	template <typename From, typename To> concept MultOperator = requires(const From& from, const To& to) 			{ to * from; };
+	template <typename From, typename To> concept DivOperator = requires(const From& from, const To& to) 			{ to / from; };
+
+	template <typename From, typename To> concept DataTypeEqualOperator = requires(const From& from, To& to) 				{ requires EqualOperator<From, To> == false; to = from.Value; };
+	template <typename From, typename To> concept DataTypeAddEqualOperator = requires(const From& from, To& to) 			{ requires AddEqualOperator<From, To> == false; to += from.Value; };
+	template <typename From, typename To> concept DataTypeMinusEqualOperator = requires(const From& from, To& to) 			{ requires MinusEqualOperator<From, To> == false; to -= from.Value; };
+	template <typename From, typename To> concept DataTypeMultEqualOperator = requires(const From& from, To& to) 			{ requires MultEqualOperator<From, To> == false; to *= from.Value; };
+	template <typename From, typename To> concept DataTypeDivEqualOperator = requires(const From& from, To& to) 			{ requires DivEqualOperator<From, To> == false; to /= from.Value; };
+	template <typename From, typename To> concept DataTypeIsEqualOperator = requires(const From& from, const To& to) 		{ requires IsEqualOperator<From, To> == false; to == from.Value; };
+	template <typename From, typename To> concept DataTypeNotIsEqualOperator = requires(const From& from, const To& to) 	{ requires NotIsEqualOperator<From, To> == false; to != from.Value; };
+	template <typename From, typename To> concept DataTypeLessThanOperator = requires(const From& from, const To& to) 		{ requires LessThanOperator<From, To> == false; to < from.Value; };
+	template <typename From, typename To> concept DataTypeLessEqualOperator = requires(const From& from, const To& to) 		{ requires LessEqualOperator<From, To> == false; to <= from.Value; };
+	template <typename From, typename To> concept DataTypeGreaterThanOperator = requires(const From& from, const To& to) 	{ requires GreaterThanOperator<From, To> == false; to > from.Value; };
+	template <typename From, typename To> concept DataTypeGreaterEqualOperator = requires(const From& from, const To& to) 	{ requires GreaterEqualOperator<From, To> == false; to >= from.Value; };
+	template <typename From, typename To> concept DataTypeAddOperator = requires(const From& from, const To& to) 			{ requires AddOperator<From, To> == false; to + from.Value; };
+	template <typename From, typename To> concept DataTypeMinusOperator = requires(const From& from, const To& to) 			{ requires MinusOperator<From, To> == false; to - from.Value; };
+	template <typename From, typename To> concept DataTypeMultOperator = requires(const From& from, const To& to) 			{ requires MultOperator<From, To> == false; to * from.Value; };
+	template <typename From, typename To> concept DataTypeDivOperator = requires(const From& from, const To& to) 			{ requires DivOperator<From, To> == false; to / from.Value; };
+
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE>
+	struct BasicCustomDataType
+	{
 	public:
 		using ValueType = T;
 		
 	public:
-		static constexpr T DEFAULT		= DEFAULT_VALUE;
+		static constexpr T DEFAULT	= DEFAULT_VALUE;
 		static constexpr T INVALID	= INVALID_VALUE;
 
 	public:
@@ -77,23 +115,18 @@ namespace ProjectCore::FMT::Detail
 		inline constexpr bool IsDefault() 	{ return Value == DEFAULT; }
 
 	public:
-		template <typename K>
-		inline constexpr operator K() const requires std::is_convertible_v<T, K> {
-			return static_cast<K>(Value);
-		}
-		
-		inline constexpr bool operator==(const T rhs) const { return Value == rhs; }
-		inline constexpr bool operator!=(const T rhs) const { return Value != rhs; }
-		inline constexpr bool operator<(const T rhs) const	{ return Value < rhs; }
-		inline constexpr bool operator>(const T rhs) const	{ return Value > rhs; }
-		inline constexpr bool operator<=(const T rhs) const { return Value <= rhs; }
-		inline constexpr bool operator>=(const T rhs) const { return Value >= rhs; }
+		inline constexpr operator T() const { return Value; }
 
+		template <typename K>
+		inline constexpr operator K() const requires std::is_convertible_v<T, K> { return static_cast<K>(Value); }
+		
+	public:
 		// operator +I
 		inline constexpr BasicCustomDataType  operator+() const { return BasicCustomDataType(Value); }
 		// operator -I
 		inline constexpr BasicCustomDataType  operator-() const { return BasicCustomDataType(-Value); }
 
+	public:
 		// operator ++I
 		inline constexpr BasicCustomDataType& operator++() { ++Value; return *this; }
 		// operator --I
@@ -102,73 +135,80 @@ namespace ProjectCore::FMT::Detail
 		inline constexpr BasicCustomDataType  operator++(int) { BasicCustomDataType res(Value); ++Value; return res; }
 		// operator I--
 		inline constexpr BasicCustomDataType  operator--(int) { BasicCustomDataType res(Value); --Value; return res; }
-	
-		// operator =
-		template <typename K>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator=(const K i)	{ Value = static_cast<T>(i); return *this; }
-		// operator +=
-		template <typename K>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator+=(const K i)	{ Value += static_cast<T>(i); return *this; }
-		// operator -=
-		template <typename K>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator-=(const K i)	{ Value -= static_cast<T>(i); return *this; }
-		// operator *=
-		template <typename K>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator*=(const K i)	{ Value *= static_cast<T>(i); return *this; }
-		// operator /=
-		template <typename K>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator/=(const K i)	{ Value /= static_cast<T>(i); return *this; }
 
-		// operator =
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value = static_cast<T>(i.Value); return *this; }
-		// operator +=
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator+=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value += static_cast<T>(i.Value); return *this; }
-		// operator -=
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator-=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value -= static_cast<T>(i.Value); return *this; }
-		// operator *=
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator*=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value *= static_cast<T>(i.Value); return *this; }
-		// operator /=
-		template <typename K, K KDEFAULT, K KINVALID>
-		requires std::is_convertible_v<T, K>
-		inline constexpr BasicCustomDataType& operator/=(const BasicCustomDataType<K, KDEFAULT, KINVALID>& i)	{ Value /= static_cast<T>(i.Value); return *this; }
+	public:
+		inline constexpr BasicCustomDataType& operator=(const EqualOperator<T> auto i)			{ Value = i; return *this; }
+		inline constexpr BasicCustomDataType& operator+=(const AddEqualOperator<T> auto i)		{ Value += i; return *this; }
+		inline constexpr BasicCustomDataType& operator-=(const MinusEqualOperator<T> auto i)	{ Value -= i; return *this; }
+		inline constexpr BasicCustomDataType& operator*=(const MultEqualOperator<T> auto i)		{ Value *= i; return *this; }
+		inline constexpr BasicCustomDataType& operator/=(const DivEqualOperator<T> auto i)		{ Value /= i; return *this; }		
+
+		inline constexpr BasicCustomDataType& operator=(const DataTypeEqualOperator<T> auto i)			{ Value = i.Value; return *this; }
+		inline constexpr BasicCustomDataType& operator+=(const DataTypeAddEqualOperator<T> auto i)		{ Value += i.Value; return *this; }
+		inline constexpr BasicCustomDataType& operator-=(const DataTypeMinusEqualOperator<T> auto i)	{ Value -= i.Value; return *this; }
+		inline constexpr BasicCustomDataType& operator*=(const DataTypeMultEqualOperator<T> auto i)		{ Value *= i.Value; return *this; }
+		inline constexpr BasicCustomDataType& operator/=(const DataTypeDivEqualOperator<T> auto i)		{ Value /= i.Value; return *this; }		
 	};
-
 	// operator +
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) + rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value + static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator+(const AddOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs + rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator+(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const AddOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value + rhs; }
 	// operator -
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) - rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value - static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator-(const MinusOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return lhs - rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator-(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const MinusOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)	{ return lhs.Value - rhs; }
 	// operator *
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) * rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value * static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator*(const MultOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs * rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator*(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const MultOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value * rhs; }
 	// operator /
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const T lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs) / rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const T rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value / static_cast<T>(rhs)); }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator/(const DivOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs / rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator/(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DivOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value / rhs; }
+	// operator + DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator+(const DataTypeAddOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs.Value + rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator+(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeAddOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value + rhs.Value; }
+	// operator - DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator-(const DataTypeMinusOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return lhs.Value - rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator-(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeMinusOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)	{ return lhs.Value - rhs.Value; }
+	// operator * DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator*(const DataTypeMultOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs.Values * rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator*(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeMultOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value * rhs.Value; }
+	// operator / DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator/(const DataTypeDivOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs.Value / rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr auto operator/(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeDivOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value / rhs.Value; }
 
-	// operator +
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) + rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator+(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value + static_cast<T>(rhs.Value)); }
-	// operator -
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) - rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator-(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value - static_cast<T>(rhs.Value)); }
-	// operator *
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) * rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator*(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value * static_cast<T>(rhs.Value)); }
-	// operator /
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const BasicCustomDataType<K, KDEFAULT, KINVALID>& lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(static_cast<T>(lhs.Value) / rhs.Value); }
-	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE, typename K, K KDEFAULT, K KINVALID> inline constexpr BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE> operator/(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const BasicCustomDataType<K, KDEFAULT, KINVALID>& rhs)	{ return BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>(lhs.Value / static_cast<T>(rhs.Value)); }
+
+	// operator ==
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator==(const IsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)			{ return lhs == rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator==(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const IsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)			{ return lhs.Value == rhs; }
+	// operator !=
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator!=(const NotIsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs != rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator!=(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const NotIsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value != rhs; }
+	// operator <
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<(const LessThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)			{ return lhs < rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const LessThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)			{ return lhs.Value < rhs; }
+	// operator >
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>(const GreaterThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs > rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const GreaterThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value > rhs; }
+	// operator <=
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<=(const LessEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs <= rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<=(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const LessEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value <= rhs; }
+	// operator >=
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>=(const GreaterEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return lhs >= rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>=(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const GreaterEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)	{ return lhs.Value >= rhs; }
+	// operator == DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator==(const DataTypeIsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)			{ return lhs.Value == rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator==(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeIsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)			{ return lhs.Value == rhs.Value; }
+	// operator != DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator!=(const DataTypeNotIsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs.Value != rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator!=(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeNotIsEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value != rhs.Value; }
+	// operator < DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<(const DataTypeLessThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)			{ return lhs.Value < rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeLessThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)			{ return lhs.Value < rhs.Value; }
+	// operator > DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>(const DataTypeGreaterThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs.Value > rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeGreaterThanOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value > rhs.Value; }
+	// operator <= DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<=(const DataTypeLessEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)		{ return lhs.Value <= rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator<=(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeLessEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)		{ return lhs.Value <= rhs.Value; }
+	// operator >= DataType
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>=(const DataTypeGreaterEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto lhs, const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& rhs)	{ return lhs.Value >= rhs.Value; }
+	template <typename T, T DEFAULT_VALUE, T INVALID_VALUE> inline constexpr bool operator>=(const BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>& lhs, const DataTypeGreaterEqualOperator<typename BasicCustomDataType<T, DEFAULT_VALUE, INVALID_VALUE>::ValueType> auto rhs)	{ return lhs.Value >= rhs.Value; }
 }

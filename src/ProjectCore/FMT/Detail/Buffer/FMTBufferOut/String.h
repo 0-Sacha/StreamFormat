@@ -11,13 +11,20 @@ namespace ProjectCore::FMT::Detail
         if (CanMoveForward(std::max(static_cast<std::size_t>(shift.Value), size)) == false)
             return WriteCharPtr(str, GetBufferRemainingSize(), st, shift, sp);
 
-        shift -= size;
+        if (shift > size)
+        {
+			shift -= static_cast<Detail::DataType>(size);
 
-		PrintShiftBegin(st, sp, shift);
-        
-        FastWriteCharPtr(str, size);
-		
-        PrintShiftEnd(st, sp, shift);
+			PrintShiftBegin(st, sp, shift);
+
+			FastWriteCharPtr(str, size);
+
+			PrintShiftEnd(st, sp, shift);
+        }
+        else
+        {
+			FastWriteCharPtr(str, size);
+        }
     }
 
 	template<typename CharBuffer>

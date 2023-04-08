@@ -177,7 +177,7 @@ namespace ProjectCore::FMT::Detail {
 	public:
 		// Basic types
 		template<typename Type, typename ...Rest>
-		inline void BasicWriteType(Type&& type, Rest&& ...rest) 	{ BasicWriteType(type); if (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...); }
+		inline void BasicWriteType(Type&& type, Rest&& ...rest) 	{ BasicWriteType(type); if constexpr (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...); }
 		
 		template<typename T> void BasicWriteType(T) 		{}
 

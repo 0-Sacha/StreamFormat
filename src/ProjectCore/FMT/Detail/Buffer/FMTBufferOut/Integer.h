@@ -110,7 +110,7 @@ namespace ProjectCore::FMT::Detail
 
 		// Compute shift and "TureValue" print
 		if (digitSize.IsDefault())
-			digitSize = sizeof(T) * 8;
+			digitSize = static_cast<DigitSize::ValueType>(sizeof(T) * 8);
 		shift -= digitSize;
 
 		if (trueValue) shift -= 2;
@@ -143,7 +143,7 @@ namespace ProjectCore::FMT::Detail
 
 		// Compute shift and "TureValue" print
 		if (digitSize.IsDefault())
-			digitSize = sizeof(T) * 2;
+			digitSize = static_cast<DigitSize::ValueType>(sizeof(T) * 2);
 
 		shift -= digitSize;
 		if (trueValue) shift -= 2;
@@ -175,7 +175,7 @@ namespace ProjectCore::FMT::Detail
 
 		// Compute shift and "TureValue" print
 		if (digitSize.IsDefault())
-			digitSize = std::ceil(static_cast<float>(sizeof(T) * 8) / 3);
+			digitSize = static_cast<DigitSize::ValueType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
 
 		shift -= digitSize;
 		if (trueValue) shift -= 2;
