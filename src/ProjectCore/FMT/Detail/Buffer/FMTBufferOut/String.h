@@ -11,7 +11,7 @@ namespace ProjectCore::FMT::Detail
         if (CanMoveForward(std::max(static_cast<std::size_t>(shift.Value), size)) == false)
             return WriteCharPtr(str, GetBufferRemainingSize(), st, shift, sp);
 
-        if (shift > size)
+        if (static_cast<std::size_t>(shift) > size)
         {
             shift -= static_cast<Detail::DataType>(size);
 

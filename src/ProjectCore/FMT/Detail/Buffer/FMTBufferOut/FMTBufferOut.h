@@ -98,10 +98,10 @@ namespace ProjectCore::FMT::Detail
         std::size_t m_Indent;
 
     public:
-        inline std::size_t GetNoStride() noexcept const                 { return m_NoStride; }
+        inline std::size_t GetNoStride() const noexcept                  { return m_NoStride; }
         inline void AddNoStride(const std::size_t noStride) noexcept    { m_NoStride += noStride; }
 
-        inline std::size_t GetIndent() noexcept const               { return m_Indent; }
+        inline std::size_t GetIndent() const noexcept                { return m_Indent; }
         inline void SetIndent(const std::size_t indent) noexcept    { m_Indent = indent; }
         inline void AddIndent(const std::size_t indent) noexcept    { m_Indent += indent; }
         inline void RemoveIndent(const std::size_t indent) noexcept { m_Indent -= indent; }

@@ -67,10 +67,10 @@ namespace ProjectCore::FMT::Detail
 
     public:
         inline BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() noexcept                 { return m_BufferOutManager; }
-        inline const BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() noexcept const     { return m_BufferOutManager; }
+        inline const BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() const noexcept      { return m_BufferOutManager; }
 
         inline BasicBufferOutManager<CharBuffer>& GetBufferOutManager() noexcept                     { return *m_BufferOutManager; }
-        inline const BasicBufferOutManager<CharBuffer>& GetBufferOutManager() noexcept const         { return *m_BufferOutManager; }
+        inline const BasicBufferOutManager<CharBuffer>& GetBufferOutManager() const noexcept          { return *m_BufferOutManager; }
 
     public:
         BasicBufferOut() noexcept
