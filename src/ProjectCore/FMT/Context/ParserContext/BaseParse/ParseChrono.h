@@ -3,10 +3,12 @@
 #include "ProjectCore/FMT/Context/ParserContext/BasicParserContext.h"
 #include <chrono>
 
-namespace ProjectCore::FMT::ChronoDetail {
+namespace ProjectCore::FMT::ChronoDetail
+{
 
 }
 
-namespace ProjectCore::FMT {
+namespace ProjectCore::FMT
+{
 
 }

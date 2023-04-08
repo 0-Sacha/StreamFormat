@@ -4,7 +4,7 @@
 
 namespace ProjectCore::FMT::Detail
 {
-	template<typename CharBuffer>
+    template<typename CharBuffer>
     template<typename CharStr>
     inline void FMTBufferOut<CharBuffer>::WriteCharPtr(const CharStr* str, std::size_t size, ShiftType st, ShiftSize shift, ShiftPrint sp)
     {
@@ -13,23 +13,23 @@ namespace ProjectCore::FMT::Detail
 
         if (shift > size)
         {
-			shift -= static_cast<Detail::DataType>(size);
+            shift -= static_cast<Detail::DataType>(size);
 
-			PrintShiftBegin(st, sp, shift);
+            PrintShiftBegin(st, sp, shift);
 
-			FastWriteCharPtr(str, size);
+            FastWriteCharPtr(str, size);
 
-			PrintShiftEnd(st, sp, shift);
+            PrintShiftEnd(st, sp, shift);
         }
         else
         {
-			FastWriteCharPtr(str, size);
+            FastWriteCharPtr(str, size);
         }
     }
 
-	template<typename CharBuffer>
+    template<typename CharBuffer>
     template<typename CharStr>
-	inline void FMTBufferOut<CharBuffer>::WriteIndentCharPtr(const CharStr* str, std::size_t size)
+    inline void FMTBufferOut<CharBuffer>::WriteIndentCharPtr(const CharStr* str, std::size_t size)
     {
         while (size > 0)
         {
@@ -49,5 +49,4 @@ namespace ProjectCore::FMT::Detail
             }
         }
     }
-    
 }

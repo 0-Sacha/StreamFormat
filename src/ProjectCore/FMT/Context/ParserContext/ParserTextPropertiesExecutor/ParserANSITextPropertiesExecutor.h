@@ -5,7 +5,7 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename ParserContext>
-	class ParserANSITextPropertiesExecutor : public IParserTextPropertiesExecutor<ParserContext>
+    class ParserANSITextPropertiesExecutor : public IParserTextPropertiesExecutor<ParserContext>
     {
     public:
         ~ParserANSITextPropertiesExecutor() override = default;

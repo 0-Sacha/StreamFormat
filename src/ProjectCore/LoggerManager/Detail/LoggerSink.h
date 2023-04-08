@@ -3,24 +3,24 @@
 #include "Detail.h"
 #include <future>
 
-namespace ProjectCore::LoggerManager::Detail {
-    
-enum class AsyncSink
+namespace ProjectCore::LoggerManager::Detail
 {
-    Sync,
-    Async
-};
+    enum class AsyncSink
+    {
+        Sync,
+        Async
+    };
 
-template<typename Severity, typename CharType>
-class BasicLoggerSink
-{
+    template<typename Severity, typename CharType>
+    class BasicLoggerSink
+    {
     public:
         using PatternType = std::basic_string<CharType>;
         using PatternTransfertType = std::basic_string_view<CharType>;
         using NameType = std::basic_string<CharType>;
-		using BufferType = std::basic_string_view<CharType>;
+        using BufferType = std::basic_string_view<CharType>;
 
-		using SeverityValueType = typename Severity::Value;
+        using SeverityValueType = typename Severity::Value;
 
     public:
         BasicLoggerSink(NameType&& name)
@@ -88,7 +88,7 @@ class BasicLoggerSink
             auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(pattern,
                                                                        FORMAT_SV("name", ConcateNameAndSinkName(loggerName, Name)),
                                                                        FORMAT_SV("data", formatBuffer));
-	        BufferType buffer(*formatPatternStr);
+            BufferType buffer(*formatPatternStr);
             WriteToSinkSync(buffer);
         }
 

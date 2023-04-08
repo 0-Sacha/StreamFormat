@@ -4,11 +4,10 @@
 #include "Loggers/LoggerMultiSinkFast.h"
 #include "Loggers/LoggerMultiSinkSafe.h"
 
-namespace ProjectCore::LoggerManager {
-
-class LoggerFactory
+namespace ProjectCore::LoggerManager
 {
+    class LoggerFactory
+    {
 
-};
-
+    };
 }

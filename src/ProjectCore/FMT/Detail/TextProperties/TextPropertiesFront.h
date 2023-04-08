@@ -2,59 +2,59 @@
 
 #include "BaseTextProperties.h"
 
-namespace ProjectCore::FMT::Detail {
+namespace ProjectCore::FMT::Detail
+{
+    struct TextProperties::TextFront
+    {
+        struct ResetFront {};
 
-	struct TextProperties::TextFront
-	{
-		struct ResetFront {};
+        struct FrontID;
+        struct Front;
+    };
 
-		struct FrontID;
-		struct Front;
-	};
+    struct TextProperties::TextFront::FrontID
+    {
+    public:
+        static inline constexpr std::uint8_t DefaultFrontID    = 10;
+        static inline constexpr std::uint8_t MinFrontID        = 10;
+        static inline constexpr std::uint8_t MaxFrontID        = 19;
 
-	struct TextProperties::TextFront::FrontID
-	{
-	public:
-		static inline constexpr std::uint8_t DefaultFrontID	= 10;
-		static inline constexpr std::uint8_t MinFrontID		= 10;
-		static inline constexpr std::uint8_t MaxFrontID		= 19;
+    public:
+        std::uint8_t ID;
 
-	public:
-		std::uint8_t ID;
+        constexpr FrontID()                 : ID(DefaultFrontID) {}
+        constexpr FrontID(std::uint8_t id) 	: ID(id) {}
+    
+    public:
+        constexpr bool operator==(const FrontID& other) const { return ID == other.ID; }
+        constexpr bool IsValid() const { return ID > MinFrontID && ID < MaxFrontID; }
+    };
 
-		constexpr FrontID() 				: ID(DefaultFrontID) {}
-		constexpr FrontID(std::uint8_t id) 	: ID(id) {}
-	
-	public:
-		constexpr bool operator==(const FrontID& other) const { return ID == other.ID; }
-		constexpr bool IsValid() const { return ID > MinFrontID && ID < MaxFrontID; }
-	};
+    struct TextProperties::TextFront::Front
+    {
+    public:
+        constexpr Front(const FrontID frontId = FrontID::DefaultFrontID)
+            : CurrentID(frontId.IsValid() ? frontId : FrontID::DefaultFrontID)
+        {}
+        
+    public:
+        FrontID CurrentID;
 
-	struct TextProperties::TextFront::Front
-	{
-	public:
-		constexpr Front(const FrontID frontId = FrontID::DefaultFrontID)
-			: CurrentID(frontId.IsValid() ? frontId : FrontID::DefaultFrontID)
-		{}
-		
-	public:
-		FrontID CurrentID;
-
-	public:
-		void ModifyReset() 									{ *this = Front{}; }
-		
-		template <typename T> void ModifyThrow(const T&) 	{ throw Detail::FMTGivenTypeError{}; }
-		void ModifyThrow(const ResetFront&)					{ ModifyReset(); }
-		void ModifyThrow(const Front& given)				{ *this = given; }
-		void ModifyThrow(const FrontID& given) 				{ CurrentID = given; }
-	
-	public:
-		template <typename T> bool NeedModif(const T&) 	{ throw Detail::FMTGivenTypeError{}; }
-		bool NeedModif(const ResetFront&)				{ return true; }
-		bool NeedModif(const Front& given)				{ return *this != given; }
-		bool NeedModif(const FrontID& given) 			{ return CurrentID != given; }
-	
-	public:
-		bool operator==(const Front& other) const { return CurrentID == other.CurrentID; }
-	};
+    public:
+        void ModifyReset()                                  { *this = Front{}; }
+        
+        template <typename T> void ModifyThrow(const T&)    { throw Detail::FMTGivenTypeError{}; }
+        void ModifyThrow(const ResetFront&) 				{ ModifyReset(); }
+        void ModifyThrow(const Front& given)                { *this = given; }
+        void ModifyThrow(const FrontID& given)              { CurrentID = given; }
+    
+    public:
+        template <typename T> bool NeedModif(const T&) 	{ throw Detail::FMTGivenTypeError{}; }
+        bool NeedModif(const ResetFront&)               { return true; }
+        bool NeedModif(const Front& given)              { return *this != given; }
+        bool NeedModif(const FrontID& given)            { return CurrentID != given; }
+    
+    public:
+        bool operator==(const Front& other) const { return CurrentID == other.CurrentID; }
+    };
 }

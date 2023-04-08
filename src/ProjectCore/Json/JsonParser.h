@@ -12,30 +12,30 @@ namespace ProjectCore::JSON::Detail
     public:
         using JsonBufferIn = FMT::Detail::BasicBufferIn<char>;
 
-	public:
-		JsonParser()
+    public:
+        JsonParser()
             : m_BufferIn()
         {}
-		
+        
         JsonParser(const FMT::Detail::BufferInProperties<char>& bufferInProperties)
             : m_BufferIn(bufferInProperties)
         {}
 
-		JsonParser(const char* const buffer, const std::size_t bufferSize)
+        JsonParser(const char* const buffer, const std::size_t bufferSize)
             : m_BufferIn(buffer, bufferSize)
         {}
 
     public:
-        inline bool IsJsonStringBegin() const		{ return m_BufferIn.IsEqualTo('"'); }
-        inline bool IsJsonNumberBegin() const		{ return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('.'); }
-        inline bool IsJsonBooleanBegin() const		{ return m_BufferIn.IsEqualTo('t', 'f'); }
-        inline bool IsJsonStructBegin() const		{ return m_BufferIn.IsEqualTo('{'); }
-        inline bool IsJsonArrayBegin() const		{ return m_BufferIn.IsEqualTo('['); }
-        inline bool IsJsonNullBegin() const			{ return m_BufferIn.IsEqualTo('n'); }
+        inline bool IsJsonStringBegin() const       { return m_BufferIn.IsEqualTo('"'); }
+        inline bool IsJsonNumberBegin() const       { return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('.'); }
+        inline bool IsJsonBooleanBegin() const      { return m_BufferIn.IsEqualTo('t', 'f'); }
+        inline bool IsJsonStructBegin() const       { return m_BufferIn.IsEqualTo('{'); }
+        inline bool IsJsonArrayBegin() const        { return m_BufferIn.IsEqualTo('['); }
+        inline bool IsJsonNullBegin() const         { return m_BufferIn.IsEqualTo('n'); }
 
     public:
-        JsonBufferIn& BufferIn() { return m_BufferIn; }
-        const JsonBufferIn& BufferIn() const { return m_BufferIn; }
+        JsonBufferIn& BufferIn()                { return m_BufferIn; }
+        const JsonBufferIn& BufferIn() const    { return m_BufferIn; }
 
     protected:
         JsonBufferIn m_BufferIn;
@@ -106,7 +106,7 @@ namespace ProjectCore::JSON::Detail
         {
             if (idx >= Objects.size())
                 throw JsonGivenTypeError{};
-			Objects[idx].Parse(t);
+            Objects[idx].Parse(t);
         }
     };
 

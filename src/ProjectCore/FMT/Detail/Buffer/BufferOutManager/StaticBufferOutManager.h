@@ -2,8 +2,8 @@
 
 #include "BasicBufferOutManager.h"
 
-namespace ProjectCore::FMT::Detail {
-
+namespace ProjectCore::FMT::Detail
+{
     template <typename CharType, std::size_t Count>
     class StaticBufferOutManager : public BasicBufferOutManager<CharType>
     {
@@ -21,5 +21,4 @@ namespace ProjectCore::FMT::Detail {
     private:
         CharType m_Buffer[Count];
     };
-
 }

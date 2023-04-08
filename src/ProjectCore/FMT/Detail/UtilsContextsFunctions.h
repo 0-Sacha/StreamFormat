@@ -1,22 +1,22 @@
 #pragma once
 
-namespace ProjectCore::FMT::Detail {
-	template <typename FormatterContext>
-	struct ApplyNextOverrideForThisFunction {
-		inline explicit ApplyNextOverrideForThisFunction(FormatterContext& context)
-			: Context(context)
-			, FormatData(context.GetFormatData())
-		{
+namespace ProjectCore::FMT::Detail
+{
+    template <typename FormatterContext>
+    struct ApplyNextOverrideForThisFunction {
+        inline explicit ApplyNextOverrideForThisFunction(FormatterContext& context)
+            : Context(context)
+            , FormatData(context.GetFormatData())
+        {
             Context.FormatDataApplyNextOverride();
         }
 
-		inline ~ApplyNextOverrideForThisFunction()
+        inline ~ApplyNextOverrideForThisFunction()
         {
             Context.SetFormatData(FormatData);
-		}
+        }
 
-		FormatterContext&							Context;
+        FormatterContext&							Context;
         typename FormatterContext::FormatDataType  FormatData;
-	};
-
+    };
 }

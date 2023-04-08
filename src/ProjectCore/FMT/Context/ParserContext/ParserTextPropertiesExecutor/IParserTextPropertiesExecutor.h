@@ -6,7 +6,7 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename BufferInType>
-	class IParserTextPropertiesExecutor : public ITextPropertiesExecutor
+    class IParserTextPropertiesExecutor : public ITextPropertiesExecutor
     {
     public:
         ~IParserTextPropertiesExecutor() override = default;

@@ -15,29 +15,29 @@
 
 // TODO :
 //
-// 		Check for escape char
+//         Check for escape char
 //
-//		Macro PackSave ; PackSave (foreshadowing for constexpr)
+//        Macro PackSave ; PackSave (foreshadowing for constexpr)
 //
-//		TOKENIZER bufferIn
+//        TOKENIZER bufferIn
 //
-//		GLOBBER
+//        GLOBBER
 // 
-//		REGEX		
-//			{I:REGEX}
-//			{:regex=REGEX} (string / char array)
-//			{}
+//        REGEX        
+//            {I:REGEX}
+//            {:regex=REGEX} (string / char array)
+//            {}
 //
-//		End writing all writer and reader (string / char pt)
-//		
+//        End writing all writer and reader (string / char pt)
+//        
 
 namespace ProjectCore::FMT::Context
 {
-	template<typename CharFormat = char, typename CharBuffer = CharFormat>
-	class BasicFormatterContext;
+    template<typename CharFormat = char, typename CharBuffer = CharFormat>
+    class BasicFormatterContext;
 
-	struct ParserContextError;
+    struct ParserContextError;
 
     template<typename CharFormat = char, typename CharBuffer = CharFormat>
-	class BasicParserContext;
+    class BasicParserContext;
 }

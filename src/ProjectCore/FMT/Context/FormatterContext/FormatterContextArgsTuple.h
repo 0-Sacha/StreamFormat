@@ -6,10 +6,10 @@
 
 #include "FormatterType.h"
 
-namespace ProjectCore::FMT::Detail {
-
-	template <typename... Types>
-	struct FormatterContextArgsTuple;
+namespace ProjectCore::FMT::Detail 
+{
+    template <typename... Types>
+    struct FormatterContextArgsTuple;
 
     template <>
     struct FormatterContextArgsTuple<>
@@ -18,8 +18,8 @@ namespace ProjectCore::FMT::Detail {
     public:
         FormatterContextArgsTuple() = default;
 
-	public:
-		static inline constexpr std::size_t Size() { return 0; }
+    public:
+        static inline constexpr std::size_t Size() { return 0; }
 
     public:
         template <typename FormatterContext>
@@ -125,13 +125,12 @@ namespace ProjectCore::FMT::Detail {
         }
     };
 
-
     template<typename Context, typename... Args>
     class FormatterContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
         public:
-            using Base 	            = BasicContextArgsTupleInterface<Context>;
-            using ContextArgsType 	= FormatterContextArgsTuple<Args...>;
+            using Base                 = BasicContextArgsTupleInterface<Context>;
+            using ContextArgsType     = FormatterContextArgsTuple<Args...>;
             
             using Base::m_Context;
             

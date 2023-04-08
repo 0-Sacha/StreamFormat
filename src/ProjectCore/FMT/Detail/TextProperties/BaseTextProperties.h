@@ -8,7 +8,7 @@ namespace ProjectCore::FMT::Detail
 {
     struct TextProperties
     {
-		struct ResetProperties {};
+        struct ResetProperties {};
 
         struct TextColor;
         struct TextStyle;
@@ -16,5 +16,4 @@ namespace ProjectCore::FMT::Detail
 
         struct Properties;
     };
-
 }

@@ -5,7 +5,7 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename ParserContext>
-	class ParserNOTextPropertiesExecutor : public IParserTextPropertiesExecutor<ParserContext>
+    class ParserNOTextPropertiesExecutor : public IParserTextPropertiesExecutor<ParserContext>
     {
     public:
         ~ParserNOTextPropertiesExecutor() override = default;
@@ -18,10 +18,10 @@ namespace ProjectCore::FMT::Detail
         using Base::m_Context;
 
     public:
-        void AllPropertiesReset() override                                              {}
+        void AllPropertiesReset() override                                            {}
 
     public:
-        void ResetColor() override                                                      {}
+        void ResetColor() override                                                    {}
         void ExecuteColor(const TextProperties::TextColor::BasicColorFG&) override    {}
         void ExecuteColor(const TextProperties::TextColor::BasicColorBG&) override    {}
         void ExecuteColor(const TextProperties::TextColor::BasicColor&) override      {}
@@ -33,11 +33,11 @@ namespace ProjectCore::FMT::Detail
         void ExecuteColor(const TextProperties::TextColor::ColorCube&) override       {}
 
     public:
-        void ResetFront() override                                                      {}
+        void ResetFront() override                                                    {}
         void ExecuteFront(const TextProperties::TextFront::FrontID&) override         {}
 
     public:
-        void ResetStyle() override                                                                  {}
+        void ResetStyle() override                                                                {}
         void ExecuteStyle(const TextProperties::TextStyle::Intensity&) override                   {}
         void ExecuteStyle(const TextProperties::TextStyle::Italic&) override                      {}
         void ExecuteStyle(const TextProperties::TextStyle::Underline&) override                   {}

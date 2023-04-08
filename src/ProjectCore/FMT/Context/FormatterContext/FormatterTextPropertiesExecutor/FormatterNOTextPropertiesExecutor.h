@@ -5,7 +5,7 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename BufferOutType>
-	class FormatterNOTextPropertiesExecutor : public IFormatterTextPropertiesExecutor<BufferOutType>
+    class FormatterNOTextPropertiesExecutor : public IFormatterTextPropertiesExecutor<BufferOutType>
     {
     public:
         ~FormatterNOTextPropertiesExecutor() override = default;
@@ -37,7 +37,7 @@ namespace ProjectCore::FMT::Detail
         void ExecuteFront(const TextProperties::TextFront::FrontID&) override         {}
 
     public:
-        void ResetStyle() override                                                                  {}
+        void ResetStyle() override                                                                {}
         void ExecuteStyle(const TextProperties::TextStyle::Intensity&) override                   {}
         void ExecuteStyle(const TextProperties::TextStyle::Italic&) override                      {}
         void ExecuteStyle(const TextProperties::TextStyle::Underline&) override                   {}

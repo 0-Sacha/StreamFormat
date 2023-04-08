@@ -47,12 +47,12 @@ namespace ProjectCore::Instrumentation
         Context = ',' // '(' ')'
     };
 
-	struct Event
-	{
-	public:
-	    Event() = default;
+    struct Event
+    {
+    public:
+        Event() = default;
         
-	    Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
+        Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
             : Name(name)
             , Category(category)
             , Type(type)
@@ -69,48 +69,48 @@ namespace ProjectCore::Instrumentation
             , Data(data)
         {}
 
-		Event(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
-			: Name(std::move(name))
-			, Category(std::move(category))
-			, Type(type)
-			, Id(0)
-			, TimeOfEvent(Instrumentation::GetMicroseconds())
-			, ThreadTimeOfEvent(0)
-			, Duration(0)
+        Event(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
+            : Name(std::move(name))
+            , Category(std::move(category))
+            , Type(type)
+            , Id(0)
+            , TimeOfEvent(Instrumentation::GetMicroseconds())
+            , ThreadTimeOfEvent(0)
+            , Duration(0)
 #ifdef PROJECTCORE_COMPILER_VS
             , PID(_getpid())
 #else
             , PID(getpid())
 #endif
-			, TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
-			, Data(data)
-		{}
+            , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
+            , Data(data)
+        {}
 
-		virtual ~Event() = default;
+        virtual ~Event() = default;
 
-	public:
+    public:
         void Trigger() { TimeOfEvent = Instrumentation::GetMicroseconds(); }
 
-	public:
-		std::string Name;
-		std::string Category;
+    public:
+        std::string Name;
+        std::string Category;
         EventType Type;
         std::size_t Id;
-		double TimeOfEvent, ThreadTimeOfEvent;
-		double Duration;
-		int PID;
+        double TimeOfEvent, ThreadTimeOfEvent;
+        double Duration;
+        int PID;
         std::size_t TID;
         std::shared_ptr<EventData> Data;
-	};
+    };
 }
 
 namespace ProjectCore::FMT
 {
-	template<typename FormatterContext>
-	struct FormatterType<ProjectCore::Instrumentation::EventType, FormatterContext>
-	{
-		static void Format(const ProjectCore::Instrumentation::EventType& t, FormatterContext& context) {
+    template<typename FormatterContext>
+    struct FormatterType<ProjectCore::Instrumentation::EventType, FormatterContext>
+    {
+        static void Format(const ProjectCore::Instrumentation::EventType& t, FormatterContext& context) {
             context.BufferOut().PushBack(static_cast<char>(t));
-		}
-	};
+        }
+    };
 }

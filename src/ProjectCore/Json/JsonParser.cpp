@@ -8,9 +8,9 @@
 
 namespace ProjectCore::JSON::Detail
 {
-	void JsonParser::Intermediate::Parse(Detail::JsonParser& parser)
-	{
-		parser.BufferIn().IgnoreAllBlanks();
+    void JsonParser::Intermediate::Parse(Detail::JsonParser& parser)
+    {
+        parser.BufferIn().IgnoreAllBlanks();
         const char* begin = parser.BufferIn().GetBufferCurrentPos();
 
         if (parser.IsJsonStringBegin())
@@ -54,10 +54,10 @@ namespace ProjectCore::JSON::Detail
         
         const char* end = parser.BufferIn().GetBufferCurrentPos();
         Data = std::string_view(begin, end);
-	};
+    };
 
-	void JsonParser::StructIntermediate::Parse(Detail::JsonParser& parser)
-	{
+    void JsonParser::StructIntermediate::Parse(Detail::JsonParser& parser)
+    {
         JsonStructSerializer::LoadAllSubObjects<JsonParser::StructIntermediate>(*this, parser, [](JsonParser::StructIntermediate& t, std::size_t, std::string&& name, JsonParser& jsonParser){
             JsonParser::Intermediate intermediate;
             intermediate.Parse(jsonParser);
@@ -65,8 +65,8 @@ namespace ProjectCore::JSON::Detail
         });
     };
 
-	void JsonParser::ArrayIntermediate::Parse(Detail::JsonParser& parser)
-	{
+    void JsonParser::ArrayIntermediate::Parse(Detail::JsonParser& parser)
+    {
         JsonArraySerializer::LoadAllSubObjects<JsonParser::ArrayIntermediate>(*this, parser, [](JsonParser::ArrayIntermediate& t, std::size_t, JsonParser& jsonParser){
             JsonParser::Intermediate intermediate;
             intermediate.Parse(jsonParser);

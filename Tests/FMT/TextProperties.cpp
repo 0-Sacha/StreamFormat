@@ -36,46 +36,46 @@ PCT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
 {
     TEST_FMT("123", "123");
 
-	TEST_FMT("{C:black} 123 "     , "\033[30m 123 \033[39m");
-	TEST_FMT("{C:red} 123 "       , "\033[31m 123 \033[39m");
-	TEST_FMT("{C:green} 123 "     , "\033[32m 123 \033[39m");
-	TEST_FMT("{C:yellow} 123 "    , "\033[33m 123 \033[39m");
-	TEST_FMT("{C:blue} 123 "      , "\033[34m 123 \033[39m");
-	TEST_FMT("{C:magenta} 123 "   , "\033[35m 123 \033[39m");
-	TEST_FMT("{C:cyan} 123 "      , "\033[36m 123 \033[39m");
-	TEST_FMT("{C:white} 123 "     , "\033[37m 123 \033[39m");
+    TEST_FMT("{C:black} 123 "     , "\033[30m 123 \033[39m");
+    TEST_FMT("{C:red} 123 "       , "\033[31m 123 \033[39m");
+    TEST_FMT("{C:green} 123 "     , "\033[32m 123 \033[39m");
+    TEST_FMT("{C:yellow} 123 "    , "\033[33m 123 \033[39m");
+    TEST_FMT("{C:blue} 123 "      , "\033[34m 123 \033[39m");
+    TEST_FMT("{C:magenta} 123 "   , "\033[35m 123 \033[39m");
+    TEST_FMT("{C:cyan} 123 "      , "\033[36m 123 \033[39m");
+    TEST_FMT("{C:white} 123 "     , "\033[37m 123 \033[39m");
 
     TEST_FMT("{C:+black} 123 "     , "\033[90m 123 \033[39m");
-	TEST_FMT("{C:+red} 123 "       , "\033[91m 123 \033[39m");
-	TEST_FMT("{C:+green} 123 "     , "\033[92m 123 \033[39m");
-	TEST_FMT("{C:+yellow} 123 "    , "\033[93m 123 \033[39m");
-	TEST_FMT("{C:+blue} 123 "      , "\033[94m 123 \033[39m");
-	TEST_FMT("{C:+magenta} 123 "   , "\033[95m 123 \033[39m");
-	TEST_FMT("{C:+cyan} 123 "      , "\033[96m 123 \033[39m");
-	TEST_FMT("{C:+white} 123 "     , "\033[97m 123 \033[39m");
+    TEST_FMT("{C:+red} 123 "       , "\033[91m 123 \033[39m");
+    TEST_FMT("{C:+green} 123 "     , "\033[92m 123 \033[39m");
+    TEST_FMT("{C:+yellow} 123 "    , "\033[93m 123 \033[39m");
+    TEST_FMT("{C:+blue} 123 "      , "\033[94m 123 \033[39m");
+    TEST_FMT("{C:+magenta} 123 "   , "\033[95m 123 \033[39m");
+    TEST_FMT("{C:+cyan} 123 "      , "\033[96m 123 \033[39m");
+    TEST_FMT("{C:+white} 123 "     , "\033[97m 123 \033[39m");
 }
 
 PCT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
 {
     TEST_FMT("123", "123");
 
-	TEST_FMT("{C:black} 1 {C:white} 23 "        , "\033[30m 1 \033[37m 23 \033[39m");
-	TEST_FMT("{C:red} 1 {C:black} 23 "          , "\033[31m 1 \033[30m 23 \033[39m");
-	TEST_FMT("{C:green} 1 {C:red} 23 "          , "\033[32m 1 \033[31m 23 \033[39m");
-	TEST_FMT("{C:yellow} 1 {C:green} 23 "       , "\033[33m 1 \033[32m 23 \033[39m");
-	TEST_FMT("{C:blue} 1 {C:yellow} 23 "        , "\033[34m 1 \033[33m 23 \033[39m");
-	TEST_FMT("{C:magenta} 1 {C:blue} 23 "       , "\033[35m 1 \033[34m 23 \033[39m");
-	TEST_FMT("{C:cyan} 1 {C:magenta} 23 "       , "\033[36m 1 \033[35m 23 \033[39m");
-	TEST_FMT("{C:white} 1 {C:cyan} 23 "         , "\033[37m 1 \033[36m 23 \033[39m");
+    TEST_FMT("{C:black} 1 {C:white} 23 "        , "\033[30m 1 \033[37m 23 \033[39m");
+    TEST_FMT("{C:red} 1 {C:black} 23 "          , "\033[31m 1 \033[30m 23 \033[39m");
+    TEST_FMT("{C:green} 1 {C:red} 23 "          , "\033[32m 1 \033[31m 23 \033[39m");
+    TEST_FMT("{C:yellow} 1 {C:green} 23 "       , "\033[33m 1 \033[32m 23 \033[39m");
+    TEST_FMT("{C:blue} 1 {C:yellow} 23 "        , "\033[34m 1 \033[33m 23 \033[39m");
+    TEST_FMT("{C:magenta} 1 {C:blue} 23 "       , "\033[35m 1 \033[34m 23 \033[39m");
+    TEST_FMT("{C:cyan} 1 {C:magenta} 23 "       , "\033[36m 1 \033[35m 23 \033[39m");
+    TEST_FMT("{C:white} 1 {C:cyan} 23 "         , "\033[37m 1 \033[36m 23 \033[39m");
 
     TEST_FMT("{C:+black} 1 {C:+white} 23 "      , "\033[90m 1 \033[97m 23 \033[39m");
-	TEST_FMT("{C:+red} 1 {C:+black} 23 "        , "\033[91m 1 \033[90m 23 \033[39m");
-	TEST_FMT("{C:+green} 1 {C:+red} 23 "        , "\033[92m 1 \033[91m 23 \033[39m");
-	TEST_FMT("{C:+yellow} 1 {C:+green} 23 "     , "\033[93m 1 \033[92m 23 \033[39m");
-	TEST_FMT("{C:+blue} 1 {C:+yellow} 23 "      , "\033[94m 1 \033[93m 23 \033[39m");
-	TEST_FMT("{C:+magenta} 1 {C:+blue} 23 "     , "\033[95m 1 \033[94m 23 \033[39m");
-	TEST_FMT("{C:+cyan} 1 {C:+magenta} 23 "     , "\033[96m 1 \033[95m 23 \033[39m");
-	TEST_FMT("{C:+white} 1 {C:+cyan} 23 "       , "\033[97m 1 \033[96m 23 \033[39m");
+    TEST_FMT("{C:+red} 1 {C:+black} 23 "        , "\033[91m 1 \033[90m 23 \033[39m");
+    TEST_FMT("{C:+green} 1 {C:+red} 23 "        , "\033[92m 1 \033[91m 23 \033[39m");
+    TEST_FMT("{C:+yellow} 1 {C:+green} 23 "     , "\033[93m 1 \033[92m 23 \033[39m");
+    TEST_FMT("{C:+blue} 1 {C:+yellow} 23 "      , "\033[94m 1 \033[93m 23 \033[39m");
+    TEST_FMT("{C:+magenta} 1 {C:+blue} 23 "     , "\033[95m 1 \033[94m 23 \033[39m");
+    TEST_FMT("{C:+cyan} 1 {C:+magenta} 23 "     , "\033[96m 1 \033[95m 23 \033[39m");
+    TEST_FMT("{C:+white} 1 {C:+cyan} 23 "       , "\033[97m 1 \033[96m 23 \033[39m");
 }
 
 

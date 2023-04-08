@@ -14,10 +14,10 @@ namespace ProjectCore::Instrumentation
             , m_Profiler(profiler)
         { Start(); }
 
-		ScopeProfile(Profiler& profiler, std::string&& name, std::string&& category = "ScopeProfiler")
-			: DurationEvent(std::move(name), std::move(category))
-			, m_Profiler(profiler)
-		{ Start(); }
+        ScopeProfile(Profiler& profiler, std::string&& name, std::string&& category = "ScopeProfiler")
+            : DurationEvent(std::move(name), std::move(category))
+            , m_Profiler(profiler)
+        { Start(); }
 
         ~ScopeProfile() override;
     
@@ -28,8 +28,8 @@ namespace ProjectCore::Instrumentation
     class ObjectTracker
     {
     public:
-		ObjectTracker(Profiler& profiler, const std::string& name, const std::string& category = "Tracker");
-		ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category = "Tracker");
+        ObjectTracker(Profiler& profiler, const std::string& name, const std::string& category = "Tracker");
+        ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category = "Tracker");
         virtual ~ObjectTracker();
 
     public:
@@ -44,14 +44,14 @@ namespace ProjectCore::Instrumentation
     class EventCounter
     {
     public:
-		EventCounter(Profiler& profiler, const std::string& name, const std::string& category = "EventCounter")
+        EventCounter(Profiler& profiler, const std::string& name, const std::string& category = "EventCounter")
             : m_Profiler(profiler)
             , m_Name(name)
             , m_Category(category)
             , m_Idx(0)
         {}
 
-		EventCounter(Profiler& profiler, std::string&& name, std::string&& category = "EventCounter")
+        EventCounter(Profiler& profiler, std::string&& name, std::string&& category = "EventCounter")
             : m_Profiler(profiler)
             , m_Name(std::move(name))
             , m_Category(std::move(category))

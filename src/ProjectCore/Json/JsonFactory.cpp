@@ -35,17 +35,17 @@ namespace ProjectCore::JSON
     
     void JsonFactory::SaveToPath(JsonObject& json, const std::filesystem::path& path)
     {
-		std::ofstream file(path.string(), std::ios::out);
+        std::ofstream file(path.string(), std::ios::out);
 
-		if (file.is_open() == false)
-			throw std::runtime_error("unable to open file");
+        if (file.is_open() == false)
+            throw std::runtime_error("unable to open file");
 
         FMT::Detail::DynamicBufferOutManager<char> BufferOutManager(256);
         Detail::JsonFormatter formatter(BufferOutManager);
         JsonSerializer<JsonObject>::Format(json, formatter);
         
-		file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));
-		file.flush();
+        file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));
+        file.flush();
         file.close();
     }
 }

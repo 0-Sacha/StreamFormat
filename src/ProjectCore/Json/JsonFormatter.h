@@ -23,9 +23,6 @@ namespace ProjectCore::JSON::Detail
         JsonBufferOut& BufferOut() { return m_BufferOut; }
         const JsonBufferOut& BufferOut() const { return m_BufferOut; }
 
-    protected:
-        JsonBufferOut m_BufferOut;
-
     public:
         template <typename T>
         void Format(const T& t);
@@ -51,6 +48,7 @@ namespace ProjectCore::JSON::Detail
         void EndNewObject()     { --m_Indent; }
 
     protected:
+        JsonBufferOut m_BufferOut;
         std::size_t m_Indent;
         std::size_t m_IndentSize;
 		bool m_IndentWithSpaces;

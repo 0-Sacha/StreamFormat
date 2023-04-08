@@ -6,8 +6,8 @@
 namespace ProjectCore::FMT::Detail
 {
     template<typename CharBuffer>
-	template<typename CharPtr>
-	bool BasicBufferIn<CharBuffer>::FastReadCharPtr(CharPtr* str, std::size_t sizeToCopy, bool addZero)
+    template<typename CharPtr>
+    bool BasicBufferIn<CharBuffer>::FastReadCharPtr(CharPtr* str, std::size_t sizeToCopy, bool addZero)
     {
         if (CanMoveForward(sizeToCopy) == false)
             return FastReadCharPtr(str, GetBufferRemainingSize(), addZero);
@@ -40,5 +40,4 @@ namespace ProjectCore::FMT::Detail
     {
         throw FMTImplError{};
     }
-
 }

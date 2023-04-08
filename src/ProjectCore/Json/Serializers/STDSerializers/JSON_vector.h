@@ -8,7 +8,7 @@
 namespace ProjectCore::JSON
 {
     template <typename T>
-	struct JsonSerializer<std::vector<T>>
+    struct JsonSerializer<std::vector<T>>
     {
         using ArraySubObjectType = T;
 
@@ -19,7 +19,7 @@ namespace ProjectCore::JSON
             t.emplace_back(std::move(subObject));
         }
 
-		static inline void Format(const std::vector<T>& t, Detail::JsonFormatter& formatter) {
+        static inline void Format(const std::vector<T>& t, Detail::JsonFormatter& formatter) {
             JsonArraySerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const ArraySubObjectType& subObject : t) 

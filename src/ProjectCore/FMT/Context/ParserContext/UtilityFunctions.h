@@ -4,8 +4,8 @@
 #include "BasicParserContextCoreImpl.h"
 #include "BasicParserContextParseImpl.h"
 
-namespace ProjectCore::FMT {
-
+namespace ProjectCore::FMT
+{
 	template<typename FormatData = std::string_view, typename BufferData = FormatData, typename ...Args>
 	requires (Detail::CanBeUseForFMTBufferIn<FormatData> && Detail::CanBeUseForFMTBufferIn<BufferData>)
 	void Parse(const BufferData& bufferData, const FormatData& formatData, Args&& ...args)

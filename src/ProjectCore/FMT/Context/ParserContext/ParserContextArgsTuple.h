@@ -5,19 +5,19 @@
 
 #include "ParserType.h"
 
-namespace ProjectCore::FMT::Detail {
-
-	template <typename... Types>
-	struct ParserContextArgsTuple;
+namespace ProjectCore::FMT::Detail
+{
+    template <typename... Types>
+    struct ParserContextArgsTuple;
 
     template <>
-    struct ParserContextArgsTuple<> {
-
+    struct ParserContextArgsTuple<>
+    {
     public:
         ParserContextArgsTuple() = default;
 
-	public:
-		static inline constexpr std::size_t Size() { return 0; }
+    public:
+        static inline constexpr std::size_t Size() { return 0; }
 
     public:
         template <typename FormatterContext>
@@ -126,8 +126,8 @@ namespace ProjectCore::FMT::Detail {
     class ParserContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
         public:
-            using Base 	            = BasicContextArgsTupleInterface<Context>;
-            using ContextArgsType 	= ParserContextArgsTuple<Args...>;
+            using Base                 = BasicContextArgsTupleInterface<Context>;
+            using ContextArgsType     = ParserContextArgsTuple<Args...>;
             
             using Base::m_Context;
             

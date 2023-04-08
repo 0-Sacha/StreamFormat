@@ -4,7 +4,6 @@
 
 namespace ProjectCore::FMT::Detail
 {
-
     template<typename CharBuffer>
     template<typename CharStr>
     inline void BasicBufferOut<CharBuffer>::FastWriteCharPtr(const CharStr* str, std::size_t size) {
@@ -15,5 +14,4 @@ namespace ProjectCore::FMT::Detail
         while (size-- != 0 && *str != 0)
             PushBackNoCheck(*str++);
     }
-
 }

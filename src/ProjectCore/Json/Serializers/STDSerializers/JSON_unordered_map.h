@@ -8,7 +8,7 @@
 namespace ProjectCore::JSON
 {
     template <typename K, typename T>
-	struct JsonSerializer<std::unordered_map<K, T>>
+    struct JsonSerializer<std::unordered_map<K, T>>
     {
         using KeyType = K;
         using StructSubObjectType = T;
@@ -20,7 +20,7 @@ namespace ProjectCore::JSON
             t.insert({std::move(name), std::move(subObject)});
         }
 
-		static inline void Format(const std::unordered_map<K, T>& t, Detail::JsonFormatter& formatter) {
+        static inline void Format(const std::unordered_map<K, T>& t, Detail::JsonFormatter& formatter) {
             JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
@@ -30,7 +30,7 @@ namespace ProjectCore::JSON
     };
 
     template <typename K, typename T>
-	struct JsonSerializer<std::unordered_multimap<K, T>>
+    struct JsonSerializer<std::unordered_multimap<K, T>>
     {
         using KeyType = K;
         using StructSubObjectType = T;
@@ -42,7 +42,7 @@ namespace ProjectCore::JSON
             t.insert({std::move(name), std::move(subObject)});
         }
 
-		static inline void Format(const std::unordered_multimap<K, T>& t, Detail::JsonFormatter& formatter) {
+        static inline void Format(const std::unordered_multimap<K, T>& t, Detail::JsonFormatter& formatter) {
             JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)

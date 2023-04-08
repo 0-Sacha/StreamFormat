@@ -61,20 +61,20 @@ namespace ProjectCore::JSON
 
     struct JsonStringObject final : public JsonObject
     {
-		JsonStringObject() : JsonObject(ObjectType::String) {}
-		JsonStringObject(const std::string& value) : JsonObject(ObjectType::String), String(value) {}
-		JsonStringObject(std::string&& value) : JsonObject(ObjectType::String), String(std::move(value)) {}
+        JsonStringObject() : JsonObject(ObjectType::String) {}
+        JsonStringObject(const std::string& value) : JsonObject(ObjectType::String), String(value) {}
+        JsonStringObject(std::string&& value) : JsonObject(ObjectType::String), String(std::move(value)) {}
         ~JsonStringObject() override = default;
 
-	public:
+    public:
         std::string String;
 
-	public:
-		static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStringObject>(); }
-		static std::unique_ptr<JsonObject> Create(const std::string& value) { return std::make_unique<JsonStringObject>(value); }
-		static std::unique_ptr<JsonObject> Create(std::string&& value) { return std::make_unique<JsonStringObject>(std::move(value)); }
+    public:
+        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStringObject>(); }
+        static std::unique_ptr<JsonObject> Create(const std::string& value) { return std::make_unique<JsonStringObject>(value); }
+        static std::unique_ptr<JsonObject> Create(std::string&& value) { return std::make_unique<JsonStringObject>(std::move(value)); }
 
-	public:
+    public:
         void Parse(Detail::JsonParser& parser) override;
         void Format(Detail::JsonFormatter& formatter) const override;
     };
@@ -84,10 +84,10 @@ namespace ProjectCore::JSON
         JsonNumberObject(double value = 0.0) : JsonObject(ObjectType::Number), Number(value) {}
         ~JsonNumberObject() override = default;
 
-	public:
+    public:
         double Number;
 
-	public:
+    public:
         static std::unique_ptr<JsonObject> Create(double value = 0.0) { return std::make_unique<JsonNumberObject>(value); }
 
     public:
@@ -97,13 +97,13 @@ namespace ProjectCore::JSON
 
     struct JsonBooleanObject final : public JsonObject
     {
-		JsonBooleanObject(bool value = false) : JsonObject(ObjectType::Boolean), Boolean(value) {}
+        JsonBooleanObject(bool value = false) : JsonObject(ObjectType::Boolean), Boolean(value) {}
         ~JsonBooleanObject() override = default;
 
-	public:
+    public:
         bool Boolean;
 
-	public:
+    public:
         static std::unique_ptr<JsonObject> Create(bool value = false) { return std::make_unique<JsonBooleanObject>(value); }
 
     public:
@@ -113,20 +113,20 @@ namespace ProjectCore::JSON
 
     struct JsonStructObject final : public JsonObject
     {
-	public:
-		JsonStructObject() : JsonObject(ObjectType::Struct) {}
+    public:
+        JsonStructObject() : JsonObject(ObjectType::Struct) {}
         ~JsonStructObject() override = default;
 
-	public:
+    public:
         static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStructObject>(); }
 
-	public:
-		std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
+    public:
+        std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
 
-	public:
-		void Add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ name, std::move(object) }); }
-		void Add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ std::move(name), std::move(object) }); }
-		JsonObject& Get(const std::string& subObject) override
+    public:
+        void Add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ name, std::move(object) }); }
+        void Add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({ std::move(name), std::move(object) }); }
+        JsonObject& Get(const std::string& subObject) override
         {
             try
             {
@@ -145,19 +145,19 @@ namespace ProjectCore::JSON
 
     struct JsonArrayObject final : public JsonObject
     {
-	public:
-		JsonArrayObject() : JsonObject(ObjectType::Array) {}
+    public:
+        JsonArrayObject() : JsonObject(ObjectType::Array) {}
         ~JsonArrayObject() override = default;
 
-	public:
+    public:
         static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonArrayObject>(); }
 
-	public:
-		std::vector<std::unique_ptr<JsonObject>> Objects;
+    public:
+        std::vector<std::unique_ptr<JsonObject>> Objects;
 
-	public:
-		void Add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
-		JsonObject& Get(const std::size_t index) override { return *Objects[index]; }
+    public:
+        void Add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
+        JsonObject& Get(const std::size_t index) override { return *Objects[index]; }
 
     public:
         void Parse(Detail::JsonParser& parser) override;
@@ -166,12 +166,12 @@ namespace ProjectCore::JSON
 
     struct JsonNullObject final : public JsonObject
     {
-	public:
-		JsonNullObject() : JsonObject(ObjectType::Null) {}
+    public:
+        JsonNullObject() : JsonObject(ObjectType::Null) {}
         ~JsonNullObject() override = default;
 
-	public:
-		static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonNullObject>(); }
+    public:
+        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonNullObject>(); }
     
     public:
         void Parse(Detail::JsonParser& parser) override;

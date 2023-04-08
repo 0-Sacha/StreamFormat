@@ -12,5 +12,4 @@ namespace ProjectCore::FMT::Detail
         // TODO
         throw FMTImplError{};
     }
-
 }
