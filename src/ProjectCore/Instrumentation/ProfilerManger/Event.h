@@ -8,15 +8,13 @@
 #include <string>
 #include <memory>
 
-#ifdef PROJECTCORE_PLATFORM_LINUX
-    #include <sys/types.h>
-    #include <unistd.h>
-#endif
 
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
 
 namespace ProjectCore::Instrumentation
 {
+    int GetPid();
+
     enum class EventType : char
     {
         DurationBegin = 'B',
@@ -60,11 +58,7 @@ namespace ProjectCore::Instrumentation
             , TimeOfEvent(Instrumentation::GetMicroseconds())
             , ThreadTimeOfEvent(0)
             , Duration(0)
-#ifdef PROJECTCORE_COMPILER_VS
-            , PID(_getpid())
-#else
-            , PID(getpid())
-#endif
+            , PID(GetPid())
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
             , Data(data)
         {}
@@ -77,11 +71,7 @@ namespace ProjectCore::Instrumentation
             , TimeOfEvent(Instrumentation::GetMicroseconds())
             , ThreadTimeOfEvent(0)
             , Duration(0)
-#ifdef PROJECTCORE_COMPILER_VS
-            , PID(_getpid())
-#else
-            , PID(getpid())
-#endif
+            , PID(GetPid())
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
             , Data(data)
         {}

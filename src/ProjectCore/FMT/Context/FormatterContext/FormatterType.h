@@ -10,7 +10,7 @@ namespace ProjectCore::FMT
     struct FormatterType
     {
         static inline void Format(const T&, FormatterContext& context) {
-            context.SubContext("({C:red}FMT unknow type: {})", typeid(T).name());
+            context.SubContextArrayFMT("({C:red}FMT unknow type: {})", typeid(T).name());
 #ifndef PROJECTCORE_COMPILER_VS
             throw Detail::FMTShouldNotEndHere{};
 #endif
@@ -22,21 +22,21 @@ namespace ProjectCore::FMT
 #define PROJECTCORE_AUTO_FORMATTER_X(Type, fmt, ...)    template<typename FormatterContext>\
                                                         struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
                                                             static void Format(const Type& value, FormatterContext& context) {\
-                                                                context.SubContext(fmt, FOR_EACH(PROJECTCORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
+                                                                context.SubContextArrayFMT(fmt, FOR_EACH(PROJECTCORE_INTERNAL_ADDVALUE, __VA_ARGS__));\
                                                             }\
                                                         };
 
 #define PROJECTCORE_AUTO_FORMATTER(Type, fmt, ...)  template<typename FormatterContext>\
                                                     struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
                                                         static void Format(const Type& value, FormatterContext& context) {\
-                                                            context.SubContext(fmt, __VA_ARGS__);\
+                                                            context.SubContextArrayFMT(fmt, __VA_ARGS__);\
                                                         }\
                                                     };
 
 #define PROJECTCORE_AUTO_FORMATTER_T(Type, fmt, ...)    template<typename FormatterContext>\
                                                         struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
                                                             static void Format(const Type&, FormatterContext& context) {\
-                                                                context.SubContext(fmt, __VA_ARGS__);\
+                                                                context.SubContextArrayFMT(fmt, __VA_ARGS__);\
                                                             }\
                                                         };
 

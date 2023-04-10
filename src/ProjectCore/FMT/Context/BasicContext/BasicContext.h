@@ -96,7 +96,7 @@ namespace ProjectCore::FMT::Context
         virtual void ParseSetter() = 0;
 
     public:
-        template<typename T> void FormatReadParameterThrow(T& i);
+        template<typename T> void FormatReadParameterThrow(T& i, const T& defaultValue);
 
     public:
         template <typename ...CharToTest>

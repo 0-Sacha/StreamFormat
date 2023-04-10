@@ -98,10 +98,10 @@ namespace ProjectCore::FMT::Detail
         std::size_t m_Indent;
 
     public:
-        inline std::size_t GetNoStride() const noexcept                  { return m_NoStride; }
+        inline std::size_t GetNoStride() const noexcept                 { return m_NoStride; }
         inline void AddNoStride(const std::size_t noStride) noexcept    { m_NoStride += noStride; }
 
-        inline std::size_t GetIndent() const noexcept                { return m_Indent; }
+        inline std::size_t GetIndent() const noexcept               { return m_Indent; }
         inline void SetIndent(const std::size_t indent) noexcept    { m_Indent = indent; }
         inline void AddIndent(const std::size_t indent) noexcept    { m_Indent += indent; }
         inline void RemoveIndent(const std::size_t indent) noexcept { m_Indent -= indent; }
@@ -121,9 +121,9 @@ namespace ProjectCore::FMT::Detail
         template<typename T> void WriteUInt     (T i, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
         template<typename T> void WriteFloat    (T i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
 
-        template<typename T> void WriteIntAsBin (T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
-        template<typename T> void WriteIntAsHex (T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-        template<typename T> void WriteIntAsOct (T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+        template<typename T> void WriteIntAsBin (T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool prefix = true);
+        template<typename T> void WriteIntAsHex (T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool prefix = true, Detail::PrintStyle uppercase = PrintStyle::Nothing);
+        template<typename T> void WriteIntAsOct (T i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool prefix = true);
 
     public:
         template<typename T, typename FormatDataCharBuffer> void WriteIntFormatData     (T i, const FormatData<FormatDataCharBuffer>& formatData);
@@ -141,9 +141,9 @@ namespace ProjectCore::FMT::Detail
         template<typename CharStr>                      inline void WriteString(const std::basic_string<CharStr>& str, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})            { WriteCharPtr(str.data(), str.size(), st, shift, sp); }
 
     public:
-        inline void NewLineIndent()                                { PushBack('\n'); PushBack(' ', m_Indent); }
-        inline void SetCharCheckIndent(const CharBuffer c)        { SetChar(c);  if (c == '\n') PushBack(' ', m_Indent); }
-        inline void PushBackCheckIndent(const CharBuffer c)        { PushBack(c);  if (c == '\n') PushBack(' ', m_Indent); }
+        inline void NewLineIndent()                             { PushBack('\n'); PushBack(' ', m_Indent); }
+        inline void SetCharCheckIndent(const CharBuffer c)      { SetChar(c);  if (c == '\n') PushBack(' ', m_Indent); }
+        inline void PushBackCheckIndent(const CharBuffer c)     { PushBack(c);  if (c == '\n') PushBack(' ', m_Indent); }
 
         template<typename CharStr>
         inline void WriteIndentCharPtr(const CharStr* str, std::size_t size);

@@ -207,9 +207,9 @@ namespace ProjectCore::FMT
         static void Format(const ProjectCore::Tester::TestStatus& status, FormatContext& context) {
             switch (status)
             {
-                case ProjectCore::Tester::TestStatus::Ok     : context.SubContext("[  {C:green}OK{C}  ]"); break;
-                case ProjectCore::Tester::TestStatus::Fail     : context.SubContext("[ {C:red}FAIL{C} ]"); break;
-                case ProjectCore::Tester::TestStatus::Crash : context.SubContext("[{C:magenta}Crash{C} ]"); break;
+                case ProjectCore::Tester::TestStatus::Ok        : context.SubContextArrayFMT("[  {C:green}OK{C}  ]"); break;
+                case ProjectCore::Tester::TestStatus::Fail      : context.SubContextArrayFMT("[ {C:red}FAIL{C} ]"); break;
+                case ProjectCore::Tester::TestStatus::Crash     : context.SubContextArrayFMT("[{C:magenta}Crash{C} ]"); break;
             }
         }
     };
@@ -219,25 +219,25 @@ namespace ProjectCore::FMT
     {
         static void Format(const ProjectCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {
             context.BufferOut().FastWriteCharArray("TestsDone ");
-            context.SubContext("{:C:white}", statusBank.TestsDone);
+            context.SubContextArrayFMT("{:C:white}", statusBank.TestsDone);
 
             context.BufferOut().FastWriteCharArray(" | TestsOK ");
             if (statusBank.TestsOk == statusBank.TestsDone)
-                context.SubContext("{:C:green}", statusBank.TestsOk);
+                context.SubContextArrayFMT("{:C:green}", statusBank.TestsOk);
             else
-                context.SubContext("{:C:yellow}", statusBank.TestsOk);
+                context.SubContextArrayFMT("{:C:yellow}", statusBank.TestsOk);
 
             context.BufferOut().FastWriteCharArray(" | TestsFAIL ");
             if (statusBank.TestsFail == 0)
-                context.SubContext("{:C:green}", statusBank.TestsFail);
+                context.SubContextArrayFMT("{:C:green}", statusBank.TestsFail);
             else
-                context.SubContext("{:C:red}", statusBank.TestsFail);
+                context.SubContextArrayFMT("{:C:red}", statusBank.TestsFail);
 
             context.BufferOut().FastWriteCharArray(" | TestCrash ");
             if (statusBank.TestsCrash == 0)
-                context.SubContext("{:C:green}", statusBank.TestsCrash);
+                context.SubContextArrayFMT("{:C:green}", statusBank.TestsCrash);
             else
-                context.SubContext("{:C:magenta}", statusBank.TestsCrash);
+                context.SubContextArrayFMT("{:C:magenta}", statusBank.TestsCrash);
         }
     };
 }

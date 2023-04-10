@@ -78,6 +78,9 @@ namespace ProjectCore::FMT::Detail
     struct DigitSize : public BasicCustomDataType<DataType, -1, -2>
     { 
     public:
+        static constexpr DataType MAX_DIGIT_SIZE = std::numeric_limits<DataType>::max();
+
+    public:
         inline constexpr DigitSize(const DataType value = DEFAULT)
             : BasicCustomDataType<DataType, -1, -2>(value)
         {}

@@ -105,19 +105,32 @@ namespace ProjectCore::FMT::Detail
 
     template<typename CharBuffer>
     template<typename T>
-    void FMTBufferOut<CharBuffer>::WriteIntAsBin(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+    void FMTBufferOut<CharBuffer>::WriteIntAsBin(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool prefix) {
         sp.ValidateForNumber();
 
-        // Compute shift and "TureValue" print
-        if (digitSize.IsDefault())
-            digitSize = static_cast<DigitSize::ValueType>(sizeof(T) * 8);
-        shift -= digitSize;
+        bool removeLeading0 = digitSize.IsDefault();
 
-        if (trueValue) shift -= 2;
+        if (digitSize.Value == DigitSize::MAX_DIGIT_SIZE || digitSize.IsDefault())
+            digitSize = static_cast<DigitSize::ValueType>(sizeof(T) * 8);
+
+        if (removeLeading0)
+        {
+            DataType lastPosWithData = 0;
+            DataType k = digitSize + 1;
+            T cpyI = i;
+            while (--k != 0) {
+                if (cpyI & 1) lastPosWithData = k;
+                cpyI = cpyI >> 1;
+            }
+            digitSize -= lastPosWithData;
+        }
+
+        shift -= digitSize;
+        if (prefix) shift -= 2;
         if (shift < 0) shift = 0;
 
         if (!sp.BeforeIsADigit())    PrintShiftBegin(st, sp, shift);
-        if (trueValue) {
+        if (prefix) {
             PushBack('0');
             PushBack('b');
         }
@@ -127,7 +140,7 @@ namespace ProjectCore::FMT::Detail
         Reserve(digitSize);
         DataType k = digitSize + 1;
         while (--k != 0) {
-            if (i & 1)    PushReverseNoCheck('1');
+            if (i & 1)  PushReverseNoCheck('1');
             else        PushReverseNoCheck('0');
             i = i >> 1;
         }
@@ -138,19 +151,32 @@ namespace ProjectCore::FMT::Detail
 
     template<typename CharBuffer>
     template<typename T>
-    void FMTBufferOut<CharBuffer>::WriteIntAsHex(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue, Detail::PrintStyle valueDes) {
+    void FMTBufferOut<CharBuffer>::WriteIntAsHex(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool prefix, Detail::PrintStyle uppercase) {
         sp.ValidateForNumber();
 
-        // Compute shift and "TureValue" print
-        if (digitSize.IsDefault())
+        bool removeLeading0 = digitSize.IsDefault();
+
+        if (digitSize.Value == DigitSize::MAX_DIGIT_SIZE || digitSize.IsDefault())
             digitSize = static_cast<DigitSize::ValueType>(sizeof(T) * 2);
 
+        if (removeLeading0)
+        {
+            DataType lastPosWithData = 0;
+            DataType k = digitSize + 1;
+            T cpyI = i;
+            while (--k != 0) {
+                if ((cpyI & 0b1111) != 0) lastPosWithData = k;
+                cpyI = cpyI >> 4;
+            }
+            digitSize -= lastPosWithData;
+        }
+
         shift -= digitSize;
-        if (trueValue) shift -= 2;
+        if (prefix) shift -= 2;
         if (shift < 0) shift = 0;
 
-        if (!sp.BeforeIsADigit())        PrintShiftBegin(st, sp, shift);
-        if (trueValue) {
+        if (!sp.BeforeIsADigit())   PrintShiftBegin(st, sp, shift);
+        if (prefix) {
             PushBack('0');
             PushBack('x');
         }
@@ -159,7 +185,7 @@ namespace ProjectCore::FMT::Detail
         // Print value
         Reserve(digitSize);
         DataType k = digitSize + 1;
-        if (valueDes == PrintStyle::LowerCase)
+        if (uppercase == PrintStyle::LowerCase)
             while (--k != 0) { PushReverseNoCheck(LOWER_HEX[i & 0b1111]); i = i >> 4; }
         else
             while (--k != 0) { PushReverseNoCheck(UPPER_HEX[i & 0b1111]); i = i >> 4; }
@@ -170,19 +196,32 @@ namespace ProjectCore::FMT::Detail
 
     template<typename CharBuffer>
     template<typename T>
-    void FMTBufferOut<CharBuffer>::WriteIntAsOct(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool trueValue) {
+    void FMTBufferOut<CharBuffer>::WriteIntAsOct(T i, DigitSize digitSize, ShiftType st, ShiftSize shift, ShiftPrint sp, bool prefix) {
         sp.ValidateForNumber();
 
-        // Compute shift and "TureValue" print
-        if (digitSize.IsDefault())
+        bool removeLeading0 = digitSize.IsDefault();
+
+        if (digitSize.Value == DigitSize::MAX_DIGIT_SIZE || digitSize.IsDefault())
             digitSize = static_cast<DigitSize::ValueType>(std::ceil(static_cast<float>(sizeof(T) * 8) / 3));
 
+        if (removeLeading0)
+        {
+            DataType lastPosWithData = 0;
+            DataType k = digitSize + 1;
+            T cpyI = i;
+            while (--k != 0) {
+                if ((cpyI & 0b111) != 0) lastPosWithData = k;
+                cpyI = cpyI >> 4;
+            }
+            digitSize -= lastPosWithData;
+        }
+
         shift -= digitSize;
-        if (trueValue) shift -= 2;
+        if (prefix) shift -= 2;
         if (shift < 0) shift = 0;
 
         if (!sp.BeforeIsADigit())        PrintShiftBegin(st, sp, shift);
-        if (trueValue) {
+        if (prefix) {
             PushBack('0');
             PushBack('o');
         }

@@ -109,9 +109,13 @@ namespace ProjectCore::FMT::Detail
 
     public:
         // TODO : need to have throw version od those to have secure call
-        template<typename T> void FastWriteInt    (T i);
-        template<typename T> void FastWriteUInt    (T i);
-        template<typename T> void FastWriteFloat(T i, FloatPrecision floatPrecision = FloatPrecision{});
+        template<typename T> void FastWriteInt      (T i);
+        template<typename T> void FastWriteUInt     (T i);
+        template<typename T> void FastWriteFloat    (T i, FloatPrecision floatPrecision = FloatPrecision{});
+
+        template<typename T> void FastWriteIntAsBin (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true);
+        template<typename T> void FastWriteIntAsHex (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true, Detail::PrintStyle uppercase = PrintStyle::Nothing);
+        template<typename T> void FastWriteIntAsOct (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true);
         
         template<typename CharStr>
         void FastWriteCharPtr(const CharStr* str, std::size_t size);

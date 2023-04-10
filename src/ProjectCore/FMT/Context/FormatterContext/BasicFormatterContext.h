@@ -53,8 +53,8 @@ namespace ProjectCore::FMT::Context
         using Base::SetFormatData;
         using Base::GetContextArgsInterface;
 
-        inline BufferOutType&                BufferOut()                { return m_BufferOut; }
-        inline const BufferOutType&            BufferOut() const        { return m_BufferOut; }
+        inline BufferOutType&               BufferOut()             { return m_BufferOut; }
+        inline const BufferOutType&         BufferOut() const       { return m_BufferOut; }
 
     public:
         using Base::Run;
@@ -69,14 +69,14 @@ namespace ProjectCore::FMT::Context
         void SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, NewContextArgs&& ...args);
 
         template<typename NewCharFormat, std::size_t SIZE, typename ...NewContextArgs>
-        inline void SubContext(const NewCharFormat (&format)[SIZE], NewContextArgs&& ...args)
+        inline void SubContextArrayFMT(const NewCharFormat (&format)[SIZE], NewContextArgs&& ...args)
         {
             Detail::BufferInProperties<NewCharFormat> properties(format);
             return SubContext(properties, std::forward<NewContextArgs>(args)...);
         }
 
         template<typename NewCharFormat, typename ...NewContextArgs>
-        void SubContext(const NewCharFormat* buffer, std::size_t size, NewContextArgs&& ...args)
+        void SubContextPtrFMT(const NewCharFormat* buffer, std::size_t size, NewContextArgs&& ...args)
         {
             Detail::BufferInProperties<NewCharFormat> properties(buffer, size);
             return SubContext(properties, std::forward<NewContextArgs>(args)...);

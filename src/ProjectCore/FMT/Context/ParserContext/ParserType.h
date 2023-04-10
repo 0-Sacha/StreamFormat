@@ -18,6 +18,6 @@ namespace ProjectCore::FMT
 #define PROJECTCORE_AUTO_PARSER(Type, fmt, ...) template<typename ParserContext>\
                                                 struct ProjectCore::FMT::ParserType<Type, ParserContext> {\
                                                     static bool Read(Type& value, ParserContext& context) {\
-                                                        return context.SubContext(fmt, __VA_ARGS__);\
+                                                        return context.SubContextArrayFMT(fmt, __VA_ARGS__);\
                                                     }\
                                                 };

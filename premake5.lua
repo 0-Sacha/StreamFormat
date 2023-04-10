@@ -33,6 +33,8 @@ project "ProjectCore"
 if (ProjectCoreTestsEnable)
 then
 
+Solution.Projects["ProjectCoreTests"] = Solution.Projects["ProjectCore"]
+
 ProjectCoreTestsLaunch = {}
 ProjectCoreTestsLaunch.project = "ProjectCoreTests"
 

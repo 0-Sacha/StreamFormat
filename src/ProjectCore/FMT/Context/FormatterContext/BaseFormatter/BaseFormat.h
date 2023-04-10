@@ -9,16 +9,16 @@ namespace ProjectCore::FMT
     struct FormatterType<typename FormatterContext::FormatSpecifierType, FormatterContext> {
         static void Format(const typename FormatterContext::FormatSpecifierType& specifier, FormatterContext& context) {
             if(specifier.ValueIsText)
-                context.SubContext("{ '{}', '{}' }", specifier.Name, specifier.ValueAsText);
+                context.SubContextArrayFMT("{ '{}', '{}' }", specifier.Name, specifier.ValueAsText);
             else
-                context.SubContext("{ '{}', '{}' }", specifier.Name, specifier.ValueAsNumber);
+                context.SubContextArrayFMT("{ '{}', '{}' }", specifier.Name, specifier.ValueAsNumber);
         }
     };
 
     template<typename FormatterContext>
     struct FormatterType<typename FormatterContext::DataType, FormatterContext> {
         static void Format(const typename FormatterContext::DataType&, FormatterContext& context) {
-            context.SubContext("{:C:red}", "Missing '{' or '}' because currently the format data is used as a parameter");
+            context.SubContextArrayFMT("{:C:red}", "Missing '{' or '}' because currently the format data is used as a parameter");
         }
     };
 
@@ -27,10 +27,10 @@ namespace ProjectCore::FMT
     struct FormatterType<bool, FormatterContext> {
         static void Format(const bool t, FormatterContext& context) {
             if (!context.GetFormatData().TrueValue) {
-                if (t == true)    context.BufferOut().FastWriteCharPtr("True");
-                else            context.BufferOut().FastWriteCharPtr("False");
+                if (t == true)	context.BufferOut().FastWriteCharArray("True");
+                else            context.BufferOut().FastWriteCharArray("False");
             } else {
-                if (t == true)    context.BufferOut().PushBack('1');
+                if (t == true)  context.BufferOut().PushBack('1');
                 else            context.BufferOut().PushBack('0');
             }
         }
@@ -280,8 +280,13 @@ namespace ProjectCore::FMT
     struct FormatterType<void*, FormatterContext>
     {
         static void Format(const void* const t, FormatterContext& context) {
-            if (t == nullptr)    context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
-            else                context.SubContext("{:X,=,U}", (std::size_t)t);
+            if (t == nullptr)
+                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+
+            if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
+                return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
+            else
+                return FormatterType<Detail::ForwardAsInt<std::size_t>, FormatterContext>::Format(reinterpret_cast<std::uintptr_t>(t), context);
         }
     };
 
@@ -290,18 +295,34 @@ namespace ProjectCore::FMT
     {
         static void Format(const T* const t, FormatterContext& context) {
 
-            if (t == nullptr)
-                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
-
             auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
-            if(size == Detail::FORMAT_DATA_NOT_SPECIFIED) {
+            if(size == Detail::FORMAT_DATA_NOT_SPECIFIED)
+            {
                 if (context.GetFormatData().TrueValue)
-                    context.SubContext("{} -> {:{}}", static_cast<void*>(t), *t, context.ForwardFormatData());
+                {
+                    if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
+                        return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
+                    else
+                        return FormatterType<Detail::ForwardAsInt<std::size_t>, FormatterContext>::Format(reinterpret_cast<std::uintptr_t>(t), context);
+                }
                 else
-                    context.WriteType(*t);
+                {
+                    bool all = context.GetFormatData().HasSpecifier("size");
+                    if (all)
+                    {
+                        if (t == nullptr)
+                            return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+                        return context.SubContextArrayFMT("{} -> {:{}}", static_cast<const void* const>(t), *t, context.ForwardFormatData());
+                    }
+                    else
+                        return context.WriteType(*t);
+                }
                 return;
             }
+
+            if (t == nullptr)
+                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 
             context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
@@ -315,7 +336,7 @@ namespace ProjectCore::FMT
 
             while (begin < end) {
                 if (first)    first = false;
-                else        context.PrintIndent(join);
+                else			context.BufferOut().WriteIndentStringView(join);
                 context.WriteType(*begin++);
             }
 

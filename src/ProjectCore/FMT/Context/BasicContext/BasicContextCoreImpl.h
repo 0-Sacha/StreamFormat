@@ -62,11 +62,15 @@ namespace ProjectCore::FMT::Context
     
     template<typename CharFormat>
     template<typename T>
-    void BasicContext<CharFormat>::FormatReadParameterThrow(T& i) {
+    void BasicContext<CharFormat>::FormatReadParameterThrow(T& i, const T& defaultValue) {
         if (!m_Format.IsEqualTo('{'))
-            if (m_Format.FastReadUInt(i))
-                return;
-
+        {
+            if (m_Format.FastReadUInt(i) == false)
+                i = defaultValue;
+            return;
+        }
+        
+        // SubIndex
         Detail::FormatIndex formatIdx = GetFormatIndexThrow();
         m_Format.IsEqualToForwardThrow('}');
         if constexpr (std::is_convertible_v<T, int64_t>)

@@ -35,8 +35,10 @@ namespace ProjectCore::FMT::Context
     template<typename CharFormat>
     void BasicContext<CharFormat>::ParseFormatDataBase_ValueIntPrint(const typename Detail::ValueIntPrint type) {
         m_FormatData.IntPrint = type;
-        if (m_Format.IsEqualToForward('#')) m_FormatData.TrueValue = true;
-        FormatReadParameterThrow(m_FormatData.DigitSize.Value);
+        if (m_Format.IsEqualToForward('#'))
+            m_FormatData.DigitSize.Value = Detail::DigitSize::MAX_DIGIT_SIZE;
+        else
+            FormatReadParameterThrow(m_FormatData.DigitSize.Value, Detail::DigitSize::DEFAULT);
     }
 
     template<typename CharFormat>
@@ -64,7 +66,7 @@ namespace ProjectCore::FMT::Context
     template<typename CharFormat>
     void BasicContext<CharFormat>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type) {
         m_FormatData.ShiftType = type;
-        FormatReadParameterThrow(m_FormatData.ShiftSize.Value);
+        FormatReadParameterThrow(m_FormatData.ShiftSize.Value, Detail::ShiftSize::DEFAULT);
         if (m_Format.IsEqualToForward(':'))
         {
             m_FormatData.ShiftPrint.Before = m_Format.GetAndForward();
@@ -93,7 +95,7 @@ namespace ProjectCore::FMT::Context
         }
         else if (m_Format.IsEqualToForward('=')) { m_FormatData.TrueValue = true; }
 
-        else if (m_Format.IsEqualToForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision.Value); }
+        else if (m_Format.IsEqualToForward('.')) { FormatReadParameterThrow(m_FormatData.FloatPrecision.Value, Detail::FloatPrecision::DEFAULT); }
 
         else if (m_Format.IsEqualToForward('>')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Right);     }
         else if (m_Format.IsEqualToForward('<')) { ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Left);     }
