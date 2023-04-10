@@ -15,6 +15,6 @@ namespace ProjectCore::FMT::Detail
         void SetBuffer(BufferOutType* buffer) { m_Buffer = buffer; }
 
     protected:
-        BufferOutType* m_Buffer;
+		BufferOutType* m_Buffer{ nullptr };
     };
 }

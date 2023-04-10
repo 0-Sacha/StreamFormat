@@ -309,7 +309,7 @@ namespace ProjectCore::FMT::Detail
         // Basic types
         template<typename T> bool BasicReadType(T&) { return false; }
 
-#if 0
+#ifdef FMT_USE_STD_INTEGER
         inline void BasicReadType(std::int8_t& i)       { return FastReadIntThrow(i);      }
         inline void BasicReadType(std::uint8_t& i)      { return FastReadUIntThrow(i);    }
         inline void BasicReadType(std::int16_t& i)      { return FastReadIntThrow(i);     }

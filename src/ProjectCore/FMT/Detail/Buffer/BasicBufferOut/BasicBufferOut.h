@@ -181,7 +181,7 @@ namespace ProjectCore::FMT::Detail
         
         template<typename T> void BasicWriteType(T) {}
 
-#if 0
+#if FMT_USE_STD_INTEGER
         inline void BasicWriteType(const std::int8_t i)     { FastWriteInt(i); }
         inline void BasicWriteType(const std::uint8_t i)    { FastWriteUInt(i); }
         inline void BasicWriteType(const std::int16_t i)    { FastWriteInt(i); }
@@ -190,8 +190,7 @@ namespace ProjectCore::FMT::Detail
         inline void BasicWriteType(const std::uint32_t i)   { FastWriteUInt(i); }
         inline void BasicWriteType(const std::int64_t i)    { FastWriteInt(i); }
         inline void BasicWriteType(const std::uint64_t i)   { FastWriteUInt(i); }
-#endif
-
+#else
         inline void BasicWriteType(const signed char i)         { FastWriteInt(i); }
         inline void BasicWriteType(const unsigned char i)       { FastWriteUInt(i); }
         inline void BasicWriteType(const short i)               { FastWriteInt(i); }
@@ -202,6 +201,7 @@ namespace ProjectCore::FMT::Detail
         inline void BasicWriteType(const unsigned long i)       { FastWriteUInt(i); }
         inline void BasicWriteType(const long long i)           { FastWriteInt(i); }
         inline void BasicWriteType(const unsigned long long i)  { FastWriteUInt(i); }
+#endif
 
         inline void BasicWriteType(const float i)           { FastWriteFloat(i); }
         inline void BasicWriteType(const double i)          { FastWriteFloat(i); }

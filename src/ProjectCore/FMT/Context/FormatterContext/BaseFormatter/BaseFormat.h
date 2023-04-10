@@ -37,6 +37,32 @@ namespace ProjectCore::FMT
     };
 
     // Int Types
+#ifdef FMT_USE_STD_INTEGER
+    template<typename FormatterContext>
+    struct FormatterType<std::int8_t, FormatterContext> {
+        static inline void Format(const std::int8_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::int8_t>, FormatterContext>::Format(t, context);
+        }
+    };
+    template<typename FormatterContext>
+    struct FormatterType<std::int16_t, FormatterContext> {
+        static inline void Format(const std::int16_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::int16_t>, FormatterContext>::Format(t, context);
+        }
+    };
+    template<typename FormatterContext>
+    struct FormatterType<std::int32_t, FormatterContext> {
+        static inline void Format(const std::int32_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::int32_t>, FormatterContext>::Format(t, context);
+        }
+    };
+    template<typename FormatterContext>
+    struct FormatterType<std::int64_t, FormatterContext> {
+        static inline void Format(const std::int64_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::int64_t>, FormatterContext>::Format(t, context);
+        }
+    };
+#else
     template<typename FormatterContext>
     struct FormatterType<signed char, FormatterContext> {
         static inline void Format(const signed char t, FormatterContext& context) {
@@ -67,35 +93,35 @@ namespace ProjectCore::FMT
             FormatterType<Detail::ForwardAsInt<long long>, FormatterContext>::Format(t, context);
         }
     };
-
-#if 0
-    template<typename FormatterContext>
-    struct FormatterType<std::int8_t, FormatterContext> {
-        static inline void Format(const std::int8_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::int8_t>, FormatterContext>::Format(t, context);
-        }
-    };
-    template<typename FormatterContext>
-    struct FormatterType<std::int16_t, FormatterContext> {
-        static inline void Format(const std::int16_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::int16_t>, FormatterContext>::Format(t, context);
-        }
-    };
-    template<typename FormatterContext>
-    struct FormatterType<std::int32_t, FormatterContext> {
-        static inline void Format(const std::int32_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::int32_t>, FormatterContext>::Format(t, context);
-        }
-    };
-    template<typename FormatterContext>
-    struct FormatterType<std::int64_t, FormatterContext> {
-        static inline void Format(const std::int64_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::int64_t>, FormatterContext>::Format(t, context);
-        }
-    };
 #endif
 
     // UInt Types
+#ifdef FMT_USE_STD_INTEGER
+    template<typename FormatterContext>
+    struct FormatterType<std::uint8_t, FormatterContext> {
+        static inline void Format(const std::uint8_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::uint8_t>, FormatterContext>::Format(t, context);
+        }
+    };
+    template<typename FormatterContext>
+    struct FormatterType<std::uint16_t, FormatterContext> {
+        static inline void Format(const std::uint16_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::uint16_t>, FormatterContext>::Format(t, context);
+        }
+    };
+    template<typename FormatterContext>
+    struct FormatterType<std::uint32_t, FormatterContext> {
+        static inline void Format(const std::uint32_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::uint32_t>, FormatterContext>::Format(t, context);
+        }
+    };
+    template<typename FormatterContext>
+    struct FormatterType<std::uint64_t, FormatterContext> {
+        static inline void Format(const std::uint64_t t, FormatterContext& context) {
+            FormatterType<Detail::ForwardAsInt<std::uint64_t>, FormatterContext>::Format(t, context);
+        }
+    };
+#else
     template<typename FormatterContext>
     struct FormatterType<unsigned char, FormatterContext> {
         static inline void Format(const unsigned char t, FormatterContext& context) {
@@ -126,33 +152,9 @@ namespace ProjectCore::FMT
             FormatterType<Detail::ForwardAsUInt<unsigned long long>, FormatterContext>::Format(t, context);
         }
     };
-
-#if 0
-    template<typename FormatterContext>
-    struct FormatterType<std::uint8_t, FormatterContext> {
-        static inline void Format(const std::uint8_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::uint8_t>, FormatterContext>::Format(t, context);
-        }
-    };
-    template<typename FormatterContext>
-    struct FormatterType<std::uint16_t, FormatterContext> {
-        static inline void Format(const std::uint16_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::uint16_t>, FormatterContext>::Format(t, context);
-        }
-    };
-    template<typename FormatterContext>
-    struct FormatterType<std::uint32_t, FormatterContext> {
-        static inline void Format(const std::uint32_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::uint32_t>, FormatterContext>::Format(t, context);
-        }
-    };
-    template<typename FormatterContext>
-    struct FormatterType<std::uint64_t, FormatterContext> {
-        static inline void Format(const std::uint64_t t, FormatterContext& context) {
-            FormatterType<Detail::ForwardAsInt<std::uint64_t>, FormatterContext>::Format(t, context);
-        }
-    };
 #endif
+
+
 
     // Float Types
     template<typename FormatterContext>
