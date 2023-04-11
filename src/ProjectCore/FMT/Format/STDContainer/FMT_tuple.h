@@ -6,8 +6,7 @@
 
 namespace ProjectCore::FMT::TupleDetail
 {
-    template<uint32_t N, typename ...Args> using NthTypeOf =
-        typename std::tuple_element<N, std::tuple<Args...>>::type;
+    template<uint32_t N, typename ...Args> using NthTypeOf = typename std::tuple_element<N, std::tuple<Args...>>::type;
 
     template<uint32_t N, typename ...Args>
     constexpr NthTypeOf<N, Args...>& Get(Args&& ...args) {

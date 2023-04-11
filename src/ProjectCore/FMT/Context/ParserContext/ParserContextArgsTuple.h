@@ -88,7 +88,7 @@ namespace ProjectCore::FMT::Detail
         {
             if (idx.Is0())
             {
-                if constexpr ( FMTIsContextSame<TypeWithoutRef, T> )
+                if constexpr (FMTIsContextSame<TypeWithoutRef, T>)
                 {
                     return *value = m_Value;
                 }
@@ -126,8 +126,8 @@ namespace ProjectCore::FMT::Detail
     class ParserContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
         public:
-            using Base                 = BasicContextArgsTupleInterface<Context>;
-            using ContextArgsType     = ParserContextArgsTuple<Args...>;
+            using Base              = BasicContextArgsTupleInterface<Context>;
+            using ContextArgsType   = ParserContextArgsTuple<Args...>;
             
             using Base::m_Context;
             

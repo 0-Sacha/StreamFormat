@@ -107,6 +107,6 @@ namespace ProjectCore::FMT::Detail
         }
 
     private:
-        IndentFunctionData<FormatterContext>     m_IndentFunctionData;
+        IndentFunctionData<FormatterContext> m_IndentFunctionData;
     };
 }

@@ -7,8 +7,16 @@ namespace ProjectCore::FMT
 {
     template<typename T, typename ParserContext = Context::BasicParserContext<char, char>>
     struct ParserType {
-        static inline auto Read(T&, ParserContext&) {
-            // PROJECTCORE_IF_MSVC(static_assert(false, __FUNCSIG__));
+        static inline bool Read(T&, ParserContext&) {
+#ifdef UNKOWN_TYPE_MESSAGE
+            throw Detail::FMTShouldNotEndHere{};
+#endif
+#ifdef UNKOWN_TYPE_THROW
+            throw Detail::FMTShouldNotEndHere{};
+#endif
+#ifdef UNKOWN_TYPE_FAIL
+            throw Detail::FMTShouldNotEndHere{};
+#endif
             return false;
         }
     };

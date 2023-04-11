@@ -20,9 +20,9 @@ namespace ProjectCore::FMT::Detail
         ~DynamicBufferOutManager() override = default;
 
     public:
-        static constexpr std::size_t    DEFAULT_BEGIN_SIZE    = 128;
+        static constexpr std::size_t    DEFAULT_BEGIN_SIZE  = 128;
         static constexpr std::size_t    GROW_UP_BUFFER_SIZE = 2;
-        static constexpr bool            DEBUG_RESIZE        = false;
+        static constexpr bool           DEBUG_RESIZE        = false;
 
     public:
         CharType* GetBuffer() override { return m_Buffer.get(); }
@@ -54,11 +54,10 @@ namespace ProjectCore::FMT::Detail
             using Base::m_Buffer;
             using Base::m_BufferSize;
 
-            static constexpr float MEAN_SIZE_OVERFLOW = 4.2f;
-            static constexpr float MEAN_SIZE_RESIZE = 1.4f;
-
-            static constexpr float MEAN_CALCFACT_OLD = 5;
-            static constexpr float MEAN_CALCFACT_LAST = 1;
+            static constexpr float MEAN_SIZE_OVERFLOW   = 4.2f;
+            static constexpr float MEAN_SIZE_RESIZE     = 1.4f;
+            static constexpr float MEAN_CALCFACT_OLD    = 5;
+            static constexpr float MEAN_CALCFACT_LAST   = 1;
 
         public:
             ShrinkDynamicBufferOutManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE)

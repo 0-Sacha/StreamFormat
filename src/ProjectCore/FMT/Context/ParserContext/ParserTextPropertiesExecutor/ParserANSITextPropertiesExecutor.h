@@ -18,10 +18,10 @@ namespace ProjectCore::FMT::Detail
         using Base::m_Buffer;
 
     public:
-        void AllPropertiesReset() override                                              { /*m_Buffer->BasicWriteType('\033', '[', 0, 'm');*/ }
+        void AllPropertiesReset() override                                            { /*m_Buffer->BasicWriteType('\033', '[', 0, 'm');*/ }
 
     public:
-        void ResetColor() override                                                      { /*m_Buffer->BasicWriteType('\033', '[', 39, ';', 49, 'm');*/ }
+        void ResetColor() override                                                    { /*m_Buffer->BasicWriteType('\033', '[', 39, ';', 49, 'm');*/ }
         void ExecuteColor(const TextProperties::TextColor::BasicColorFG&) override    { /*m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/ }
         void ExecuteColor(const TextProperties::TextColor::BasicColorBG&) override    { /*m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/ }
         void ExecuteColor(const TextProperties::TextColor::BasicColor&) override      { /*m_Buffer->BasicWriteType('\033', '[', static_cast<std::uint8_t>(t.Fg) , ';', static_cast<std::uint8_t>(t.Bg), 'm');*/ }

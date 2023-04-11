@@ -59,18 +59,18 @@ namespace ProjectCore::FMT::Detail
         using Base::GetPrevNoCheck;
 
     public:
-        static constexpr char            UPPER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-        static constexpr char            LOWER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        static constexpr char UPPER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        static constexpr char LOWER_HEX[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
     
     protected:
         BasicBufferOutManager<CharBuffer>* m_BufferOutManager;
 
     public:
-        inline BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() noexcept                 { return m_BufferOutManager; }
-        inline const BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() const noexcept      { return m_BufferOutManager; }
+        inline BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() noexcept             { return m_BufferOutManager; }
+        inline const BasicBufferOutManager<CharBuffer>* GetBufferOutManagerPtr() const noexcept { return m_BufferOutManager; }
 
-        inline BasicBufferOutManager<CharBuffer>& GetBufferOutManager() noexcept                     { return *m_BufferOutManager; }
-        inline const BasicBufferOutManager<CharBuffer>& GetBufferOutManager() const noexcept          { return *m_BufferOutManager; }
+        inline BasicBufferOutManager<CharBuffer>& GetBufferOutManager() noexcept                { return *m_BufferOutManager; }
+        inline const BasicBufferOutManager<CharBuffer>& GetBufferOutManager() const noexcept    { return *m_BufferOutManager; }
 
     public:
         BasicBufferOut() noexcept

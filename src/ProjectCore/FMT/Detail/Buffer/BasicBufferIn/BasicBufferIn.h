@@ -310,14 +310,14 @@ namespace ProjectCore::FMT::Detail
         template<typename T> bool BasicReadType(T&) { return false; }
 
 #ifdef FMT_USE_STD_INTEGER
-        inline void BasicReadType(std::int8_t& i)       { return FastReadIntThrow(i);      }
-        inline void BasicReadType(std::uint8_t& i)      { return FastReadUIntThrow(i);    }
-        inline void BasicReadType(std::int16_t& i)      { return FastReadIntThrow(i);     }
-        inline void BasicReadType(std::uint16_t& i)     { return FastReadUIntThrow(i);   }
-        inline void BasicReadType(std::int32_t& i)      { return FastReadIntThrow(i);     }
-        inline void BasicReadType(std::uint32_t& i)     { return FastReadUIntThrow(i);   }
-        inline void BasicReadType(std::int64_t& i)      { return FastReadIntThrow(i);     }
-        inline void BasicReadType(std::uint64_t& i)     { return FastReadUIntThrow(i);   }
+        inline void BasicReadType(std::int8_t& i)       { return FastReadIntThrow(i);  }
+        inline void BasicReadType(std::uint8_t& i)      { return FastReadUIntThrow(i); }
+        inline void BasicReadType(std::int16_t& i)      { return FastReadIntThrow(i);  }
+        inline void BasicReadType(std::uint16_t& i)     { return FastReadUIntThrow(i); }
+        inline void BasicReadType(std::int32_t& i)      { return FastReadIntThrow(i);  }
+        inline void BasicReadType(std::uint32_t& i)     { return FastReadUIntThrow(i); }
+        inline void BasicReadType(std::int64_t& i)      { return FastReadIntThrow(i);  }
+        inline void BasicReadType(std::uint64_t& i)     { return FastReadUIntThrow(i); }
 #else
         inline void BasicReadType(const signed char i)         { FastReadInt(i); }
         inline void BasicReadType(const unsigned char i)       { FastReadUInt(i); }
@@ -330,9 +330,9 @@ namespace ProjectCore::FMT::Detail
         inline void BasicReadType(const long long i)           { FastReadInt(i); }
         inline void BasicReadType(const unsigned long long i)  { FastReadUInt(i); }
 #endif
-        inline void BasicReadType(float& i)         { return FastReadFloatThrow(i);    }
-        inline void BasicReadType(double& i)        { return FastReadFloatThrow(i);    }
-        inline void BasicReadType(long double& i)   { return FastReadFloatThrow(i);    }
+        inline void BasicReadType(float& i)         { return FastReadFloatThrow(i); }
+        inline void BasicReadType(double& i)        { return FastReadFloatThrow(i); }
+        inline void BasicReadType(long double& i)   { return FastReadFloatThrow(i); }
 
         inline void BasicReadType(char& i)      { i = Base::GetAndForward(); return; }
         inline void BasicReadType(wchar_t& i)   { i = Base::GetAndForward(); return; }

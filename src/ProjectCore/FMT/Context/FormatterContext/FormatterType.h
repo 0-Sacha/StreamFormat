@@ -10,8 +10,13 @@ namespace ProjectCore::FMT
     struct FormatterType
     {
         static inline void Format(const T&, FormatterContext& context) {
+#ifdef UNKOWN_TYPE_MESSAGE
             context.SubContextArrayFMT("({C:red}FMT unknow type: {})", typeid(T).name());
-#ifndef PROJECTCORE_COMPILER_VS
+#endif
+#ifdef UNKOWN_TYPE_THROW
+            throw Detail::FMTShouldNotEndHere{};
+#endif
+#ifdef UNKOWN_TYPE_FAIL
             throw Detail::FMTShouldNotEndHere{};
 #endif
         }

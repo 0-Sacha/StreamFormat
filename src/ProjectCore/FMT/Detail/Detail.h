@@ -13,6 +13,8 @@
 
 #include "TextProperties/TextProperties.h"
 
+#define UNKOWN_TYPE_MESSAGE
+
 // TODO :
 //
 //         Check for escape char

@@ -8,7 +8,7 @@ namespace ProjectCore::FMT
     template<typename ParserContext>
     struct ParserType<typename ParserContext::DataType, ParserContext> {
         static inline void Read(typename ParserContext::DataType&, ParserContext&) {
-            // FIXME
+            throw Detail::FMTShouldNotEndHere{};
         }
     };
 
