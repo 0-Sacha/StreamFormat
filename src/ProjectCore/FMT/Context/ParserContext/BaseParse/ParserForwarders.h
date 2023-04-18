@@ -42,8 +42,8 @@ namespace ProjectCore::FMT
             const auto& data = context.GetFormatData();
 
             std::size_t begin = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-            bool isZeroEnded = context.GetFormatData().HasSpecifier("no-zero-end");
-            std::size_t size = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - static_cast<std::size_t>(isZeroEnded ? 0 : 1) - begin));
+            bool isZeroEnded = context.GetFormatData().HasSpecifier("no-zero-end") == false;
+            std::size_t size = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - static_cast<std::size_t>(isZeroEnded ? 1 : 0) - begin));
 
             // if (data.HasSpecifier("indent"))
             //     return context.BufferIn().ReadIndentCharPtr(t + begin, size);

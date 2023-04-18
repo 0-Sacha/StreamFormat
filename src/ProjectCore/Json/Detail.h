@@ -2,7 +2,7 @@
 
 #include <exception>
 
-namespace ProjectCore::JSON
+namespace ProjectCore::JSON::Detail
 {
     class JsonError : public std::exception {};
     class JsonIndexingError : public JsonError {};

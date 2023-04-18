@@ -4,6 +4,7 @@
 #include "JsonFormatter.h"
 
 #include "ProjectCore/FMT/Detail/Buffer/Utils/BufferUtils.h"
+#include "ProjectCore/FMT/FMT.h"
 
 #include <string>
 #include <functional>
@@ -15,10 +16,18 @@ namespace ProjectCore::JSON
     {
         static inline void Parse(T&, Detail::JsonParser&)
         {
-#ifdef PROJECTCORE_COMPILER_VS
-            __debugbreak();
-#else
-            throw JsonTypeSerializerNotImpl{};
+#ifdef UNKOWN_TYPE_MESSAGE
+            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::Parse<{}> not impl", typeid(T).name());
+#endif
+#ifdef UNKOWN_TYPE_THROW
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_FAIL
+            // FIXME
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_DEBUG
+           PROJECTCORE_DEBUGBREAK();
 #endif
         }
 
@@ -27,8 +36,18 @@ namespace ProjectCore::JSON
             formatter.BufferOut().FastWriteCharArray("Unkown JsonFormatter for type : ");
             formatter.BufferOut().FastWriteCharPtrNSize(typeid(T).name());
 
-#ifndef PROJECTCORE_COMPILER_VS
-            throw JsonTypeSerializerNotImpl{};
+#ifdef UNKOWN_TYPE_MESSAGE
+            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::Format<{}> not impl", typeid(T).name());
+#endif
+#ifdef UNKOWN_TYPE_THROW
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_FAIL
+            // FIXME
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_DEBUG
+           PROJECTCORE_DEBUGBREAK();
 #endif
         }
     };

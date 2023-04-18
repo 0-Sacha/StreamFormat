@@ -42,7 +42,7 @@ PCT_TEST_FUNC(PARSE_GLOBBER, PG_BASIC_WILDCARD)
     {
         char test[4];
         ProjectCore::FMT::Parse("|test|", "|{:no-zero-end}|", test);
-        PCT_EQ(std::string(test), std::string("test"));
+        PCT_EQ(std::string(test, 4), std::string("test"));
     }
     
     {

@@ -17,6 +17,8 @@ namespace ProjectCore::Instrumentation
 
     enum class EventType : char
     {
+        Unknow = '.',
+
         DurationBegin = 'B',
         DurationEnd = 'E',
 
@@ -45,12 +47,23 @@ namespace ProjectCore::Instrumentation
         Context = ',' // '(' ')'
     };
 
-    struct Event
+    struct EventInfo
     {
     public:
-        Event() = default;
+        EventInfo()
+            : Name("Unknow")
+            , Category("Unknow")
+            , Type(EventType::Unknow)
+            , Id(0)
+            , TimeOfEvent(Instrumentation::GetMicroseconds())
+            , ThreadTimeOfEvent(0)
+            , Duration(0)
+            , PID(GetPid())
+            , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
+            , Data(nullptr)
+        {}
         
-        Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
+        EventInfo(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
             : Name(name)
             , Category(category)
             , Type(type)
@@ -63,7 +76,7 @@ namespace ProjectCore::Instrumentation
             , Data(data)
         {}
 
-        Event(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
+        EventInfo(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
             : Name(std::move(name))
             , Category(std::move(category))
             , Type(type)
@@ -76,11 +89,6 @@ namespace ProjectCore::Instrumentation
             , Data(data)
         {}
 
-        virtual ~Event() = default;
-
-    public:
-        void Trigger() { TimeOfEvent = Instrumentation::GetMicroseconds(); }
-
     public:
         std::string Name;
         std::string Category;
@@ -91,6 +99,28 @@ namespace ProjectCore::Instrumentation
         int PID;
         std::size_t TID;
         std::shared_ptr<EventData> Data;
+    };
+
+    struct Event
+    {
+    public:
+        Event() = default;
+        
+        Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
+            : EventInfo(name, category, type, data)
+        {}
+
+        Event(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
+            : EventInfo(std::move(name), std::move(category), type, data)
+        {}
+
+        virtual ~Event() = default;
+
+    public:
+        void Trigger() { EventInfo.TimeOfEvent = Instrumentation::GetMicroseconds(); }
+
+    public:
+        EventInfo EventInfo;
     };
 }
 

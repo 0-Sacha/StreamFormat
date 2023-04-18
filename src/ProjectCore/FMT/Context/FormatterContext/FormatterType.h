@@ -19,6 +19,9 @@ namespace ProjectCore::FMT
 #ifdef UNKOWN_TYPE_FAIL
             throw Detail::FMTShouldNotEndHere{};
 #endif
+#ifdef UNKOWN_TYPE_DEBUG
+           PROJECTCORE_DEBUGBREAK();
+#endif
         }
     };
 }

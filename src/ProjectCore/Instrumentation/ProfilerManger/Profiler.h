@@ -15,17 +15,18 @@ namespace ProjectCore::Instrumentation
         explicit Profiler(std::string&& name)
             : Name(name)
             , Logger(name)
+            , ProfilerDuration(name)
         {
             Events.clear();
-            Events.push_back(DurationEvent(name, "Profiler"));
-            GetProfilerProfile().Start();
+            Events.push_back(EventInfo{});
+            ProfilerDuration.Start();
         }
 
         ~Profiler() {}
 
     public:
-        DurationEvent& GetProfilerProfile()                         { return *reinterpret_cast<DurationEvent*>(&Events[0]); }
-        void AddEvent(const Event& event)                           { Events.push_back(event); }
+        void AddEvent(const Event& event)                           { AddEventInfo(event.EventInfo); }
+        void AddEventInfo(const EventInfo& eventInfo)               { Events.push_back(eventInfo); }
         inline ProjectCore::LoggerManager::BasicLogger& GetLogger() { return Logger; }
 
     public:
@@ -34,6 +35,7 @@ namespace ProjectCore::Instrumentation
     public:
         std::string Name;
         LoggerManager::BasicLogger Logger;
-        std::vector<Event> Events;
+        DurationEvent ProfilerDuration;
+        std::vector<EventInfo> Events;
     };
 }

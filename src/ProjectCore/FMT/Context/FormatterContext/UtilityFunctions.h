@@ -105,9 +105,9 @@ namespace ProjectCore::FMT
 
     template<typename Format = std::string_view, typename CharBuffer = typename Detail::FMTCharTypeFromBuffer<Format>::Type, typename ...Args>
     requires (Detail::CanBeUseForFMTBufferIn<Format> && Detail::IsCharType<CharBuffer>::Value)
-    void FilePrint(std::basic_ostream<CharBuffer>& stream, const Format format, Args&& ...args) {
+    void FilePrint(std::basic_ostream<CharBuffer>& stream, const Format& format, Args&& ...args) {
         Detail::DynamicBufferOutManager<CharBuffer> bufferOutManager(256);
-        Detail::BufferInProperties bufferInProperties(format);
+        Detail::BufferInProperties bufferInProperties(std::forward<const Format>(format));
         Detail::FormatInBufferOutManager(bufferOutManager, bufferInProperties, false, std::forward<Args>(args)...);
 
         stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());

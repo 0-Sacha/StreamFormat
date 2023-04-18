@@ -9,13 +9,18 @@ namespace ProjectCore::FMT
     struct ParserType {
         static inline bool Read(T&, ParserContext&) {
 #ifdef UNKOWN_TYPE_MESSAGE
+            // FIXME
             throw Detail::FMTShouldNotEndHere{};
 #endif
 #ifdef UNKOWN_TYPE_THROW
             throw Detail::FMTShouldNotEndHere{};
 #endif
 #ifdef UNKOWN_TYPE_FAIL
+            // FIXME
             throw Detail::FMTShouldNotEndHere{};
+#endif
+#ifdef UNKOWN_TYPE_DEBUG
+           PROJECTCORE_DEBUGBREAK();
 #endif
             return false;
         }

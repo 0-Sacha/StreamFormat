@@ -12,16 +12,21 @@
 
 #ifdef PROJECTCORE_ASSERT_ENABLE
 	#ifdef PROJECTCORE_COMPILER_VS
-		#define PROJECTCORE_ASSERT(x)	if(!(x)) { std::cerr << "ASSERT FAILED! : {}" << #x << std::endl; __debugbreak(); }
+		#define PROJECTCORE_DEBUGBREAK() __debugbreak()
 	#else
 		#include <csignal>
-		#define PROJECTCORE_ASSERT(x)	if(!(x)) { std::cerr << "ASSERT FAILED! : {}" << #x << std::endl; std::raise(SIGINT); }
+		#define PROJECTCORE_DEBUGBREAK() std::raise(SIGINT)
 	#endif
+	
+	#define PROJECTCORE_ASSERT(x)	if(!(x)) { std::cerr << "ASSERT FAILED! : {}" << #x << std::endl; PROJECTCORE_DEBUGBREAK(); }
 #else
 	#define PROJECTCORE_ASSERT(x)
+	#define PROJECTCORE_DEBUGBREAK()
 #endif
 
 // NOT USED YET
 #define PROJECTCORE_NODISCARD	[[nodiscard]]
 #define PROJECTCORE_INLINE		inline
 
+#define UNKOWN_TYPE_MESSAGE
+#define UNKOWN_TYPE_DEBUG

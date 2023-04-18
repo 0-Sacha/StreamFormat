@@ -7,7 +7,8 @@ namespace ProjectCore::Instrumentation
 {
     void ProfilerFactory::ToJson(Profiler& profiler, std::filesystem::path path)
     {
-        profiler.GetProfilerProfile().Stop();
+        profiler.ProfilerDuration.Stop();
+        profiler.Events[0] = profiler.ProfilerDuration.EventInfo;
 
         if (path == "")
             path = std::string(profiler.Name) + ".json";

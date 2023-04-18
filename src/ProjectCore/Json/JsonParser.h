@@ -85,7 +85,7 @@ namespace ProjectCore::JSON::Detail
         void Parse(const std::string& name, T& t)
         {
             if (Objects.contains(name) == false)
-                throw JsonGivenTypeError{};
+                throw Detail::JsonGivenTypeError{};
             Objects[name].Parse(t);
         }
     };
@@ -105,7 +105,7 @@ namespace ProjectCore::JSON::Detail
         void Parse(const std::size_t idx, T& t)
         {
             if (idx >= Objects.size())
-                throw JsonGivenTypeError{};
+                throw Detail::JsonGivenTypeError{};
             Objects[idx].Parse(t);
         }
     };

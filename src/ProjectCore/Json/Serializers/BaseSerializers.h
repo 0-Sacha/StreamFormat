@@ -324,11 +324,11 @@ namespace ProjectCore::JSON
     struct JsonSerializer<T*>
     {
         static inline void Parse(T* t, Detail::JsonParser& parser) {
-            if (t == nullptr) throw JsonGivenTypeError{};
+            if (t == nullptr) throw Detail::JsonGivenTypeError{};
             JsonSerializer<T>::Parse(*t, parser);
         }
         static inline void Format(const T* t, Detail::JsonFormatter& formatter) {
-            if (t == nullptr) throw JsonGivenTypeError{};
+            if (t == nullptr) throw Detail::JsonGivenTypeError{};
             JsonSerializer<T>::Format(*t, formatter);
         }
     };
