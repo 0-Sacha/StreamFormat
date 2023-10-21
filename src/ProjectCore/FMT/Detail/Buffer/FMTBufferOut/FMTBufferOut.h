@@ -149,9 +149,9 @@ namespace ProjectCore::FMT::Detail
         inline void WriteIndentCharPtr(const CharStr* str, std::size_t size);
 
         template<typename CharStr>                      inline void WriteIndentCharPtrNSize(const CharStr* str)                         { WriteIndentStringView(std::basic_string_view<CharStr>(str)); }
-        template<typename CharStr, std::size_t SIZE>    inline void WriteIndentCharArray(const CharStr(&str)[SIZE])                        { WriteIndentCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
-        template<typename CharStr>                      inline void WriteIndentCharBound(const CharStr* begin, const CharStr* end)         { WriteIndentCharPtr(begin, end - begin); }
-        template<typename CharStr>                      inline void WriteIndentStringView(const std::basic_string_view<CharStr>& str)    { WriteIndentCharPtr(str.data(), str.size()); }
+        template<typename CharStr, std::size_t SIZE>    inline void WriteIndentCharArray(const CharStr(&str)[SIZE])                     { WriteIndentCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
+        template<typename CharStr>                      inline void WriteIndentCharBound(const CharStr* begin, const CharStr* end)      { WriteIndentCharPtr(begin, end - begin); }
+        template<typename CharStr>                      inline void WriteIndentStringView(const std::basic_string_view<CharStr>& str)   { WriteIndentCharPtr(str.data(), str.size()); }
         template<typename CharStr>                      inline void WriteIndentString(const std::basic_string<CharStr>& str)            { WriteIndentCharPtr(str.data(), str.size()); }
 
     public:

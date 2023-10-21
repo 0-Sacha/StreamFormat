@@ -55,7 +55,7 @@ namespace ProjectCore::FMT
     template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatterContext>
     struct FormatterType<STDEnumerable<T, CharBegin, CharJoin, CharEnd>, FormatterContext> {
         static void Format(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterContext& context) {
-            context.PrintIndent(enumerable.GetStrBegin());
+            context.BufferOut().WriteIndentStringView(enumerable.GetStrBegin());
             context.BufferOut().AddIndent(enumerable.GetStrBegin().size());
 
             {
@@ -63,15 +63,15 @@ namespace ProjectCore::FMT
 
                 bool first = true;
                 std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
-                    if (first)    first = false;
-                    else         context.PrintIndent(enumerable.GetStrJoin());
+                    if (first)   first = false;
+                    else         context.BufferOut().WriteIndentStringView(enumerable.GetStrJoin());
                     
                     context.WriteType(element);
                 });
             }
 
             context.BufferOut().RemoveIndent(enumerable.GetStrBegin().size());
-            context.PrintIndent(enumerable.GetStrEnd());
+            context.BufferOut().WriteIndentStringView(enumerable.GetStrEnd());
         }
     };
 

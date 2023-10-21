@@ -335,8 +335,8 @@ namespace ProjectCore::FMT
             const T* end    = begin + size;
 
             while (begin < end) {
-                if (first)    first = false;
-                else			context.BufferOut().WriteIndentStringView(join);
+                if (first)  first = false;
+                else		context.BufferOut().WriteIndentStringView(join);
                 context.WriteType(*begin++);
             }
 
