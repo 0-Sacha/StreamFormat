@@ -1,5 +1,5 @@
 
-Solution.ProjectsInfo.Includes["ProjectCore"] = {
+Solution.ProjectsInfo.IncludeDirs["ProjectCore"] = {
 	"%{Solution.Projects.ProjectCore}/src/",
 	"%{Solution.Projects.ProjectCore}/src/ProjectCore",
 }
@@ -19,7 +19,6 @@ project "ProjectCore"
 
 	files {
 		"src/**.h",
-		"src/**.hpp",
 		"src/**.inl",
 		"src/**.cpp",
 	}
