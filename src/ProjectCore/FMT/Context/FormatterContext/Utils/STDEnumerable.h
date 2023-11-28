@@ -1,5 +1,8 @@
 #pragma once
 
+#include <utility>
+#include <algorithm>
+
 #include "../FormatterType.h"
 #include "ProjectCore/FMT/Detail/Detail.h"
 

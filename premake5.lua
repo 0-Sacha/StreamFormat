@@ -10,7 +10,6 @@ project "ProjectCore"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "on"
 
 	Solution.HighWarnings()
 
@@ -43,7 +42,6 @@ project "ProjectCoreTests"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "on"
 
 	Solution.HighWarnings()
 
