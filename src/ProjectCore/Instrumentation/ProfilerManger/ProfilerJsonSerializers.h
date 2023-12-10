@@ -88,12 +88,12 @@ namespace ProjectCore::JSON
     {
         static inline void Format(const Instrumentation::Event& t, Detail::JsonFormatter& formatter)
         {
-            return JsonSerializer<Instrumentation::EventInfo>::Format(t.EventInfo, formatter);
+            return JsonSerializer<Instrumentation::EventInfo>::Format(t.Info, formatter);
         }
 
         static inline void Parse(Instrumentation::Event& t, Detail::JsonParser& parser)
         {
-            return JsonSerializer<Instrumentation::EventInfo>::Parse(t.EventInfo, parser);
+            return JsonSerializer<Instrumentation::EventInfo>::Parse(t.Info, parser);
         }
     };
 }

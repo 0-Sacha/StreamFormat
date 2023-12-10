@@ -7,12 +7,12 @@ namespace ProjectCore::Instrumentation
     {
         Stop();
         
-        double millis = EventInfo.Duration / 1000;
+        double millis = Info.Duration / 1000;
         double sec = millis / 1000;
 
-        if (sec > 1.5)              m_Profiler.GetLogger().Trace("{} : {} seconds", EventInfo.Name, sec);
-        else if (millis > 5.0)      m_Profiler.GetLogger().Trace("{} : {} ms", EventInfo.Name, millis);
-        else                        m_Profiler.GetLogger().Trace("{} : {} us", EventInfo.Name, EventInfo.Duration);
+        if (sec > 1.5)              m_Profiler.GetLogger().Trace("{} : {} seconds", Info.Name, sec);
+        else if (millis > 5.0)      m_Profiler.GetLogger().Trace("{} : {} ms", Info.Name, millis);
+        else                        m_Profiler.GetLogger().Trace("{} : {} us", Info.Name, Info.Duration);
 
         m_Profiler.AddEvent(*this);
     }
@@ -33,21 +33,21 @@ namespace ProjectCore::Instrumentation
         , m_Category(std::move(category))
     {
         Event created(m_Name, m_Category, EventType::ObjectCreated);
-        created.EventInfo.Id = 10;
+        created.Info.Id = 10;
         m_Profiler.AddEvent(created);
     }
 
     ObjectTracker::~ObjectTracker()
     {
         Event destroyed(m_Name, m_Category, EventType::ObjectDestroyed);
-        destroyed.EventInfo.Id = 10;
+        destroyed.Info.Id = 10;
         m_Profiler.AddEvent(destroyed);
     }
 
     void ObjectTracker::Snapshot()
     {
         Event snapshot(m_Name, m_Category, EventType::ObjectSnapshot);
-        snapshot.EventInfo.Id = 10;
+        snapshot.Info.Id = 10;
         m_Profiler.AddEvent(snapshot);
     }
 

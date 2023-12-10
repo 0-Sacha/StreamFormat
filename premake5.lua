@@ -38,11 +38,10 @@ Solution.Projects["ProjectCoreTests"].ProjectDependencies = {
 
 ProjectCoreTestsLaunch = {}
 ProjectCoreTestsLaunch.Project = "ProjectCoreTests"
-
 Solution.Launch["ProjectCoreTests"] = ProjectCoreTestsLaunch
 
 project "ProjectCoreTests"
-	kind "ConsoleApp"
+	kind 		(Solution.Projects["ProjectCoreTests"].Type)
 	language "C++"
 	cppdialect "C++20"
 

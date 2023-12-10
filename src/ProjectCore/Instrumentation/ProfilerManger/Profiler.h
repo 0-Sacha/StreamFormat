@@ -25,7 +25,7 @@ namespace ProjectCore::Instrumentation
         ~Profiler() {}
 
     public:
-        void AddEvent(const Event& event)                           { AddEventInfo(event.EventInfo); }
+        void AddEvent(const Event& event)                           { AddEventInfo(event.Info); }
         void AddEventInfo(const EventInfo& eventInfo)               { Events.push_back(eventInfo); }
         inline ProjectCore::LoggerManager::BasicLogger& GetLogger() { return Logger; }
 
