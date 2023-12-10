@@ -1,13 +1,13 @@
 
-Solution.ProjectsInfo.IncludeDirs["ProjectCore"] = {
-	"%{Solution.Projects.ProjectCore}/src/",
-	"%{Solution.Projects.ProjectCore}/src/ProjectCore",
+Solution.Projects["ProjectCore"].PlatformDefineName = "PROJECTCORE"
+Solution.Projects["ProjectCore"].Type = "StaticLib"
+Solution.Projects["ProjectCore"].IncludeDirs = {
+	"%{Solution.Projects.ProjectCore.Path}/src/",
+	"%{Solution.Projects.ProjectCore.Path}/src/ProjectCore",
 }
 
-Solution.ProjectsInfo.PlatformDefineName["ProjectCore"] = "PROJECTCORE"
-
 project "ProjectCore"
-	kind "StaticLib"
+	kind 		(Solution.Projects["ProjectCore"].Type)
 	language "C++"
 	cppdialect "C++20"
 
@@ -22,7 +22,7 @@ project "ProjectCore"
 		"src/**.cpp",
 	}
 	
-	Solution.IncludeProject("ProjectCore")
+	Solution.Project("ProjectCore")
 
 	defines {
 		"PROJECTCORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
@@ -31,10 +31,13 @@ project "ProjectCore"
 if (ProjectCoreTestsEnable)
 then
 
-Solution.Projects["ProjectCoreTests"] = Solution.Projects["ProjectCore"]
+Solution.AddProject("ProjectCoreTests", Solution.Projects["ProjectCore"].Path)
+Solution.Projects["ProjectCoreTests"].ProjectDependencies = {
+	"ProjectCore"
+}
 
 ProjectCoreTestsLaunch = {}
-ProjectCoreTestsLaunch.project = "ProjectCoreTests"
+ProjectCoreTestsLaunch.Project = "ProjectCoreTests"
 
 Solution.Launch["ProjectCoreTests"] = ProjectCoreTestsLaunch
 
@@ -54,7 +57,7 @@ project "ProjectCoreTests"
 		"Tests/**.inl",
 		"Tests/**.cpp",
 	}
-	
-	Solution.IncludeAndLinkProject("ProjectCore")
+
+	Solution.Project("ProjectCoreTests")
 end
 	
