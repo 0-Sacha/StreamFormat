@@ -19,7 +19,7 @@ namespace ProjectCore::Instrumentation
 
     public:
         void Start()    { Trigger(); }
-        void Stop()     { EventInfo.Duration = Instrumentation::GetMicroseconds() - EventInfo.TimeOfEvent; }
+        void Stop()     { Info.Duration = Instrumentation::GetMicroseconds() - Info.TimeOfEvent; }
     };
 
     class SampleEvent : public Event

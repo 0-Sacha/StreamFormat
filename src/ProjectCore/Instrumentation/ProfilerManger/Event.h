@@ -107,20 +107,20 @@ namespace ProjectCore::Instrumentation
         Event() = default;
         
         Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
-            : EventInfo(name, category, type, data)
+            : Info(name, category, type, data)
         {}
 
         Event(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
-            : EventInfo(std::move(name), std::move(category), type, data)
+            : Info(std::move(name), std::move(category), type, data)
         {}
 
         virtual ~Event() = default;
 
     public:
-        void Trigger() { EventInfo.TimeOfEvent = Instrumentation::GetMicroseconds(); }
+        void Trigger() { Info.TimeOfEvent = Instrumentation::GetMicroseconds(); }
 
     public:
-        EventInfo EventInfo;
+        EventInfo Info;
     };
 }
 
