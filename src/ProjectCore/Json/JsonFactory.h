@@ -27,8 +27,7 @@ namespace ProjectCore::FMT
     struct FormatterType<JSON::JsonObject, FormatterContext> {
         static void Format(const JSON::JsonObject& object, FormatterContext& context)
         {
-            JSON::FormatAsJson<JSON::JsonObject> format(object);
-            context.RunType(object);
+            context.RunType(JSON::FormatAsJson<JSON::JsonObject>(object));
         }
     };
 }

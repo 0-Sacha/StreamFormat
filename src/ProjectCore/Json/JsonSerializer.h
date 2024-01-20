@@ -59,6 +59,7 @@ namespace ProjectCore::JSON
             ProjectCore::FMT::Detail::DynamicBufferOutManager<char> bufferData;
             ProjectCore::FMT::Detail::BasicBufferOut<char> buffer(bufferData);
             ProjectCore::FMT::BufferUtils<char>::ParseEscapedQuotedString(parser.BufferIn(), buffer);
+            buffer.EndContext();
             t = bufferData.GetLastGeneratedString();
         }
 
