@@ -27,12 +27,12 @@ namespace ProjectCore::JSON
             else if (parser.IsJsonNullBegin())
                 t = std::make_unique<JsonNullObject>();
 
-            t->Parse(parser);
+            t->ParserExecute(parser);
         }
 
         static inline void Format(const std::unique_ptr<JsonObject>& t, Detail::JsonFormatter& formatter)
         {
-            t->Format(formatter);
+            t->FormatterExecute(formatter);
         }
     };
 
@@ -41,7 +41,7 @@ namespace ProjectCore::JSON
     {
         static inline void Format(const JsonObject& t, Detail::JsonFormatter& formatter)
         {
-            t.Format(formatter);
+            t.FormatterExecute(formatter);
         }
     };
 

@@ -7,7 +7,7 @@ namespace ProjectCore::FMT
 {
     template<typename T, typename ParserContext = Context::BasicParserContext<char, char>>
     struct ParserType {
-        static inline bool Read(T&, ParserContext&) {
+        static inline bool Parse(T&, ParserContext&) {
 #ifdef UNKOWN_TYPE_MESSAGE
             // FIXME
             throw Detail::FMTShouldNotEndHere{};
@@ -30,7 +30,7 @@ namespace ProjectCore::FMT
 
 #define PROJECTCORE_AUTO_PARSER(Type, fmt, ...) template<typename ParserContext>\
                                                 struct ProjectCore::FMT::ParserType<Type, ParserContext> {\
-                                                    static bool Read(Type& value, ParserContext& context) {\
+                                                    static bool Parse(Type& value, ParserContext& context) {\
                                                         return context.SubContextArrayFMT(fmt, __VA_ARGS__);\
                                                     }\
                                                 };

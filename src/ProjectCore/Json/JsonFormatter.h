@@ -66,7 +66,7 @@ namespace ProjectCore::JSON::Detail
 
     public:
         template<typename T>
-        void Format(const std::string& name, const T& t);
+        void Format(const std::string_view name, const T& t);
 
     public:
         JsonFormatter& Formatter;

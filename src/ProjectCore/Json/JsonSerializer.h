@@ -52,6 +52,44 @@ namespace ProjectCore::JSON
         }
     };
 
+    template<typename T>
+    struct JsonObjectSerializer
+    {
+        static inline void ReadObject(T&, const JsonObject&)
+        {
+#ifdef UNKOWN_TYPE_MESSAGE
+            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::ReadObject<{}> not impl", typeid(T).name());
+#endif
+#ifdef UNKOWN_TYPE_THROW
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_FAIL
+            // FIXME
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_DEBUG
+           PROJECTCORE_DEBUGBREAK();
+#endif
+        }
+
+        static inline void WriteObject(const T&, JsonObject&)
+        {
+#ifdef UNKOWN_TYPE_MESSAGE
+            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::WriteObject<{}> not impl", typeid(T).name());
+#endif
+#ifdef UNKOWN_TYPE_THROW
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_FAIL
+            // FIXME
+            throw Detail::JsonTypeSerializerNotImpl{};
+#endif
+#ifdef UNKOWN_TYPE_DEBUG
+           PROJECTCORE_DEBUGBREAK();
+#endif
+        }
+    };
+
     struct JsonStringSerializer
     {
         static inline void ParseSTDString(std::string& t, Detail::JsonParser& parser)
@@ -63,7 +101,7 @@ namespace ProjectCore::JSON
             t = bufferData.GetLastGeneratedString();
         }
 
-        static inline void FormatSTDString(const std::string& t, Detail::JsonFormatter& formatter)
+        static inline void FormatSTDString(const std::string_view t, Detail::JsonFormatter& formatter)
         {
             ProjectCore::FMT::Detail::BufferInProperties<char> bufferInProperties(t);
             ProjectCore::FMT::Detail::BasicBufferIn<char> buffer(bufferInProperties);
@@ -110,7 +148,7 @@ namespace ProjectCore::JSON
         template <typename FloatType>
         static inline void FormatFloat(const FloatType& t, Detail::JsonFormatter& formatter)
         {
-            formatter.BufferOut().FastWriteFloat(t);
+            formatter.BufferOut().FastWriteFloat(t, 8);
         }
 
         template <typename IntType>
@@ -196,7 +234,7 @@ namespace ProjectCore::JSON
         }
 
         template <typename SubObject>
-        static inline void FormatObject(const std::string& name, const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
+        static inline void FormatObject(const std::string_view name, const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
             if (idx != 0) formatter.BufferOut().PushBack(',');
 
@@ -314,13 +352,27 @@ namespace ProjectCore::JSON
 namespace ProjectCore::FMT
 {
     template<typename T, typename FormatterContext>
-    struct FormatterType<JSON::FormatAsJson<T>, FormatterContext> {
+    struct FormatterType<JSON::FormatAsJson<T>, FormatterContext>
+    {
         static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
         {
             JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferOutManager());
             jsonFormatter.BufferOut().ReloadBuffer(context.BufferOut());
             JSON::JsonSerializer<T>::Format(json.Value, jsonFormatter);
             context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());
+        }
+    };
+
+    template<typename T, typename ParserContext>
+    struct ParserType<JSON::FormatAsJson<T>, ParserContext>
+    {
+        static inline void Parse(T& json, ParserContext& context)
+        {
+            JSON::Detail::JsonParser jsonParser(context.BufferIn().GetBufferOutManager());
+            jsonParser.BufferIn().ReloadBuffer(context.BufferIn());
+            // TODO:
+            // JSON::JsonSerializer<T>::Parse(json.Value, jsonParser);
+            context.BufferIn().ReloadBuffer(jsonParser.BufferIn());
         }
     };
 }

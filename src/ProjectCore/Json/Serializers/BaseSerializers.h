@@ -50,6 +50,46 @@ namespace ProjectCore::JSON
             JsonNumberSerializer::FormatInt(t, formatter);
         }
     };
+    template <>
+    struct JsonObjectSerializer<std::int8_t>
+    {
+        static inline void ReadObject(std::int8_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::int8_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<std::int16_t>
+    {
+        static inline void ReadObject(std::int16_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::int16_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<std::int32_t>
+    {
+        static inline void ReadObject(std::int32_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::int32_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<std::int64_t>
+    {
+        static inline void ReadObject(std::int64_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::int64_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
 
 
     // UInt Types
@@ -93,7 +133,46 @@ namespace ProjectCore::JSON
             JsonNumberSerializer::FormatUInt(t, formatter);
         }
     };
-
+    template <>
+    struct JsonObjectSerializer<std::uint8_t>
+    {
+        static inline void ReadObject(std::uint8_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::uint8_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<std::uint16_t>
+    {
+        static inline void ReadObject(std::uint16_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::uint16_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<std::uint32_t>
+    {
+        static inline void ReadObject(std::uint32_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::uint32_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<std::uint64_t>
+    {
+        static inline void ReadObject(std::uint64_t& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const std::uint64_t& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
 
     // Float Types
     template <>
@@ -124,6 +203,36 @@ namespace ProjectCore::JSON
         }
         static inline void Format(const long double& t, Detail::JsonFormatter& formatter) {
             JsonNumberSerializer::FormatFloat(t, formatter);
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<float>
+    {
+        static inline void ReadObject(float& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const float& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<double>
+    {
+        static inline void ReadObject(double& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const double& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
+        }
+    };
+    template <>
+    struct JsonObjectSerializer<long double>
+    {
+        static inline void ReadObject(long double& t, const JsonObject& object) {
+            t = object.As<JsonNumberObject>().Number;
+        }
+        static inline void WriteObject(const long double& t, JsonObject& object) {
+            object.As<JsonNumberObject>().Number = t;
         }
     };
 

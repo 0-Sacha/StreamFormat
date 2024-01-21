@@ -15,8 +15,10 @@ namespace ProjectCore::JSON
     class JsonFactory
     {
     public:
-        static std::unique_ptr<JsonObject> FromPath(const std::filesystem::path& path);
-        static void SaveToPath(JsonObject& json, const std::filesystem::path& path);
+        template<typename T = std::unique_ptr<JsonObject>>
+        static T FromPath(const std::filesystem::path& path);
+        template<typename T = JsonObject>
+        static void SaveToPath(T& json, const std::filesystem::path& path);
     };
 }
 
@@ -30,4 +32,52 @@ namespace ProjectCore::FMT
             context.RunType(JSON::FormatAsJson<JSON::JsonObject>(object));
         }
     };
+}
+
+#include "ProjectCore//FMT/Detail/Buffer/BufferOutManager/DynamicBufferOutManager.h"
+#include <fstream>
+#include <utility>
+#include "Serializers/JsonObjectsSerializer.h"
+namespace ProjectCore::JSON
+{
+    template<typename T>
+    T JsonFactory::FromPath(const std::filesystem::path& path)
+    {
+        std::ifstream file(path.string(), std::ios::in);
+        
+        if (file.is_open() == false)
+            throw std::runtime_error("unable to open file");
+        
+        std::string buffer;
+
+        file.seekg(0, std::ios::end);
+        std::streamsize size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        buffer.resize(static_cast<std::size_t>(size));
+        file.read(buffer.data(), size);
+        file.close();
+
+        FMT::Detail::BufferInProperties<char> parserProperties(buffer.data(), buffer.size());
+        Detail::JsonParser parser(parserProperties);
+        T res;
+        JsonSerializer<T>::Parse(res, parser);
+        return res;
+    }
+    
+    template<typename T>
+    void JsonFactory::SaveToPath(T& json, const std::filesystem::path& path)
+    {
+        std::ofstream file(path.string(), std::ios::out);
+
+        if (file.is_open() == false)
+            throw std::runtime_error("unable to open file");
+
+        FMT::Detail::DynamicBufferOutManager<char> BufferOutManager(256);
+        Detail::JsonFormatter formatter(BufferOutManager);
+        JsonSerializer<T>::Format(json, formatter);
+        
+        file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));
+        file.flush();
+        file.close();
+    }
 }
