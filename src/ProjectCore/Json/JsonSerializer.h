@@ -58,7 +58,7 @@ namespace ProjectCore::JSON
         static inline void ReadObject(T&, const JsonObject&)
         {
 #ifdef UNKOWN_TYPE_MESSAGE
-            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::ReadObject<{}> not impl", typeid(T).name());
+            FMT::FilePrint(std::cerr, "{C:red}JsonObjectSerializer::ReadObject<{}> not impl", typeid(T).name());
 #endif
 #ifdef UNKOWN_TYPE_THROW
             throw Detail::JsonTypeSerializerNotImpl{};
@@ -75,7 +75,7 @@ namespace ProjectCore::JSON
         static inline void WriteObject(const T&, JsonObject&)
         {
 #ifdef UNKOWN_TYPE_MESSAGE
-            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::WriteObject<{}> not impl", typeid(T).name());
+            FMT::FilePrint(std::cerr, "{C:red}JsonObjectSerializer::WriteObject<{}> not impl", typeid(T).name());
 #endif
 #ifdef UNKOWN_TYPE_THROW
             throw Detail::JsonTypeSerializerNotImpl{};
@@ -148,7 +148,7 @@ namespace ProjectCore::JSON
         template <typename FloatType>
         static inline void FormatFloat(const FloatType& t, Detail::JsonFormatter& formatter)
         {
-            formatter.BufferOut().FastWriteFloat(t, 8);
+            formatter.BufferOut().FastWriteFloat(t, formatter.Settings().FloatPrecision);
         }
 
         template <typename IntType>
@@ -356,7 +356,12 @@ namespace ProjectCore::FMT
     {
         static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
         {
-            JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferOutManager());
+            bool ordered_struct = context.GetFormatData().HasSpecifier("ordered_struct");
+            JSON::Detail::JsonFormatter::FormatSettings settings{
+                .OrderedStruct = ordered_struct,
+                .FloatPrecision = context.GetFormatData().FloatPrecision
+            };
+            JSON::Detail::JsonFormatter jsonFormatter(context.BufferOut().GetBufferOutManager(), settings);
             jsonFormatter.BufferOut().ReloadBuffer(context.BufferOut());
             JSON::JsonSerializer<T>::Format(json.Value, jsonFormatter);
             context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());

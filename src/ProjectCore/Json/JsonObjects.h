@@ -74,7 +74,7 @@ namespace ProjectCore::JSON
         T Read()
         {
             T value;
-            return JsonObjectSerializer<T>::ReadObject(value, *this);
+            JsonObjectSerializer<T>::ReadObject(value, *this);
             return value;
         }
 

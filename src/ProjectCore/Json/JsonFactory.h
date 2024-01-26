@@ -6,6 +6,7 @@
 #include "JsonParser.h"
 #include "JsonSerializer.h"
 #include "Serializers/JsonObjectsSerializer.h"
+#include "Serializers/Serializers.h"
 
 #include <filesystem>
 #include <memory>
@@ -18,7 +19,7 @@ namespace ProjectCore::JSON
         template<typename T = std::unique_ptr<JsonObject>>
         static T FromPath(const std::filesystem::path& path);
         template<typename T = JsonObject>
-        static void SaveToPath(T& json, const std::filesystem::path& path);
+        static void SaveToPath(T& json, const std::filesystem::path& path, Detail::JsonFormatter::FormatSettings settings);
     };
 }
 
@@ -65,7 +66,7 @@ namespace ProjectCore::JSON
     }
     
     template<typename T>
-    void JsonFactory::SaveToPath(T& json, const std::filesystem::path& path)
+    void JsonFactory::SaveToPath(T& json, const std::filesystem::path& path, Detail::JsonFormatter::FormatSettings settings)
     {
         std::ofstream file(path.string(), std::ios::out);
 
@@ -73,7 +74,7 @@ namespace ProjectCore::JSON
             throw std::runtime_error("unable to open file");
 
         FMT::Detail::DynamicBufferOutManager<char> BufferOutManager(256);
-        Detail::JsonFormatter formatter(BufferOutManager);
+        Detail::JsonFormatter formatter(BufferOutManager, settings);
         JsonSerializer<T>::Format(json, formatter);
         
         file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));

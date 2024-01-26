@@ -50,7 +50,7 @@ namespace ProjectCore::FMT::Detail
     template<typename T, typename FormatDataCharType>
     void FMTBufferIn<CharBuffer>::ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData) {
         if (formatData.HasSpec) {
-            if (formatData.ShiftType == ShiftType::Nothing)    return FastReadFloatThrow(i, formatData.FloatPrecision);
+            if (formatData.ShiftType == ShiftType::Nothing) return FastReadFloatThrow(i, formatData.FloatPrecision);
             else                                            return ReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
         }
         return FastReadFloatThrow(i, formatData.FloatPrecision);

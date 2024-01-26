@@ -43,7 +43,7 @@ namespace ProjectCore::FMT
     template <typename T, typename FormatterContext>
     struct FormatterType<std::unique_ptr<T>, FormatterContext> {
         inline static void Format(const std::unique_ptr<T>& t, FormatterContext& context) {
-            if (context.GetFormatData().TrueValue)    FormatterType<T*, FormatterContext>::Format(t.get(), context);
+            if (context.GetFormatData().TrueValue)  FormatterType<T*, FormatterContext>::Format(t.get(), context);
             else                                    FormatterType<T, FormatterContext>::Format(*t, context);
         }
     };
@@ -52,7 +52,7 @@ namespace ProjectCore::FMT
     template <typename T, typename FormatterContext>
     struct FormatterType<std::shared_ptr<T>, FormatterContext> {
         inline static void Format(const std::shared_ptr<T>& t, FormatterContext& context) {
-            if (context.GetFormatData().TrueValue)    FormatterType<T*, FormatterContext>::Format(t.get(), context);
+            if (context.GetFormatData().TrueValue)  FormatterType<T*, FormatterContext>::Format(t.get(), context);
             else                                    FormatterType<T, FormatterContext>::Format(*t, context);
         }
     };

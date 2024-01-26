@@ -6,6 +6,8 @@
 #include "STDSerializers/JSON_vector.h"
 #include "STDSerializers/JSON_unordered_map.h"
 
+#include <map>
+
 namespace ProjectCore::JSON
 {
     template <>
@@ -109,7 +111,16 @@ namespace ProjectCore::JSON
             parser.Parse(t.Objects);
         }
         static inline void Format(const JsonStructObject& t, Detail::JsonFormatter& formatter) {
-            formatter.Format(t.Objects);
+            if (formatter.Settings().OrderedStruct == false)
+            {
+                formatter.Format(t.Objects);
+                return;
+            }
+
+            std::map<std::string_view, JsonObject*> objectsOrdered;
+            for (auto& [name, objects] : t.Objects)
+                objectsOrdered.insert({ name, objects.get()});
+            formatter.Format(objectsOrdered);
         }
     };
 

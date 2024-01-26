@@ -26,7 +26,7 @@ namespace ProjectCore::FMT::Detail
         else
         {
             Reserve(nbDigit);
-            while (i > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; }
+            while (nbDigit > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; nbDigit--; }
             Forward(nbDigit + 1);
         }
 
@@ -51,7 +51,7 @@ namespace ProjectCore::FMT::Detail
         else
         {
             Reserve(nbDigit);
-            while (i > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; }
+            while (nbDigit > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; nbDigit--; }
             Forward(nbDigit + 1);
         }
 
@@ -61,38 +61,42 @@ namespace ProjectCore::FMT::Detail
     template<typename CharBuffer>
     template<typename T>
     void FMTBufferOut<CharBuffer>::WriteFloat(T i, FloatPrecision nbDecimal, ShiftType st, ShiftSize shift, ShiftPrint sp) {
-        typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i);
-
         sp.ValidateForNumber();
 
-        DataType nbDigit = GetNumberOfDigitDec(iInt);
-
+        DataType nbDigit = GetNumberOfDigitDec(std::trunc(i));
         nbDecimal.SetToBasicSizeIfDefault();
 
         shift -= nbDigit + nbDecimal + 1;
-        if (iInt < 0) --shift;
+        if (i < 0) --shift;
 
-        if (shift <= 0)
-            return FastWriteFloat(i, nbDecimal);
+        if (shift <= 0) return FastWriteFloat(i, nbDecimal);
 
-        if (!sp.BeforeIsADigit())    PrintShiftBegin(st, sp, shift);
-        if (iInt < 0) { PushBack('-'); iInt = -iInt; }
+        if (!sp.BeforeIsADigit())   PrintShiftBegin(st, sp, shift);
+        if (i < 0)                  { PushBack('-'); i = -i; }
         if (sp.BeforeIsADigit())    PrintShiftRightAll(st, sp, shift);
 
-        if (iInt == 0)        PushBack('0');
-        else {
+        T k = std::trunc(i);
+        if (k == 0)        PushBack('0');
+        else
+        {
             Reserve(nbDigit);
-            while (iInt > 0) { PushReverseNoCheck(iInt % 10 + '0'); iInt /= 10; }
+            DataType nbDigit_ = nbDigit;
+            while (nbDigit_ > 0)
+            {
+                PushReverseNoCheck(char(std::fmod(i, 10)) + '0');
+                k /= 10;
+                nbDigit_--;
+            }
             Forward(nbDigit + 1);
         }
 
         PushBack('.');
-        if (i < 0)    i = -i;
-        i = i - static_cast<T>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
-        while (nbDecimal-- != 0) {
-            const char intPart = static_cast<const char>(i *= 10);
-            PushBack(intPart + '0');
-            i -= intPart;
+        i -= k;
+        while (nbDecimal-- != 0)
+        {
+            T decimal = std::trunc(i *= 10);
+            PushBack((char)decimal + '0');
+            i -= decimal;
         }
 
         PrintShiftEnd(st, sp, shift);
