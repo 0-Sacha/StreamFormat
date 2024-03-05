@@ -85,7 +85,7 @@ namespace ProjectCore::FMT
         }
     };
 
-#ifdef PROJECTCORE_COMPILER_MSVC
+#ifdef UTILITIES_COMPILER_MSVC
     template<typename FormatterContext>
     struct FormatterType<std::chrono::time_point<std::chrono::system_clock>, FormatterContext>
     {

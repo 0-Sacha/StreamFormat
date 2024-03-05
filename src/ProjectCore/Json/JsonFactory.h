@@ -2,7 +2,7 @@
 
 #include "JsonObjects.h"
 #include "JsonFormatter.h"
-#include "JsonFormatter.impl"
+#include "JsonFormatterImpl.h"
 #include "JsonParser.h"
 #include "JsonSerializer.h"
 #include "Serializers/JsonObjectsSerializer.h"

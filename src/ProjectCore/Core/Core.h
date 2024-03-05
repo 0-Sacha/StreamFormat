@@ -11,7 +11,7 @@
 #endif /* PROJECTCORE_DEBUG */
 
 #ifdef PROJECTCORE_ASSERT_ENABLE
-	#ifdef PROJECTCORE_COMPILER_VS
+	#ifdef UTILITIES_COMPILER_VS
 		#define PROJECTCORE_DEBUGBREAK() __debugbreak()
 	#else
 		#include <csignal>
