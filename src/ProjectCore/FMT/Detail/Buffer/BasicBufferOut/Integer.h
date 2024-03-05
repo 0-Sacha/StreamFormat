@@ -32,15 +32,28 @@ namespace ProjectCore::FMT::Detail
     template<typename CharBuffer>
     template<typename T>
     void BasicBufferOut<CharBuffer>::FastWriteFloat(T i, FloatPrecision nbDecimal) {
-        FastWriteInt<typename Detail::TypesInfo::FloatDetail<T>::IntType>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
-        PushBack('.');
-        if (i < 0)    i = -i;
-        i = i - static_cast<T>(static_cast<typename Detail::TypesInfo::FloatDetail<T>::IntType>(i));
+        if (i == 0) { PushBack('0'); return; }
+        if (i < 0)  { PushBack('-'); i = -i; }
 
+        T k = std::trunc(i);
+        i = i - k;
+        DataType nbDigit = GetNumberOfDigitDec(k);
+        Reserve(nbDigit);
+        DataType nbDigit_ = nbDigit;
+        while (nbDigit_ > 0)
+        {
+            PushReverseNoCheck(char(std::fmod(k, 10)) + '0');
+            k /= 10;
+            nbDigit_--;
+        }
+        Forward(nbDigit + 1);
+        PushBack('.');
+        
         nbDecimal.SetToBasicSizeIfDefault();
 
-        while (nbDecimal-- != 0) {
-            CharBuffer intPart = static_cast<CharBuffer>(i *= 10);
+        while (nbDecimal-- != 0)
+        {
+            CharBuffer intPart = static_cast<CharBuffer>(std::trunc(i *= 10));
             PushBack(intPart + '0');
             i -= intPart;
         }

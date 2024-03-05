@@ -236,12 +236,12 @@ namespace ProjectCore::FMT::Context
 
     template<typename CharFormat>
     bool BasicContext<CharFormat>::Parse() {
-        m_Format.Forward();                        // Skip {
+        m_Format.Forward();                 // Skip {
 
         if (m_Format.IsUpperCase())
         {
             ParseSpecial();
-            m_Format.GoOutOfParameter();        // Skip }
+            m_Format.GoOutOfParameter();    // Skip }
             return true;
         }
 
@@ -249,7 +249,7 @@ namespace ProjectCore::FMT::Context
         if (formatIdx.IsValid())
         {
             ParseVariable(formatIdx);
-            m_Format.GoOutOfParameter();        // Skip }
+            m_Format.GoOutOfParameter();    // Skip }
             return true;
         }
 

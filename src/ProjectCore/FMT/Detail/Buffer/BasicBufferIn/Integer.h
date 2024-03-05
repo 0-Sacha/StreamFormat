@@ -40,39 +40,40 @@ namespace ProjectCore::FMT::Detail
     template<typename CharBuffer>
     template<typename T>
     bool BasicBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision) {
-        typename Detail::TypesInfo::FloatDetail<T>::IntType iInt;
-        FastReadIntThrow(iInt);
+        bool sign = IsEqualToForward('-');
 
-        T dec = 0;
-        T decIdx = static_cast<T>(0.1l);
-
-        if (IsEqualToForward('.') == false)
+        bool hasIntPart = false;
+        if (IsNotEqualTo('.'))
         {
-            if (floatPrecision == 0 || floatPrecision.IsDefault())
-            {
-                i = static_cast<T>(iInt);
-                return true;
-            }
-            return false;
+            hasIntPart = IsADigit();
+            if (hasIntPart == false) return false;
+            T res = 0;
+            while (IsADigit())
+                res = res * static_cast<T>(10) + static_cast<T>(GetAndForward() - static_cast<CharBuffer>('0'));
+            i = sign ? -res : res;
         }
 
-        if (floatPrecision.IsDefault())
-        {
-            while (IsADigit() && IsEnd() == false) {
-                dec += (GetAndForward() - '0') * decIdx;
-                decIdx *= static_cast<T>(0.1l);
-            }
-        }
+        if (IsEqualToForward('.') == false) return hasIntPart;
+
+        if (floatPrecision.IsDefault() || floatPrecision == 0)
+            while (IsADigit() && IsEnd() == false) ForwardNoCheck();
         else
         {
-            ++floatPrecision;
-            while (IsADigit() && --floatPrecision != 0) {
-                dec += (GetAndForward() - '0') * decIdx;
-                decIdx *= static_cast<T>(0.1l);
+            while (IsADigit() && floatPrecision > 0 && IsEnd() == false)
+            {
+                ForwardNoCheck();
+                floatPrecision--;
             }
         }
+        BackwardNoCheck();
 
-        i = static_cast<T>(iInt) + dec;
+        T dec = (T)0;
+        while (IsADigit())
+        {
+            dec += static_cast<T>(GetAndBackwardNoCheck() - '0');
+            dec /= 10;
+        }
+        i += dec;
         return true;
     }
 }

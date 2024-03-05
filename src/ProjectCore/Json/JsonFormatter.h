@@ -10,18 +10,33 @@ namespace ProjectCore::JSON::Detail
     public:
         using JsonBufferOut = ProjectCore::FMT::Detail::BasicBufferOut<char>;
 
+        struct FormatSettings
+        {
+            std::size_t IndentSize = 4;
+            bool IndentWithSpaces = true;
+            bool OneLine = false;
+            bool OrderedStruct = false;
+            ProjectCore::FMT::Detail::FloatPrecision FloatPrecision = 7;
+        };
+
     public:
         JsonFormatter(ProjectCore::FMT::Detail::BasicBufferOutManager<char>& BufferOutManager)
             : m_BufferOut(BufferOutManager)
             , m_Indent(0)
-            , m_IndentSize(4)
-            , m_IndentWithSpaces(true)
-            , m_OneLine(false)
+            , m_Settings()
+        {}
+        JsonFormatter(ProjectCore::FMT::Detail::BasicBufferOutManager<char>& BufferOutManager, FormatSettings settings)
+            : m_BufferOut(BufferOutManager)
+            , m_Indent(0)
+            , m_Settings(settings)
         {}
 
     public:
         JsonBufferOut& BufferOut() { return m_BufferOut; }
         const JsonBufferOut& BufferOut() const { return m_BufferOut; }
+
+        FormatSettings& Settings() { return m_Settings; }
+        const FormatSettings& Settings() const { return m_Settings; }
 
     public:
         template <typename T>
@@ -35,24 +50,22 @@ namespace ProjectCore::JSON::Detail
     public:
         void Indent()
         {
-            if (m_OneLine) return;
+            if (m_Settings.OneLine) return;
 
-            if (m_IndentWithSpaces)
-                m_BufferOut.PushBack(' ', m_Indent * m_IndentSize);
+            if (m_Settings.IndentWithSpaces)
+                m_BufferOut.PushBack(' ', m_Indent * m_Settings.IndentSize);
             else
-                m_BufferOut.PushBack('\t', m_Indent * m_IndentSize);
+                m_BufferOut.PushBack('\t', m_Indent * m_Settings.IndentSize);
         }
 
-        void NewLine()          { if (m_OneLine) return; m_BufferOut.PushBack('\n'); Indent(); }
+        void NewLine()          { if (m_Settings.OneLine) return; m_BufferOut.PushBack('\n'); Indent(); }
         void BeginNewObject()   { ++m_Indent; }
         void EndNewObject()     { --m_Indent; }
 
     protected:
         JsonBufferOut m_BufferOut;
         std::size_t m_Indent;
-        std::size_t m_IndentSize;
-		bool m_IndentWithSpaces;
-		bool m_OneLine;
+        FormatSettings m_Settings;
     };
 }
 
@@ -66,7 +79,7 @@ namespace ProjectCore::JSON::Detail
 
     public:
         template<typename T>
-        void Format(const std::string& name, const T& t);
+        void Format(const std::string_view name, const T& t);
 
     public:
         JsonFormatter& Formatter;

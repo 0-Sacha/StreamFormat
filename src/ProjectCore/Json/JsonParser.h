@@ -27,7 +27,7 @@ namespace ProjectCore::JSON::Detail
 
     public:
         inline bool IsJsonStringBegin() const       { return m_BufferIn.IsEqualTo('"'); }
-        inline bool IsJsonNumberBegin() const       { return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('.'); }
+        inline bool IsJsonNumberBegin() const       { return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('+', '-', '.'); }
         inline bool IsJsonBooleanBegin() const      { return m_BufferIn.IsEqualTo('t', 'f'); }
         inline bool IsJsonStructBegin() const       { return m_BufferIn.IsEqualTo('{'); }
         inline bool IsJsonArrayBegin() const        { return m_BufferIn.IsEqualTo('['); }

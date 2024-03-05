@@ -125,7 +125,7 @@ namespace ProjectCore::FMT::Detail
     struct FloatPrecision : public BasicCustomDataType<DataType, -1, -2>
     { 
     public:
-        static constexpr DataType BASIC_DECIMAL_SIZE = 2;
+        static constexpr DataType BASIC_DECIMAL_SIZE = 4;
 
     public:
         inline constexpr FloatPrecision(const DataType value = DEFAULT)
@@ -133,7 +133,6 @@ namespace ProjectCore::FMT::Detail
         {}
 
         inline constexpr void SetToBasicSizeIfDefault()     { if (IsDefault()) Value = BASIC_DECIMAL_SIZE; }
-        inline constexpr bool IsBasicSize()                 { return Value == BASIC_DECIMAL_SIZE; }
 
     public:
         using Base = BasicCustomDataType<DataType, -1, -2>;

@@ -8,7 +8,7 @@ namespace ProjectCore::FMT
     // Int
     template<typename T, typename ParserContext>
     struct ParserType<Detail::ForwardAsInt<T>, ParserContext> {
-        static inline void Read(T& t, ParserContext& context) {
+        static inline void Parse(T& t, ParserContext& context) {
             context.BufferIn().ReadIntFormatData(t, context.GetFormatData());
         }
     };
@@ -16,7 +16,7 @@ namespace ProjectCore::FMT
     // UInt
     template<typename T, typename ParserContext>
     struct ParserType<Detail::ForwardAsUInt<T>, ParserContext> {
-        static inline void Read(T& t, ParserContext& context) {
+        static inline void Parse(T& t, ParserContext& context) {
             context.BufferIn().ReadUIntFormatData(t, context.GetFormatData());
         }
     };
@@ -24,7 +24,7 @@ namespace ProjectCore::FMT
     // Float
     template<typename T, typename ParserContext>
     struct ParserType<Detail::ForwardAsFloat<T>, ParserContext> {
-        static inline void Read(T& t, ParserContext& context) {
+        static inline void Parse(T& t, ParserContext& context) {
             context.BufferIn().ReadFloatFormatData(t, context.GetFormatData());
         }
     };
@@ -32,13 +32,13 @@ namespace ProjectCore::FMT
     // Char type
     template<typename T, typename ParserContext>
     struct ParserType<Detail::ForwardAsChar<T>, ParserContext> {
-        static inline void Read(T& t, ParserContext& context) {
+        static inline void Parse(T& t, ParserContext& context) {
             context.BufferIn().GetAndForward(t);
         }
     };
     template<std::size_t SIZE, typename T, typename ParserContext>
     struct ParserType<Detail::ForwardAsCharArray<T, SIZE>, ParserContext> {
-        static inline void Read(T(&t)[SIZE], ParserContext& context) {
+        static inline void Parse(T(&t)[SIZE], ParserContext& context) {
             const auto& data = context.GetFormatData();
 
             std::size_t begin = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
@@ -73,7 +73,7 @@ namespace ProjectCore::FMT
     };
     template<typename T, typename ParserContext>
     struct ParserType<Detail::ForwardAsCharPointer<T>, ParserContext> {
-        static inline void Read(T* const, ParserContext&) {
+        static inline void Parse(T* const, ParserContext&) {
             // FIXME
         }
     };
