@@ -10,14 +10,12 @@ namespace ProjectCore::JSON::Detail
     {
         JsonStructSerializer::FormatBegin(Formatter);
     }
-
     inline JsonFormatter::StructIntermediate::~StructIntermediate()
     {
         JsonStructSerializer::FormatEnd(Formatter);
     }
-
     template<typename T>
-    inline void JsonFormatter::StructIntermediate::Format(const std::string& name, const T& t)
+    inline void JsonFormatter::StructIntermediate::Format(const std::string_view name, const T& t)
     {
         JsonStructSerializer::FormatObject(name, t, Idx++, Formatter);
     }
@@ -29,12 +27,10 @@ namespace ProjectCore::JSON::Detail
     {
         JsonArraySerializer::FormatBegin(Formatter);
     }
-
     inline JsonFormatter::ArrayIntermediate::~ArrayIntermediate()
     {
         JsonArraySerializer::FormatEnd(Formatter);
     }
-
     template<typename T>
     inline void JsonFormatter::ArrayIntermediate::Format(const T& t)
     {

@@ -116,7 +116,7 @@ namespace ProjectCore::FMT::Context
         // Type formating from FormatterType<>
         template<typename Type, typename ...Rest>
         inline void RunType(Type& type, Rest&... rest)          { RunType(type); RunType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void RunType(Type& type) { ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Read(type, *this); }
+        template<typename Type> inline void RunType(Type& type) { ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Parse(type, *this); }
 
         template<typename Type, typename ...Rest>
         inline void RunSubType(Type& type, Rest& ...rest)       { RunSubType(type); RunSubType(std::forward<Rest>(rest)...); }

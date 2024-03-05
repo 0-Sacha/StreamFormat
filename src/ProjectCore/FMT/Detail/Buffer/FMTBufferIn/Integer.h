@@ -54,54 +54,57 @@ namespace ProjectCore::FMT::Detail
     template<typename CharBuffer>
     template<typename T>
     void FMTBufferIn<CharBuffer>::ReadFloat(T& i, FloatPrecision floatPrecision, ShiftType st, ShiftSize shift, ShiftPrint sp) {
-        typename Detail::TypesInfo::FloatDetail<T>::IntType iInt = 0;
-
         SkipShiftBeginSpace(st, sp, shift);
 
         bool sign = IsEqualToForward('-');
         if (sign) --shift;
+        
+        T res = 0;
 
-        IsADigitThrow();
-
-        while (IsADigit()) {
-            iInt = iInt * 10 + (GetAndForward() - '0');
-            --shift;
-        }
-
-        T dec = 0;
-        T decIdx = 0.1f;
-
-        if (IsEqualToForward('.') == false)
+        bool hasIntPart = false;
+        if (IsNotEqualTo('.'))
         {
-            if (floatPrecision == 0 || floatPrecision.IsDefault())    
-                return iInt;
-            throw Detail::FMTParseError{};
-        }
-        --shift;
-            
-        if (floatPrecision.IsDefault())
-        {
-            while (IsADigit() && IsEnd() == false) {
-                dec += (GetAndForward() - '0') * decIdx;
-                decIdx *= 0.1f;
-            --shift;
+            hasIntPart = IsADigit();
+            if (hasIntPart == false) return;
+            while (IsADigit())
+            {
+                res = res * 10 + (GetAndForward() - '0');
+                --shift;
             }
         }
+
+        sign ? i = -res : i = res;
+        if (IsEqualToForward('.') == false) return;
+
+        if (floatPrecision.IsDefault() || floatPrecision == 0)
+            while (IsADigit() && IsEnd() == false)
+            {
+                ForwardNoCheck();
+                --shift;
+            }
         else
         {
-            ++floatPrecision;
-            while (IsADigit() && --floatPrecision != 0) {
-                dec += (GetAndForward() - '0') * decIdx;
-                decIdx *= 0.1f;
-            --shift;
+            while (IsADigit() && floatPrecision > 0 && IsEnd() == false)
+            {
+                ForwardNoCheck();
+                floatPrecision--;
+                --shift;
             }
+        }
+        BackwardNoCheck();
+
+        T dec = (T)0;
+        while (IsADigit())
+        {
+            dec += static_cast<T>(GetAndBackwardNoCheck() - '0');
+            dec /= 10;
         }
 
         SkipShiftEnd(st, sp, shift);
 
         if (shift > 0) throw FMTParseError();
 
-        sign ? i = -iInt - dec : i = iInt + dec;
+        sign ? i = -res - dec : i = res + dec;
     }
 
     //---------------------------------------------//
