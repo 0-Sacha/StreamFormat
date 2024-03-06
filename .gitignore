@@ -1,10 +1,10 @@
 
 # Bazel
 MODULE.bazel.lock
-ProjectCore\bazel-bin
-ProjectCore\bazel-out
-ProjectCore\bazel-projectcore
-ProjectCore\bazel-testlogs
+bazel-bin
+bazel-out
+bazel-projectcore
+bazel-testlogs
 
 # VS
 .vs
