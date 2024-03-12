@@ -1,5 +1,5 @@
 
-# Bazel
+# bazel
 MODULE.bazel.lock
 bazel-bin
 bazel-out
@@ -13,6 +13,7 @@ bazel-testlogs
 *.vcxproj.filters
 *.vcxproj.user
 
+# Make
 Makefile
 *.make
 
@@ -25,3 +26,5 @@ bin-int
 
 # Asset
 Asset
+
+# Tests

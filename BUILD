@@ -1,32 +1,21 @@
 ""
 
-load("@BazelUtilities//solutions:solutions.bzl", "solution_project_build", "solution_project_info", "ProjectType")
-load("@BazelUtilities//toolchains/MinGW:MinGW.bzl", "mingw_gcc_toolchain")
-load("@BazelUtilities//toolchains/MinGW:MinGW_localhost.bzl", "MinGW_gcc_localhost")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
-load(":project.bzl", "info_ProjectCore")
-
-MinGW_gcc_localhost()
-mingw_gcc_toolchain.gen()
-
-solution_project_build(
-    info = info_ProjectCore,
-    hdrs = glob([ "src/**/*.h", "src/**/*.impl" ]),
-    srcs = glob([ "src/**/*.h", "src/**/*.impl" ]) + glob([ "src/**/*.cpp" ])
+cc_library(
+    name = "ProjectCore",
+    srcs = glob([ "src/**/*.h", "src/**/*.cpp" ]),
+    hdrs = glob([ "src/**/*.h" ]),
+    includes = [ "src/" ],
+    strip_include_prefix = "src",
+    include_prefix = "ProjectCore",
+    visibility = ["//visibility:public"],
 )
 
-# buildifier: disable=name-conventions
-info_ProjectCoreTest = solution_project_info(
-    name = "ProjectCoreTest",
-    project_type = ProjectType.Test,
-    project_deps = [ info_ProjectCore ],
-    include_dirs = [ "Tests/" ],
-    copts = [ "-std=c++20" ],
-    linkopts = []
-)
-
-solution_project_build(
-    info = info_ProjectCoreTest,
-    hdrs = glob([ "Tests/**/*.h","Tests/FMT/*.h" ]),
-    srcs = glob([ "Tests/**/*.h","Tests/FMT/*.h" ]) + glob([ "Tests/*.cpp", "Tests/**/*.cpp" ])
+cc_test(
+    name = "ProjectCoreTests",
+    includes = [ "src/" ],
+    srcs = glob([ "Tests/**/*.h", "Tests/**/*.cpp" ]),
+    deps = [ ":ProjectCore" ],
+    visibility = ["//visibility:public"],
 )
