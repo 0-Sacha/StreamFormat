@@ -6,3 +6,5 @@ module(
     version = "0.1",
     repo_name = "com_sacha_projectcore",
 )
+
+bazel_dep(name = "rules_cc", version = "0.0.4")
