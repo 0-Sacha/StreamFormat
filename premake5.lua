@@ -1,15 +1,15 @@
 
+-- TODO:bazel remove Solution.Projects Infos:
 Solution.Projects["ProjectCore"].PlatformDefineName = "PROJECTCORE"
 Solution.Projects["ProjectCore"].Type = "StaticLib"
 Solution.Projects["ProjectCore"].IncludeDirs = {
-	"%{Solution.Projects.ProjectCore.Path}/src/",
-	"%{Solution.Projects.ProjectCore.Path}/src/ProjectCore",
+	"%{Solution.Projects.ProjectCore.Path}/src/"
 }
 
 project "ProjectCore"
 	kind 		(Solution.Projects["ProjectCore"].Type)
-	language "C++"
-	cppdialect "C++20"
+	language   	"C++"
+	cppdialect 	"C++20"
 
 	Solution.HighWarnings()
 
@@ -42,8 +42,8 @@ Solution.Launch["ProjectCoreTests"] = ProjectCoreTestsLaunch
 
 project "ProjectCoreTests"
 	kind 		(Solution.Projects["ProjectCoreTests"].Type)
-	language "C++"
-	cppdialect "C++20"
+	language 	"C++"
+	cppdialect 	"C++20"
 
 	Solution.HighWarnings()
 

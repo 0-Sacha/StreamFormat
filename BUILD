@@ -1,16 +1,21 @@
 ""
 
-load("//BazelUtilities/solutions:solutions.bzl", "solution_project_build")
-load(":project.bzl", "info_ProjectCore", "info_ProjectCoreTest")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
-solution_project_build(
-    info = info_ProjectCore,
-    hdrs = glob([ "src/**/*.h", "src/**/*.impl" ]),
-    srcs = glob([ "src/**/*.h", "src/**/*.impl" ]) + glob([ "src/**/*.cpp" ])
+cc_library(
+    name = "ProjectCore",
+    srcs = glob([ "src/**/*.h", "src/**/*.cpp" ]),
+    hdrs = glob([ "src/**/*.h" ]),
+    includes = [ "src/" ],
+    strip_include_prefix = "src",
+    include_prefix = "ProjectCore",
+    visibility = ["//visibility:public"],
 )
 
-solution_project_build(
-    info = info_ProjectCoreTest,
-    hdrs = glob([ "Tests/**/*.h","Tests/FMT/*.h" ]),
-    srcs = glob([ "Tests/**/*.h","Tests/FMT/*.h" ]) + glob([ "Tests/*.cpp", "Tests/**/*.cpp" ])
+cc_test(
+    name = "ProjectCoreTests",
+    includes = [ "src/" ],
+    srcs = glob([ "Tests/**/*.h", "Tests/**/*.cpp" ]),
+    deps = [ ":ProjectCore" ],
+    visibility = ["//visibility:public"],
 )
