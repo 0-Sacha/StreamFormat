@@ -2,7 +2,7 @@
 
 #include "Detail.h"
 #include "LoggerSink.h"
-#include "LoggerManager/Loggers/BasicLogger.h"
+#include "ProjectCore/LoggerManager/Loggers/BasicLogger.h"
 
 namespace ProjectCore::LoggerManager::Detail
 {

@@ -10,7 +10,7 @@ namespace ProjectCore::FMT::Context
     void BasicFormatterContext<CharFormat, CharBuffer>::ParseTimer()
     {
         ParseFormatData();
-        std::chrono::nanoseconds ns = std::chrono::high_resolution_clock::now() - Detail::FormatterHandler::GetInstance().GetTimeShift();
+        std::chrono::nanoseconds ns = std::chrono::high_resolution_clock::now() - Detail::FormatterHandler::GetTimeShift();
         m_FormatData.AddSpecifier("pattern", "%h:%m:%s.%ms", true);
         WriteType(ns);
     }
@@ -19,7 +19,7 @@ namespace ProjectCore::FMT::Context
     void BasicFormatterContext<CharFormat, CharBuffer>::ParseDate() 
     {
         ParseFormatData();
-        std::chrono::nanoseconds ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()) + Detail::FormatterHandler::GetInstance().GetHoursShift();
+        std::chrono::nanoseconds ns = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()) + Detail::FormatterHandler::GetHoursShift();
         m_FormatData.AddSpecifier("pattern", "%h:%m:%s.%ms", true);
         WriteType(ns);
     }

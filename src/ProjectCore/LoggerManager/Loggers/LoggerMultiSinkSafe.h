@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LoggerManager/Detail/LoggerMultiSinks.h"
+#include "ProjectCore/LoggerManager/Detail/LoggerMultiSinks.h"
 
 namespace ProjectCore::LoggerManager::Detail
 {

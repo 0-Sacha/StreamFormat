@@ -4,7 +4,7 @@
 #include <fstream>
 #include <filesystem>
 
-#include "LoggerManager/Detail/LoggerSink.h"
+#include "ProjectCore/LoggerManager/Detail/LoggerSink.h"
 
 namespace ProjectCore::LoggerManager::Sinks
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LoggerManager/Detail/Detail.h"
+#include "ProjectCore/LoggerManager/Detail/Detail.h"
 
 #include <iostream>
 

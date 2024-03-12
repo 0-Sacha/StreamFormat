@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ProjectCore/Core/Core.h"
-#include "LoggerManager/LoggerManager.h"
+#include "ProjectCore/LoggerManager/LoggerManager.h"
 
 namespace ProjectCore::FMT::Detail
 {

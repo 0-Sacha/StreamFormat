@@ -1,10 +1,10 @@
 #pragma once
 
-#include "LoggerManager/Detail/Detail.h"
-#include "LoggerManager/Loggers/BasicLogger.h"
-#include "LoggerManager/Loggers/LoggerMultiSinkFast.h"
-#include "LoggerManager/Loggers/LoggerMultiSinkSafe.h"
-#include "LoggerManager/Sinks/FileSink.h"
+#include "ProjectCore/LoggerManager/Detail/Detail.h"
+#include "ProjectCore/LoggerManager/Loggers/BasicLogger.h"
+#include "ProjectCore/LoggerManager/Loggers/LoggerMultiSinkFast.h"
+#include "ProjectCore/LoggerManager/Loggers/LoggerMultiSinkSafe.h"
+#include "ProjectCore/LoggerManager/Sinks/FileSink.h"
 
 namespace ProjectCore::LoggerManager
 {
