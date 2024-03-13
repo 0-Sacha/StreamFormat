@@ -31,15 +31,12 @@ jobs:
   windows-latest-gcc:
     runs-on: windows-latest
     steps:
-    - name: Install MinGW
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
+    - name: Install msys
+      uses: msys2/setup-msys2@v2
     - name: Install GCC
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: latest
-        platform: x64
+      shell: msys2 {0}
+      run: |
+        pacman -Syyu mingw-w64-x86_64-gcc
     - uses: actions/checkout@v4
     - uses: bazelbuild/setup-bazelisk@v3
     - name: Mount bazel cache
@@ -50,7 +47,7 @@ jobs:
     - name: Building...
       run: bazelisk build --copt=-std=c++20 //...
     - name: Testing...
-      run: bazelisk test --copt=-std=c++20 //..
+      run: bazelisk test --copt=-std=c++20 //...
       
   ubuntu-latest-gcc:
     runs-on: ubuntu-latest
