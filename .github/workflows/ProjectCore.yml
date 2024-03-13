@@ -31,12 +31,11 @@ jobs:
   windows-latest-gcc:
     runs-on: windows-latest
     steps:
-    - name: Install msys
+    - name: Install gcc using msys
       uses: msys2/setup-msys2@v2
-    - name: Install GCC
-      shell: msys2 {0}
-      run: |
-        pacman -Syyu mingw-w64-x86_64-gcc
+      with:
+        msystem: mingw64
+        install: mingw-w64-x86_64-gcc
     - uses: actions/checkout@v4
     - uses: bazelbuild/setup-bazelisk@v3
     - name: Mount bazel cache
