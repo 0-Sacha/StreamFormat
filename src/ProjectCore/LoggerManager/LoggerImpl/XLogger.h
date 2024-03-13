@@ -25,8 +25,8 @@ namespace ProjectCore::LoggerManager
     public:
         static constexpr Value Trace    {Value::Trace};
         static constexpr Value Debug    {Value::Debug};
-        static constexpr Value Info        {Value::Info};
-        static constexpr Value Warn        {Value::Warn};
+        static constexpr Value Info     {Value::Info};
+        static constexpr Value Warn     {Value::Warn};
         static constexpr Value Error    {Value::Error};
         static constexpr Value Fatal    {Value::Fatal};
         static constexpr Value DefaultSeverity = Trace;

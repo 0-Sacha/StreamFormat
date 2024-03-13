@@ -12,6 +12,7 @@ namespace ProjectCore::FMT::Detail
         sp.ValidateForNumber();
 
         DataType nbDigit = GetNumberOfDigitDec(i);
+        
         shift -= nbDigit;
         if (i < 0) --shift;
 
@@ -26,13 +27,13 @@ namespace ProjectCore::FMT::Detail
         else
         {
             Reserve(nbDigit);
-            while (nbDigit > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; nbDigit--; }
+            DataType nbDigit_ = nbDigit;
+            while (nbDigit_ > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; nbDigit_--; }
             Forward(nbDigit + 1);
         }
 
         PrintShiftEnd(st, sp, shift);
     }
-
 
     template<typename CharBuffer>
     template<typename T>
@@ -51,7 +52,8 @@ namespace ProjectCore::FMT::Detail
         else
         {
             Reserve(nbDigit);
-            while (nbDigit > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; nbDigit--; }
+            DataType nbDigit_ = nbDigit;
+            while (nbDigit_ > 0) { PushReverseNoCheck(i % 10 + '0'); i /= 10; nbDigit_--; }
             Forward(nbDigit + 1);
         }
 
