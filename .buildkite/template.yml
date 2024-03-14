@@ -1,7 +1,4 @@
-agents:
-  queue: "agent-runners-windows-amd64"
-  
 name: "ProjectCore"
 steps:
   - label: ":pipeline: Launch Embbeded Pipeline"
-    command: "buildkite-agent pipeline upload pipeline.yml"
+    command: "buildkite-agent pipeline upload .builkite/pipeline.yml"
