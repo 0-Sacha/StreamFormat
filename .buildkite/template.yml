@@ -1,3 +1,6 @@
+agents:
+  queue: "agent-runners-windows-amd64"
+  
 name: "ProjectCore"
 steps:
   - label: ":pipeline: Launch Embbeded Pipeline"
