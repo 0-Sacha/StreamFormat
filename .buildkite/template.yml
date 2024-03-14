@@ -1,4 +1,4 @@
 name: "ProjectCore"
 steps:
-  - label: ":pipeline: Launch Embbeded pipeline.yml"
-    command: "buildkite-agent pipeline upload"
+  - label: ":pipeline: Launch Embbeded Pipeline"
+    command: "buildkite-agent pipeline upload pipeline.yml"
