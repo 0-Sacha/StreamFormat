@@ -1,4 +1,4 @@
-name: "Bazel Example"
+name: "ProjectCore"
 steps:
   - label: ":pipeline:"
     command: "buildkite-agent pipeline upload"

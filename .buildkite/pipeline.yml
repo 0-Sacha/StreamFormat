@@ -1,4 +1,4 @@
 steps:
   - label: ":bazel: Build"
     commands:
-      - bazel build //main:hello-world
+      - bazelisk test --copt=/std:c++20 //...
