@@ -1,0 +1,17 @@
+agents:
+  queue: "agent-runners-linux-amd64"
+
+steps:
+  - label: ":bazel: Build on gcc"
+    commands:
+      - CC=gcc bazelisk build --copt=-std=c++20 //...
+  - label: ":bazel: Test on gcc"
+    commands:
+      - CC=gcc bazelisk test --copt=-std=c++20 //...
+
+  - label: ":bazel: Build on Clang"
+    commands:
+      - CC=clang bazelisk build --copt=-std=c++20 //...
+  - label: ":bazel: Test on Clang"
+    commands:
+      - CC=clang bazelisk test --copt=-std=c++20 //...
