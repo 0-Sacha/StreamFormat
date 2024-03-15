@@ -6,11 +6,17 @@ build --verbose_failures
 test --test_output=errors
 
 # Build
-build:linux --copt -std=c++20
-test:linux --copt -std=c++20
-build:windows --copt /std:c++20
-test:windows --copt /std:c++20
+common:linux --copt -std=c++20
+common:windows --copt /std:c++20
 
 # BuildBuddy
 build:linux --workspace_status_command=$(pwd)/.buildbuddy/workspace_status.sh
 build:windows --workspace_status_command=.buildbuddy/workspace_status.bat
+build:ci --build_metadata=ROLE=CI
+
+build:bb-rbe --bes_results_url=https://app.buildbuddy.io/invocation/
+build:bb-rbe --bes_backend=grpcs://remote.buildbuddy.io
+build:bb-rbe --remote_cache=grpcs://remote.buildbuddy.io
+build:bb-rbe --remote_timeout=3600
+build:bb-rbe --remote_executor=grpcs://remote.buildbuddy.io
+
