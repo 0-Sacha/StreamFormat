@@ -1,3 +1,16 @@
+build --enable_platform_specific_config
+
+# Common
 common --show_timestamps
 build --verbose_failures
 test --test_output=errors
+
+# Build
+build:linux --copt -std=c++20
+test:linux --copt -std=c++20
+build:windows --copt /std:c++20
+test:windows --copt /std:c++20
+
+# BuildBuddy
+build:linux --workspace_status_command=$(pwd)/.buildbuddy/workspace_status.sh
+build:windows --workspace_status_command=.buildbuddy/workspace_status.bat
