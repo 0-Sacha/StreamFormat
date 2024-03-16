@@ -1,0 +1,6 @@
+plugins:
+  - repo: buildbuddy-io/plugins
+    path: open-invocation
+  - repo: siggisim/theme-modern
+  - repo: buildbuddy-io/plugins
+    path: notify
