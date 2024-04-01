@@ -2,7 +2,7 @@ build --enable_platform_specific_config
 
 # Common
 common --show_timestamps
-build --verbose_failures
+common --verbose_failures
 test --test_output=errors
 
 # Build
@@ -14,14 +14,9 @@ common:linux --workspace_status_command=$(pwd)/.buildbuddy/workspace_status.sh
 common:windows --workspace_status_command=.buildbuddy/workspace_status.bat
 build:ci --build_metadata=ROLE=CI
 
-common:bb-rbe --bes_results_url=https://app.buildbuddy.io/invocation/
-common:bb-rbe --bes_backend=grpcs://remote.buildbuddy.io
-common:bb-rbe --remote_cache=grpcs://remote.buildbuddy.io
-common:bb-rbe --remote_timeout=3600
-common:bb-rbe --remote_executor=grpcs://remote.buildbuddy.io
-
-common:rbe --remote_executor=remote.buildbuddy.io 
-common:rbe --extra_execution_platforms=@buildbuddy_toolchain//:platform_linux 
-common:rbe --host_platform=@buildbuddy_toolchain//:platform_linux 
-common:rbe --platforms=@buildbuddy_toolchain//:platform_linux 
-common:rbe --crosstool_top=@buildbuddy_toolchain//:llvm_cc_toolchain
+common:rbe --bes_results_url=https://app.buildbuddy.io/invocation/
+common:rbe --bes_backend=grpcs://remote.buildbuddy.io
+common:rbe --remote_cache=grpcs://remote.buildbuddy.io
+common:rbe --noremote_upload_local_results
+common:rbe --remote_executor=remote.buildbuddy.io
+common:rbe --host_platform=//:buildbuddy_rbe_test

@@ -12,6 +12,8 @@ $ErrorActionPreference = "Stop"
 
 # Get the repository URL without credentials
 $repo_url = (git config --get remote.origin.url) -replace '//.*?:.*?@', '//'
+$repo_url = $repo_url -replace '^git@github.com:', 'https://github.com/'
+$urrepo_urll = $repo_url -replace '\.git$'
 Write-Output "REPO_URL $repo_url"
 
 # Get the commit SHA

@@ -17,6 +17,8 @@ function remove_url_credentials() {
 }
 
 repo_url=$(git config --get remote.origin.url | remove_url_credentials)
+repo_url=${repo_url/git@github.com:/https://github.com/}
+repo_url=${repo_url%.git}
 echo "REPO_URL $repo_url"
 
 commit_sha=$(git rev-parse HEAD)
