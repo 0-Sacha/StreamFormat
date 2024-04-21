@@ -1,0 +1,10 @@
+agents:
+  queue: "agent-runners-windows-amd64"
+
+steps:
+  - label: ":bazel: Build"
+    commands:
+      - bazelisk build //...
+  - label: ":bazel: Test"
+    commands:
+      - bazelisk test //...

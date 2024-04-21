@@ -1,0 +1,31 @@
+
+# bazel
+MODULE.bazel.lock
+bazel-bin
+bazel-out
+bazel-projectcore
+bazel-testlogs
+
+# VS
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Make
+Makefile
+*.make
+
+# VSCode
+.vscode
+
+# VSCode
+bin
+bin-int
+
+# Asset
+Asset
+
+# Tests
+TestSuite_FMT.json
