@@ -9,6 +9,7 @@ cc_library(
     includes = [ "src/" ],
     strip_include_prefix = "src",
     include_prefix = "ProjectCore",
+    linkstatic = True,
     visibility = ["//visibility:public"],
 )
 
