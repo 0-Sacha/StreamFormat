@@ -5,6 +5,4 @@ steps:
   - label: ":bazel: Build"
     commands:
       - bazelisk build --config=microsoft_compiler_opt //...
-  - label: ":bazel: Test"
-    commands:
       - bazelisk test --config=microsoft_compiler_opt //...
