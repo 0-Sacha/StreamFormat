@@ -1,22 +1,17 @@
-build --enable_platform_specific_config
-
 # Common
+common --enable_platform_specific_config
+common --experimental_platforms_api
 common --show_timestamps
 common --verbose_failures
 test --test_output=errors
 
 # Build
-common:linux --copt -std=c++20
-common:windows --copt /std:c++20
+common:linux --config=default_compiler_opt
+common:msvc --config=microsoft_compiler_opt
+
+common:default_compiler_opt --copt -std=c++20
+common:microsoft_compiler_opt --copt /std:c++20
 
 # BuildBuddy
 common:linux --workspace_status_command=$(pwd)/.buildbuddy/workspace_status.sh
 common:windows --workspace_status_command=.buildbuddy/workspace_status.bat
-build:ci --build_metadata=ROLE=CI
-
-common:rbe --bes_results_url=https://app.buildbuddy.io/invocation/
-common:rbe --bes_backend=grpcs://remote.buildbuddy.io
-common:rbe --remote_cache=grpcs://remote.buildbuddy.io
-common:rbe --noremote_upload_local_results
-common:rbe --remote_executor=remote.buildbuddy.io
-common:rbe --host_platform=//:buildbuddy_rbe_test
