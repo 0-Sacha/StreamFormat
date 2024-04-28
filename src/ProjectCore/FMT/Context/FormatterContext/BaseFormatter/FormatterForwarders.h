@@ -7,40 +7,53 @@ namespace ProjectCore::FMT
 {
     // Int Forwarders
     template<typename T, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsInt<T>, FormatterContext> {
-        static inline void Format(const T t, FormatterContext& context) {
+    struct FormatterType<Detail::ForwardAsInt<T>, FormatterContext>
+    {
+        static inline void Format(const T t, FormatterContext& context)
+        {
             context.BufferOut().WriteIntFormatData(t, context.GetFormatData());
         }
     };
 
+
     // UInt Forwarders
     template<typename T, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsUInt<T>, FormatterContext> {
-        static inline void Format(const T t, FormatterContext& context) {
+    struct FormatterType<Detail::ForwardAsUInt<T>, FormatterContext>
+    {
+        static inline void Format(const T t, FormatterContext& context)
+        {
             context.BufferOut().WriteUIntFormatData(t, context.GetFormatData());
         }
     };
 
+
     // Float Forwarders
     template<typename T, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsFloat<T>, FormatterContext> {
-        static void Format(const T t, FormatterContext& context) {
+    struct FormatterType<Detail::ForwardAsFloat<T>, FormatterContext> 
+{
+        static void Format(const T t, FormatterContext& context)
+        {
             context.BufferOut().WriteFloatFormatData(t, context.GetFormatData());
         }
     };
 
+
     // Char Forwarders
     template<typename T, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsChar<T>, FormatterContext> {
-        inline static void Format(const T t, FormatterContext& context) {
+    struct FormatterType<Detail::ForwardAsChar<T>, FormatterContext>
+    {
+        inline static void Format(const T t, FormatterContext& context)
+        {
             context.BufferOut().PushBack(t);
         }
     };
 
     // Char Array Forwarders
     template<typename T, std::size_t SIZE, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsCharArray<T, SIZE>, FormatterContext> {
-        static void Format(const T(&t)[SIZE], FormatterContext& context) {
+    struct FormatterType<Detail::ForwardAsCharArray<T, SIZE>, FormatterContext>
+    {
+        static void Format(const T(&t)[SIZE], FormatterContext& context)
+        {
             const auto& data = context.GetFormatData();
 
             std::size_t begin = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
@@ -64,8 +77,10 @@ namespace ProjectCore::FMT
 
     // Char Pointers Forwarders
     template<typename T, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsCharPointer<T>, FormatterContext> {
-        static void Format(const T* t, FormatterContext& context) {
+    struct FormatterType<Detail::ForwardAsCharPointer<T>, FormatterContext>
+    {
+        static void Format(const T* t, FormatterContext& context)
+        {
             const auto& data = context.GetFormatData();
 
             if (t == nullptr)

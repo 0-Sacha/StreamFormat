@@ -1,7 +1,10 @@
 #pragma once
 
-#include "ProjectCore/FMT/Context/BasicContext/BasicContextInclude.h"
-#include "ProjectCore/FMT/Detail/Buffer/FMTBufferIn/FMTBufferIn.h"
+#include "ProjectCore/FMT/Context/BasicContext/BasicContext.h"
+#include "ProjectCore/FMT/Context/BasicContext/BasicContextCoreImpl.h"
+#include "ProjectCore/FMT/Context/BasicContext/BasicContextParseImpl.h"
+
+#include "ProjectCore/FMT/Buffer/FMTBufferIn/FMTBufferIn.h"
 
 #include "ParserType.h"
 
@@ -25,7 +28,7 @@ namespace ProjectCore::FMT::Context
         using typename Base::StringViewFormat;
         using typename Base::FormatBufferType;
         using typename Base::ContextArgsInterface;
-        using typename Base::TextPropertiesParser;
+        using typename Base::TextProperties;
 
         using StringViewBuffer    = std::basic_string_view<CharBuffer>;
         using BufferInType        = Detail::FMTBufferIn<CharBuffer>;
@@ -39,7 +42,7 @@ namespace ProjectCore::FMT::Context
         using Base::m_ValuesIndex;
         using Base::m_FormatData;
         using Base::m_ContextArgsInterface;
-        using Base::m_TextPropertiesParser;
+        using Base::m_TextProperties;
 
         BufferInType         m_BufferIn;
 
@@ -100,12 +103,7 @@ namespace ProjectCore::FMT::Context
         using Base::Parse;
 
     protected:
-        using Base::ParseTimer;
-        using Base::ParseDate;
         using Base::ParseSetter;
-
-        void ParseTimer() override;
-        void ParseDate() override;
         void ParseSetter() override;
 
     public:
@@ -164,12 +162,12 @@ namespace ProjectCore::FMT::Context
     };
 }
 
-#include "BaseParse/ParseTextPropertiesColor.h"
-#include "BaseParse/ParseTextPropertiesStyle.h"
-#include "BaseParse/ParseTextPropertiesFront.h"
-#include "BaseParse/BaseParser.h"
-#include "BaseParse/ParseSTDLib.h"
-#include "BaseParse/ParseChrono.h"
+#include "BaseParser/ParseTextPropertiesColor.h"
+#include "BaseParser/ParseTextPropertiesStyle.h"
+#include "BaseParser/ParseTextPropertiesFront.h"
+#include "BaseParser/BaseParser.h"
+#include "BaseParser/ParseSTDLib.h"
+#include "BaseParser/ParseChrono.h"
 
 #include "ParserTextPropertiesExecutor/ParserNOTextPropertiesExecutor.h"
 #include "ParserTextPropertiesExecutor/ParserANSITextPropertiesExecutor.h"

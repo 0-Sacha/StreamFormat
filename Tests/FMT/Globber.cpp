@@ -1,6 +1,6 @@
 #include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
-#include "ProjectCore/FMT/FMT.h"
-#include "ProjectCore/FMT/Detail/Buffer/Utils/PatternMatching/Glob/Glob.h"
+#include "ProjectCore/FMT.h"
+#include "ProjectCore/FMT/Buffer/Utils/PatternMatching/Glob/Glob.h"
 
 #include "BaseFMTTests.h"
 

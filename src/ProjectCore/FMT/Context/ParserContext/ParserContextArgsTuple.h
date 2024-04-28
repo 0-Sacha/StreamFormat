@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ProjectCore/FMT/Detail/Detail.h"
-#include "ProjectCore/FMT/Context/BasicContext/Utils/BasicContextArgsTupleInterface.h"
+#include "ProjectCore/FMT/Context/BasicContext/BasicArgsTupleInterface.h"
 
 #include "ParserType.h"
 
@@ -22,22 +22,23 @@ namespace ProjectCore::FMT::Detail
     public:
         template <typename FormatterContext>
         inline void RunTypeAtIndex(FormatterContext&, Detail::FormatIndex)
-                    { throw Detail::FMTBufferWrongIndex(); }
+        {
+            throw Detail::FMTBufferWrongIndex();
+        }
 
         template <typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext&, Detail::FormatIndex)
-                    { return Detail::FormatIndex(); }
+        inline Detail::FormatIndex GetIndexOfCurrentNamedArg(FormatterContext&, Detail::FormatIndex)
+        {
+            return Detail::FormatIndex();
+        }
 
-        inline std::any GetTypeAtIndex(Detail::FormatIndex)
-                    { return {}; }
-
-        template <typename T>
-        inline void GetTypeAtIndexCast(T*, Detail::FormatIndex)
-                    { }
+        inline std::any GetTypeAtIndex(Detail::FormatIndex) { return {}; }
 
         template <typename T>
-        inline void GetTypeAtIndexConvert(T*, Detail::FormatIndex)
-                    { }
+        inline void GetTypeAtIndexCast(T*, Detail::FormatIndex) {}
+
+        template <typename T>
+        inline void GetTypeAtIndexConvert(T*, Detail::FormatIndex) {}
     };
 
     template <typename Type, typename... Rest>
@@ -57,7 +58,8 @@ namespace ProjectCore::FMT::Detail
 
     public:
         template <typename FormatterContext>
-        inline void RunTypeAtIndex(FormatterContext &context, Detail::FormatIndex idx) {
+        inline void RunTypeAtIndex(FormatterContext &context, Detail::FormatIndex idx)
+        {
             if (idx.Is0())
                 return context.RunType(m_Value);
             return ParserContextArgsTuple<Rest...>::RunTypeAtIndex(context, idx.GetPrev());
@@ -65,13 +67,14 @@ namespace ProjectCore::FMT::Detail
 
     public:
         template<typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex) {
+        inline Detail::FormatIndex GetIndexOfCurrentNamedArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex)
+        {
             if constexpr (Detail::IsANamedArgs<Detail::GetBaseType<TypeWithoutRef>>::value)
             {
                 if (context.Format().NextIsANamedArgs(m_Value.GetName()))
                     return beginSearchIndex;
             }
-            return ParserContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, beginSearchIndex.GetNext());
+            return ParserContextArgsTuple<Rest...>::GetIndexOfCurrentNamedArg(context, beginSearchIndex.GetNext());
         }
 
     public:
@@ -121,60 +124,73 @@ namespace ProjectCore::FMT::Detail
         }
     };
 
-
     template<typename Context, typename... Args>
     class ParserContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
-        public:
-            using Base              = BasicContextArgsTupleInterface<Context>;
-            using ContextArgsType   = ParserContextArgsTuple<Args...>;
-            
-            using Base::m_Context;
-            
-        public:
-            ParserContextArgsTupleInterface(Args&&... args)
-                : Base()
-                , m_contextArgs(std::forward<Args>(args)...)
-            {}
-            ~ParserContextArgsTupleInterface() override = default;
+    public:
+        using Base              = BasicContextArgsTupleInterface<Context>;
+        using ContextArgsType   = ParserContextArgsTuple<Args...>;
+        
+        using Base::m_Context;
+        
+    public:
+        ParserContextArgsTupleInterface(Args&&... args)
+            : Base()
+            , m_contextArgs(std::forward<Args>(args)...)
+        {}
+        ~ParserContextArgsTupleInterface() override = default;
 
-        public:
-            std::size_t Size() override
-                    { return m_contextArgs.Size(); }
+    public:
+        std::size_t Size() override
+        {
+            return m_contextArgs.Size();
+        }
 
-            void RunTypeAtIndex(Detail::FormatIndex idx) override
-                    { return m_contextArgs.RunTypeAtIndex(*m_Context, idx); }
+        void RunTypeAtIndex(Detail::FormatIndex idx) override
+        {
+            return m_contextArgs.RunTypeAtIndex(*m_Context, idx);
+        }
 
-            Detail::FormatIndex GetIndexOfCurrentNameArg() override
-                    { return m_contextArgs.GetIndexOfCurrentNameArg(*m_Context, Detail::FormatIndex{0}); }
+        Detail::FormatIndex GetIndexOfCurrentNamedArg() override
+        {
+            return m_contextArgs.GetIndexOfCurrentNamedArg(*m_Context, Detail::FormatIndex{0});
+        }
 
-            std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) override
-                    { return m_contextArgs.GetTypeAtIndex(idx); }
+        std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) override
+        {
+            return m_contextArgs.GetTypeAtIndex(idx);
+        }
 
-            void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) override
-            {
-                return func(m_contextArgs.GetTypeAtIndex(idx));
-            }
+        void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) override
+        {
+            return func(m_contextArgs.GetTypeAtIndex(idx));
+        }
 
-        public:
-            template <typename T>
-            T GetTAtConvert(Detail::FormatIndex idx)
-            {
-                T res;
-                m_contextArgs.template GetTypeAtIndexConvert<T>(&res, idx);
-                return res;
-            }
+    public:
+        template <typename T>
+        T GetTAtConvert(Detail::FormatIndex idx)
+        {
+            T res;
+            m_contextArgs.template GetTypeAtIndexConvert<T>(&res, idx);
+            return res;
+        }
 
-            Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) override
-                    { return GetTAtConvert<Detail::FormatIndex>(idx); }
+        Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) override
+        {
+            return GetTAtConvert<Detail::FormatIndex>(idx);
+        }
 
-            typename Context::StringViewFormat GetStringAt(Detail::FormatIndex idx) override
-                    { return GetTAtConvert<typename Context::StringViewFormat>(idx); }
+        typename Context::StringViewFormat GetStringAt(Detail::FormatIndex idx) override
+        {
+            return GetTAtConvert<typename Context::StringViewFormat>(idx);
+        }
 
-            int64_t GetIntAt(Detail::FormatIndex idx) override
-                    { return GetTAtConvert<int64_t>(idx); }
+        int64_t GetIntAt(Detail::FormatIndex idx) override
+        {
+            return GetTAtConvert<int64_t>(idx);
+        }
 
-        protected:
-            ContextArgsType m_contextArgs;
+    protected:
+        ContextArgsType m_contextArgs;
     };
 }

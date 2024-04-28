@@ -4,9 +4,9 @@
 #include "BasicFormatterContextCoreImpl.h"
 #include "BasicFormatterContextParseImpl.h"
 
-#include "ProjectCore/FMT/Detail/Buffer/BufferOutManager/DynamicBufferOutManager.h"
-#include "ProjectCore/FMT/Detail/Buffer/BufferOutManager/GivenBufferOutManager.h"
-#include "ProjectCore/FMT/Detail/Buffer/BufferOutManager/StaticBufferOutManager.h"
+#include "ProjectCore/FMT/Buffer/BufferOutManager/DynamicBufferOutManager.h"
+#include "ProjectCore/FMT/Buffer/BufferOutManager/GivenBufferOutManager.h"
+#include "ProjectCore/FMT/Buffer/BufferOutManager/StaticBufferOutManager.h"
 
 #include <memory>
 
@@ -146,7 +146,7 @@ namespace ProjectCore::FMT
     }
 
 
-    /////---------- NO-FORMAT Impl except for string which are formatted for avoid {} ----------//////
+    /////---------- NO-FORMAT Impl except for string which are formatted to avoid {} ----------//////
 
     template<typename CharBuffer, size_t BUFFER_SIZE, typename T>
     requires (Detail::IsCharType<CharBuffer>::Value)

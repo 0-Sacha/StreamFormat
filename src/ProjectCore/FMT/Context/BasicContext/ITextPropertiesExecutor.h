@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ProjectCore/FMT/Detail/Detail.h"
+#include "ProjectCore/FMT/TextProperties/TextProperties.h"
 
 namespace ProjectCore::FMT::Detail
 {
@@ -40,60 +41,5 @@ namespace ProjectCore::FMT::Detail
         virtual void ExecuteStyle(const TextProperties::TextStyle::Inverted& t) = 0;
         virtual void ExecuteStyle(const TextProperties::TextStyle::Ideogram& t) = 0;
         virtual void ExecuteStyle(const TextProperties::TextStyle::Script& t) = 0;
-
-        virtual void ExecuteStyle(const TextProperties::TextStyle::BasicStyle& t)
-        {
-            switch(t)
-            {
-                case TextProperties::TextStyle::BasicStyle::Intensity_Bold:
-                case TextProperties::TextStyle::BasicStyle::Intensity_Dim:
-                case TextProperties::TextStyle::BasicStyle::Intensity_Normal:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Intensity>(t));
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Italic_Enable:
-                case TextProperties::TextStyle::BasicStyle::Italic_Disable:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Italic>(t));
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Underline_Underlined:
-                case TextProperties::TextStyle::BasicStyle::Underline_DoubleUnerlined:
-                case TextProperties::TextStyle::BasicStyle::Underline_Disable:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Underline>(t));
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Underline_SelectColor:
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Blink_SlowBlink:
-                case TextProperties::TextStyle::BasicStyle::Blink_FastBlink:
-                case TextProperties::TextStyle::BasicStyle::Blink_Disable:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Blink>(t));
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Inverted_Enable:
-                case TextProperties::TextStyle::BasicStyle::Inverted_Disable:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Inverted>(t));
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Ideogram_Underlined:
-                case TextProperties::TextStyle::BasicStyle::Ideogram_DoubleUnderlined:
-                case TextProperties::TextStyle::BasicStyle::Ideogram_Overlined:
-                case TextProperties::TextStyle::BasicStyle::Ideogram_DoubleOverlined:
-                case TextProperties::TextStyle::BasicStyle::Ideogram_StressMarking:
-                case TextProperties::TextStyle::BasicStyle::Ideogram_AllDisable:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Ideogram>(t));
-                    break;
-
-                case TextProperties::TextStyle::BasicStyle::Script_Superscript:
-                case TextProperties::TextStyle::BasicStyle::Script_Subscript:
-                case TextProperties::TextStyle::BasicStyle::Script_AllDisable:
-                    ExecuteStyle(static_cast<TextProperties::TextStyle::Script>(t));
-                    break;
-
-                default:
-                    break;
-            }
-        }
     };
 }

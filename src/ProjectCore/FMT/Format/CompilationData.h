@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ProjectCore/Core/Core.h"
-#include "ProjectCore/LoggerManager/LoggerManager.h"
+#include "ProjectCore/FLog.h"
 
 namespace ProjectCore::FMT::Detail
 {
@@ -52,7 +52,6 @@ namespace ProjectCore::FMT::Detail
 
 namespace ProjectCore::FMT
 {
-
     template<typename FormatterContext>
     struct FormatterType<Detail::FileLocation, FormatterContext>
     {
@@ -74,5 +73,4 @@ namespace ProjectCore::FMT
             context.RunType(t.FunctionName);
         }
     };
-
 }

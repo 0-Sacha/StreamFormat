@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ProjectCore/FMT/Detail/Buffer/BasicBufferOut/BasicBufferOut.h"
+#include "ProjectCore/FMT/Buffer/BasicBufferOut/BasicBufferOut.h"
 #include "JsonObjects.h"
 
 namespace ProjectCore::JSON::Detail

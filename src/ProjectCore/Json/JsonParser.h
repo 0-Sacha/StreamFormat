@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ProjectCore/FMT/Detail/Buffer/BasicBufferIn/BasicBufferIn.h"
-#include "ProjectCore/FMT/Detail/Buffer/BufferInProperties/BufferInProperties.h"
+#include "ProjectCore/FMT/Buffer/BasicBufferIn/BasicBufferIn.h"
+#include "ProjectCore/FMT/Buffer/BufferInProperties/BufferInProperties.h"
 
 #include "JsonObjects.h"
 

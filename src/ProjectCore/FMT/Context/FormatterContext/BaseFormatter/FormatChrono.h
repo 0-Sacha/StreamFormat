@@ -3,10 +3,11 @@
 #include "ProjectCore/FMT/Context/FormatterContext/BasicFormatterContext.h"
 #include <chrono>
 
-namespace ProjectCore::FMT::ChronoDetail
+namespace ProjectCore::FMT::Detail
 {
     template<typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
-    void WriteSubTimeFull(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context) {
+    void WriteSubTimeFull(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context)
+    {
         Detail::ShiftSize nbDigit{};
         pattern.FastReadUInt(nbDigit.Value);
 
@@ -19,7 +20,8 @@ namespace ProjectCore::FMT::ChronoDetail
     }
 
     template<typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
-    void WriteSubTimeMod(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context) {
+    void WriteSubTimeMod(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context)
+    {
         Detail::ShiftSize nbDigit;
         pattern.FastReadUInt(nbDigit.Value);
         bool isDefault = nbDigit.IsDefault();
@@ -49,7 +51,8 @@ namespace ProjectCore::FMT::ChronoDetail
     }
 
     template<typename Clock, typename Duration, typename FormatterContext>
-    bool WriteTime(const std::chrono::time_point<Clock, Duration>& value, FormatterContext& context, bool useDefaultPattern = true) {
+    bool WriteTime(const std::chrono::time_point<Clock, Duration>& value, FormatterContext& context, bool useDefaultPattern = true)
+    {
         auto patternPtr = context.GetFormatData().GetSpecifierOnlyText("pattern");
         if (patternPtr == nullptr && useDefaultPattern == false)
             return false;
@@ -63,9 +66,9 @@ namespace ProjectCore::FMT::ChronoDetail
         context.BufferOut().FastWriteStringView(pattern.ParamGoToAndGetStr('%', '#', '/'));
         while (!pattern.IsEnd()) {
 
-            if (pattern.IsEqualToForward('%'))        WriteSubTimeMod(value, pattern, context);
-            else if (pattern.IsEqualToForward('#'))    WriteSubTimeFull(value, pattern, context);
-            else if (pattern.IsEqualToForward('/'))    WriteSubTimeSub(value, pattern, context);
+            if (pattern.IsEqualToForward('%'))      WriteSubTimeMod(value, pattern, context);
+            else if (pattern.IsEqualToForward('#')) WriteSubTimeFull(value, pattern, context);
+            else if (pattern.IsEqualToForward('/')) WriteSubTimeSub(value, pattern, context);
 
             context.BufferOut().FastWriteStringView(pattern.ParamGoToAndGetStr('%', '#', '/'));
         }
@@ -74,14 +77,14 @@ namespace ProjectCore::FMT::ChronoDetail
     }
 }
 
-
 namespace ProjectCore::FMT
 {
     template<typename FormatterContext>
     struct FormatterType<std::chrono::time_point<std::chrono::high_resolution_clock>, FormatterContext>
     {
-        static void Format(const std::chrono::time_point<std::chrono::high_resolution_clock>& t, FormatterContext& context) {
-            ChronoDetail::WriteTime(t, context);
+        static void Format(const std::chrono::time_point<std::chrono::high_resolution_clock>& t, FormatterContext& context)
+        {
+            Detail::WriteTime(t, context);
         }
     };
 
@@ -89,8 +92,9 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::time_point<std::chrono::system_clock>, FormatterContext>
     {
-        static void Format(const std::chrono::time_point<std::chrono::system_clock>& t, FormatterContext& context) {
-            ChronoDetail::WriteTime(t, context);
+        static void Format(const std::chrono::time_point<std::chrono::system_clock>& t, FormatterContext& context)
+        {
+            Detail::WriteTime(t, context);
         }
     };
 #endif
@@ -98,9 +102,11 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::seconds, FormatterContext>
     {
-        static void Format(const std::chrono::seconds& t, FormatterContext& context) {
+        static void Format(const std::chrono::seconds& t, FormatterContext& context)
+        {
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::seconds> time(t);
-            if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::seconds>(time, context)) {
+            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::seconds>(time, context))
+            {
                 context.BufferOut().BasicWriteType(t.count());
                 context.BufferOut().PushBack('s');
             }
@@ -110,9 +116,11 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::minutes, FormatterContext>
     {
-        static void Format(const std::chrono::minutes& t, FormatterContext& context) {
+        static void Format(const std::chrono::minutes& t, FormatterContext& context)
+        {
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::minutes> time(t);
-            if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::minutes>(time, context)) {
+            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::minutes>(time, context))
+            {
                 context.BufferOut().BasicWriteType(t.count());
                 context.BufferOut().PushBack('m');
             }
@@ -122,9 +130,11 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::hours, FormatterContext>
     {
-        static void Format(const std::chrono::hours& t, FormatterContext& context) {
+        static void Format(const std::chrono::hours& t, FormatterContext& context)
+        {
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::hours> time(t);
-            if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::hours>(time, context)) {
+            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::hours>(time, context))
+            {
                 context.BufferOut().BasicWriteType(t.count());
                 context.BufferOut().PushBack('h');
             }
@@ -134,9 +144,11 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::milliseconds, FormatterContext>
     {
-        static void Format(const std::chrono::milliseconds& t, FormatterContext& context) {
+        static void Format(const std::chrono::milliseconds& t, FormatterContext& context)
+        {
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::milliseconds> time(t);
-            if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::milliseconds>(time, context)) {
+            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::milliseconds>(time, context))
+            {
                 context.BufferOut().BasicWriteType(t.count());
                 context.BufferOut().PushBack('m');
                 context.BufferOut().PushBack('s');
@@ -147,9 +159,11 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::microseconds, FormatterContext>
     {
-        static void Format(const std::chrono::microseconds& t, FormatterContext& context) {
+        static void Format(const std::chrono::microseconds& t, FormatterContext& context)
+        {
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::microseconds> time(t);
-            if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::microseconds>(time, context)) {
+            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::microseconds>(time, context))
+            {
                 context.BufferOut().BasicWriteType(t.count());
                 context.BufferOut().PushBack('u');
                 context.BufferOut().PushBack('s');
@@ -160,9 +174,11 @@ namespace ProjectCore::FMT
     template<typename FormatterContext>
     struct FormatterType<std::chrono::nanoseconds, FormatterContext>
     {
-        static void Format(const std::chrono::nanoseconds& t, FormatterContext& context) {
+        static void Format(const std::chrono::nanoseconds& t, FormatterContext& context)
+        {
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds> time(t);
-            if (!ChronoDetail::WriteTime<std::chrono::high_resolution_clock, std::chrono::nanoseconds>(time, context)) {
+            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::nanoseconds>(time, context))
+            {
                 context.BufferOut().BasicWriteType(t.count());
                 context.BufferOut().PushBack('n');
                 context.BufferOut().PushBack('s');

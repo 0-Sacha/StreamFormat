@@ -3,8 +3,8 @@
 #include "JsonParser.h"
 #include "JsonFormatter.h"
 
-#include "ProjectCore/FMT/Detail/Buffer/Utils/BufferUtils.h"
-#include "ProjectCore/FMT/FMT.h"
+#include "ProjectCore/FMT/Buffer/Utils/BufferUtils.h"
+#include "ProjectCore/FMT.h"
 
 #include <string>
 #include <functional>
@@ -348,7 +348,7 @@ namespace ProjectCore::JSON
     };
 }
 
-#include "ProjectCore/FMT/FMT.h"
+#include "ProjectCore/FMT.h"
 namespace ProjectCore::FMT
 {
     template<typename T, typename FormatterContext>

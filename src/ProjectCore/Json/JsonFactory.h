@@ -23,7 +23,7 @@ namespace ProjectCore::JSON
     };
 }
 
-#include "ProjectCore/FMT/FMT.h"
+#include "ProjectCore/FMT.h"
 namespace ProjectCore::FMT
 {
     template<typename FormatterContext>
@@ -35,7 +35,7 @@ namespace ProjectCore::FMT
     };
 }
 
-#include "ProjectCore//FMT/Detail/Buffer/BufferOutManager/DynamicBufferOutManager.h"
+#include "ProjectCore//FMT/Buffer/BufferOutManager/DynamicBufferOutManager.h"
 #include <fstream>
 #include <utility>
 #include "Serializers/JsonObjectsSerializer.h"

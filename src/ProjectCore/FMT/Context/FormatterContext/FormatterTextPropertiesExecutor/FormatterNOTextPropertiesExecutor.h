@@ -5,7 +5,7 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename BufferOutType>
-    class FormatterNOTextPropertiesExecutor : public IFormatterTextPropertiesExecutor<BufferOutType>
+    class FormatterNOTextPropertiesExecutor final : public IFormatterTextPropertiesExecutor<BufferOutType>
     {
     public:
         ~FormatterNOTextPropertiesExecutor() override = default;

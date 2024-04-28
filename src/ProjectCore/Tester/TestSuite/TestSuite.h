@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ProjectCore/FMT/FMT.h"
-#include "ProjectCore/LoggerManager/LoggerManager.h"
-#include "ProjectCore/Instrumentation/ProfilerManger/ProfilerManger.h"
+#include "ProjectCore/FMT.h"
+#include "ProjectCore/FLog.h"
+#include "ProjectCore/ProfilerManager.h"
 
 #include <concepts>
 #include <string>
@@ -161,9 +161,9 @@ namespace ProjectCore::Tester::Detail
         std::unordered_map<std::string_view, TestSuite*> TestSuitesLinked;
 
         TestSuiteData Extra;
-        LoggerManager::BasicLogger Logger;
-        LoggerManager::BasicLogger TestLogger;
-        Instrumentation::Profiler* Profiler;
+        FLog::BasicLogger Logger;
+        FLog::BasicLogger TestLogger;
+        ProfilerManager::Profiler* Profiler;
 
         TestSuite* Parent;
 
@@ -173,7 +173,7 @@ namespace ProjectCore::Tester::Detail
     private:
         std::string GetFullName();
         std::string GetCorrectedSizeName();
-        Instrumentation::Profiler& GetProfiler();
+        ProfilerManager::Profiler& GetProfiler();
 
     public:
         TestStatusBank ExecAllTests();

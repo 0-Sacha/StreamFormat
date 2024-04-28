@@ -9,7 +9,7 @@ namespace ProjectCore::FMT::Context
         : Base(textPropertiesExecutor, parentContextProperties)
         , m_BufferIn(bufferProperties)
     {
-        // TODO
+        // TODO:
         // textPropertiesExecutor.SetBuffer(m_BufferIn);
     }
     
@@ -20,17 +20,17 @@ namespace ProjectCore::FMT::Context
         auto childContextArgsInterface = Detail::ParserContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
         Detail::FMTFormatBuffer<NewCharFormat> format(bufferInProperties);
         
-        // TODO : Disable because cause TextProperties to not be restore correctly
+        // TODO : Disabled because cause TextProperties to not be restore correctly
         if constexpr (false && std::is_same_v<NewCharFormat, CharFormat>)
         {
             Run(format, &childContextArgsInterface);
         }
         else
         {
-            Detail::IParserTextPropertiesExecutor<BufferInType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IParserTextPropertiesExecutor<BufferInType>&>(m_TextPropertiesParser.GetTextPropertiesExecutor());
+            Detail::IParserTextPropertiesExecutor<BufferInType>& cm_TextPropertiesExecutor = reinterpret_cast<Detail::IParserTextPropertiesExecutor<BufferInType>&>(m_TextProperties.GetTextPropertiesExecutor());
 
             Detail::BufferInProperties<CharBuffer> properties(m_BufferIn.GetBuffer(), m_BufferIn.GetBufferSize());
-            ContextType child(properties, cm_TextPropertiesExecutor, &m_TextPropertiesParser.GetCurrentContextProperties());
+            ContextType child(properties, cm_TextPropertiesExecutor, &m_TextProperties.GetCurrentContextProperties());
             child.BufferIn().ReloadBuffer(m_BufferIn);
             child.Run(format, &childContextArgsInterface);
             m_BufferIn.ReloadBuffer(child.BufferIn());

@@ -10,13 +10,13 @@ namespace ProjectCore::FMT::Context
         , m_ValuesIndex(0, 0)
         , m_FormatData()
         , m_ContextArgsInterface(nullptr)
-        , m_TextPropertiesParser(*this, textPropertiesExecutor, parentContextProperties)
+        , m_TextProperties(*this, textPropertiesExecutor, parentContextProperties)
     {}
 
     template<typename CharFormat>
     void BasicContext<CharFormat>::Terminate()
     {
-        m_TextPropertiesParser.Terminate();
+        m_TextProperties.Terminate();
     }
 
     template<typename CharFormat>
@@ -45,7 +45,7 @@ namespace ProjectCore::FMT::Context
         FormatBufferType oldFormat = m_Format;
         ContextArgsInterface* oldArgsInterface = m_ContextArgsInterface;
         Detail::FormatIndex oldValuesIndex = m_ValuesIndex;
-        Detail::TextProperties::Properties saveTextProperties = m_TextPropertiesParser.Save();
+        Detail::TextProperties::Properties saveTextProperties = m_TextProperties.Save();
         // Set new context
         m_Format = format;
         m_ContextArgsInterface = argsInterface;
@@ -57,12 +57,13 @@ namespace ProjectCore::FMT::Context
         m_Format = oldFormat;
         m_ContextArgsInterface = oldArgsInterface;
         m_ValuesIndex = oldValuesIndex;
-        m_TextPropertiesParser.Reload(saveTextProperties);
+        m_TextProperties.Reload(saveTextProperties);
     }
     
     template<typename CharFormat>
     template<typename T>
-    void BasicContext<CharFormat>::FormatReadParameterThrow(T& i, const T& defaultValue) {
+    void BasicContext<CharFormat>::FormatReadParameterThrow(T& i, const T& defaultValue)
+    {
         if (!m_Format.IsEqualTo('{'))
         {
             if (m_Format.FastReadUInt(i) == false)
@@ -84,7 +85,8 @@ namespace ProjectCore::FMT::Context
     }
 
     template<typename CharFormat>
-    void BasicContext<CharFormat>::FormatDataApplyNextOverride() {
+    void BasicContext<CharFormat>::FormatDataApplyNextOverride()
+    {
         if (m_FormatData.NextOverride.size() == 0)
             return;
     

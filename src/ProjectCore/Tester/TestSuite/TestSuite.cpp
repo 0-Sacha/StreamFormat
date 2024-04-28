@@ -1,17 +1,16 @@
 #include "TestSuite.h"
-#include "ProjectCore/Instrumentation/ProfilerManger/ProfilerManger.h"
+#include "ProjectCore/ProfilerManager.h"
 
 namespace ProjectCore::Tester
 {
     bool TestSuitesManager::ExecAllTestSuites()
     {
-        PROJECTCORE_FORMATTER_TIME_BEGIN();
         Detail::TestStatusBank status;
 
         for (auto& [name, testSuite] : TestSuites)
             status.Add(testSuite->ExecAllTests());
 
-        LoggerManager::BasicLogger logger("TestSuite");
+        FLog::BasicLogger logger("TestSuite");
         if (status.IsAllOk())
             logger.Info("{C:white}RESULT => {C:+black}{}", status);
         else
@@ -26,21 +25,21 @@ namespace ProjectCore::Tester::Detail
     TestStatusBank TestSuite::ExecAllTests()
     {
         if (Parent == nullptr)
-            Profiler = new Instrumentation::Profiler("TestSuite_" + Name);
+            Profiler = new ProfilerManager::Profiler("TestSuite_" + Name);
         InitLogger();
 
-        Instrumentation::Profiler& profiler = GetProfiler();
+        ProfilerManager::Profiler& profiler = GetProfiler();
         Logger.Info("{C:+black}BEGIN");
-        Instrumentation::DurationEvent testSuiteDuration(GetFullName(), "Profile");
+        ProfilerManager::DurationEvent testSuiteDuration(GetFullName(), "Profile");
         testSuiteDuration.Start();
         bool firstTestSuite = true;
         TestStatusBank testSuiteStatus;
-        Instrumentation::DurationEvent testsDuration("Tests", "Profile");
+        ProfilerManager::DurationEvent testsDuration("Tests", "Profile");
         testsDuration.Start();
         for (auto& [name, test] : Tests)
         {
             firstTestSuite = false;
-            Instrumentation::DurationEvent currentTestDuration(test->Name, "Profile");
+            ProfilerManager::DurationEvent currentTestDuration(test->Name, "Profile");
             TestStatus testStatus = TestStatus::Fail;
             currentTestDuration.Start();
             if (TestSuitesManager::PerformanceTest.Enable == false)
@@ -64,7 +63,7 @@ namespace ProjectCore::Tester::Detail
         }
         testsDuration.Stop();
 
-        Instrumentation::DurationEvent groupsDuration("Groups", "Profile");
+        ProfilerManager::DurationEvent groupsDuration("Groups", "Profile");
         groupsDuration.Start();
         for (auto& [name, testSuite] : TestSuitesLinked)
         {
@@ -87,7 +86,7 @@ namespace ProjectCore::Tester::Detail
 
         if (Parent == nullptr)
         {
-            Instrumentation::ProfilerFactory::ToJson(*Profiler);
+            ProfilerManager::ProfilerFactory::ToJson(*Profiler);
             delete Profiler;
         }
 
@@ -98,13 +97,13 @@ namespace ProjectCore::Tester::Detail
     {
         if (TestSuitesManager::Verbose == false)
         {
-            Logger.SetSeverity(LoggerManager::LogSeverity::Debug);
-            TestLogger.SetSeverity(LoggerManager::LogSeverity::Debug);
+            Logger.SetSeverity(FLog::LogSeverity::Debug);
+            TestLogger.SetSeverity(FLog::LogSeverity::Debug);
         }
         else
         {
-            Logger.SetSeverity(LoggerManager::LogSeverity::Trace);
-            TestLogger.SetSeverity(LoggerManager::LogSeverity::Trace);
+            Logger.SetSeverity(FLog::LogSeverity::Trace);
+            TestLogger.SetSeverity(FLog::LogSeverity::Trace);
         }
 
         std::string timePattern = "";
@@ -154,7 +153,7 @@ namespace ProjectCore::Tester::Detail
         return res;
     }
 
-    Instrumentation::Profiler& TestSuite::GetProfiler()
+    ProfilerManager::Profiler& TestSuite::GetProfiler()
     {
         if (Parent == nullptr)
             return *Profiler;

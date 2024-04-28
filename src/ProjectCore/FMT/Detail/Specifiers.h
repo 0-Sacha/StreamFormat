@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ProjectCore/Core/Core.h"
-#include "Types/Types.h"
+
+#include "ContextTypes.h"
 
 #include <array>
 #include <string_view>
@@ -153,7 +154,8 @@ namespace ProjectCore::FMT::Detail
 namespace ProjectCore::FMT::Detail
 {
     template <typename CharFormat>
-    struct FormatSpecifier {
+    struct FormatSpecifier
+    {
         FormatSpecifier()
             : Name(nullptr, 0)
             , ValueAsText(nullptr, 0)
@@ -213,7 +215,8 @@ namespace ProjectCore::FMT::Detail
     };
 
     template <typename CharFormat>
-    struct FormatData {
+    struct FormatData
+    {
     public:
         using FormatSpecifierType = FormatSpecifier<CharFormat>;
 
@@ -221,22 +224,22 @@ namespace ProjectCore::FMT::Detail
         bool IsInit                             = false;
         bool HasSpec                            = false;
 
-        bool KeepNewStyle                       = false;     // W
+        bool KeepNewStyle                       = false; // W
 
-        bool TrueValue                          = false;    // = 
-        bool Safe                               = false;    // Safe 
+        bool TrueValue                          = false; // = 
+        bool Safe                               = false; // Safe 
 
-        Detail::ValueIntPrint IntPrint          = Detail::ValueIntPrint::Default;     // B  - X  - O  - D
-        Detail::DigitSize DigitSize             = Detail::DigitSize{};                // B? - X? - O? - D?
-        Detail::FloatPrecision FloatPrecision   = Detail::FloatPrecision{};            // .
+        Detail::ValueIntPrint IntPrint          = Detail::ValueIntPrint::Default;   // B  - X  - O  - D
+        Detail::DigitSize DigitSize             = Detail::DigitSize{};              // B? - X? - O? - D?
+        Detail::FloatPrecision FloatPrecision   = Detail::FloatPrecision{};         // .
 
-        Detail::PrintStyle PrintStyle           = Detail::PrintStyle::Default;        // U  - L
+        Detail::PrintStyle PrintStyle           = Detail::PrintStyle::Default;      // U  - L
 
-        Detail::ShiftPrint ShiftPrint           = Detail::ShiftPrint{};                // 0 - ' ' - * .....
-        Detail::ShiftSize ShiftSize             = Detail::ShiftSize{};                // <? - >? - ^?
-        Detail::ShiftType ShiftType             = Detail::ShiftType::Default;         // <  - >  - ^
+        Detail::ShiftPrint ShiftPrint           = Detail::ShiftPrint{};             // 0 - ' ' - * .....
+        Detail::ShiftSize ShiftSize             = Detail::ShiftSize{};              // <? - >? - ^?
+        Detail::ShiftType ShiftType             = Detail::ShiftType::Default;       // <  - >  - ^
 
-        std::basic_string_view<CharFormat> NextOverride     = std::basic_string_view<CharFormat>(nullptr, 0);
+        std::basic_string_view<CharFormat> NextOverride = std::basic_string_view<CharFormat>(nullptr, 0);
 
         std::uint8_t SpecifierCount                             = 0;
         std::array<FormatSpecifier<CharFormat>, 10> Specifier   {};
@@ -244,60 +247,75 @@ namespace ProjectCore::FMT::Detail
     public:
         static inline constexpr std::uint8_t NotFound() { return (std::numeric_limits<std::uint8_t>::max)(); }
 
-        FormatSpecifierType* GetSpecifier(const std::basic_string_view<CharFormat>& name) {
+        FormatSpecifierType* GetSpecifier(const std::basic_string_view<CharFormat>& name)
+        {
             for (std::uint8_t i = 0; i < SpecifierCount; ++i)
                 if (Specifier[i].Name == name)
                     return &Specifier[i];
             return nullptr;
         }
 
-        FormatSpecifierType* GetSpecifierOnlyText(const std::basic_string_view<CharFormat>& name) {
+        FormatSpecifierType* GetSpecifierOnlyText(const std::basic_string_view<CharFormat>& name)
+        {
             for (std::uint8_t i = 0; i < SpecifierCount; ++i)
                 if (Specifier[i].ValueHasText && Specifier[i].Name == name)
                     return &Specifier[i];
             return nullptr;
         }
 
-        FormatSpecifierType* GetSpecifierOnlyNumber(const std::basic_string_view<CharFormat>& name) {
+        FormatSpecifierType* GetSpecifierOnlyNumber(const std::basic_string_view<CharFormat>& name)
+        {
             for (std::uint8_t i = 0; i < SpecifierCount; ++i)
                 if (Specifier[i].ValueHasNumber && Specifier[i].Name == name)
                     return &Specifier[i];
             return nullptr;
         }
 
-        const FormatSpecifierType* GetSpecifier(const std::basic_string_view<CharFormat>& name) const {
+        const FormatSpecifierType* GetSpecifier(const std::basic_string_view<CharFormat>& name) const
+        {
             for (std::uint8_t i = 0; i < SpecifierCount; ++i)
                 if (Specifier[i].Name == name)
                     return &Specifier[i];
             return nullptr;
         }
 
-        bool HasSpecifier(const std::basic_string_view<CharFormat>& name) const {
+        bool HasSpecifier(const std::basic_string_view<CharFormat>& name) const
+        {
             return GetSpecifier(name) != nullptr;
         }
 
-        const FormatSpecifierType* GetSpecifierOnlyText(const std::basic_string_view<CharFormat>& name) const {
+        const FormatSpecifierType* GetSpecifierOnlyText(const std::basic_string_view<CharFormat>& name) const
+        {
             for (std::uint8_t i = 0; i < SpecifierCount; ++i)
                 if (Specifier[i].ValueHasText && Specifier[i].Name == name)
                     return &Specifier[i];
             return nullptr;
         }
 
-        const FormatSpecifierType* GetSpecifierOnlyNumber(const std::basic_string_view<CharFormat>& name) const {
+        const FormatSpecifierType* GetSpecifierOnlyNumber(const std::basic_string_view<CharFormat>& name) const
+        {
             for (std::uint8_t i = 0; i < SpecifierCount; ++i)
                 if (Specifier[i].ValueHasNumber && Specifier[i].Name == name)
                     return &Specifier[i];
             return nullptr;
         }
 
-        std::basic_string_view<CharFormat> GetSpecifierAsText(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& defaultValue = FormatSpecifierType::SpecifierAsTextNotSpecified) const {
+        std::basic_string_view<CharFormat> GetSpecifierAsText(
+            const std::basic_string_view<CharFormat>& name,
+            const std::basic_string_view<CharFormat>& defaultValue = FormatSpecifierType::SpecifierAsTextNotSpecified
+        ) const
+        {
             const FormatSpecifierType* formatSpecifier = GetSpecifierOnlyText(name);
             if (formatSpecifier == nullptr)
                 return defaultValue;
             return formatSpecifier->ValueAsText;
         }
 
-        Detail::DataType GetSpecifierAsNumber(const std::basic_string_view<CharFormat>& name, const Detail::DataType defaultValue = FormatSpecifierType::SpecifierAsNumberNotSpecified) const {
+        Detail::DataType GetSpecifierAsNumber(
+            const std::basic_string_view<CharFormat>& name,
+            const Detail::DataType defaultValue = FormatSpecifierType::SpecifierAsNumberNotSpecified
+        ) const
+        {
             const FormatSpecifierType* formatSpecifier = GetSpecifierOnlyNumber(name);
             if (formatSpecifier == nullptr)
                 return defaultValue;
@@ -310,7 +328,8 @@ namespace ProjectCore::FMT::Detail
                 Specifier[SpecifierCount++] = specifier;
         }
 
-        void AddSpecifier(const FormatSpecifierType& specifier, bool dontOverride = false) {
+        void AddSpecifier(const FormatSpecifierType& specifier, bool dontOverride = false)
+        {
             FormatSpecifierType* formatSpecifier = GetSpecifier(specifier.Name);
             if (formatSpecifier == nullptr)
                 AddSpecifierForce(specifier);
@@ -327,7 +346,8 @@ namespace ProjectCore::FMT::Detail
             }
         }
 
-        void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value, bool dontOverride = false) {
+        void AddSpecifier(const std::basic_string_view<CharFormat>& name, const std::basic_string_view<CharFormat>& value, bool dontOverride = false)
+        {
             FormatSpecifierType* formatSpecifier = GetSpecifier(name);
             if (formatSpecifier == nullptr)
                 AddSpecifierForce(FormatSpecifierType(name, value));
@@ -338,7 +358,8 @@ namespace ProjectCore::FMT::Detail
             }
         }
         
-        void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value, bool dontOverride = false) {
+        void AddSpecifier(const std::basic_string_view<CharFormat>& name, const Detail::DataType value, bool dontOverride = false)
+        {
             FormatSpecifierType* formatSpecifier = GetSpecifier(name);
             if (formatSpecifier == nullptr)
                 AddSpecifierForce(FormatSpecifierType(name, value));
@@ -349,31 +370,39 @@ namespace ProjectCore::FMT::Detail
             }
         }
 
-        void AddSpecifier(const std::basic_string_view<CharFormat>& name) {
+        void AddSpecifier(const std::basic_string_view<CharFormat>& name)
+        {
             FormatSpecifierType* formatSpecifier = GetSpecifier(name);
             if (formatSpecifier == nullptr)
                 AddSpecifierForce(FormatSpecifierType(name));
         }
 
     public:
-        template <typename T> void ModifyThrow(const T&) { throw Detail::FMTGivenTypeError{}; }
+        void Apply(const FormatData& given)                   { *this = given; }
 
-        void ModifyThrow(const FormatData& given)                   { *this = given; }
+        void Apply(const Detail::ValueIntPrint& given)        { IntPrint = given; }
+        void Apply(const Detail::PrintStyle& given)           { PrintStyle = given; }
+        void Apply(const Detail::DigitSize& given)            { DigitSize = given; }
+        void Apply(const Detail::ShiftSize& given)            { ShiftSize = given; }
+        void Apply(const Detail::FloatPrecision& given)       { FloatPrecision = given; }
+        void Apply(const Detail::ShiftPrint& given)           { ShiftPrint = given; }
+        void Apply(const Detail::ShiftType& given)            { ShiftType = given; }
+        void Apply(const FormatSpecifier<CharFormat>& given)  { AddSpecifier(given); }
 
-        void ModifyThrow(const Detail::ValueIntPrint& given)        { IntPrint = given; }
-        void ModifyThrow(const Detail::PrintStyle& given)           { PrintStyle = given; }
-        void ModifyThrow(const Detail::DigitSize& given)            { DigitSize = given; }
-        void ModifyThrow(const Detail::ShiftSize& given)            { ShiftSize = given; }
-        void ModifyThrow(const Detail::FloatPrecision& given)       { FloatPrecision = given; }
-        void ModifyThrow(const Detail::ShiftPrint& given)           { ShiftPrint = given; }
-        void ModifyThrow(const Detail::ShiftType& given)            { ShiftType = given; }
-        void ModifyThrow(const FormatSpecifier<CharFormat>& given)  { AddSpecifier(given); }
-
-        template <typename T> bool ModifyTestThrow(const T* given) {
+        template <typename T>
+        requires requires (const T& value, FormatData& data) { data.Apply(value); }
+        bool TestApply(const T* given)
+        {
             if (given == nullptr)
                 return false;
-            ModifyThrow(*given);
+            Apply(*given);
             return true;
         }
+    };
+
+    template<typename T, typename CharFormat>
+    concept FormatDataCanApply = requires (const T& value, FormatData<CharFormat>& data)
+    {
+        data.Apply(value);
     };
 }

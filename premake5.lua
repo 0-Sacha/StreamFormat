@@ -3,37 +3,37 @@
 Solution.Projects["ProjectCore"].PlatformDefineName = "PROJECTCORE"
 Solution.Projects["ProjectCore"].Type = "StaticLib"
 Solution.Projects["ProjectCore"].IncludeDirs = {
-	"%{Solution.Projects.ProjectCore.Path}/src/"
+    "%{Solution.Projects.ProjectCore.Path}/src/"
 }
 
 project "ProjectCore"
-	kind 		(Solution.Projects["ProjectCore"].Type)
-	language   	"C++"
-	cppdialect 	"C++20"
+    kind           (Solution.Projects["ProjectCore"].Type)
+    language        "C++"
+    cppdialect      "C++20"
 
-	Solution.HighWarnings()
+    Solution.HighWarnings()
 
-	targetdir 	(Solution.Path.ProjectTargetDirectory)
-	objdir 		(Solution.Path.ProjectObjectDirectory)
+    targetdir      (Solution.Path.ProjectTargetDirectory)
+    objdir           (Solution.Path.ProjectObjectDirectory)
 
-	files {
-		"src/**.h",
-		"src/**.inl",
-		"src/**.cpp",
-	}
-	
-	Solution.Project("ProjectCore")
+    files {
+         "src/**.h",
+         "src/**.inl",
+         "src/**.cpp",
+    }
+    
+    Solution.Project("ProjectCore")
 
-	defines {
-		"PROJECTCORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
-	}
+    defines {
+         "PROJECTCORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
+    }
 
 if (ProjectCoreTestsEnable)
 then
 
 Solution.AddProject("ProjectCoreTests", Solution.Projects["ProjectCore"].Path)
 Solution.Projects["ProjectCoreTests"].ProjectDependencies = {
-	"ProjectCore"
+     "ProjectCore"
 }
 
 ProjectCoreTestsLaunch = {}
@@ -41,22 +41,21 @@ ProjectCoreTestsLaunch.Project = "ProjectCoreTests"
 Solution.Launch["ProjectCoreTests"] = ProjectCoreTestsLaunch
 
 project "ProjectCoreTests"
-	kind 		(Solution.Projects["ProjectCoreTests"].Type)
-	language 	"C++"
-	cppdialect 	"C++20"
+    kind           (Solution.Projects["ProjectCoreTests"].Type)
+    language      "C++"
+    cppdialect      "C++20"
 
-	Solution.HighWarnings()
+    Solution.HighWarnings()
 
-	targetdir 	(Solution.Path.ProjectTargetDirectory)
-	objdir 		(Solution.Path.ProjectObjectDirectory)
+    targetdir      (Solution.Path.ProjectTargetDirectory)
+    objdir           (Solution.Path.ProjectObjectDirectory)
 
-	files {
-		"Tests/**.h",
-		"Tests/**.hpp",
-		"Tests/**.inl",
-		"Tests/**.cpp",
-	}
+    files {
+         "Tests/**.h",
+         "Tests/**.hpp",
+         "Tests/**.inl",
+         "Tests/**.cpp",
+    }
 
-	Solution.Project("ProjectCoreTests")
+    Solution.Project("ProjectCoreTests")
 end
-	

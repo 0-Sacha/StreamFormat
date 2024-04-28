@@ -6,8 +6,10 @@
 namespace ProjectCore::FMT
 {
     template<typename FormatterContext>
-    struct FormatterType<typename FormatterContext::FormatSpecifierType, FormatterContext> {
-        static void Format(const typename FormatterContext::FormatSpecifierType& specifier, FormatterContext& context) {
+    struct FormatterType<typename FormatterContext::FormatSpecifierType, FormatterContext>
+    {
+        static void Format(const typename FormatterContext::FormatSpecifierType& specifier, FormatterContext& context)
+        {
             if(specifier.ValueIsText)
                 context.SubContextArrayFMT("{ '{}', '{}' }", specifier.Name, specifier.ValueAsText);
             else
@@ -16,20 +18,27 @@ namespace ProjectCore::FMT
     };
 
     template<typename FormatterContext>
-    struct FormatterType<typename FormatterContext::DataType, FormatterContext> {
-        static void Format(const typename FormatterContext::DataType&, FormatterContext& context) {
+    struct FormatterType<typename FormatterContext::DataType, FormatterContext>
+    {
+        static void Format(const typename FormatterContext::DataType&, FormatterContext& context)
+        {
             context.SubContextArrayFMT("{:C:red}", "Missing '{' or '}' because currently the format data is used as a parameter");
         }
     };
 
     // Bool
     template<typename FormatterContext>
-    struct FormatterType<bool, FormatterContext> {
-        static void Format(const bool t, FormatterContext& context) {
-            if (!context.GetFormatData().TrueValue) {
-                if (t == true)	context.BufferOut().FastWriteCharArray("True");
+    struct FormatterType<bool, FormatterContext>
+    {
+        static void Format(const bool t, FormatterContext& context)
+        {
+            if (!context.GetFormatData().TrueValue)
+            {
+                if (t == true)  context.BufferOut().FastWriteCharArray("True");
                 else            context.BufferOut().FastWriteCharArray("False");
-            } else {
+            }
+            else
+            {
                 if (t == true)  context.BufferOut().PushBack('1');
                 else            context.BufferOut().PushBack('0');
             }
@@ -39,32 +48,40 @@ namespace ProjectCore::FMT
     // Int Types
 #ifdef FMT_USE_STD_INTEGER
     template<typename FormatterContext>
-    struct FormatterType<std::int8_t, FormatterContext> {
-        static inline void Format(const std::int8_t t, FormatterContext& context) {
+    struct FormatterType<std::int8_t, FormatterContext>
+    {
+        static inline void Format(const std::int8_t t, FormatterContext& context)
+        {
             FormatterType<Detail::ForwardAsInt<std::int8_t>, FormatterContext>::Format(t, context);
         }
     };
     template<typename FormatterContext>
-    struct FormatterType<std::int16_t, FormatterContext> {
-        static inline void Format(const std::int16_t t, FormatterContext& context) {
+    struct FormatterType<std::int16_t, FormatterContext>
+    {
+        static inline void Format(const std::int16_t t, FormatterContext& context)
+        {
             FormatterType<Detail::ForwardAsInt<std::int16_t>, FormatterContext>::Format(t, context);
         }
     };
     template<typename FormatterContext>
-    struct FormatterType<std::int32_t, FormatterContext> {
-        static inline void Format(const std::int32_t t, FormatterContext& context) {
+    struct FormatterType<std::int32_t, FormatterContext>
+    {
+        static inline void Format(const std::int32_t t, FormatterContext& context)
+        {
             FormatterType<Detail::ForwardAsInt<std::int32_t>, FormatterContext>::Format(t, context);
         }
     };
     template<typename FormatterContext>
-    struct FormatterType<std::int64_t, FormatterContext> {
-        static inline void Format(const std::int64_t t, FormatterContext& context) {
+    struct FormatterType<std::int64_t, FormatterContext>
+    {
+        static inline void Format(const std::int64_t t, FormatterContext& context)
+        {
             FormatterType<Detail::ForwardAsInt<std::int64_t>, FormatterContext>::Format(t, context);
         }
     };
 #else
     template<typename FormatterContext>
-    struct FormatterType<signed char, FormatterContext> {
+    struct FormatterType<signed char, FormatterContext>{
         static inline void Format(const signed char t, FormatterContext& context) {
             FormatterType<Detail::ForwardAsInt<signed char>, FormatterContext>::Format(t, context);
         }
@@ -336,7 +353,7 @@ namespace ProjectCore::FMT
 
             while (begin < end) {
                 if (first)  first = false;
-                else		context.BufferOut().WriteIndentStringView(join);
+                else        context.BufferOut().WriteIndentStringView(join);
                 context.WriteType(*begin++);
             }
 
