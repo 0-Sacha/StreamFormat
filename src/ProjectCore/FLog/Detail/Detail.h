@@ -4,7 +4,7 @@
 
 namespace ProjectCore::FLog
 {
-    template<typename FormatStr>
+    template <typename FormatStr>
     struct AddIndentInFormat
     {
         AddIndentInFormat(const FormatStr& format)
@@ -13,7 +13,7 @@ namespace ProjectCore::FLog
         const FormatStr& Format;
     };
 
-    template<typename CharType>
+    template <typename CharType>
     struct ConcateNameAndSinkName
     {
         ConcateNameAndSinkName(const std::basic_string<CharType>& loggerName, const std::basic_string<CharType>& sinkName)
@@ -24,7 +24,7 @@ namespace ProjectCore::FLog
         const std::basic_string<CharType>& SinkName;
     };
 
-    template<typename CharType>
+    template <typename CharType>
     struct FuturConcateNameAndSinkName
     {
         FuturConcateNameAndSinkName(const std::basic_string<CharType>& loggerName)
@@ -36,7 +36,7 @@ namespace ProjectCore::FLog
 
 namespace ProjectCore::FMT
 {
-    template<typename FormatterContext, typename FormatStr>
+    template <typename FormatterContext, typename FormatStr>
     struct FormatterType<ProjectCore::FLog::AddIndentInFormat<FormatStr>, FormatterContext>
     {
         static void Format(const ProjectCore::FLog::AddIndentInFormat<FormatStr>& format, FormatterContext& context)
@@ -46,7 +46,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatterContext, typename CharType>
+    template <typename FormatterContext, typename CharType>
     struct FormatterType<ProjectCore::FLog::ConcateNameAndSinkName<CharType>, FormatterContext>
     {
         static void Format(const ProjectCore::FLog::ConcateNameAndSinkName<CharType>& names, FormatterContext& context)
@@ -55,7 +55,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatterContext, typename CharType>
+    template <typename FormatterContext, typename CharType>
     struct FormatterType<ProjectCore::FLog::FuturConcateNameAndSinkName<CharType>, FormatterContext>
     {
         static void Format(const ProjectCore::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterContext& context)

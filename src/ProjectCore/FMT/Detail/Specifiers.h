@@ -18,14 +18,6 @@ namespace ProjectCore::FMT::Detail
         Default = Dec
     };
 
-    /*
-    enum class IndentStyle : DataType
-    {
-        None,
-        Indent
-    };
-    */
-
     enum class ShiftType : DataType
     {
         Nothing,
@@ -390,8 +382,8 @@ namespace ProjectCore::FMT::Detail
         void Apply(const FormatSpecifier<CharFormat>& given)  { AddSpecifier(given); }
 
         template <typename T>
-        requires requires (const T& value, FormatData& data) { data.Apply(value); }
         bool TestApply(const T* given)
+        requires requires (const T& value, FormatData& data) { data.Apply(value); }
         {
             if (given == nullptr)
                 return false;
@@ -400,7 +392,7 @@ namespace ProjectCore::FMT::Detail
         }
     };
 
-    template<typename T, typename CharFormat>
+    template <typename T, typename CharFormat>
     concept FormatDataCanApply = requires (const T& value, FormatData<CharFormat>& data)
     {
         data.Apply(value);

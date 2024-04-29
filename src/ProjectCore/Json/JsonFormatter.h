@@ -78,7 +78,7 @@ namespace ProjectCore::JSON::Detail
         ~StructIntermediate();
 
     public:
-        template<typename T>
+        template <typename T>
         void Format(const std::string_view name, const T& t);
 
     public:
@@ -93,7 +93,7 @@ namespace ProjectCore::JSON::Detail
         ~ArrayIntermediate();
 
     public:
-        template<typename T>
+        template <typename T>
         void Format(const T& t);
 
     public:

@@ -73,53 +73,53 @@ namespace ProjectCore::FLog::Detail
         ~XLogger() override = default;
 
     public:
-        template<typename Severity, typename Format = std::string_view, typename ...Args>
+        template <typename Severity, typename Format = std::string_view, typename ...Args>
             requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         void Log(Severity status, const Format& format, Args&& ...args) { Master::template Log(status, format, std::forward<Args>(args)...); }
 
-        template<typename Severity, typename T>
+        template <typename Severity, typename T>
         void Log(Severity status, T&& t) { Master::template Log(status, std::forward<T>(t)); }
 
     public:
         /////---------- Logger Severity with array as format ----------/////
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         inline void Trace(const Format& format, Args&& ...args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         inline void Debug(const Format& format, Args&& ...args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         inline void Info(const Format& format, Args&& ...args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         inline void Warn(const Format& format, Args&& ...args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         inline void Error(const Format& format, Args&& ...args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         inline void Fatal(const Format& format, Args&& ...args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
 
         /////---------- NO-FORMAT Logger Severity ----------/////
-        template<typename T>
+        template <typename T>
         inline void Trace(T&& t) { return Log(LogSeverity::Trace, std::forward<T>(t)); }
-        template<typename T>
+        template <typename T>
         inline void Debug(T&& t) { return Log(LogSeverity::Debug, std::forward<T>(t)); }
-        template<typename T>
+        template <typename T>
         inline void Info(T&& t) { return Log(LogSeverity::Info, std::forward<T>(t)); }
-        template<typename T>
+        template <typename T>
         inline void Warn(T&& t) { return Log(LogSeverity::Warn, std::forward<T>(t)); }
-        template<typename T>
+        template <typename T>
         inline void Error(T&& t) { return Log(LogSeverity::Error, std::forward<T>(t)); }
-        template<typename T>
+        template <typename T>
         inline void Fatal(T&& t) { return Log(LogSeverity::Fatal, std::forward<T>(t)); }
     };
 }
 
 namespace ProjectCore::FMT
 {
-    template<typename FormatterContext>
+    template <typename FormatterContext>
     struct FormatterType<ProjectCore::FLog::LogSeverity::Value, FormatterContext>
     {
         static void Format(const ProjectCore::FLog::LogSeverity::Value t, FormatterContext& context)

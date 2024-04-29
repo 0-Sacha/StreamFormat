@@ -5,11 +5,11 @@
 namespace ProjectCore::FMT
 {
     /////---------- string_view NamedArgs Do not allocate memory (Best) ----------/////
-    template<typename T, typename CharName = char>
+    template <typename T, typename CharName = char>
     struct StringViewNamedArgs
     {
     public:
-        template<std::size_t SIZE>
+        template <std::size_t SIZE>
         StringViewNamedArgs(const CharName(&name)[SIZE], const T& t)
             : m_Name(name), value(t) {}
 
@@ -26,7 +26,7 @@ namespace ProjectCore::FMT
         const T& value;
     };
 
-    template<typename T, typename CharName, typename FormatterContext>
+    template <typename T, typename CharName, typename FormatterContext>
     struct FormatterType<StringViewNamedArgs<T, CharName>, FormatterContext>
     {
         inline static void Format(const StringViewNamedArgs<T, CharName>& t, FormatterContext& context) {
@@ -36,7 +36,7 @@ namespace ProjectCore::FMT
 
 
     /////---------- stringNamedArgs Allocate memory (Only if necessary) ----------/////
-    template<typename T, typename CharName = char>
+    template <typename T, typename CharName = char>
     struct StringNamedArgs
     {
     public:
@@ -56,7 +56,7 @@ namespace ProjectCore::FMT
         const T& value;
     };
 
-    template<typename T, typename CharName, typename FormatterContext>
+    template <typename T, typename CharName, typename FormatterContext>
     struct FormatterType<StringNamedArgs<T, CharName>, FormatterContext>
     {
         inline static void Format(const StringNamedArgs<T, CharName>& t, FormatterContext& context) {

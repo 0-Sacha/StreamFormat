@@ -422,7 +422,7 @@ namespace ProjectCore::FMT::Detail
             Bg = TextProperties::TextColor::ColorBG{};
         }
 
-        void Apply(const Color& given) { *this = given; }
+        void Apply(const TextProperties::TextColor::Color& given) { *this = given; }
 
         void Apply(const TextProperties::TextColor::ResetColor&) {
             ModifyReset();
@@ -496,15 +496,35 @@ namespace ProjectCore::FMT::Detail
             return NeedModif(given.Fg) || NeedModif(given.Bg);
         }
     };
-
-    template<typename T>
-    concept TextPropertiesColorCanApply = requires (const T& value, TextProperties::TextColor::Color& data)
-    {
-        data.Apply(value);
-    };
     
     inline bool operator==(const TextProperties::TextColor::Color& lhs, const TextProperties::TextColor::Color& rhs)
     {
         return lhs.Fg == rhs.Fg && lhs.Bg == rhs.Bg;
     }
+
+    template <typename T>
+    concept TextPropertiesColorCanApply = requires (const T& value, TextProperties::TextColor::Color& data)
+    {
+        data.Apply(value);
+    };
+
+    template <typename T>
+    struct TextPropertiesColorIsApplyType
+    {
+        using BaseType = GetBaseType<T>;
+        static constexpr bool Value = std::is_same_v<BaseType, TextProperties::TextColor::Color>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::ResetColor>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::BasicColorFG>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::BasicColorBG>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::BasicColor>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::ColorCubeFG>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::ColorCubeBG>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::ColorCube>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::Color24bFG>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::Color24bBG>
+                                   || std::is_same_v<BaseType, TextProperties::TextColor::Color24b>;
+    };
+
+    template <typename T>
+    concept TextPropertiesColorIsApply = TextPropertiesColorIsApplyType<T>::Value;
 }

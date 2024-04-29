@@ -12,7 +12,7 @@ namespace ProjectCore::FLog::Detail
         Async
     };
 
-    template<typename Severity, typename CharType>
+    template <typename Severity, typename CharType>
     class BasicLoggerSink
     {
     public:

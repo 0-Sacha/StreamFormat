@@ -179,7 +179,7 @@ namespace ProjectCore::FMT::Detail
         void ModifyReset() { *this = Style{}; }
         
         void Apply(const TextProperties::TextStyle::ResetStyle&)        { ModifyReset(); }
-        void Apply(const Style& given)                                  { *this = given; }
+        void Apply(const TextProperties::TextStyle::Style& given)       { *this = given; }
         void Apply(const TextProperties::TextStyle::Intensity& given)   { Intensity = given; }
         void Apply(const TextProperties::TextStyle::Italic& given)      { Italic = given; }
         void Apply(const TextProperties::TextStyle::Underline& given)   { Underline = given; }
@@ -202,7 +202,7 @@ namespace ProjectCore::FMT::Detail
     
     public:
         bool NeedModif(const TextProperties::TextStyle::ResetStyle&)        { return true; }
-        bool NeedModif(const Style& given)                                  { return *this != given; }
+        bool NeedModif(const TextProperties::TextStyle::Style& given)       { return *this != given; }
         bool NeedModif(const TextProperties::TextStyle::Intensity& given)   { return Intensity != given; }
         bool NeedModif(const TextProperties::TextStyle::Italic& given)      { return Italic != given; }
         bool NeedModif(const TextProperties::TextStyle::Underline& given)   { return Underline != given; }
@@ -224,12 +224,6 @@ namespace ProjectCore::FMT::Detail
         }
     };
 
-    template<typename T>
-    concept TextPropertiesStyleCanApply = requires (const T& value, TextProperties::TextStyle::Style& data)
-    {
-        data.Apply(value);
-    };
-
     inline bool operator==(const TextProperties::TextStyle::Style& lhs, const TextProperties::TextStyle::Style& rhs)
     {
         return lhs.Intensity == rhs.Intensity
@@ -241,6 +235,33 @@ namespace ProjectCore::FMT::Detail
             && lhs.Underline == rhs.Underline
             && lhs.UnderlineColor == rhs.UnderlineColor;
     }
+
+    template <typename T>
+    concept TextPropertiesStyleCanApply = requires (const T& value, TextProperties::TextStyle::Style& data)
+    {
+        data.Apply(value);
+    };
+
+    template <typename T>
+    struct TextPropertiesStyleIsApplyType
+    {
+        using BaseType = GetBaseType<T>;
+        static constexpr bool Value = std::is_same_v<BaseType, TextProperties::TextStyle::ResetStyle>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Style>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Intensity>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Italic>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Underline>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Blink>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Inverted>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Ideogram>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::Script>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::UnderlineColor::Color>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::UnderlineColor::ColorCube>
+                                   || std::is_same_v<BaseType, TextProperties::TextStyle::UnderlineColor::Color24b>;
+    };
+
+    template <typename T>
+    concept TextPropertiesStyleIsApply = TextPropertiesStyleIsApplyType<T>::Value;
 }
 
 namespace ProjectCore::FMT::Detail::OLD

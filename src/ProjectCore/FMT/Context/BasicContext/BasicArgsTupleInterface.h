@@ -9,7 +9,7 @@
 
 namespace ProjectCore::FMT::Detail
 {
-    template<typename CharFormat>
+    template <typename CharFormat>
     class BasicArgsTupleInterface
     {
     public:
@@ -65,7 +65,7 @@ namespace ProjectCore::FMT::Detail
         }
     };
 
-    template<typename Context>
+    template <typename Context>
     class BasicContextArgsTupleInterface : public BasicArgsTupleInterface<typename Context::CharFormatType>
     {
     public:
@@ -81,7 +81,7 @@ namespace ProjectCore::FMT::Detail
         Context* m_Context;
     };
 
-    template<typename Context>
+    template <typename Context>
     class EmptyContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
     public:

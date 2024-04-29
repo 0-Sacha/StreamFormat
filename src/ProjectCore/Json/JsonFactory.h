@@ -2,7 +2,7 @@
 
 #include "JsonObjects.h"
 #include "JsonFormatter.h"
-#include "JsonFormatterImpl.h"
+#include "JsonFormatter-inl.h"
 #include "JsonParser.h"
 #include "JsonSerializer.h"
 #include "Serializers/JsonObjectsSerializer.h"
@@ -16,9 +16,9 @@ namespace ProjectCore::JSON
     class JsonFactory
     {
     public:
-        template<typename T = std::unique_ptr<JsonObject>>
+        template <typename T = std::unique_ptr<JsonObject>>
         static T FromPath(const std::filesystem::path& path);
-        template<typename T = JsonObject>
+        template <typename T = JsonObject>
         static void SaveToPath(T& json, const std::filesystem::path& path, Detail::JsonFormatter::FormatSettings settings);
     };
 }
@@ -26,7 +26,7 @@ namespace ProjectCore::JSON
 #include "ProjectCore/FMT.h"
 namespace ProjectCore::FMT
 {
-    template<typename FormatterContext>
+    template <typename FormatterContext>
     struct FormatterType<JSON::JsonObject, FormatterContext> {
         static void Format(const JSON::JsonObject& object, FormatterContext& context)
         {
@@ -41,7 +41,7 @@ namespace ProjectCore::FMT
 #include "Serializers/JsonObjectsSerializer.h"
 namespace ProjectCore::JSON
 {
-    template<typename T>
+    template <typename T>
     T JsonFactory::FromPath(const std::filesystem::path& path)
     {
         std::ifstream file(path.string(), std::ios::in);
@@ -65,7 +65,7 @@ namespace ProjectCore::JSON
         return res;
     }
     
-    template<typename T>
+    template <typename T>
     void JsonFactory::SaveToPath(T& json, const std::filesystem::path& path, Detail::JsonFormatter::FormatSettings settings)
     {
         std::ofstream file(path.string(), std::ios::out);

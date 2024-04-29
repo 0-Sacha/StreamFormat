@@ -31,11 +31,11 @@
 
 namespace ProjectCore::FMT::Context
 {
-    template<typename CharFormat = char, typename CharBuffer = CharFormat>
+    template <typename CharFormat = char, typename CharBuffer = CharFormat>
     class BasicFormatterContext;
 
     struct ParserContextError;
 
-    template<typename CharFormat = char, typename CharBuffer = CharFormat>
+    template <typename CharFormat = char, typename CharBuffer = CharFormat>
     class BasicParserContext;
 }

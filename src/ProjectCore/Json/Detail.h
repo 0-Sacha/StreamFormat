@@ -45,9 +45,9 @@ namespace ProjectCore::JSON::Detail
 
 namespace ProjectCore::JSON
 {
-    template<typename T>
+    template <typename T>
     struct JsonObjectSerializer;
-    template<typename T>
+    template <typename T>
     struct JsonSerializer;
 }
 

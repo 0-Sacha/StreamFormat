@@ -30,7 +30,7 @@ namespace ProjectCore::FLog::Detail
         ~BasicLoggerMultiSinkSafeImpl() override = default;
 
     public:
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         void Log(const SeverityValueType& severity, const Format& format, Args&& ...args)
         {
@@ -52,7 +52,7 @@ namespace ProjectCore::FLog::Detail
                     sink->WaitUnitlFinishedToWrite();
         }
 
-        template<typename T>
+        template <typename T>
         void Log(const SeverityValueType& severity, T&& t)
         {
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;

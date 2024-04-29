@@ -26,7 +26,7 @@ namespace ProjectCore::FMT::Detail
         constexpr FrontID(std::uint8_t id)  : ID(id) {}
     
     public:
-        constexpr bool operator==(const FrontID& other) const { return ID == other.ID; }
+        constexpr bool operator==(const TextProperties::TextFront::FrontID& other) const { return ID == other.ID; }
         constexpr bool IsValid() const { return ID > MinFrontID && ID < MaxFrontID; }
     };
 
@@ -35,8 +35,8 @@ namespace ProjectCore::FMT::Detail
     struct TextProperties::TextFront::Front
     {
     public:
-        constexpr Front(const FrontID frontId = FrontID::DefaultFrontID)
-            : CurrentID(frontId.IsValid() ? frontId : FrontID::DefaultFrontID)
+        constexpr Front(const TextProperties::TextFront::FrontID frontId = TextProperties::TextFront::FrontID::DefaultFrontID)
+            : CurrentID(frontId.IsValid() ? frontId : TextProperties::TextFront::FrontID::DefaultFrontID)
         {}
         
     public:
@@ -45,24 +45,36 @@ namespace ProjectCore::FMT::Detail
     public:
         void ModifyReset()                  { *this = Front{}; }
         
-        void Apply(const ResetFront&)       { ModifyReset(); }
-        void Apply(const Front& given)      { *this = given; }
-        void Apply(const FrontID& given)    { CurrentID = given; }
+        void Apply(const TextProperties::TextFront::ResetFront&)       { ModifyReset(); }
+        void Apply(const TextProperties::TextFront::Front& given)      { *this = given; }
+        void Apply(const TextProperties::TextFront::FrontID& given)    { CurrentID = given; }
     
     public:
-        bool NeedModif(const ResetFront&)       { return true; }
-        bool NeedModif(const Front& given)      { return *this != given; }
-        bool NeedModif(const FrontID& given)    { return CurrentID != given; }
-    };
-
-    template<typename T>
-    concept TextPropertiesFrontCanApply = requires (const T& value, TextProperties::TextFront::Front& data)
-    {
-        data.Apply(value);
+        bool NeedModif(const TextProperties::TextFront::ResetFront&)       { return true; }
+        bool NeedModif(const TextProperties::TextFront::Front& given)      { return *this != given; }
+        bool NeedModif(const TextProperties::TextFront::FrontID& given)    { return CurrentID != given; }
     };
 
     inline bool operator==(const TextProperties::TextFront::Front& lhs, const TextProperties::TextFront::Front& rhs)
     {
         return lhs.CurrentID == rhs.CurrentID;
     }
+
+    template <typename T>
+    concept TextPropertiesFrontCanApply = requires (const T& value, TextProperties::TextFront::Front& data)
+    {
+        data.Apply(value);
+    };
+
+    template <typename T>
+    struct TextPropertiesFrontIsApplyType
+    {
+        using BaseType = GetBaseType<T>;
+        static constexpr bool Value = std::is_same_v<BaseType, TextProperties::TextFront::ResetFront>
+                                   || std::is_same_v<BaseType, TextProperties::TextFront::Front>
+                                   || std::is_same_v<BaseType, TextProperties::TextFront::FrontID>;
+    };
+
+    template <typename T>
+    concept TextPropertiesFrontIsApply = TextPropertiesFrontIsApplyType<T>::Value;
 }

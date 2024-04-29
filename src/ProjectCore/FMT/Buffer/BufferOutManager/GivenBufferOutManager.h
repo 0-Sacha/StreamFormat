@@ -8,7 +8,7 @@ namespace ProjectCore::FMT::Detail
     class GivenBufferOutManager : public BasicBufferOutManager<CharType>
     {
     public:
-        template<std::size_t SIZE>
+        template <std::size_t SIZE>
         GivenBufferOutManager(CharType (&buffer)[SIZE])
             : m_Buffer(buffer)
             , m_BufferSize(SIZE)

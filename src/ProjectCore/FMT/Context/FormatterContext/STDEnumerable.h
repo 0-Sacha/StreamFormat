@@ -49,9 +49,9 @@ namespace ProjectCore::FMT
     private:
         const T& m_Value;
 
-        std::basic_string_view<CharBegin> m_StrJoin;
-        std::basic_string_view<CharBegin> m_StrBegin;
-        std::basic_string_view<CharEnd>    m_StrEnd;
+        std::basic_string_view<CharBegin>   m_StrJoin;
+        std::basic_string_view<CharBegin>   m_StrBegin;
+        std::basic_string_view<CharEnd>     m_StrEnd;
 
         Detail::DataType m_BeginIdx;
         Detail::DataType m_Size;
@@ -82,7 +82,7 @@ namespace ProjectCore::FMT
     };
 
 
-    template<typename T>
+    template <typename T>
     struct ForwardAsSTDEnumerable {};
 
     template <typename T, typename FormatterContext>

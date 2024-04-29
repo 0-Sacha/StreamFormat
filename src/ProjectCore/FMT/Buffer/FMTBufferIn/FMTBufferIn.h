@@ -4,7 +4,7 @@
 
 namespace ProjectCore::FMT::Detail
 {
-    template<typename CharBuffer>
+    template <typename CharBuffer>
     class FMTBufferIn : public BasicBufferIn<CharBuffer>
     {
     protected:
@@ -154,42 +154,46 @@ namespace ProjectCore::FMT::Detail
         ~FMTBufferIn() override = default;
 
     public:
-        template<typename T> void ReadInt       (T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        template<typename T> void ReadUInt      (T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
-        template<typename T> void ReadFloat      (T& i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template <typename T> void ReadInt       (T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template <typename T> void ReadUInt      (T& i, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template <typename T> void ReadFloat     (T& i, FloatPrecision floatPrecision = FloatPrecision{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
         
-        template<typename T> void ReadIntAsBin  (T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
-        template<typename T> void ReadIntAsHex  (T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
-        template<typename T> void ReadIntAsOct  (T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+        template <typename T> void ReadIntAsBin  (T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
+        template <typename T> void ReadIntAsHex  (T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false, Detail::PrintStyle valueDes = PrintStyle::Nothing);
+        template <typename T> void ReadIntAsOct  (T& i, DigitSize digitSize = DigitSize{}, ShiftType st = ShiftType::Nothing, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{}, bool trueValue = false);
 
     public:
-        template<typename T, typename FormatDataCharType> void ReadIntFormatData      (T& i, const FormatData<FormatDataCharType>& formatData);
-        template<typename T, typename FormatDataCharType> void ReadUIntFormatData   (T& i, const FormatData<FormatDataCharType>& formatData);
-        template<typename T, typename FormatDataCharType> void ReadFloatFormatData  (T& i, const FormatData<FormatDataCharType>& formatData);
+        template <typename T, typename FormatDataCharType> void ReadIntFormatData    (T& i, const FormatData<FormatDataCharType>& formatData);
+        template <typename T, typename FormatDataCharType> void ReadUIntFormatData   (T& i, const FormatData<FormatDataCharType>& formatData);
+        template <typename T, typename FormatDataCharType> void ReadFloatFormatData  (T& i, const FormatData<FormatDataCharType>& formatData);
 
 
     public:
-        template<typename CharStr> void ReadCharPtr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
+        template <typename CharStr> void ReadCharPtr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{});
 
-        template<typename CharStr, std::size_t SIZE>      inline void ReadCharArray(const CharStr(&str)[SIZE], ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})                    { ReadCharPtr(str, SIZE, 0, st, shift, sp); }
-        template<typename CharStr>                      inline void ReadCharBound(const CharStr* begin, const CharStr* end, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})     { ReadCharPtr(begin, end - begin, 0, st, shift, sp); }
+        template <typename CharStr, std::size_t SIZE>   inline void ReadCharArray(const CharStr(&str)[SIZE], ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})                    { ReadCharPtr(str, SIZE, 0, st, shift, sp); }
+        template <typename CharStr>                     inline void ReadCharBound(const CharStr* begin, const CharStr* end, ShiftType st = ShiftType::Default, ShiftSize shift = ShiftSize{}, ShiftPrint sp = ShiftPrint{})     { ReadCharPtr(begin, end - begin, 0, st, shift, sp); }
 
     protected:
-        template<typename T>
-        void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift) {
+        template <typename T>
+        void SkipShiftBeginSpace(const Detail::ShiftType st, const Detail::ShiftPrint sp, T& shift)
+        {
             if (sp.BeforeIsADigit() == false)
                 return;
             if (st == ShiftType::Right || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
-                while (Base::Get() == ' ') {
+                while (Base::Get() == ' ')
+                {
                     Base::Forward();
                     --shift;
                 }
         }
 
-        template<typename T>
-        void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint, T& shift) {
+        template <typename T>
+        void SkipShiftEnd(const Detail::ShiftType st, const Detail::ShiftPrint, T& shift)
+        {
             if (st == ShiftType::Left || st == ShiftType::CenterLeft || st == ShiftType::CenterRight)
-                while (Base::Get() == ' ' && shift > 0) {
+                while (Base::Get() == ' ' && shift > 0)
+                {
                     Base::Forward();
                     --shift;
                 }
@@ -197,6 +201,6 @@ namespace ProjectCore::FMT::Detail
     };
 }
 
-#include "Integer.h"
-#include "FromFormatData.h"
-#include "String.h"
+#include "Integer-inl.h"
+#include "String-inl.h"
+#include "FromFormatData-inl.h"

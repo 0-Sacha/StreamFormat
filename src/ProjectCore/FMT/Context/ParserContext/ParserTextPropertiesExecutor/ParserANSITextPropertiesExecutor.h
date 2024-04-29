@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "IParserTextPropertiesExecutor.h"
+#include "ParserTextPropertiesExecutor.h"
 
 namespace ProjectCore::FMT::Detail
 {

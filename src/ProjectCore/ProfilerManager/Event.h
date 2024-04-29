@@ -7,7 +7,7 @@
 
 #include <string>
 #include <memory>
-
+#include <thread>
 
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
 
@@ -126,7 +126,7 @@ namespace ProjectCore::ProfilerManager
 
 namespace ProjectCore::FMT
 {
-    template<typename FormatterContext>
+    template <typename FormatterContext>
     struct FormatterType<ProjectCore::ProfilerManager::EventType, FormatterContext>
     {
         static void Format(const ProjectCore::ProfilerManager::EventType& t, FormatterContext& context) {

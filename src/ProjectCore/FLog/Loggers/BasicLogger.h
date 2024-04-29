@@ -1,8 +1,10 @@
 #pragma once
 
 #include "ProjectCore/FLog/Detail/Detail.h"
+#include "ProjectCore/FMT/Serializers/FormatChrono.h"
 
 #include <iostream>
+#include <chrono>
 
 namespace ProjectCore::FLog::Detail
 {
@@ -56,7 +58,7 @@ namespace ProjectCore::FLog::Detail
         std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTime;
 
     public:
-        template<typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         void Log(const SeverityValueType& severity, const Format& format, Args&& ...args)
         {
@@ -73,7 +75,7 @@ namespace ProjectCore::FLog::Detail
             m_Stream.flush();
         }
 
-        template<typename T>
+        template <typename T>
         void Log(const SeverityValueType& severity, T&& t)
         {
             if (severity < m_Severity)

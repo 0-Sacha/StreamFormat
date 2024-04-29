@@ -4,7 +4,7 @@
 
 namespace ProjectCore::FMT
 {
-    template<typename T, typename FormatterContext>
+    template <typename T, typename FormatterContext>
     struct FCIndexArgs
     {
     public:
@@ -22,10 +22,10 @@ namespace ProjectCore::FMT
         const std::uint8_t m_Idx;
     };
 
-    template<typename T, typename FormatterContext>
+    template <typename T, typename FormatterContext>
     struct FormatterType<FCIndexArgs<T, FormatterContext>, FormatterContext>
     {
-        template<typename Char>
+        template <typename Char>
         inline static void Format(const FCIndexArgs<T, FormatterContext>& t, FormatterContext& context) {
             context.RunType(t.GetValue());
         }

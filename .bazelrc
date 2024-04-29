@@ -1,16 +1,17 @@
 # Common
 common --enable_platform_specific_config
-common --experimental_platforms_api
+common --incompatible_strict_action_env
+common --toolchain_resolution_debug=all
 common --show_timestamps
 common --verbose_failures
 test --test_output=errors
 
-# Build
-common:linux --config=default_compiler_opt
-common:msvc --config=microsoft_compiler_opt
+# Opts
+common:linux --config=default_compiler_opts
+common:msvc --config=microsoft_compiler_opts
 
-common:default_compiler_opt --copt -std=c++20
-common:microsoft_compiler_opt --copt /std:c++20
+common:default_compiler_opts --copt -std=c++20
+common:microsoft_compiler_opts --copt /std:c++20
 
 # BuildBuddy
 common:linux --workspace_status_command=$(pwd)/.buildbuddy/workspace_status.sh

@@ -17,15 +17,15 @@ namespace ProjectCore::FMT::Detail
 
     protected:
         inline CharBuffer*          GetBuffer() noexcept                            { return m_Buffer; }
-        inline const CharBuffer*    GetBuffer() const noexcept                       { return m_Buffer; }
+        inline const CharBuffer*    GetBuffer() const noexcept                      { return m_Buffer; }
         inline CharBuffer*          GetBufferCurrentPos() noexcept                  { return m_CurrentPos; }
-        inline const CharBuffer*    GetBufferCurrentPos() const noexcept             { return m_CurrentPos; }
+        inline const CharBuffer*    GetBufferCurrentPos() const noexcept            { return m_CurrentPos; }
         inline CharBuffer*          GetBufferEnd() noexcept                         { return m_BufferEnd; }
-        inline const CharBuffer*    GetBufferEnd() const noexcept                    { return m_BufferEnd; }
-        inline std::size_t          GetBufferSize() const noexcept                   { return static_cast<std::size_t>(m_BufferEnd - m_Buffer); }
-        inline std::size_t          GetBufferSizeLeft() const noexcept               { return static_cast<std::size_t>(m_BufferEnd - m_CurrentPos); }
-        inline std::size_t          GetBufferCurrentSize() const noexcept            { return static_cast<std::size_t>(m_CurrentPos - m_Buffer); }
-        inline std::size_t          GetBufferRemainingSize() const noexcept          { return static_cast<std::size_t>(m_BufferEnd - m_CurrentPos); }
+        inline const CharBuffer*    GetBufferEnd() const noexcept                   { return m_BufferEnd; }
+        inline std::size_t          GetBufferSize() const noexcept                  { return static_cast<std::size_t>(m_BufferEnd - m_Buffer); }
+        inline std::size_t          GetBufferSizeLeft() const noexcept              { return static_cast<std::size_t>(m_BufferEnd - m_CurrentPos); }
+        inline std::size_t          GetBufferCurrentSize() const noexcept           { return static_cast<std::size_t>(m_CurrentPos - m_Buffer); }
+        inline std::size_t          GetBufferRemainingSize() const noexcept         { return static_cast<std::size_t>(m_BufferEnd - m_CurrentPos); }
         
         inline void                 SetBufferCurrentPos(CharBuffer* const pos)      { if (pos >= GetBuffer() && pos <= GetBufferEnd()) m_CurrentPos = pos; }
 

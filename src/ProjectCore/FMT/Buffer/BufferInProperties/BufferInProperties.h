@@ -23,7 +23,7 @@ namespace ProjectCore::FMT::Detail
         const std::size_t m_BufferSize;
     };
 
-    template<class BufferDataType>
+    template <class BufferDataType>
     concept CanBeUseForFMTBufferIn = requires()
     {
         requires !std::is_same_v<typename FMTCharTypeFromBuffer<BufferDataType>::Type, void>;

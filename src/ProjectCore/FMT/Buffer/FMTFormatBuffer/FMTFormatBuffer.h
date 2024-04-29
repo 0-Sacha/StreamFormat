@@ -5,7 +5,8 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename CharFormat>
-    class FMTFormatBuffer : public FMTBufferIn<CharFormat> {
+    class FMTFormatBuffer : public FMTBufferIn<CharFormat>
+    {
 
     protected:
         using Base = FMTBufferIn<CharFormat>;
@@ -160,11 +161,11 @@ namespace ProjectCore::FMT::Detail
         
     public:
         // Format commands in parameter (add check to '}' to avoid skip the end of the format specifier)
-        template<typename ...CharToTest> inline void ParamGoTo(const CharToTest ...ele)             { GoTo(ele..., '}'); }
-        template<typename ...CharToTest> inline void ParamGoToForward(const CharToTest ...ele)      { GoToForward(ele..., '}'); }
+        template <typename ...CharToTest> inline void ParamGoTo(const CharToTest ...ele)             { GoTo(ele..., '}'); }
+        template <typename ...CharToTest> inline void ParamGoToForward(const CharToTest ...ele)      { GoToForward(ele..., '}'); }
 
-        template<typename ...CharToTest> inline void GoToNextParamOr(const CharToTest ...ele)           { GoTo(ele..., '{'); }
-        template<typename ...CharToTest> inline void GoToNextParamOrForward(const CharToTest ...ele)    { GoToForward(ele..., '{'); }
+        template <typename ...CharToTest> inline void GoToNextParamOr(const CharToTest ...ele)           { GoTo(ele..., '{'); }
+        template <typename ...CharToTest> inline void GoToNextParamOrForward(const CharToTest ...ele)    { GoToForward(ele..., '{'); }
 
         inline bool IsBeginOfParameter()        { return IsEqualTo('{'); }
         inline void GoToBeginOfParameter()      { while (IsNotEqualTo('{') && CanMoveForward()) ForwardNoCheck(); }
@@ -176,7 +177,7 @@ namespace ProjectCore::FMT::Detail
 
     public:
         // TODO Better way || way to verbous
-        template<typename ...CharToTest>
+        template <typename ...CharToTest>
         StringView ParamGoToAndGetStr(const CharToTest ...args)
         {
             const CharFormat* begin = GetBufferCurrentPos();
@@ -185,7 +186,7 @@ namespace ProjectCore::FMT::Detail
             return StringView(begin, end); 
         }
 
-        template<typename ...CharToTest>
+        template <typename ...CharToTest>
         StringView ParamGoToForwardAndGetStr(const CharToTest ...args)
         {
             const CharFormat* begin = GetBufferCurrentPos();
@@ -195,7 +196,7 @@ namespace ProjectCore::FMT::Detail
         }
 
     public:
-        template<typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
+        template <typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
             const CharToTest* const prevSubFormat = m_CurrentPos;
             if (IsSameForward(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
             m_CurrentPos = prevSubFormat;

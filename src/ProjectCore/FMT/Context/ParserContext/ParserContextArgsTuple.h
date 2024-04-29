@@ -66,7 +66,7 @@ namespace ProjectCore::FMT::Detail
         }
 
     public:
-        template<typename FormatterContext>
+        template <typename FormatterContext>
         inline Detail::FormatIndex GetIndexOfCurrentNamedArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex)
         {
             if constexpr (Detail::IsANamedArgs<Detail::GetBaseType<TypeWithoutRef>>::value)
@@ -124,7 +124,7 @@ namespace ProjectCore::FMT::Detail
         }
     };
 
-    template<typename Context, typename... Args>
+    template <typename Context, typename... Args>
     class ParserContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
     public:

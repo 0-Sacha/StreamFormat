@@ -11,7 +11,7 @@
 
 namespace ProjectCore::FMT::Context
 {
-    template<typename CharFormat>
+    template <typename CharFormat>
     class BasicContext
     {
     private:
@@ -97,7 +97,7 @@ namespace ProjectCore::FMT::Context
         virtual void ParseSetter() = 0;
 
     public:
-        template<typename T> void FormatReadParameterThrow(T& i, const T& defaultValue);
+        template <typename T> void FormatReadParameterThrow(T& i, const T& defaultValue);
 
     public:
         template <typename ...CharToTest>
@@ -124,5 +124,3 @@ namespace ProjectCore::FMT::Context
         }
     };
 }
-
-#include "TextPropertiesManagerImpl.h"

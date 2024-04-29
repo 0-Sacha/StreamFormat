@@ -2,8 +2,6 @@
 
 #include "TestSuite.h"
 
-#include "ProjectCore/FMT/Format/CompilationData.h"
-
 namespace ProjectCore::Tester::Detail
 {
     struct TestFunction : public Test

@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "IFormatterTextPropertiesExecutor.h"
+#include "FormatterTextPropertiesExecutor.h"
 
 namespace ProjectCore::FMT::Detail
 {

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "ProjectCore/FMT/Context/BasicContext/BasicContext.h"
-#include "ProjectCore/FMT/Context/BasicContext/BasicContextCoreImpl.h"
-#include "ProjectCore/FMT/Context/BasicContext/BasicContextParseImpl.h"
 
 #include "ProjectCore/FMT/Buffer/FMTBufferIn/FMTBufferIn.h"
 
@@ -10,11 +8,11 @@
 
 #include "ParserContextArgsTuple.h"
 
-#include "ParserTextPropertiesExecutor/IParserTextPropertiesExecutor.h"
+#include "ParserTextPropertiesExecutor/ParserTextPropertiesExecutor.h"
 
 namespace ProjectCore::FMT::Context
 {
-    template<typename CharFormat, typename CharBuffer>
+    template <typename CharFormat, typename CharBuffer>
     class BasicParserContext : public BasicContext<CharFormat>
     {
     public:
@@ -72,17 +70,17 @@ namespace ProjectCore::FMT::Context
         void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }
 
     public:
-        template<typename NewCharFormat, typename ...NewContextArgs>
+        template <typename NewCharFormat, typename ...NewContextArgs>
         void SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, NewContextArgs&& ...args);
         
-        template<typename NewCharFormat, std::size_t SIZE, typename ...NewContextArgs>
+        template <typename NewCharFormat, std::size_t SIZE, typename ...NewContextArgs>
         inline void SubContextArrayFMT(const NewCharFormat (&format)[SIZE], NewContextArgs&& ...args)
         {
             Detail::BufferInProperties<NewCharFormat> properties(format);
             return SubContext(properties, std::forward<NewContextArgs>(args)...);
         }
 
-        template<typename NewCharFormat, typename ...NewContextArgs>
+        template <typename NewCharFormat, typename ...NewContextArgs>
         void SubContextPtrFMT(const NewCharFormat* buffer, std::size_t size, NewContextArgs&& ...args)
         {
             Detail::BufferInProperties<NewCharFormat> properties(buffer, size);
@@ -112,13 +110,13 @@ namespace ProjectCore::FMT::Context
 
     public:
         // Type formating from FormatterType<>
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void RunType(Type& type, Rest&... rest)          { RunType(type); RunType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void RunType(Type& type) { ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Parse(type, *this); }
+        template <typename Type> inline void RunType(Type& type) { ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Parse(type, *this); }
 
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void RunSubType(Type& type, Rest& ...rest)       { RunSubType(type); RunSubType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void RunSubType(Type& type) {
+        template <typename Type> inline void RunSubType(Type& type) {
             if (m_FormatData.NextOverride.size() == 0)
                 return RunType(type);
             FormatDataType formatDataCopy = m_FormatData;
@@ -128,13 +126,13 @@ namespace ProjectCore::FMT::Context
         }
 
         // Only support basic type that are considered as basic by Buffer class
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void BasicRunType(Type& type, Rest&... rest)             { BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void BasicRunType(Type& type)    { m_BufferIn.BasicReadType(type); }
+        template <typename Type> inline void BasicRunType(Type& type)    { m_BufferIn.BasicReadType(type); }
 
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void BasicRunSubType(Type& type, Rest&... rest)              { BasicRunSubType(type); BasicRunSubType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void BasicRunSubType(Type& type) {
+        template <typename Type> inline void BasicRunSubType(Type& type) {
             if (m_FormatData.NextOverride.size() == 0)
                 return BasicRunType(type);
             FormatDataType formatDataCopy = m_FormatData;
@@ -144,15 +142,15 @@ namespace ProjectCore::FMT::Context
         }
 
         // Type formating from ParserType<>
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void ReadType(Type& type, Rest&... rest)        { RunType(type, std::forward<Rest>(rest)...); }
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void ReadSubType(Type& type, Rest&... rest)    { RunSubType(type, std::forward<Rest>(rest)...); }
 
         // Only support basic type that are considered as basic by Buffer class
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void BasicReadType(Type& type, Rest&... rest)    { BasicRunType(type, std::forward<Rest>(rest)...); }
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void BasicSubReadType(Type& type, Rest&... rest)    { BasicRunSubType(type, std::forward<Rest>(rest)...); }
 
     public:
@@ -162,12 +160,7 @@ namespace ProjectCore::FMT::Context
     };
 }
 
-#include "BaseParser/ParseTextPropertiesColor.h"
-#include "BaseParser/ParseTextPropertiesStyle.h"
-#include "BaseParser/ParseTextPropertiesFront.h"
-#include "BaseParser/BaseParser.h"
-#include "BaseParser/ParseSTDLib.h"
-#include "BaseParser/ParseChrono.h"
+#include "ParseTextProperties.h"
+#include "ParseBasics.h"
 
-#include "ParserTextPropertiesExecutor/ParserNOTextPropertiesExecutor.h"
 #include "ParserTextPropertiesExecutor/ParserANSITextPropertiesExecutor.h"

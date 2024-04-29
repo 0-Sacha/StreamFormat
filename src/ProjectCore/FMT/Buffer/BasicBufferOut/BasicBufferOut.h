@@ -109,25 +109,25 @@ namespace ProjectCore::FMT::Detail
 
     public:
         // TODO : need to have throw version od those to have secure call
-        template<typename T> void FastWriteInt      (T i);
-        template<typename T> void FastWriteUInt     (T i);
-        template<typename T> void FastWriteFloat    (T i, FloatPrecision floatPrecision = FloatPrecision{});
+        template <typename T> void FastWriteInt      (T i);
+        template <typename T> void FastWriteUInt     (T i);
+        template <typename T> void FastWriteFloat    (T i, FloatPrecision floatPrecision = FloatPrecision{});
 
-        template<typename T> void FastWriteIntAsBin (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true);
-        template<typename T> void FastWriteIntAsHex (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true, Detail::PrintStyle uppercase = PrintStyle::Nothing);
-        template<typename T> void FastWriteIntAsOct (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true);
+        template <typename T> void FastWriteIntAsBin (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true);
+        template <typename T> void FastWriteIntAsHex (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true, Detail::PrintStyle uppercase = PrintStyle::Nothing);
+        template <typename T> void FastWriteIntAsOct (T i, DigitSize digitSize = DigitSize::DEFAULT, bool prefix = true);
         
-        template<typename CharStr>
+        template <typename CharStr>
         void FastWriteCharPtr(const CharStr* str, std::size_t size);
 
-        template<typename CharStr>                         inline void FastWriteCharPtrNSize(const CharStr* str)                              { FastWriteStringView(std::basic_string_view<CharStr>(str)); }
-        template<typename CharStr, std::size_t SIZE>      inline void FastWriteCharArray(const CharStr(&str)[SIZE])                         { FastWriteCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
-        template<typename CharStr>                      inline void FastWriteCharBound(const CharStr* begin, const CharStr* end)          { FastWriteCharPtr(begin, static_cast<std::size_t>(end - begin)); }
-        template<typename CharStr>                      inline void FastWriteStringView(const std::basic_string_view<CharStr>& str)      { FastWriteCharPtr(str.data(), str.size()); }
-        template<typename CharStr>                      inline void FastWriteString(const std::basic_string<CharStr>& str)                 { FastWriteCharPtr(str.data(), str.size()); }
+        template <typename CharStr>                      inline void FastWriteCharPtrNSize(const CharStr* str)                          { FastWriteStringView(std::basic_string_view<CharStr>(str)); }
+        template <typename CharStr, std::size_t SIZE>    inline void FastWriteCharArray(const CharStr(&str)[SIZE])                      { FastWriteCharPtr(str, str[SIZE - 1] == 0 ? SIZE - 1 : SIZE); }
+        template <typename CharStr>                      inline void FastWriteCharBound(const CharStr* begin, const CharStr* end)       { FastWriteCharPtr(begin, static_cast<std::size_t>(end - begin)); }
+        template <typename CharStr>                      inline void FastWriteStringView(const std::basic_string_view<CharStr>& str)    { FastWriteCharPtr(str.data(), str.size()); }
+        template <typename CharStr>                      inline void FastWriteString(const std::basic_string<CharStr>& str)             { FastWriteCharPtr(str.data(), str.size()); }
 
     protected:
-        template<typename T>
+        template <typename T>
         static DataType GetNumberOfDigitDec(T value);
 
     public:
@@ -147,8 +147,8 @@ namespace ProjectCore::FMT::Detail
 
         inline bool CanMoveForward()                            { if (m_CurrentPos + 1 <= m_BufferEnd)        return true; return AddSize(1); }
         inline bool CanMoveForward(const auto count)            { if (m_CurrentPos + count <= m_BufferEnd)    return true; return AddSize(static_cast<std::size_t>(count));}
-        inline void CanMoveForwardThrow()                       { if (CanMoveForward())            return; throw FMTBufferFull{}; }
-        inline void CanMoveForwardThrow(const auto count)           { if (CanMoveForward(count))    return; throw FMTBufferFull{}; }
+        inline void CanMoveForwardThrow()                       { if (CanMoveForward())         return; throw FMTBufferFull{}; }
+        inline void CanMoveForwardThrow(const auto count)       { if (CanMoveForward(count))    return; throw FMTBufferFull{}; }
 
         inline void Forward()                                   { CanMoveForwardThrow(); ++m_CurrentPos; }
         inline void Forward(const auto count)                   { CanMoveForwardThrow(count); m_CurrentPos += count; }
@@ -164,67 +164,73 @@ namespace ProjectCore::FMT::Detail
         inline void PushReverse(const CharBuffer c)             { if (CanMoveBackward()) *m_CurrentPos-- = c; }
         inline void PushBackNoCheck(const CharBuffer c)         { *m_CurrentPos++ = c; }
         inline void PushReverseNoCheck(const CharBuffer c)      { *m_CurrentPos-- = c; }
-        inline void PushBack(const CharBuffer c, auto count)    { if (CanMoveForward(count))     while (count-- > 0) PushBackNoCheck(c); }
-        inline void PushReverse(const CharBuffer c, auto count) { if (CanMoveBackward(count))     while (count-- > 0) PushReverseNoCheck(c); }
+        inline void PushBack(const CharBuffer c, auto count)    { if (CanMoveForward(count))    while (count-- > 0) PushBackNoCheck(c); }
+        inline void PushReverse(const CharBuffer c, auto count) { if (CanMoveBackward(count))   while (count-- > 0) PushReverseNoCheck(c); }
 
         inline void PushBackEndChar()                           { PushBack('\0'); }
         inline void AddSpaces(const auto count)                 { PushBack(' ', count); }
 
     protected:
-        template<typename ...Rest>
+        template <typename ...Rest>
         inline void PushBackSeqImpl(const CharBuffer c, const Rest... rest) { PushBackNoCheck(c); if constexpr (sizeof...(rest) > 0) PushBackSeqImpl(rest...); }
     
     public:
-        template<typename ...CharToPush>
+        template <typename ...CharToPush>
         inline void PushBackSeq(const CharToPush... ele) { if(CanMoveForward(sizeof...(ele))) return PushBackSeqImpl(ele...); }
 
     public:
-        // Basic types
-        template<typename Type, typename ...Rest>
-        inline void BasicWriteType(Type&& type, Rest&& ...rest) { BasicWriteType(type); if constexpr (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...); }
+        template <typename Type, typename ...Rest>
+        inline void BasicWriteType(Type&& type, Rest&& ...rest)
+        {
+            BasicWriteType(type);
+            if constexpr (sizeof...(rest) > 0) BasicWriteType(std::forward<Rest>(rest)...);
+        }
         
-        template<typename T> void BasicWriteType(T) {}
+        template <typename T>
+        void BasicWriteType(T)
+        {
+            throw Detail::FMTShouldNotEndHere{};
+        }
 
-#if FMT_USE_STD_INTEGER
-        inline void BasicWriteType(const std::int8_t i)     { FastWriteInt(i); }
-        inline void BasicWriteType(const std::uint8_t i)    { FastWriteUInt(i); }
-        inline void BasicWriteType(const std::int16_t i)    { FastWriteInt(i); }
-        inline void BasicWriteType(const std::uint16_t i)   { FastWriteUInt(i); }
-        inline void BasicWriteType(const std::int32_t i)    { FastWriteInt(i); }
-        inline void BasicWriteType(const std::uint32_t i)   { FastWriteUInt(i); }
-        inline void BasicWriteType(const std::int64_t i)    { FastWriteInt(i); }
-        inline void BasicWriteType(const std::uint64_t i)   { FastWriteUInt(i); }
-#else
-        inline void BasicWriteType(const signed char i)         { FastWriteInt(i); }
-        inline void BasicWriteType(const unsigned char i)       { FastWriteUInt(i); }
-        inline void BasicWriteType(const short i)               { FastWriteInt(i); }
-        inline void BasicWriteType(const unsigned short i)      { FastWriteUInt(i); }
-        inline void BasicWriteType(const int i)                 { FastWriteInt(i); }
-        inline void BasicWriteType(const unsigned int i)        { FastWriteUInt(i); }
-        inline void BasicWriteType(const long i)                { FastWriteInt(i); }
-        inline void BasicWriteType(const unsigned long i)       { FastWriteUInt(i); }
-        inline void BasicWriteType(const long long i)           { FastWriteInt(i); }
-        inline void BasicWriteType(const unsigned long long i)  { FastWriteUInt(i); }
-#endif
-
-        inline void BasicWriteType(const float i)           { FastWriteFloat(i); }
-        inline void BasicWriteType(const double i)          { FastWriteFloat(i); }
-        inline void BasicWriteType(const long double i)     { FastWriteFloat(i); }
-
-        inline void BasicWriteType(const char i)        { PushBack(i); }
-        inline void BasicWriteType(const wchar_t i)     { PushBack(i); }
-        inline void BasicWriteType(const char16_t i)    { PushBack(i); }
-        inline void BasicWriteType(const char32_t i)    { PushBack(i); }
-
-        template<std::size_t SIZE> inline void BasicWriteType(const char (&i)[SIZE])        { FastWriteCharArray(i); }
-        template<std::size_t SIZE> inline void BasicWriteType(const wchar_t (&i)[SIZE])     { FastWriteCharArray(i); }
-        template<std::size_t SIZE> inline void BasicWriteType(const char16_t (&i)[SIZE])    { FastWriteCharArray(i); }
-        template<std::size_t SIZE> inline void BasicWriteType(const char32_t (&i)[SIZE])    { FastWriteCharArray(i); }
-
-        template<typename CharType> inline void BasicWriteType(const std::basic_string_view<CharType>& i) { FastWriteString(i); }
+        template <typename T>
+        requires Detail::AsSignedIntegerType<T>
+        inline void BasicWriteType(const T i)
+        {
+            FastWriteInt(i);
+        }
+        template <typename T>
+        requires Detail::AsUnsignedIntegerType<T>
+        inline void BasicWriteType(const T i)
+        {
+            FastWriteUInt(i);
+        }
+        template <typename T>
+        requires Detail::AsFloatType<T>
+        inline void BasicWriteType(const T i)
+        {
+            FastWriteFloat(i);
+        }
+        template <typename T>
+        requires Detail::AsCharType<T>
+        inline void BasicWriteType(const T i)
+        {
+            PushBack(i);
+        }
+        template <typename T, std::size_t SIZE>
+        requires Detail::AsCharType<T>
+        inline void BasicWriteType(const T (&i)[SIZE])
+        {
+            FastWriteCharArray(i);
+        }
+        template <typename T>
+        requires Detail::AsCharType<T>
+        inline void BasicWriteType(const std::basic_string_view<T>& i)
+        {
+            FastWriteString(i);
+        }
     };
 }
 
-#include "Integer.h"
-#include "String.h"
-#include "Internal.h"
+#include "Internal-inl.h"
+#include "Integer-inl.h"
+#include "String-inl.h"

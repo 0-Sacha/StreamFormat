@@ -1,4 +1,5 @@
 #include "TestSuite.h"
+
 #include "ProjectCore/ProfilerManager.h"
 
 namespace ProjectCore::Tester

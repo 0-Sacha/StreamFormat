@@ -9,7 +9,7 @@
 
 namespace ProjectCore::FMT
 {
-    template<typename CharBuffer>
+    template <typename CharBuffer>
     class BufferUtils
     {
     public:

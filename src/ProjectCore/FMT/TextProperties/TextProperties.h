@@ -8,9 +8,9 @@ namespace ProjectCore::FMT::Detail
 {
     struct TextProperties::Properties
     {
-        TextProperties::TextColor::Color    Color;
-        TextProperties::TextStyle::Style    Style;
-        TextProperties::TextFront::Front    Front;
+        TextProperties::TextColor::Color Color;
+        TextProperties::TextStyle::Style Style;
+        TextProperties::TextFront::Front Front;
     };
 
     inline bool operator==(const TextProperties::Properties& lhs, const TextProperties::Properties& rhs)

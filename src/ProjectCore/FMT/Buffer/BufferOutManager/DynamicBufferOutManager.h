@@ -84,7 +84,8 @@ namespace ProjectCore::FMT::Detail
     };
 
     template <typename CharType>
-    bool DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize) {
+    bool DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize)
+    {
         std::size_t newBufferSize = targetBufferSize;
         
         if (m_BufferSize < targetBufferSize)

@@ -5,7 +5,7 @@
 
 namespace ProjectCore::FMT::Detail
 {
-    template<typename CharBuffer>
+    template <typename CharBuffer>
     class BasicBufferIn : public BasicBuffer<const CharBuffer>
     {
         
@@ -79,42 +79,42 @@ namespace ProjectCore::FMT::Detail
         ~BasicBufferIn() noexcept override = default;
 
     public:
-        template<typename T> bool FastReadInt(T& i);
-        template<typename T> bool FastReadUInt(T& i);
-        template<typename T> bool FastReadFloat(T& i, FloatPrecision floatPrecision = FloatPrecision{});
+        template <typename T> bool FastReadInt(T& i);
+        template <typename T> bool FastReadUInt(T& i);
+        template <typename T> bool FastReadFloat(T& i, FloatPrecision floatPrecision = FloatPrecision{});
 
-        template<typename CharPtr> bool FastReadCharPtr(CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true);
-        template<typename CharStr, std::size_t SIZE>    inline bool FastReadCharArray(CharStr(&str)[SIZE], bool isZeroEnded = true)                { return FastReadCharPtr(str, SIZE - (isZeroEnded ? 1 : 0), isZeroEnded); }
-        template<typename CharStr>                      inline bool FastReadCharBound(CharStr* begin, CharStr* end, bool isZeroEnded = true)    { return FastReadCharPtr(begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded); }
+        template <typename CharPtr> bool FastReadCharPtr(CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true);
+        template <typename CharStr, std::size_t SIZE>    inline bool FastReadCharArray(CharStr(&str)[SIZE], bool isZeroEnded = true)            { return FastReadCharPtr(str, SIZE - (isZeroEnded ? 1 : 0), isZeroEnded); }
+        template <typename CharStr>                      inline bool FastReadCharBound(CharStr* begin, CharStr* end, bool isZeroEnded = true)   { return FastReadCharPtr(begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded); }
 
-        template<typename CharPtr, typename CharPattern>
+        template <typename CharPtr, typename CharPattern>
         bool FastReadCharPtrGlobber(std::basic_string_view<CharPattern> globPattern, CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true);
-        template<typename CharPtr, typename CharPattern>
+        template <typename CharPtr, typename CharPattern>
         bool FastReadCharPtrRegex(std::basic_string_view<CharPattern> regexPattern, CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true);
-        template<typename CharStr, std::size_t SIZE, typename CharPattern>  inline bool FastReadCharArrayGlobber(std::basic_string_view<CharPattern> globPattern, CharStr(&str)[SIZE], bool isZeroEnded = true)                        { return FastReadCharPtrGlobber(globPattern, str, SIZE - (isZeroEnded ? 1 : 0), isZeroEnded); }
-        template<typename CharStr, typename CharPattern>                    inline bool FastReadCharBoundGlobber(std::basic_string_view<CharPattern> globPattern, CharStr* begin, CharStr* end, bool isZeroEnded = true)             { return FastReadCharPtrGlobber(globPattern, begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded); }
-        template<typename CharStr, std::size_t SIZE, typename CharPattern>  inline bool FastReadCharArrayRegex(std::basic_string_view<CharPattern> regexPattern, CharStr(&str)[SIZE], bool isZeroEnded = true)                        { return FastReadCharPtrRegex(regexPattern, str, SIZE - (isZeroEnded ? 1 : 0), isZeroEnded); }
-        template<typename CharStr, typename CharPattern>                    inline bool FastReadCharBoundRegex(std::basic_string_view<CharPattern> regexPattern, CharStr* begin, CharStr* end, bool isZeroEnded = true)             { return FastReadCharPtrRegex(regexPattern, begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded); }
+        template <typename CharStr, std::size_t SIZE, typename CharPattern>  inline bool FastReadCharArrayGlobber(std::basic_string_view<CharPattern> globPattern, CharStr(&str)[SIZE], bool isZeroEnded = true)            { return FastReadCharPtrGlobber(globPattern, str, SIZE - (isZeroEnded ? 1 : 0), isZeroEnded); }
+        template <typename CharStr, typename CharPattern>                    inline bool FastReadCharBoundGlobber(std::basic_string_view<CharPattern> globPattern, CharStr* begin, CharStr* end, bool isZeroEnded = true)   { return FastReadCharPtrGlobber(globPattern, begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded); }
+        template <typename CharStr, std::size_t SIZE, typename CharPattern>  inline bool FastReadCharArrayRegex(std::basic_string_view<CharPattern> regexPattern, CharStr(&str)[SIZE], bool isZeroEnded = true)             { return FastReadCharPtrRegex(regexPattern, str, SIZE - (isZeroEnded ? 1 : 0), isZeroEnded); }
+        template <typename CharStr, typename CharPattern>                    inline bool FastReadCharBoundRegex(std::basic_string_view<CharPattern> regexPattern, CharStr* begin, CharStr* end, bool isZeroEnded = true)    { return FastReadCharPtrRegex(regexPattern, begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded); }
 
 
     public:
-        template<typename T> void FastReadIntThrow      (T& i)                                                      { if (FastReadInt(i) == false) throw FMTParseError{}; }
-        template<typename T> void FastReadUIntThrow     (T& i)                                                      { if (FastReadUInt(i) == false) throw FMTParseError{}; }
-        template<typename T> void FastReadFloatThrow    (T& i, FloatPrecision floatPrecision = FloatPrecision{})    { if (FastReadFloat(i, floatPrecision) == false) throw FMTParseError{}; }
-        template<typename CharPtr> void FastReadCharPtrThrow(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite = 0)  { if (FastReadCharPtr(str, sizeContainer, sizeToWrite) == false) throw FMTParseError{}; }
-        template<typename CharStr, std::size_t SIZE>    inline void FastReadCharArrayThrow(CharStr(&str)[SIZE])                     { if (FastReadCharArray(str) == false) throw FMTParseError{}; }
-        template<typename CharStr>                         inline void FastReadCharBoundThrow(CharStr* begin, CharStr* end)         { if (FastReadCharBound(begin, end) == false) throw FMTParseError{}; }
+        template <typename T> void FastReadIntThrow      (T& i)                                                      { if (FastReadInt(i) == false) throw FMTParseError{}; }
+        template <typename T> void FastReadUIntThrow     (T& i)                                                      { if (FastReadUInt(i) == false) throw FMTParseError{}; }
+        template <typename T> void FastReadFloatThrow    (T& i, FloatPrecision floatPrecision = FloatPrecision{})    { if (FastReadFloat(i, floatPrecision) == false) throw FMTParseError{}; }
+        template <typename CharPtr> void FastReadCharPtrThrow(CharPtr* str, std::size_t sizeContainer, std::size_t sizeToWrite = 0)  { if (FastReadCharPtr(str, sizeContainer, sizeToWrite) == false) throw FMTParseError{}; }
+        template <typename CharStr, std::size_t SIZE>    inline void FastReadCharArrayThrow(CharStr(&str)[SIZE])                     { if (FastReadCharArray(str) == false) throw FMTParseError{}; }
+        template <typename CharStr>                         inline void FastReadCharBoundThrow(CharStr* begin, CharStr* end)         { if (FastReadCharBound(begin, end) == false) throw FMTParseError{}; }
 
-        template<typename CharPtr, typename CharPattern>
+        template <typename CharPtr, typename CharPattern>
         void FastReadCharPtrGlobberThrow(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> globPattern)   { if (FastReadCharPtrGlobberThrow(str, sizeContainer, globPattern) == false) throw FMTParseError{}; }
-        template<typename CharPtr, typename CharPattern>
+        template <typename CharPtr, typename CharPattern>
         void FastReadCharPtrRegexThrow(CharPtr* str, std::size_t sizeContainer, std::basic_string_view<CharPattern> regexPattern)    { if (FastReadCharPtrRegex(str, sizeContainer, regexPattern) == false) throw FMTParseError{}; }
-        template<typename CharStr, std::size_t SIZE, typename CharPattern>  inline void FastReadCharArrayGlobberThrow(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> globPattern)                     { if (FastReadCharArrayGlobber(str, globPattern) == false) throw FMTParseError{}; }
-        template<typename CharStr, typename CharPattern>                    inline void FastReadCharBoundGlobberThrow(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> globPattern)            { if (FastReadCharBoundGlobber(begin, end, globPattern) == false) throw FMTParseError{}; }
-        template<typename CharStr, typename CharPattern>                    inline void FastReadStringViewGlobberThrow(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> globPattern)   { if (FastReadStringViewGlobber(str, globPattern) == false) throw FMTParseError{}; }
-        template<typename CharStr, std::size_t SIZE, typename CharPattern>  inline void FastReadCharArrayRegexThrow(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> regexPattern)                      { if (FastReadCharArrayRegex(str, regexPattern) == false) throw FMTParseError{}; }
-        template<typename CharStr, typename CharPattern>                    inline void FastReadCharBoundRegexThrow(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> regexPattern)             { if (FastReadCharBoundRegex(begin, end, regexPattern) == false) throw FMTParseError{}; }
-        template<typename CharStr, typename CharPattern>                    inline void FastReadStringViewRegexThrow(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> regexPattern)    { if (FastReadStringViewRegex(str, regexPattern) == false) throw FMTParseError{}; }
+        template <typename CharStr, std::size_t SIZE, typename CharPattern>  inline void FastReadCharArrayGlobberThrow(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> globPattern)                     { if (FastReadCharArrayGlobber(str, globPattern) == false) throw FMTParseError{}; }
+        template <typename CharStr, typename CharPattern>                    inline void FastReadCharBoundGlobberThrow(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> globPattern)            { if (FastReadCharBoundGlobber(begin, end, globPattern) == false) throw FMTParseError{}; }
+        template <typename CharStr, typename CharPattern>                    inline void FastReadStringViewGlobberThrow(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> globPattern)   { if (FastReadStringViewGlobber(str, globPattern) == false) throw FMTParseError{}; }
+        template <typename CharStr, std::size_t SIZE, typename CharPattern>  inline void FastReadCharArrayRegexThrow(CharStr(&str)[SIZE], std::basic_string_view<CharPattern> regexPattern)                      { if (FastReadCharArrayRegex(str, regexPattern) == false) throw FMTParseError{}; }
+        template <typename CharStr, typename CharPattern>                    inline void FastReadCharBoundRegexThrow(CharStr* begin, CharStr* end, std::basic_string_view<CharPattern> regexPattern)             { if (FastReadCharBoundRegex(begin, end, regexPattern) == false) throw FMTParseError{}; }
+        template <typename CharStr, typename CharPattern>                    inline void FastReadStringViewRegexThrow(std::basic_string_view<CharStr>& str, std::basic_string_view<CharPattern> regexPattern)    { if (FastReadStringViewRegex(str, regexPattern) == false) throw FMTParseError{}; }
 
     public:
         // Format check
@@ -122,50 +122,50 @@ namespace ProjectCore::FMT::Detail
         inline bool IsNotEqualTo(const CharBuffer c) const      { return Get() != c; }
         inline bool IsEqualToForward(const CharBuffer c)        { if (IsEqualTo(c)) { Forward(); return true; } return false; }
         inline bool IsNotEqualForward(const CharBuffer c)       { if (IsNotEqualTo(c)) { Forward(); return true; } return false; }
-        template<typename ...CharToTest> inline bool IsEqualTo(const CharBuffer c, const CharToTest ...ele) const       { return IsEqualTo(c) || IsEqualTo(ele...); }
-        template<typename ...CharToTest> inline bool IsEqualToForward(const CharToTest ...ele)                          { if (IsEqualTo(ele...)) { Forward(); return true; } return false; }
-        template<typename ...CharToTest> inline bool IsNotEqualTo(const CharBuffer c, const CharToTest ...ele) const    { return IsNotEqualTo(c) && IsNotEqualTo(ele...); }
-        template<typename ...CharToTest> inline bool IsNotEqualForward(const CharToTest ...ele)                         { if (IsNotEqualTo(ele...)) { Forward(); return true; } return false; }
+        template <typename ...CharToTest> inline bool IsEqualTo(const CharBuffer c, const CharToTest ...ele) const       { return IsEqualTo(c) || IsEqualTo(ele...); }
+        template <typename ...CharToTest> inline bool IsEqualToForward(const CharToTest ...ele)                          { if (IsEqualTo(ele...)) { Forward(); return true; } return false; }
+        template <typename ...CharToTest> inline bool IsNotEqualTo(const CharBuffer c, const CharToTest ...ele) const    { return IsNotEqualTo(c) && IsNotEqualTo(ele...); }
+        template <typename ...CharToTest> inline bool IsNotEqualForward(const CharToTest ...ele)                         { if (IsNotEqualTo(ele...)) { Forward(); return true; } return false; }
         // Auto throw variant
         inline bool IsEqualToThrow(const CharBuffer c) const        { if (IsEqualTo(c)) return true; throw FMTParseError(); }
         inline bool IsNotEqualToThrow(const CharBuffer c) const     { if (IsNotEqualTo(c)) return true; throw FMTParseError(); }
         inline bool IsEqualToForwardThrow(const CharBuffer c)       { if (IsEqualToForward(c)) return true; throw FMTParseError(); }
         inline bool Skip(const CharBuffer c)                        { return IsEqualToForwardThrow(c); }
         inline bool IsNotEqualForwardThrow(const CharBuffer c)      { if (IsNotEqualForward(c)) return true; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void IsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const      { if (IsEqualTo(c, ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void IsEqualToForwardThrow(const CharToTest ...ele)                         { if (IsEqualToForward(ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const   { if (IsNotEqualTo(c, ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)                        { if (IsNotEqualForward(ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void IsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const      { if (IsEqualTo(c, ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void IsEqualToForwardThrow(const CharToTest ...ele)                         { if (IsEqualToForward(ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void IsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const   { if (IsNotEqualTo(c, ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void IsNotEqualForwardThrow(const CharToTest ...ele)                        { if (IsNotEqualForward(ele...)) return; throw FMTParseError(); }
 
         // Format Next check
         inline bool NextIsEqualTo(const CharBuffer c) const         { return GetNext() == c; }
         inline bool NextIsNotEqualTo(const CharBuffer c) const      { return GetNext() != c; }
         inline bool NextIsEqualToForward(const CharBuffer c)        { Forward(); if (IsEqualTo(c)) { return true; } BackwardNoCheck(); return false; }
         inline bool NextIsNotEqualForward(const CharBuffer c)       { Forward(); if (IsNotEqualTo(c)) { return true; } BackwardNoCheck(); return false; }
-        template<typename ...CharToTest> inline bool NextIsEqualToForward(const CharToTest ...ele)      { Forward(); if (IsEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
-        template<typename ...CharToTest> inline bool NextIsEqualTo(const CharToTest ...ele) const       { Forward(); bool res = IsEqualTo(ele...); BackwardNoCheck(); return res; }
-        template<typename ...CharToTest> inline bool NextIsNotEqualForward(const CharToTest ...ele)     { Forward(); if (IsNotEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
-        template<typename ...CharToTest> inline bool NextIsNotEqualTo(const CharToTest ...ele) const    { Forward(); bool res = IsNotEqualTo(ele...); BackwardNoCheck(); return res; }
+        template <typename ...CharToTest> inline bool NextIsEqualToForward(const CharToTest ...ele)      { Forward(); if (IsEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
+        template <typename ...CharToTest> inline bool NextIsEqualTo(const CharToTest ...ele) const       { Forward(); bool res = IsEqualTo(ele...); BackwardNoCheck(); return res; }
+        template <typename ...CharToTest> inline bool NextIsNotEqualForward(const CharToTest ...ele)     { Forward(); if (IsNotEqualTo(ele...)) { return true; } BackwardNoCheck(); return false; }
+        template <typename ...CharToTest> inline bool NextIsNotEqualTo(const CharToTest ...ele) const    { Forward(); bool res = IsNotEqualTo(ele...); BackwardNoCheck(); return res; }
         // Auto throw variant
         inline bool NextIsEqualToThrow(const CharBuffer c) const        { if (NextIsEqualTo(c)) return true; throw FMTParseError(); }
         inline bool NextIsNotEqualToThrow(const CharBuffer c) const     { if (NextIsNotEqualTo(c)) return true; throw FMTParseError(); }
         inline bool NextIsEqualToForwardThrow(const CharBuffer c)       { if (NextIsEqualToForward(c)) return true; throw FMTParseError(); }
         inline bool NextIsNotEqualForwardThrow(const CharBuffer c)      { if (NextIsNotEqualForward(c)) return true; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void NextIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const      { if (NextIsEqualTo(c, ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void NextIsEqualToForwardThrow(const CharToTest ...ele)                         { if (NextIsEqualToForward(ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const   { if (NextIsNotEqualTo(c, ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)                        { if (NextIsNotEqualForward(ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void NextIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const      { if (NextIsEqualTo(c, ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void NextIsEqualToForwardThrow(const CharToTest ...ele)                         { if (NextIsEqualToForward(ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void NextIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const   { if (NextIsNotEqualTo(c, ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void NextIsNotEqualForwardThrow(const CharToTest ...ele)                        { if (NextIsNotEqualForward(ele...)) return; throw FMTParseError(); }
 
         // Format Next check
         inline bool PrevIsEqualTo(const CharBuffer c) const         { return GetPrev() == c; }
         inline bool PrevIsNotEqualTo(const CharBuffer c) const      { return GetPrev() != c; }
-        template<typename ...CharToTest> inline bool PrevIsEqualTo(const CharToTest ...ele) const       { Backward(); bool res = IsEqualTo(ele...); Forward(); return res; }
-        template<typename ...CharToTest> inline bool PrevIsNotEqualTo(const CharToTest ...ele) const    { Backward(); bool res = IsNotEqualTo(ele...); Forward(); return res; }
+        template <typename ...CharToTest> inline bool PrevIsEqualTo(const CharToTest ...ele) const       { Backward(); bool res = IsEqualTo(ele...); Forward(); return res; }
+        template <typename ...CharToTest> inline bool PrevIsNotEqualTo(const CharToTest ...ele) const    { Backward(); bool res = IsNotEqualTo(ele...); Forward(); return res; }
         // Auto throw variant
         inline bool PrevIsEqualToThrow(const CharBuffer c) const        { if (PrevIsEqualTo(c)) return true; throw FMTParseError(); }
         inline bool PrevIsNotEqualToThrow(const CharBuffer c) const     { if (PrevIsNotEqualTo(c)) return true; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void PrevIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const      { if (PrevIsEqualTo(c, ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void PrevIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const   { if (PrevIsNotEqualTo(c, ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void PrevIsEqualToThrow(const CharBuffer c, const CharToTest ...ele) const      { if (PrevIsEqualTo(c, ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void PrevIsNotEqualToThrow(const CharBuffer c, const CharToTest ...ele) const   { if (PrevIsNotEqualTo(c, ele...)) return; throw FMTParseError(); }
 
     public:
         inline bool IsLowerCase() const         { return Get() >= 'a' && Get() <= 'z'; }
@@ -183,11 +183,11 @@ namespace ProjectCore::FMT::Detail
         inline void IsADigitForwardThrow() const        { if (IsADigitForward()) return; throw FMTParseError(); }
 
     protected:
-        template<typename CharToTest, typename ...Rest> inline bool IsSameSeq(const CharBuffer* buffer, const CharToTest c, const Rest ...ele) const    { if (*buffer != static_cast<const CharBuffer>(c)) return false; if constexpr (sizeof... (ele) == 0) return true; return IsSameImpl(++buffer, ele...); }
+        template <typename CharToTest, typename ...Rest> inline bool IsSameSeq(const CharBuffer* buffer, const CharToTest c, const Rest ...ele) const    { if (*buffer != static_cast<const CharBuffer>(c)) return false; if constexpr (sizeof... (ele) == 0) return true; return IsSameImpl(++buffer, ele...); }
     public:
-        template<typename ...CharToTest> inline bool IsSameSeq(const CharToTest ...ele) const                                                           { if (CanMoveForward(sizeof... (ele)) == false) return false; return IsSameSeqfImpl(m_Buffer, ele...); }
+        template <typename ...CharToTest> inline bool IsSameSeq(const CharToTest ...ele) const                                                           { if (CanMoveForward(sizeof... (ele)) == false) return false; return IsSameSeqfImpl(m_Buffer, ele...); }
 
-        template<typename CharToTest, typename ...Rest> bool IsSameSeqForward(const CharToTest c, const Rest ...ele)
+        template <typename CharToTest, typename ...Rest> bool IsSameSeqForward(const CharToTest c, const Rest ...ele)
         {
             if (IsEqualToForward(c))
             {
@@ -203,11 +203,11 @@ namespace ProjectCore::FMT::Detail
             return false;
         }
 
-        template<typename ...CharToTest> inline void IsSameSeqThrow(const CharToTest ...ele) const          { if (IsSameSeq(ele...)) return; throw FMTParseError(); }
-        template<typename ...CharToTest> inline void IsSameSeqForwardThrow(const CharToTest ...ele)         { if (IsSameSeqForward(ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void IsSameSeqThrow(const CharToTest ...ele) const     { if (IsSameSeq(ele...)) return; throw FMTParseError(); }
+        template <typename ...CharToTest> inline void IsSameSeqForwardThrow(const CharToTest ...ele)    { if (IsSameSeqForward(ele...)) return; throw FMTParseError(); }
         
     public:
-        template<typename CharToTest> bool IsSame(const CharToTest* str, std::size_t size) const
+        template <typename CharToTest> bool IsSame(const CharToTest* str, std::size_t size) const
         {
             if (str[size - 1] == 0)
                 --size;
@@ -216,26 +216,26 @@ namespace ProjectCore::FMT::Detail
 
             const CharBuffer* bufferStr = m_CurrentPos;
             bool isSame = true;
-            while (isSame && size != 0 && *str != 0)            { isSame = *bufferStr++ == *str++; --size; }
-            if (size != 0 && *str != 0)                            isSame = false;
+            while (isSame && size != 0 && *str != 0)    { isSame = *bufferStr++ == *str++; --size; }
+            if (size != 0 && *str != 0)                 isSame = false;
             return isSame;
         }
 
-        template<std::size_t SIZE, typename CharToTest> inline bool IsSame(const CharToTest(&data)[SIZE]) const         { return IsSame(data, SIZE); }
-        template<typename CharToTest> inline bool IsSame(std::basic_string_view<CharToTest> sv)    const                { return IsSame(sv.data(), sv.size()); }
-        template<typename CharToTest> inline void IsSameThrow(const CharToTest* data, std::size_t size)    const        { if (IsSame(data, size)) return; throw FMTParseError(); }
-        template<std::size_t SIZE, typename CharToTest> inline void IsSameThrow(const CharToTest(&data)[SIZE]) const    { if (IsSame(data)) return; throw FMTParseError(); }
-        template<typename CharToTest> inline void IsSameThrow(const std::basic_string_view<CharToTest>& sv)    const    { if (IsSame(sv)) return; throw FMTParseError(); }
+        template <std::size_t SIZE, typename CharToTest> inline bool IsSame(const CharToTest(&data)[SIZE]) const         { return IsSame(data, SIZE); }
+        template <typename CharToTest> inline bool IsSame(std::basic_string_view<CharToTest> sv)    const                { return IsSame(sv.data(), sv.size()); }
+        template <typename CharToTest> inline void IsSameThrow(const CharToTest* data, std::size_t size)    const        { if (IsSame(data, size)) return; throw FMTParseError(); }
+        template <std::size_t SIZE, typename CharToTest> inline void IsSameThrow(const CharToTest(&data)[SIZE]) const    { if (IsSame(data)) return; throw FMTParseError(); }
+        template <typename CharToTest> inline void IsSameThrow(const std::basic_string_view<CharToTest>& sv)    const    { if (IsSame(sv)) return; throw FMTParseError(); }
 
-        template<typename CharToTest> inline bool IsSameForward(const CharToTest* data, std::size_t size)               { bool res = IsSame(data, size); if (res) ForwardNoCheck(data[size - 1] == 0 ? size - 1 : size); return res; }
-        template<std::size_t SIZE, typename CharToTest> inline bool IsSameForward(const CharToTest(&data)[SIZE])        { bool res = IsSame(data, SIZE); if (res) ForwardNoCheck(data[SIZE - 1] == 0 ? SIZE - 1 : SIZE); return res; }
-        template<typename CharToTest> inline bool IsSameForward(std::basic_string_view<CharToTest> sv)                  { bool res = IsSame(sv); if (res) ForwardNoCheck(sv.size()); return res; }
-        template<typename CharToTest> inline void IsSameForwardThrow(const CharToTest* data, std::size_t size)          { if (IsSameForward(data, size)) return; throw FMTParseError(); }
-        template<std::size_t SIZE, typename CharToTest> inline void IsSameForwardThrow(const CharToTest(&data)[SIZE])   { if (IsSameForward(data)) return; throw FMTParseError(); }
-        template<typename CharToTest> inline void IsSameForwardThrow(const std::basic_string_view<CharToTest>& sv)      { if (IsSameForward(sv)) return; throw FMTParseError(); }
+        template <typename CharToTest> inline bool IsSameForward(const CharToTest* data, std::size_t size)               { bool res = IsSame(data, size); if (res) ForwardNoCheck(data[size - 1] == 0 ? size - 1 : size); return res; }
+        template <std::size_t SIZE, typename CharToTest> inline bool IsSameForward(const CharToTest(&data)[SIZE])        { bool res = IsSame(data, SIZE); if (res) ForwardNoCheck(data[SIZE - 1] == 0 ? SIZE - 1 : SIZE); return res; }
+        template <typename CharToTest> inline bool IsSameForward(std::basic_string_view<CharToTest> sv)                  { bool res = IsSame(sv); if (res) ForwardNoCheck(sv.size()); return res; }
+        template <typename CharToTest> inline void IsSameForwardThrow(const CharToTest* data, std::size_t size)          { if (IsSameForward(data, size)) return; throw FMTParseError(); }
+        template <std::size_t SIZE, typename CharToTest> inline void IsSameForwardThrow(const CharToTest(&data)[SIZE])   { if (IsSameForward(data)) return; throw FMTParseError(); }
+        template <typename CharToTest> inline void IsSameForwardThrow(const std::basic_string_view<CharToTest>& sv)      { if (IsSameForward(sv)) return; throw FMTParseError(); }
 
         static constexpr std::size_t GET_WORD_FROM_LIST_NOT_FOUND = (std::numeric_limits<std::size_t>::max)();
-        template<std::size_t SIZE>
+        template <std::size_t SIZE>
         std::size_t GetWordFromList(const StringView (&data)[SIZE], const std::size_t defaultValue = GET_WORD_FROM_LIST_NOT_FOUND)
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
@@ -245,9 +245,9 @@ namespace ProjectCore::FMT::Detail
         }
 
         // TODO: use static map ?
-        template<typename T>
+        template <typename T>
         using DictPairs = std::pair<StringView, T>;
-        template<typename T, std::size_t SIZE>
+        template <typename T, std::size_t SIZE>
         T GetWordFromDictPairs(const DictPairs<T> (&data)[SIZE], std::convertible_to<T> auto defaultValue = T{})
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
@@ -258,10 +258,10 @@ namespace ProjectCore::FMT::Detail
 
     public:
         inline void Ignore(const CharBuffer c) { IsEqualToForward(c); }
-        template<typename ...CharToTest> inline void IgnoreAll(const CharToTest ...ele) { while (IsEqualTo(ele...) && CanMoveForward()) ForwardNoCheck(); }
+        template <typename ...CharToTest> inline void IgnoreAll(const CharToTest ...ele)    { while (IsEqualTo(ele...) && CanMoveForward()) ForwardNoCheck(); }
 
-        template<typename ...CharToTest> inline void GoTo(const CharToTest ...ele) { while (IsNotEqualTo(ele...) && CanMoveForward())    ForwardNoCheck(); }
-        template<typename ...CharToTest> inline void GoToForward(const CharToTest ...ele) { GoTo(ele...); Forward(); }
+        template <typename ...CharToTest> inline void GoTo(const CharToTest ...ele)         { while (IsNotEqualTo(ele...) && CanMoveForward())    ForwardNoCheck(); }
+        template <typename ...CharToTest> inline void GoToForward(const CharToTest ...ele)  { GoTo(ele...); Forward(); }
 
     public:
         inline bool IsBlank() const             { return IsEqualTo(' ', '\t', '\r'); }
@@ -276,7 +276,7 @@ namespace ProjectCore::FMT::Detail
         inline void IgnoreAllBlanks()    { IgnoreAll(' ', '\t', '\n'); }
 
     public:
-        template<typename ...CharToTest>
+        template <typename ...CharToTest>
         StringView GoToAndGetStr(const CharToTest ...args)
         {
             const CharBuffer* begin = GetBufferCurrentPos();
@@ -285,7 +285,7 @@ namespace ProjectCore::FMT::Detail
             return StringView(begin, end); 
         }
 
-        template<typename ...CharToTest>
+        template <typename ...CharToTest>
         StringView GoToForwardAndGetStr(const CharToTest ...args)
         {
             const CharBuffer* begin = GetBufferCurrentPos();
@@ -306,46 +306,50 @@ namespace ProjectCore::FMT::Detail
 
     public:
         // Basic types
-        template<typename T> bool BasicReadType(T&) { return false; }
+        template <typename T>
+        void BasicReadType(T&)
+        {
+            throw Detail::FMTShouldNotEndHere{};
+        }
 
-#ifdef FMT_USE_STD_INTEGER
-        inline void BasicReadType(std::int8_t& i)       { return FastReadIntThrow(i);  }
-        inline void BasicReadType(std::uint8_t& i)      { return FastReadUIntThrow(i); }
-        inline void BasicReadType(std::int16_t& i)      { return FastReadIntThrow(i);  }
-        inline void BasicReadType(std::uint16_t& i)     { return FastReadUIntThrow(i); }
-        inline void BasicReadType(std::int32_t& i)      { return FastReadIntThrow(i);  }
-        inline void BasicReadType(std::uint32_t& i)     { return FastReadUIntThrow(i); }
-        inline void BasicReadType(std::int64_t& i)      { return FastReadIntThrow(i);  }
-        inline void BasicReadType(std::uint64_t& i)     { return FastReadUIntThrow(i); }
-#else
-        inline void BasicReadType(const signed char i)         { FastReadInt(i); }
-        inline void BasicReadType(const unsigned char i)       { FastReadUInt(i); }
-        inline void BasicReadType(const short i)               { FastReadInt(i); }
-        inline void BasicReadType(const unsigned short i)      { FastReadUInt(i); }
-        inline void BasicReadType(const int i)                 { FastReadInt(i); }
-        inline void BasicReadType(const unsigned int i)        { FastReadUInt(i); }
-        inline void BasicReadType(const long i)                { FastReadInt(i); }
-        inline void BasicReadType(const unsigned long i)       { FastReadUInt(i); }
-        inline void BasicReadType(const long long i)           { FastReadInt(i); }
-        inline void BasicReadType(const unsigned long long i)  { FastReadUInt(i); }
-#endif
-        inline void BasicReadType(float& i)         { return FastReadFloatThrow(i); }
-        inline void BasicReadType(double& i)        { return FastReadFloatThrow(i); }
-        inline void BasicReadType(long double& i)   { return FastReadFloatThrow(i); }
-
-        inline void BasicReadType(char& i)      { i = Base::GetAndForward(); return; }
-        inline void BasicReadType(wchar_t& i)   { i = Base::GetAndForward(); return; }
-        inline void BasicReadType(char16_t& i)  { i = Base::GetAndForward(); return; }
-        inline void BasicReadType(char32_t& i)  { i = Base::GetAndForward(); return; }
-
-        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] char(&i)[SIZE])       { /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] wchar_t(&i)[SIZE])    { /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] char16_t(&i)[SIZE])   { /* TODO */ return; }
-        template<std::size_t SIZE> inline void BasicReadType([[maybe_unused]] char32_t(&i)[SIZE])   { /* TODO */ return; }
-
-        template<typename CharType> inline bool BasicReadType([[maybe_unused]] std::basic_string_view<CharType>& i) { /* TODO */ return true; }
+        template <typename T>
+        requires Detail::AsSignedIntegerType<T>
+        inline void BasicReadType(T& i)
+        {
+            FastReadInt(i);
+        }
+        template <typename T>
+        requires Detail::AsUnsignedIntegerType<T>
+        inline void BasicReadType(T& i)
+        {
+            FastReadUInt(i);
+        }
+        template <typename T>
+        requires Detail::AsFloatType<T>
+        inline void BasicReadType(T& i)
+        {
+            FastReadFloat(i);
+        }
+        template <typename T>
+        requires Detail::AsCharType<T>
+        inline void BasicReadType(T& i)
+        {
+            PushBack(i);
+        }
+        template <typename T, std::size_t SIZE>
+        requires Detail::AsCharType<T>
+        inline void BasicReadType(T (&i)[SIZE])
+        {
+            FastReadCharArray(i);
+        }
+        template <typename T>
+        requires Detail::AsCharType<T>
+        inline void BasicReadType(std::basic_string_view<T>& i)
+        {
+            FastReadString(i);
+        }
     };
 }
 
-#include "Integer.h"
-#include "String.h"
+#include "Integer-inl.h"
+#include "String-inl.h"

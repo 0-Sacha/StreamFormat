@@ -5,7 +5,7 @@
 #define PROJECTCORE_FORMATTER_DECLARED
 namespace ProjectCore::FMT
 {
-    template<typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
+    template <typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
     struct FormatterType
     {
         static inline void Format(const T&, FormatterContext& context) {
@@ -25,14 +25,14 @@ namespace ProjectCore::FMT
     };
 }
 
-#define PROJECTCORE_AUTO_FORMATTER(Type, fmt, ...)  template<typename FormatterContext>\
+#define PROJECTCORE_AUTO_FORMATTER(Type, fmt, ...)  template <typename FormatterContext>\
                                                     struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
                                                         static void Format(const Type& value, FormatterContext& context) {\
                                                             context.SubContextArrayFMT(fmt, __VA_ARGS__);\
                                                         }\
                                                     };
 
-#define PROJECTCORE_AUTO_FORMATTER_T(Type, fmt, ...)    template<typename FormatterContext>\
+#define PROJECTCORE_AUTO_FORMATTER_T(Type, fmt, ...)    template <typename FormatterContext>\
                                                         struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
                                                             static void Format(const Type&, FormatterContext& context) {\
                                                                 context.SubContextArrayFMT(fmt, __VA_ARGS__);\

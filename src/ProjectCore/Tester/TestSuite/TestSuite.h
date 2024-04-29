@@ -4,6 +4,8 @@
 #include "ProjectCore/FLog.h"
 #include "ProjectCore/ProfilerManager.h"
 
+#include "ProjectCore/FMT/Serializers/CompilationData.h"
+
 #include <concepts>
 #include <string>
 #include <unordered_map>
@@ -182,7 +184,7 @@ namespace ProjectCore::Tester::Detail
 
 namespace ProjectCore::FMT
 {
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::Detail::TestSuite, FormatContext>
     {
         static void Format(const ProjectCore::Tester::Detail::TestSuite& t, FormatContext& context)
@@ -191,7 +193,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::Detail::Test, FormatContext>
     {
         static void Format(const ProjectCore::Tester::Detail::Test& t, FormatContext& context) {
@@ -201,7 +203,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::TestStatus, FormatContext>
     {
         static void Format(const ProjectCore::Tester::TestStatus& status, FormatContext& context) {
@@ -214,7 +216,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::Detail::TestStatusBank, FormatContext>
     {
         static void Format(const ProjectCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {

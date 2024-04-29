@@ -43,7 +43,7 @@ namespace ProjectCore::FLog::Detail
             m_Sinks.push_back(sink);
         }
 
-        template<typename T, typename... Args>
+        template <typename T, typename... Args>
         void EmplaceSink(Args&&... args)
         {
             std::shared_ptr<T> sink = std::make_shared<T>(std::forward<Args>(args)...);

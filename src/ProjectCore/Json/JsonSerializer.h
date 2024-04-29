@@ -11,7 +11,7 @@
 
 namespace ProjectCore::JSON
 {
-    template<typename T>
+    template <typename T>
     struct JsonSerializer
     {
         static inline void Parse(T&, Detail::JsonParser&)
@@ -52,7 +52,7 @@ namespace ProjectCore::JSON
         }
     };
 
-    template<typename T>
+    template <typename T>
     struct JsonObjectSerializer
     {
         static inline void ReadObject(T&, const JsonObject&)
@@ -351,7 +351,7 @@ namespace ProjectCore::JSON
 #include "ProjectCore/FMT.h"
 namespace ProjectCore::FMT
 {
-    template<typename T, typename FormatterContext>
+    template <typename T, typename FormatterContext>
     struct FormatterType<JSON::FormatAsJson<T>, FormatterContext>
     {
         static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
@@ -368,7 +368,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename T, typename ParserContext>
+    template <typename T, typename ParserContext>
     struct ParserType<JSON::FormatAsJson<T>, ParserContext>
     {
         static inline void Parse(T& json, ParserContext& context)

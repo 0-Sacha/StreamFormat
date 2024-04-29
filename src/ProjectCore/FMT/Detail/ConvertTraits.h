@@ -32,7 +32,7 @@ namespace ProjectCore::FMT::Detail
         static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(static_cast<typename Detail::FormatIndex::BaseType>(from)); }
     };
 
-    template<class From, class To>
+    template <class From, class To>
     concept FMTCanContextConvert = requires(const From& from)
     {
         requires FMTContextConvert<From, To>::IsConvertible;
@@ -52,7 +52,7 @@ namespace ProjectCore::FMT::Detail
         static constexpr bool SameAs = true;
     };
 
-    template<class From, class To>
+    template <class From, class To>
     concept FMTIsContextSame = requires(To* to, const From& from)
     {
         requires FMTContextSame<From, To>::SameAs;

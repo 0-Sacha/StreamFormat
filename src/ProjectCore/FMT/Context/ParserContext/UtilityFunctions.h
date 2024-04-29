@@ -1,12 +1,14 @@
 #pragma once
 
 #include "BasicParserContext.h"
-#include "BasicParserContextCoreImpl.h"
-#include "BasicParserContextParseImpl.h"
+#include "BasicParserContext-inl.h"
+
+#include "ProjectCore/FMT/Buffer/BufferOutManager/GivenBufferOutManager.h"
+#include "ProjectCore/FMT/Buffer/BufferOutManager/StaticBufferOutManager.h"
 
 namespace ProjectCore::FMT
 {
-     template<typename FormatData = std::string_view, typename BufferData = FormatData, typename ...Args>
+     template <typename FormatData = std::string_view, typename BufferData = FormatData, typename ...Args>
      requires (Detail::CanBeUseForFMTBufferIn<FormatData> && Detail::CanBeUseForFMTBufferIn<BufferData>)
      void Parse(const BufferData& bufferData, const FormatData& formatData, Args&& ...args)
      {
@@ -21,4 +23,3 @@ namespace ProjectCore::FMT
           context.Terminate();
      }
 }
-

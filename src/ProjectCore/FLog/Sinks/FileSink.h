@@ -80,8 +80,8 @@ namespace ProjectCore::FLog::Sinks
 
 namespace ProjectCore::FLog::Sinks::Severity
 {
-    template<typename Severity>
+    template <typename Severity>
     using ConsoleSink = BasicConsoleSink<Severity, char>;
-    template<typename Severity>
+    template <typename Severity>
     using FileSink = BasicFileSink<Severity, char>;
 }
