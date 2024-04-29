@@ -187,12 +187,6 @@ namespace ProjectCore::FMT::Detail
         }
         
         template <typename T>
-        void BasicWriteType(T)
-        {
-            throw Detail::FMTShouldNotEndHere{};
-        }
-
-        template <typename T>
         requires Detail::AsSignedIntegerType<T>
         inline void BasicWriteType(const T i)
         {

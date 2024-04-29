@@ -307,12 +307,6 @@ namespace ProjectCore::FMT::Detail
     public:
         // Basic types
         template <typename T>
-        void BasicReadType(T&)
-        {
-            throw Detail::FMTShouldNotEndHere{};
-        }
-
-        template <typename T>
         requires Detail::AsSignedIntegerType<T>
         inline void BasicReadType(T& i)
         {

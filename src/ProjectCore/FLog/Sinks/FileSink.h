@@ -77,11 +77,3 @@ namespace ProjectCore::FLog::Sinks
         std::basic_ofstream<CharType> m_Stream;
     };
 }
-
-namespace ProjectCore::FLog::Sinks::Severity
-{
-    template <typename Severity>
-    using ConsoleSink = BasicConsoleSink<Severity, char>;
-    template <typename Severity>
-    using FileSink = BasicFileSink<Severity, char>;
-}

@@ -152,19 +152,20 @@ namespace ProjectCore::FMT
 
 namespace ProjectCore::FLog
 {
-    template <typename CharType>
-    using BasicLoggerMultiSinkFast = Detail::XLogger<Detail::BasicLoggerMultiSinkFastImpl<LogSeverity, CharType>>;
-    using LoggerMultiSinkFast = BasicLoggerMultiSinkFast<char>;
-
-    template <typename CharType>
-    using BasicLoggerMultiSinkSafe = Detail::XLogger<Detail::BasicLoggerMultiSinkSafeImpl<LogSeverity, CharType>>;
-    using LoggerMultiSinkSafe = BasicLoggerMultiSinkSafe<char>;
-
     using BasicLogger = Detail::XLogger<Detail::BasicLoggerImpl<LogSeverity>>;
+    using LoggerMultiSinkFast = Detail::XLogger<Detail::BasicLoggerMultiSinkFastImpl<LogSeverity, char>>;
+    using LoggerMultiSinkSafe = Detail::XLogger<Detail::BasicLoggerMultiSinkSafeImpl<LogSeverity, char>>;
+
+    extern template class Detail::XLogger<Detail::BasicLoggerImpl<LogSeverity>>;
+    extern template class Detail::XLogger<Detail::BasicLoggerMultiSinkFastImpl<LogSeverity, char>>;
+    extern template class Detail::XLogger<Detail::BasicLoggerMultiSinkSafeImpl<LogSeverity, char>>;
 }
 
 namespace ProjectCore::FLog::Sinks
 {
-    using ConsoleSink = Severity::ConsoleSink<LogSeverity>;
-    using FileSink = Severity::FileSink<LogSeverity>;
+    using ConsoleSink = BasicConsoleSink<LogSeverity, char>;
+    using FileSink = BasicFileSink<LogSeverity, char>;
+
+    extern template class BasicConsoleSink<LogSeverity, char>;
+    extern template class BasicFileSink<LogSeverity, char>;
 }
