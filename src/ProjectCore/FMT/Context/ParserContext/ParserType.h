@@ -6,8 +6,10 @@
 namespace ProjectCore::FMT
 {
     template <typename T, typename ParserContext = Context::BasicParserContext<char, char>>
-    struct ParserType {
-        static inline bool Parse(T&, ParserContext&) {
+    struct ParserType
+    {
+        static inline bool Parse(T&, ParserContext&)
+        {
 #ifdef UNKOWN_TYPE_MESSAGE
             // FIXME
             throw Detail::FMTShouldNotEndHere{};

@@ -351,6 +351,7 @@ namespace ProjectCore::JSON
 #include "ProjectCore/FMT.h"
 namespace ProjectCore::FMT
 {
+#ifdef PROJECTCORE_FORMATTER_DECLARED
     template <typename T, typename FormatterContext>
     struct FormatterType<JSON::FormatAsJson<T>, FormatterContext>
     {
@@ -367,7 +368,9 @@ namespace ProjectCore::FMT
             context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());
         }
     };
+#endif
 
+#ifdef PROJECTCORE_PARSER_DECLARED
     template <typename T, typename ParserContext>
     struct ParserType<JSON::FormatAsJson<T>, ParserContext>
     {
@@ -380,4 +383,5 @@ namespace ProjectCore::FMT
             context.BufferIn().ReloadBuffer(jsonParser.BufferIn());
         }
     };
+#endif
 }

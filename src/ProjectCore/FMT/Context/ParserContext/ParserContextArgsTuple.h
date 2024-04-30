@@ -3,8 +3,6 @@
 #include "ProjectCore/FMT/Detail/Detail.h"
 #include "ProjectCore/FMT/Context/BasicContext/BasicArgsTupleInterface.h"
 
-#include "ParserType.h"
-
 namespace ProjectCore::FMT::Detail
 {
     template <typename... Types>

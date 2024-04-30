@@ -8,7 +8,8 @@ namespace ProjectCore::FMT
     template <typename T, typename FormatterContext = Context::BasicFormatterContext<char, char>>
     struct FormatterType
     {
-        static inline void Format(const T&, FormatterContext& context) {
+        static inline void Format(const T&, FormatterContext& context)
+        {
 #ifdef UNKOWN_TYPE_MESSAGE
             context.SubContextArrayFMT("({C:red}FMT unknow type: {})", typeid(T).name());
 #endif

@@ -30,106 +30,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    
-    //-------------------------------------------------------//
-    //----------------- Pointers and Arrays -----------------//
-    //-------------------------------------------------------//
-    
-    template <typename FormatterContext>
-    struct FormatterType<void*, FormatterContext>
-    {
-        static void Format(const void* const t, FormatterContext& context) {
-            if (t == nullptr)
-                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 
-            if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
-                return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
-            else
-                return FormatterType<Detail::ForwardAsInt<std::size_t>, FormatterContext>::Format(reinterpret_cast<std::uintptr_t>(t), context);
-        }
-    };
-
-    template <typename T, typename FormatterContext>
-    struct FormatterType<T*, FormatterContext>
-    {
-        static void Format(const T* const t, FormatterContext& context) {
-
-            auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
-
-            if(size == Detail::FORMAT_DATA_NOT_SPECIFIED)
-            {
-                if (context.GetFormatData().TrueValue)
-                {
-                    if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
-                        return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
-                    else
-                        return FormatterType<Detail::ForwardAsInt<std::size_t>, FormatterContext>::Format(reinterpret_cast<std::uintptr_t>(t), context);
-                }
-                else
-                {
-                    bool all = context.GetFormatData().HasSpecifier("size");
-                    if (all)
-                    {
-                        if (t == nullptr)
-                            return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
-                        return context.SubContextArrayFMT("{} -> {:{}}", static_cast<const void* const>(t), *t, context.ForwardFormatData());
-                    }
-                    else
-                        return context.WriteType(*t);
-                }
-                return;
-            }
-
-            if (t == nullptr)
-                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
-
-            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
-
-            const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
-
-            auto beginValue = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-
-            bool first = true;
-            const T* begin    = t + beginValue;
-            const T* end    = begin + size;
-
-            while (begin < end) {
-                if (first)  first = false;
-                else        context.BufferOut().WriteIndentStringView(join);
-                context.WriteType(*begin++);
-            }
-
-            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
-        }
-    };
-
-    template <std::size_t SIZE, typename T, typename FormatterContext>
-    struct FormatterType<T[SIZE], FormatterContext>
-    {
-        static void Format(T const (&t)[SIZE], FormatterContext& context) {
-
-            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
-
-            const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
-
-            bool first = true;
-            std::size_t beginValue = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-            const T* begin     = t + beginValue;
-            // FIXME : all thoses static_cast<Detail::DataType> for size of string are dangerous
-            const T* end      = begin + context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - beginValue));
-
-            while(begin < end)
-            {
-                if (first)    first = false;
-                else        context.BufferOut().WriteIndentStringView(join);
-                context.WriteType(*begin++);
-            }
-
-            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
-        }
-    };
-
-    
     //----------------------------------------------//
     //----------------- Forwarders -----------------//
     //----------------------------------------------//
@@ -327,6 +228,105 @@ namespace ProjectCore::FMT
         static void Format(const T* const t, FormatterContext& context)
         {
             FormatterType<Detail::ForwardAsCharPointer<T>, FormatterContext>::Format(t, context);
+        }
+    };
+
+    
+    //-------------------------------------------------------//
+    //----------------- Pointers and Arrays -----------------//
+    //-------------------------------------------------------//
+    
+    template <typename FormatterContext>
+    struct FormatterType<void*, FormatterContext>
+    {
+        static void Format(const void* const t, FormatterContext& context) {
+            if (t == nullptr)
+                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+
+            if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
+                return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
+            else
+                return FormatterType<Detail::ForwardAsInt<std::size_t>, FormatterContext>::Format(reinterpret_cast<std::uintptr_t>(t), context);
+        }
+    };
+
+    template <typename T, typename FormatterContext>
+    struct FormatterType<T*, FormatterContext>
+    {
+        static void Format(const T* const t, FormatterContext& context) {
+
+            auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
+
+            if(size == Detail::FORMAT_DATA_NOT_SPECIFIED)
+            {
+                if (context.GetFormatData().TrueValue)
+                {
+                    if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
+                        return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
+                    else
+                        return FormatterType<Detail::ForwardAsInt<std::size_t>, FormatterContext>::Format(reinterpret_cast<std::uintptr_t>(t), context);
+                }
+                else
+                {
+                    bool all = context.GetFormatData().HasSpecifier("size");
+                    if (all)
+                    {
+                        if (t == nullptr)
+                            return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+                        return context.SubContextArrayFMT("{} -> {:{}}", static_cast<const void* const>(t), *t, context.ForwardFormatData());
+                    }
+                    else
+                        return context.WriteType(*t);
+                }
+                return;
+            }
+
+            if (t == nullptr)
+                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+
+            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
+
+            const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
+
+            auto beginValue = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
+
+            bool first = true;
+            const T* begin    = t + beginValue;
+            const T* end    = begin + size;
+
+            while (begin < end) {
+                if (first)  first = false;
+                else        context.BufferOut().WriteIndentStringView(join);
+                context.WriteType(*begin++);
+            }
+
+            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
+        }
+    };
+
+    template <std::size_t SIZE, typename T, typename FormatterContext>
+    struct FormatterType<T [SIZE], FormatterContext>
+    {
+        static void Format(T const (&t)[SIZE], FormatterContext& context) {
+
+            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
+
+            const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
+
+            bool first = true;
+            std::size_t beginValue = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
+            const T* begin     = t + beginValue;
+            // FIXME : all thoses static_cast<Detail::DataType> for size of string are dangerous
+            const T* end      = begin + context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - beginValue));
+
+            while(begin < end)
+            {
+                if (first)    first = false;
+                else        context.BufferOut().WriteIndentStringView(join);
+                context.WriteType(*begin++);
+            }
+
+            context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("end", STDEnumerableUtility::DefaultEnd));
         }
     };
 }
