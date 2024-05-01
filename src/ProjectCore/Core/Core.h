@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CompilerInfo.h"
+
 #include <cstdint>
 
 #ifdef PROJECTCORE_DEBUG
@@ -10,13 +12,12 @@
 #endif /* PROJECTCORE_DEBUG */
 
 #ifdef PROJECTCORE_ASSERT_ENABLE
-    #ifdef UTILITIES_COMPILER_VS
+    #ifdef PROJECTCORE_COMPILER_MSVC
         #define PROJECTCORE_DEBUGBREAK() __debugbreak()
     #else
         #include <csignal>
         #define PROJECTCORE_DEBUGBREAK() std::raise(SIGINT)
     #endif
-    
     #define PROJECTCORE_ASSERT(x)   if(!(x)) { std::cerr << "ASSERT FAILED! : {}" << #x << std::endl; PROJECTCORE_DEBUGBREAK(); }
 #else
     #define PROJECTCORE_ASSERT(x)

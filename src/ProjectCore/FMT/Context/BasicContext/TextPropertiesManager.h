@@ -170,16 +170,42 @@ namespace ProjectCore::FMT::Detail
 
     public:
         void ParseColor();
+        void ParseStyle();
+        void ParseFront();
+    private:
         template <typename T>
         bool GetColorCode(T& t);
-
-        void ParseStyle();
         void ParseStyleNamed();
         TextProperties::TextStyle::UnderlineColor::ColorCube SelectUnderlinedColorStyle();
-
-        void ParseFront();
 
     private:
         Context& m_Context;
     };
+}
+
+namespace ProjectCore::FMT::Detail
+{
+    template <typename BasicContext>
+    template <typename T>
+    bool TextPropertiesManager<BasicContext>::GetColorCode(T& t)
+    {
+        static constexpr std::string_view colorCode[] = {
+            "black",
+            "red",
+            "green",
+            "yellow",
+            "blue",
+            "magenta",
+            "cyan",
+            "white",
+            "      ",
+            "default"
+        };
+
+        std::uint8_t step = static_cast<std::uint8_t>(m_Context.Format().IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
+        std::uint8_t code = static_cast<std::uint8_t>(m_Context.Format().GetWordFromList(colorCode));
+        if (code == m_Context.Format().GET_WORD_FROM_LIST_NOT_FOUND)     return false;
+        t = static_cast<T>(code + step);
+        return true;
+    }
 }

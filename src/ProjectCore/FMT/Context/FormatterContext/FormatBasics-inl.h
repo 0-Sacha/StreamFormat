@@ -304,7 +304,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template <std::size_t SIZE, typename T, typename FormatterContext>
+    template <typename T, std::size_t SIZE, typename FormatterContext>
     struct FormatterType<T [SIZE], FormatterContext>
     {
         static void Format(T const (&t)[SIZE], FormatterContext& context) {

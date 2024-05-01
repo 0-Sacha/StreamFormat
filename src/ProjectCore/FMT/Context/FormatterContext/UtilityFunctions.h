@@ -1,11 +1,13 @@
 #pragma once
 
 #include "BasicFormatterContext.h"
-#include "BasicFormatterContext-inl.h"
+#include "BasicFormatterContext-impl.h"
 
 #include "ProjectCore/FMT/Buffer/BufferOutManager/DynamicBufferOutManager.h"
 #include "ProjectCore/FMT/Buffer/BufferOutManager/GivenBufferOutManager.h"
 #include "ProjectCore/FMT/Buffer/BufferOutManager/StaticBufferOutManager.h"
+
+#include "FormatterTextPropertiesExecutor/FormatterANSITextPropertiesExecutor.h"
 
 #include <memory>
 

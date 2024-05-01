@@ -1,0 +1,14 @@
+""
+
+# buildifier: disable=module-docstring
+module(
+    name = "projectcore_examples",
+    version = "0.1",
+    repo_name = "com_sacha_projectcore_examples",
+)
+
+bazel_dep(name = "projectcore")
+local_path_override(
+    module_name = "projectcore",
+    path = "../",
+)

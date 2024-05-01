@@ -43,7 +43,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template <std::size_t SIZE, typename T, typename ParserContext>
+    template <typename T, std::size_t SIZE, typename ParserContext>
     struct ParserType<T[SIZE], ParserContext>
     {
         static inline void Parse(T (&)[SIZE], ParserContext&)
@@ -99,7 +99,7 @@ namespace ProjectCore::FMT
     };
     
     // Char Array Forwarders
-    template <std::size_t SIZE, typename T, typename ParserContext>
+    template <typename T, std::size_t SIZE, typename ParserContext>
     struct ParserType<Detail::ForwardAsCharArray<T, SIZE>, ParserContext>
     {
         static inline void Parse(T(&t)[SIZE], ParserContext& context)

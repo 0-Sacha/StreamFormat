@@ -4,6 +4,9 @@ MODULE.bazel.lock
 bazel-bin
 bazel-out
 bazel-projectcore
+bazel-ProjectCore
+bazel-examples
+bazel-Examples
 bazel-testlogs
 
 # VS

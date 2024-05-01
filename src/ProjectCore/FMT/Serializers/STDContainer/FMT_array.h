@@ -5,7 +5,7 @@
 
 namespace ProjectCore::FMT
 {
-    template <std::size_t SIZE, typename T, typename FormatterContext>
+    template <typename T, std::size_t SIZE, typename FormatterContext>
     struct FormatterType<std::array<T, SIZE>, FormatterContext>
     {
         static void Format(const std::array<T, SIZE>& t, FormatterContext& context) {

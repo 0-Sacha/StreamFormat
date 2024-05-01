@@ -124,3 +124,30 @@ namespace ProjectCore::FMT::Context
         }
     };
 }
+
+namespace ProjectCore::FMT::Context
+{
+    template <typename CharFormat>
+    template <typename T>
+    void BasicContext<CharFormat>::FormatReadParameterThrow(T& i, const T& defaultValue)
+    {
+        if (!m_Format.IsEqualTo('{'))
+        {
+            if (m_Format.FastReadUInt(i) == false)
+                i = defaultValue;
+            return;
+        }
+        
+        // SubIndex
+        Detail::FormatIndex formatIdx = GetFormatIndexThrow();
+        m_Format.IsEqualToForwardThrow('}');
+        if constexpr (std::is_convertible_v<T, int64_t>)
+            i = static_cast<T>(m_ContextArgsInterface->GetIntAt(formatIdx));
+        else if constexpr (std::is_convertible_v<T, StringViewFormat>)
+            i = static_cast<T>(m_ContextArgsInterface->GetStringAt(formatIdx));
+
+        // FIXME WTF
+        // TRY         const CharFormat* const mainSubFormat = m_Format.GetBufferCurrentPos();
+        // CATCH     m_Format.SetBufferCurrentPos(mainSubFormat);
+    }
+}

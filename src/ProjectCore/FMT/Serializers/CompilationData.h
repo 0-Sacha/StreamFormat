@@ -13,8 +13,8 @@ namespace ProjectCore::FMT::Detail
             , FileLine(fileLine)
         {}
 
-        std::string_view FileName;                // __FILE__
-        int FileLine;                            // __LINE__
+        std::string_view FileName;  // __FILE__
+        int FileLine;               // __LINE__
     };
 
     struct FunctionProperties
@@ -40,15 +40,15 @@ namespace ProjectCore::FMT::Detail
             , FunctionAssemblyName(functionAssemblyName)
         {}
 
-        FileLocation      Location;
-        std::string_view FunctionName;            // __FUNCTION__
-        std::string_view FunctionSignature;     // __FUNCSIG__ -- __PRETTY_FUNCTION__
-        std::string_view FunctionAssemblyName;    // __FUNCDNAME__
+        FileLocation        Location;
+        std::string_view    FunctionName;          // __FUNCTION__
+        std::string_view    FunctionSignature;     // __FUNCSIG__ -- __PRETTY_FUNCTION__
+        std::string_view    FunctionAssemblyName;  // __FUNCDNAME__
     };
 }
 
-#define PROJECTCORE_FMT_FILE_LOCATION()             ProjectCore::FMT::Detail::FileLocation(__FILE__, __LINE__)
-#define PROJECTCORE_FMT_FUNCTION_PROPERTIES()     ProjectCore::FMT::Detail::FunctionProperties(PROJECTCORE_FMT_FILE_LOCATION(), __FUNCTION__, __FUNCSIG__, __FUNCDNAME__)
+#define PROJECTCORE_FMT_FILE_LOCATION()         ProjectCore::FMT::Detail::FileLocation(__FILE__, __LINE__)
+#define PROJECTCORE_FMT_FUNCTION_PROPERTIES()   ProjectCore::FMT::Detail::FunctionProperties(PROJECTCORE_FMT_FILE_LOCATION(), __FUNCTION__, __FUNCSIG__, __FUNCDNAME__)
 
 namespace ProjectCore::FMT
 {

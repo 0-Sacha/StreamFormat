@@ -1,10 +1,12 @@
 #pragma once
 
 #include "BasicParserContext.h"
-#include "BasicParserContext-inl.h"
+#include "BasicParserContext-impl.h"
 
 #include "ProjectCore/FMT/Buffer/BufferOutManager/GivenBufferOutManager.h"
 #include "ProjectCore/FMT/Buffer/BufferOutManager/StaticBufferOutManager.h"
+
+#include "ParserTextPropertiesExecutor/ParserANSITextPropertiesExecutor.h"
 
 namespace ProjectCore::FMT
 {

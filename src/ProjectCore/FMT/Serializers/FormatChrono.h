@@ -79,25 +79,14 @@ namespace ProjectCore::FMT::Detail
 
 namespace ProjectCore::FMT
 {
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::time_point<std::chrono::high_resolution_clock>, FormatterContext>
+    template <typename T, typename FormatterContext>
+    struct FormatterType<std::chrono::time_point<T>, FormatterContext>
     {
-        static void Format(const std::chrono::time_point<std::chrono::high_resolution_clock>& t, FormatterContext& context)
+        static void Format(const std::chrono::time_point<T>& t, FormatterContext& context)
         {
             Detail::WriteTime(t, context);
         }
     };
-
-#ifdef UTILITIES_COMPILER_MSVC
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::time_point<std::chrono::system_clock>, FormatterContext>
-    {
-        static void Format(const std::chrono::time_point<std::chrono::system_clock>& t, FormatterContext& context)
-        {
-            Detail::WriteTime(t, context);
-        }
-    };
-#endif
 
     template <typename FormatterContext>
     struct FormatterType<std::chrono::seconds, FormatterContext>

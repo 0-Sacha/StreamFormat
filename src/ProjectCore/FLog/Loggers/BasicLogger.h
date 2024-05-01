@@ -58,6 +58,8 @@ namespace ProjectCore::FLog::Detail
         std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTime;
 
     public:
+        void NewLine() { m_Stream.write("\n", 1); }
+
         template <typename Format = std::string_view, typename ...Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
         void Log(const SeverityValueType& severity, const Format& format, Args&& ...args)

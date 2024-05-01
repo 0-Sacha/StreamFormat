@@ -162,13 +162,36 @@ namespace ProjectCore::FMT::Context
         using Base::GetStringViewParamUntil;
         using Base::GetStringViewUntil;
         using Base::ReadDataType;
-
-    public:
-        void CheckEndStr();
     };
 }
 
-#include "FormatTextProperties.h"
-#include "FormatBasics.h"
+namespace ProjectCore::FMT::Context
+{
+    template <typename CharFormat, typename CharBuffer>
+    template <typename NewCharFormat, typename ...Args>
+    void BasicFormatterContext<CharFormat, CharBuffer>::SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, Args&& ...args)
+    {
+        using ContextType = BasicFormatterContext<NewCharFormat, CharBuffer>;
+        auto childContextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
+        Detail::FMTFormatBuffer<NewCharFormat> format(bufferInProperties);
+        
+        // TODO : Disable because cause TextProperties to not be restore correctly
+        if constexpr (false && std::is_same_v<NewCharFormat, CharFormat>)
+        {
+            Run(format, &childContextArgsInterface);
+        }
+        else
+        {
+            Detail::IFormatterTextPropertiesExecutor<BufferOutType>& am_TextPropertiesExecutor = reinterpret_cast<Detail::IFormatterTextPropertiesExecutor<BufferOutType>&>(m_TextProperties.GetTextPropertiesExecutor());
 
-#include "FormatterTextPropertiesExecutor/FormatterANSITextPropertiesExecutor.h"
+            ContextType child(m_BufferOut.GetBufferOutManager(), am_TextPropertiesExecutor, &m_TextProperties.GetCurrentContextProperties());
+            child.BufferOut().ReloadBuffer(m_BufferOut);
+            child.Run(format, &childContextArgsInterface);
+            m_BufferOut.ReloadBuffer(child.BufferOut());
+            am_TextPropertiesExecutor.SetBuffer(&m_BufferOut);
+        }
+    }
+}
+
+#include "FormatTextProperties-inl.h"
+#include "FormatBasics-inl.h"
