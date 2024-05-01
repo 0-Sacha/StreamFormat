@@ -15,13 +15,19 @@ namespace ProjectCore::FLog::Detail
         using SeverityValueType = typename Severity::Value;
 
     public:
-        BasicLoggerImpl() : m_Name("Logger"), m_Severity(Severity::Value::DefaultSeverity), m_Stream(std::cout) { ResetPattern(); }
+        BasicLoggerImpl()
+            : m_Name("Logger")
+            , m_Severity(Severity::Value::DefaultSeverity)
+            , m_Stream(std::cout)
+            , m_StartTime(std::chrono::high_resolution_clock::now())
+        {
+            ResetPattern();
+        }
         
         explicit BasicLoggerImpl(const std::string_view& name, typename Severity::Value severity = Severity::Value::DefaultSeverity, std::ostream& stream = std::cout)
             : m_Name(name), m_Severity(severity), m_Stream(stream)
             , preFormatBufferOutManager(64)
             , fullFormatBufferOutManager(64)
-
             , m_StartTime(std::chrono::high_resolution_clock::now())
         {
             ResetPattern();
@@ -30,7 +36,6 @@ namespace ProjectCore::FLog::Detail
             : m_Name(name), m_Severity(severity), m_Stream(stream)
             , preFormatBufferOutManager(64)
             , fullFormatBufferOutManager(64)
-
             , m_StartTime(std::chrono::high_resolution_clock::now())
         {
             SetPattern(format);

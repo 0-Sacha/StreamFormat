@@ -38,6 +38,6 @@ Then you can run a program with (example with `//HelloWorld:HelloWorld`, see bel
 [00:00:00:105] APP-Core >> After 100ms !
 ```
 
-### List Of Example
+### List Of Examples
 
 - `//HelloWorld:HelloWorld`: HelloWorld using the Internal Logger
