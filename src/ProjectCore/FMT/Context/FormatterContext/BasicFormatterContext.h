@@ -1,20 +1,21 @@
 #pragma once
 
-#include "ProjectCore/FMT/Context/BasicContext/BasicContextInclude.h"
-#include "ProjectCore/FMT/Detail/Buffer/FMTBufferOut/FMTBufferOut.h"
+#include "ProjectCore/FMT/Context/BasicContext/BasicContext.h"
+
+#include "ProjectCore/FMT/Buffer/FMTBufferOut/FMTBufferOut.h"
 
 #include "FormatterType.h"
-#include "Utils/NamedArgs.h"
-#include "Utils/IndexArgs.h"
-#include "Utils/STDEnumerable.h"
+#include "NamedArgs.h"
+#include "IndexArgs.h"
+#include "STDEnumerable.h"
 
-#include "FormatterTextPropertiesExecutor/IFormatterTextPropertiesExecutor.h"
+#include "FormatterTextPropertiesExecutor/FormatterTextPropertiesExecutor.h"
 
 #include "FormatterContextArgsTuple.h"
 
 namespace ProjectCore::FMT::Context
 {
-    template<typename CharFormat, typename CharBuffer>
+    template <typename CharFormat, typename CharBuffer>
     class BasicFormatterContext : public BasicContext<CharFormat>
     {
     public:
@@ -28,13 +29,17 @@ namespace ProjectCore::FMT::Context
         using typename Base::StringViewFormat;
         using typename Base::FormatBufferType;
         using typename Base::ContextArgsInterface;
-        using typename Base::TextPropertiesParser;
+        using typename Base::TextProperties;
         
-        using StringViewBuffer         = std::basic_string_view<CharBuffer>;
-        using BufferOutType         = Detail::FMTBufferOut<CharBuffer>;
+        using StringViewBuffer  = std::basic_string_view<CharBuffer>;
+        using BufferOutType     = Detail::FMTBufferOut<CharBuffer>;
 
     public:
-        BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager, Detail::IFormatterTextPropertiesExecutor<BufferOutType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
+        BasicFormatterContext(
+            Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager,
+            Detail::IFormatterTextPropertiesExecutor<BufferOutType>& textPropertiesExecutor,
+            const Detail::TextProperties::Properties* parentContextProperties = nullptr
+        );
         ~BasicFormatterContext() override;
 
     protected:
@@ -42,7 +47,7 @@ namespace ProjectCore::FMT::Context
         using Base::m_ValuesIndex;
         using Base::m_FormatData;
         using Base::m_ContextArgsInterface;
-        using Base::m_TextPropertiesParser;
+        using Base::m_TextProperties;
 
         BufferOutType                             m_BufferOut;
 
@@ -65,17 +70,17 @@ namespace ProjectCore::FMT::Context
         void SetArgsInterfaceCurrentContex() override                                   { m_ContextArgsInterface->SetContext(this); }
 
     public:
-        template<typename NewCharFormat, typename ...NewContextArgs>
+        template <typename NewCharFormat, typename ...NewContextArgs>
         void SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, NewContextArgs&& ...args);
 
-        template<typename NewCharFormat, std::size_t SIZE, typename ...NewContextArgs>
+        template <typename NewCharFormat, std::size_t SIZE, typename ...NewContextArgs>
         inline void SubContextArrayFMT(const NewCharFormat (&format)[SIZE], NewContextArgs&& ...args)
         {
             Detail::BufferInProperties<NewCharFormat> properties(format);
             return SubContext(properties, std::forward<NewContextArgs>(args)...);
         }
 
-        template<typename NewCharFormat, typename ...NewContextArgs>
+        template <typename NewCharFormat, typename ...NewContextArgs>
         void SubContextPtrFMT(const NewCharFormat* buffer, std::size_t size, NewContextArgs&& ...args)
         {
             Detail::BufferInProperties<NewCharFormat> properties(buffer, size);
@@ -96,12 +101,7 @@ namespace ProjectCore::FMT::Context
         using Base::Parse;
 
     protected:
-        using Base::ParseTimer;
-        using Base::ParseDate;
         using Base::ParseSetter;
-
-        void ParseTimer() override;
-        void ParseDate() override;
         void ParseSetter() override;
 
     public:
@@ -110,13 +110,17 @@ namespace ProjectCore::FMT::Context
 
       public:
         // Type formating from FormatterType<>
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void RunType(Type&& type, const Rest&& ...rest)      { RunType(type); RunType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void RunType(Type&& type)    { FormatterType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Format(type, *this); }
+        template <typename Type> inline void RunType(Type&& type)
+        {
+            FormatterType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Format(type, *this);
+        }
 
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void RunSubType(Type&& type, const Rest&& ...rest)   { RunSubType(type); RunSubType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void RunSubType(Type&& type) {
+        template <typename Type> inline void RunSubType(Type&& type)
+        {
             if (m_FormatData.NextOverride.size() == 0)
                 return RunType(type);
             FormatDataType formatDataCopy = m_FormatData;
@@ -126,13 +130,14 @@ namespace ProjectCore::FMT::Context
         }
 
         // Only support basic type that are considered as basic by Buffer class
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void BasicRunType(Type&& type, Rest&& ...rest)               { BasicRunType(type); BasicRunType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void BasicRunType(Type&& type)       { m_BufferOut.BasicWriteType(type); }
+        template <typename Type> inline void BasicRunType(Type&& type)      { m_BufferOut.BasicWriteType(type); }
 
-        template<typename Type, typename ...Rest>
+        template <typename Type, typename ...Rest>
         inline void BasicRunSubType(Type&& type, const Rest&& ...rest)      { BasicRunSubType(type); BasicRunSubType(std::forward<Rest>(rest)...); }
-        template<typename Type> inline void BasicRunSubType(Type&& type) {
+        template <typename Type> inline void BasicRunSubType(Type&& type)
+        {
             if (m_FormatData.NextOverride.size() == 0)
                 return BasicRunType(type);
             FormatDataType formatDataCopy = m_FormatData;
@@ -142,33 +147,51 @@ namespace ProjectCore::FMT::Context
         }
 
         // Type formating from FormatterType<>
-        template<typename Type, typename ...Rest>
-        inline void WriteType(Type&& type, Rest&& ...rest)  { RunType(type, std::forward<Rest>(rest)...); }
-        template<typename Type, typename ...Rest>
-        inline void WriteSubType(Type&& type, Rest&& ...rest) { RunSubType(type, std::forward<Rest>(rest)...); }
+        template <typename Type, typename ...Rest>
+        inline void WriteType(Type&& type, Rest&& ...rest)      { RunType(type, std::forward<Rest>(rest)...); }
+        template <typename Type, typename ...Rest>
+        inline void WriteSubType(Type&& type, Rest&& ...rest)   { RunSubType(type, std::forward<Rest>(rest)...); }
 
         // Only support basic type that are considered as basic by Buffer class
-        template<typename Type, typename ...Rest>
-        inline void BasicWriteType(Type&& type, Rest&& ...rest) { BasicRunType(type, std::forward<Rest>(rest)...); }
-        template<typename Type, typename ...Rest>
-        inline void BasicSubWriteType(Type&& type, Rest&& ...rest) { BasicRunSubType(type, std::forward<Rest>(rest)...); }
+        template <typename Type, typename ...Rest>
+        inline void BasicWriteType(Type&& type, Rest&& ...rest)     { BasicRunType(type, std::forward<Rest>(rest)...); }
+        template <typename Type, typename ...Rest>
+        inline void BasicSubWriteType(Type&& type, Rest&& ...rest)  { BasicRunSubType(type, std::forward<Rest>(rest)...); }
 
     public:
         using Base::GetStringViewParamUntil;
         using Base::GetStringViewUntil;
         using Base::ReadDataType;
-
-    public:
-        void CheckEndStr();
     };
 }
 
-#include "BaseFormatter/FormatTextPropertiesColor.h"
-#include "BaseFormatter/FormatTextPropertiesStyle.h"
-#include "BaseFormatter/FormatTextPropertiesFront.h"
-#include "BaseFormatter/BaseFormat.h"
-#include "BaseFormatter/FormatSTDLib.h"
-#include "BaseFormatter/FormatChrono.h"
+namespace ProjectCore::FMT::Context
+{
+    template <typename CharFormat, typename CharBuffer>
+    template <typename NewCharFormat, typename ...Args>
+    void BasicFormatterContext<CharFormat, CharBuffer>::SubContext(const Detail::BufferInProperties<NewCharFormat>& bufferInProperties, Args&& ...args)
+    {
+        using ContextType = BasicFormatterContext<NewCharFormat, CharBuffer>;
+        auto childContextArgsInterface = Detail::FormatterContextArgsTupleInterface<ContextType, Args...>(std::forward<Args>(args)...);
+        Detail::FMTFormatBuffer<NewCharFormat> format(bufferInProperties);
+        
+        // TODO : Disable because cause TextProperties to not be restore correctly
+        if constexpr (false && std::is_same_v<NewCharFormat, CharFormat>)
+        {
+            Run(format, &childContextArgsInterface);
+        }
+        else
+        {
+            Detail::IFormatterTextPropertiesExecutor<BufferOutType>& am_TextPropertiesExecutor = reinterpret_cast<Detail::IFormatterTextPropertiesExecutor<BufferOutType>&>(m_TextProperties.GetTextPropertiesExecutor());
 
-#include "FormatterTextPropertiesExecutor/FormatterNOTextPropertiesExecutor.h"
-#include "FormatterTextPropertiesExecutor/FormatterANSITextPropertiesExecutor.h"
+            ContextType child(m_BufferOut.GetBufferOutManager(), am_TextPropertiesExecutor, &m_TextProperties.GetCurrentContextProperties());
+            child.BufferOut().ReloadBuffer(m_BufferOut);
+            child.Run(format, &childContextArgsInterface);
+            m_BufferOut.ReloadBuffer(child.BufferOut());
+            am_TextPropertiesExecutor.SetBuffer(&m_BufferOut);
+        }
+    }
+}
+
+#include "FormatTextProperties-inl.h"
+#include "FormatBasics-inl.h"

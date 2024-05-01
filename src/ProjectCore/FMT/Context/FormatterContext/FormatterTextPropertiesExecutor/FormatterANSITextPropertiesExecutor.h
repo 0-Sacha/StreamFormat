@@ -1,11 +1,11 @@
 #pragma once 
 
-#include "IFormatterTextPropertiesExecutor.h"
+#include "FormatterTextPropertiesExecutor.h"
 
 namespace ProjectCore::FMT::Detail
 {
     template <typename BufferOutType>
-    class FormatterANSITextPropertiesExecutor : public IFormatterTextPropertiesExecutor<BufferOutType>
+    class FormatterANSITextPropertiesExecutor final : public IFormatterTextPropertiesExecutor<BufferOutType>
     {
     public:
         ~FormatterANSITextPropertiesExecutor() override = default;

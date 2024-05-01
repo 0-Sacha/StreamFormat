@@ -2,7 +2,7 @@
 #pragma once
 
 #include "ProjectCore/FMT/Detail/Detail.h"
-#include "ProjectCore/FMT/Context/BasicContext/Utils/BasicContextArgsTupleInterface.h"
+#include "ProjectCore/FMT/Context/BasicContext/BasicArgsTupleInterface.h"
 
 #include "FormatterType.h"
 
@@ -27,7 +27,7 @@ namespace ProjectCore::FMT::Detail
                     { throw Detail::FMTBufferWrongIndex(); }
 
         template <typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext&, Detail::FormatIndex)
+        inline Detail::FormatIndex GetIndexOfCurrentNamedArg(FormatterContext&, Detail::FormatIndex)
                     { return Detail::FormatIndex(); }
 
         inline std::any GetTypeAtIndex(Detail::FormatIndex)
@@ -68,14 +68,14 @@ namespace ProjectCore::FMT::Detail
         }
 
     public:
-        template<typename FormatterContext>
-        inline Detail::FormatIndex GetIndexOfCurrentNameArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex) {
+        template <typename FormatterContext>
+        inline Detail::FormatIndex GetIndexOfCurrentNamedArg(FormatterContext& context, Detail::FormatIndex beginSearchIndex) {
             if constexpr (Detail::IsANamedArgs<Detail::GetBaseType<TypeWithoutRef>>::value)
             {
                 if (context.Format().NextIsANamedArgs(m_Value.GetName()))
                     return beginSearchIndex;
             }
-            return FormatterContextArgsTuple<Rest...>::GetIndexOfCurrentNameArg(context, beginSearchIndex.GetNext());
+            return FormatterContextArgsTuple<Rest...>::GetIndexOfCurrentNamedArg(context, beginSearchIndex.GetNext());
         }
 
     public:
@@ -125,7 +125,7 @@ namespace ProjectCore::FMT::Detail
         }
     };
 
-    template<typename Context, typename... Args>
+    template <typename Context, typename... Args>
     class FormatterContextArgsTupleInterface : public BasicContextArgsTupleInterface<Context>
     {
         public:
@@ -148,8 +148,8 @@ namespace ProjectCore::FMT::Detail
             void RunTypeAtIndex(Detail::FormatIndex idx) override
                     { return m_contextArgs.RunTypeAtIndex(*m_Context, idx); }
 
-            Detail::FormatIndex GetIndexOfCurrentNameArg() override
-                    { return m_contextArgs.GetIndexOfCurrentNameArg(*m_Context, Detail::FormatIndex{0}); }
+            Detail::FormatIndex GetIndexOfCurrentNamedArg() override
+                    { return m_contextArgs.GetIndexOfCurrentNamedArg(*m_Context, Detail::FormatIndex{0}); }
 
             std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) override
                     { return m_contextArgs.GetTypeAtIndex(idx); }

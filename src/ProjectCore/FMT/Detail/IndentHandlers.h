@@ -15,7 +15,7 @@ namespace ProjectCore::FMT::Detail
         }
 
         BufferContext&  Buffer;
-        std::size_t 	SizeBuffer;
+        std::size_t      SizeBuffer;
     };
 
     template <typename Char>
@@ -40,7 +40,7 @@ namespace ProjectCore::FMT::Detail
             }
         }
 
-        bool 		Restore;
+        bool           Restore;
         std::size_t AddIndent;
     };
 
@@ -72,7 +72,7 @@ namespace ProjectCore::FMT::Detail
     private:
         FormatterContext&                                       m_Context;
         std::size_t                                             m_OldIndent;
-        IndentInfo<typename FormatterContext::CharFormatType> 	m_IndentInfo;
+        IndentInfo<typename FormatterContext::CharFormatType>      m_IndentInfo;
         bool                                                    m_AddIndentEnd;
     };
 
@@ -91,7 +91,7 @@ namespace ProjectCore::FMT::Detail
         }
 
         FormatterContext&   Context;
-        std::size_t 		OldNoStride;
+        std::size_t           OldNoStride;
         std::size_t         OldBufferSize;
     };
     

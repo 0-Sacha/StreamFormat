@@ -3,15 +3,15 @@
 #include "JsonParser.h"
 #include "JsonFormatter.h"
 
-#include "ProjectCore/FMT/Detail/Buffer/Utils/BufferUtils.h"
-#include "ProjectCore/FMT/FMT.h"
+#include "ProjectCore/FMT/Buffer/Utils/BufferUtils.h"
+#include "ProjectCore/FMT.h"
 
 #include <string>
 #include <functional>
 
 namespace ProjectCore::JSON
 {
-    template<typename T>
+    template <typename T>
     struct JsonSerializer
     {
         static inline void Parse(T&, Detail::JsonParser&)
@@ -52,7 +52,7 @@ namespace ProjectCore::JSON
         }
     };
 
-    template<typename T>
+    template <typename T>
     struct JsonObjectSerializer
     {
         static inline void ReadObject(T&, const JsonObject&)
@@ -348,10 +348,11 @@ namespace ProjectCore::JSON
     };
 }
 
-#include "ProjectCore/FMT/FMT.h"
+#include "ProjectCore/FMT.h"
 namespace ProjectCore::FMT
 {
-    template<typename T, typename FormatterContext>
+#ifdef PROJECTCORE_FORMATTER_DECLARED
+    template <typename T, typename FormatterContext>
     struct FormatterType<JSON::FormatAsJson<T>, FormatterContext>
     {
         static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
@@ -367,8 +368,10 @@ namespace ProjectCore::FMT
             context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());
         }
     };
+#endif
 
-    template<typename T, typename ParserContext>
+#ifdef PROJECTCORE_PARSER_DECLARED
+    template <typename T, typename ParserContext>
     struct ParserType<JSON::FormatAsJson<T>, ParserContext>
     {
         static inline void Parse(T& json, ParserContext& context)
@@ -380,4 +383,5 @@ namespace ProjectCore::FMT
             context.BufferIn().ReloadBuffer(jsonParser.BufferIn());
         }
     };
+#endif
 }

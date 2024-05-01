@@ -1,8 +1,10 @@
 #pragma once
 
-#include "ProjectCore/FMT/FMT.h"
-#include "ProjectCore/LoggerManager/LoggerManager.h"
-#include "ProjectCore/Instrumentation/ProfilerManger/ProfilerManger.h"
+#include "ProjectCore/FMT.h"
+#include "ProjectCore/FLog.h"
+#include "ProjectCore/ProfilerManager.h"
+
+#include "ProjectCore/FMT/Serializers/CompilationData.h"
 
 #include <concepts>
 #include <string>
@@ -161,9 +163,9 @@ namespace ProjectCore::Tester::Detail
         std::unordered_map<std::string_view, TestSuite*> TestSuitesLinked;
 
         TestSuiteData Extra;
-        LoggerManager::BasicLogger Logger;
-        LoggerManager::BasicLogger TestLogger;
-        Instrumentation::Profiler* Profiler;
+        FLog::BasicLogger Logger;
+        FLog::BasicLogger TestLogger;
+        ProfilerManager::Profiler* Profiler;
 
         TestSuite* Parent;
 
@@ -173,7 +175,7 @@ namespace ProjectCore::Tester::Detail
     private:
         std::string GetFullName();
         std::string GetCorrectedSizeName();
-        Instrumentation::Profiler& GetProfiler();
+        ProfilerManager::Profiler& GetProfiler();
 
     public:
         TestStatusBank ExecAllTests();
@@ -182,7 +184,7 @@ namespace ProjectCore::Tester::Detail
 
 namespace ProjectCore::FMT
 {
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::Detail::TestSuite, FormatContext>
     {
         static void Format(const ProjectCore::Tester::Detail::TestSuite& t, FormatContext& context)
@@ -191,7 +193,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::Detail::Test, FormatContext>
     {
         static void Format(const ProjectCore::Tester::Detail::Test& t, FormatContext& context) {
@@ -201,7 +203,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::TestStatus, FormatContext>
     {
         static void Format(const ProjectCore::Tester::TestStatus& status, FormatContext& context) {
@@ -214,7 +216,7 @@ namespace ProjectCore::FMT
         }
     };
 
-    template<typename FormatContext>
+    template <typename FormatContext>
     struct FormatterType<ProjectCore::Tester::Detail::TestStatusBank, FormatContext>
     {
         static void Format(const ProjectCore::Tester::Detail::TestStatusBank& statusBank, FormatContext& context) {

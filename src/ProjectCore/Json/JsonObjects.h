@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Detail.h"
-#include "ProjectCore/FMT/FMT.h"
+#include "ProjectCore/FMT.h"
 
 #include <unordered_map>
 #include <string>

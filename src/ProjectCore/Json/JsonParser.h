@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ProjectCore/FMT/Detail/Buffer/BasicBufferIn/BasicBufferIn.h"
-#include "ProjectCore/FMT/Detail/Buffer/BufferInProperties/BufferInProperties.h"
+#include "ProjectCore/FMT/Buffer/BasicBufferIn/BasicBufferIn.h"
+#include "ProjectCore/FMT/Buffer/BufferInProperties/BufferInProperties.h"
 
 #include "JsonObjects.h"
 
@@ -62,7 +62,7 @@ namespace ProjectCore::JSON::Detail
 
         void Parse(Detail::JsonParser& parser);
 
-        template<typename T>
+        template <typename T>
         void Parse(T& t)
         {
             JsonParser parser;
@@ -81,7 +81,7 @@ namespace ProjectCore::JSON::Detail
         void Parse(Detail::JsonParser& parser);
 
     public:
-        template<typename T>
+        template <typename T>
         void Parse(const std::string& name, T& t)
         {
             if (Objects.contains(name) == false)
@@ -101,7 +101,7 @@ namespace ProjectCore::JSON::Detail
         void Parse(Detail::JsonParser& parser);
 
     public:
-        template<typename T>
+        template <typename T>
         void Parse(const std::size_t idx, T& t)
         {
             if (idx >= Objects.size())
