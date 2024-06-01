@@ -4,7 +4,6 @@
 
 ##### Build and Run examples one by one (Recommended)
 Example with `//HelloWorld:HelloWorld` (see below for the list of example)
-- On Windows, using msvc:
     ```
     bazelisk run //HelloWorld:HelloWorld
     
