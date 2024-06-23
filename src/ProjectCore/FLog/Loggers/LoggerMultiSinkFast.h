@@ -12,9 +12,9 @@ namespace ProjectCore::FLog::Detail
         using Base::SetName;
         using Base::GetName;
         using Base::GetSinks;
+        using Base::AddSink;
         using Base::m_Name;
         using Base::m_Sinks;
-        using Base::AddSink;
 
         using Base::m_StartTime;
 

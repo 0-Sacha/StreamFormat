@@ -32,3 +32,9 @@ Asset
 
 # Tests
 TestSuite_FMT.json
+
+# External Dev
+bazel_buildbuddy
+bazel_utilities
+bazel_winlibs_mingw
+WORKSPACE.dev
