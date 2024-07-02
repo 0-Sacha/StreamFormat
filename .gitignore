@@ -38,3 +38,6 @@ bazel_buildbuddy
 bazel_utilities
 bazel_winlibs_mingw
 WORKSPACE.dev
+
+# Coverage
+genhtml
