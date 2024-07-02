@@ -5,17 +5,17 @@
 namespace ProjectCore::FMT::Detail
 {
     template <typename BufferContext>
-    struct NoStrideFunction {
+    struct NoStrideFunction
+    {
         inline explicit NoStrideFunction(BufferContext& buffer)
             : Buffer(buffer)
-            , SizeBuffer(Buffer.GetBufferCurrentSize()) {}
+            , SizeBuffer(Buffer.GetBufferCurrentSize())
+        {}
 
-        ~NoStrideFunction() {
-            Buffer.AddNoStride(Buffer.GetBufferCurrentSize() - SizeBuffer);
-        }
+        ~NoStrideFunction() { Buffer.AddNoStride(Buffer.GetBufferCurrentSize() - SizeBuffer); }
 
-        BufferContext&  Buffer;
-        std::size_t      SizeBuffer;
+        BufferContext& Buffer;
+        std::size_t    SizeBuffer;
     };
 
     template <typename Char>
@@ -34,13 +34,13 @@ namespace ProjectCore::FMT::Detail
             {
                 if (txt[k] == '\n')
                 {
-                    Restore = true;
+                    Restore   = true;
                     AddIndent = txt.size() - k - 1;
                 }
             }
         }
 
-        bool           Restore;
+        bool        Restore;
         std::size_t AddIndent;
     };
 
@@ -62,18 +62,17 @@ namespace ProjectCore::FMT::Detail
             , m_AddIndentEnd(addIndentEnd)
         {}
 
-        ~RestoreIndentFunction() {
-            if (m_IndentInfo.Restore)
-                m_Context.BufferOut().SetIndent(m_OldIndent);
-            if (m_AddIndentEnd)
-                m_Context.BufferOut().AddIndent(m_IndentInfo.AddIndent);
+        ~RestoreIndentFunction()
+        {
+            if (m_IndentInfo.Restore) m_Context.BufferOut().SetIndent(m_OldIndent);
+            if (m_AddIndentEnd) m_Context.BufferOut().AddIndent(m_IndentInfo.AddIndent);
         }
 
     private:
-        FormatterContext&                                       m_Context;
-        std::size_t                                             m_OldIndent;
-        IndentInfo<typename FormatterContext::CharFormatType>      m_IndentInfo;
-        bool                                                    m_AddIndentEnd;
+        FormatterContext&                                     m_Context;
+        std::size_t                                           m_OldIndent;
+        IndentInfo<typename FormatterContext::CharFormatType> m_IndentInfo;
+        bool                                                  m_AddIndentEnd;
     };
 
     template <typename FormatterContext>
@@ -85,16 +84,13 @@ namespace ProjectCore::FMT::Detail
             , OldBufferSize(context.BufferOut().GetBufferCurrentSize())
         {}
 
-        inline std::size_t GetIndent()
-        {
-            return (Context.BufferOut().GetBufferCurrentSize() - OldBufferSize) - (Context.BufferOut().GetNoStride() - OldNoStride);
-        }
+        inline std::size_t GetIndent() { return (Context.BufferOut().GetBufferCurrentSize() - OldBufferSize) - (Context.BufferOut().GetNoStride() - OldNoStride); }
 
-        FormatterContext&   Context;
-        std::size_t           OldNoStride;
-        std::size_t         OldBufferSize;
+        FormatterContext& Context;
+        std::size_t       OldNoStride;
+        std::size_t       OldBufferSize;
     };
-    
+
     template <typename FormatterContext>
     class IndentFunction
     {
@@ -102,9 +98,7 @@ namespace ProjectCore::FMT::Detail
             : m_IndentFunctionData(context)
         {}
 
-        ~IndentFunction() {
-            m_IndentFunctionData.Context.AddIndent(m_IndentFunctionData.GetIndent());
-        }
+        ~IndentFunction() { m_IndentFunctionData.Context.AddIndent(m_IndentFunctionData.GetIndent()); }
 
     private:
         IndentFunctionData<FormatterContext> m_IndentFunctionData;

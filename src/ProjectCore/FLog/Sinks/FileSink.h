@@ -2,9 +2,9 @@
 
 #include "LoggerSink.h"
 
-#include <ostream>
-#include <fstream>
 #include <filesystem>
+#include <fstream>
+#include <ostream>
 
 namespace ProjectCore::FLog::Sinks
 {
@@ -32,7 +32,7 @@ namespace ProjectCore::FLog::Sinks
 
     public:
         std::basic_ostream<CharType>& GetStream() { return m_Stream; }
-    
+
     protected:
         void WriteImpl(const BufferType& bufferToPrint) override
         {
@@ -40,7 +40,7 @@ namespace ProjectCore::FLog::Sinks
             m_Stream.write("\n", 1);
             m_Stream.flush();
         }
-        
+
     private:
         std::basic_ostream<CharType>& m_Stream;
     };
@@ -64,7 +64,7 @@ namespace ProjectCore::FLog::Sinks
 
     public:
         std::basic_ostream<CharType>& GetStream() { return m_Stream; }
-    
+
     protected:
         void WriteImpl(const BufferType& bufferToPrint) override
         {

@@ -25,7 +25,7 @@ namespace ProjectCore::FMT::Context
         while (!m_Format.IsEnd())
         {
             const CharFormat* beginContinousString = m_Format.GetBufferCurrentPos();
-            std::size_t sizeContinousString = 0;
+            std::size_t       sizeContinousString  = 0;
             while (m_Format.IsEnd() == false && m_Format.IsEqualTo('{') == false)
             {
                 ++sizeContinousString;
@@ -33,8 +33,7 @@ namespace ProjectCore::FMT::Context
             }
             FormatToParamsString(beginContinousString, sizeContinousString);
 
-            if (m_Format.IsEnd() == false && m_Format.IsEqualTo('{'))
-                FormatExecParams();
+            if (m_Format.IsEnd() == false && m_Format.IsEqualTo('{')) FormatExecParams();
         }
     }
 
@@ -42,33 +41,32 @@ namespace ProjectCore::FMT::Context
     void BasicContext<CharFormat>::Run(FormatBufferType& format, ContextArgsInterface* argsInterface)
     {
         // Save old context
-        FormatBufferType oldFormat = m_Format;
-        ContextArgsInterface* oldArgsInterface = m_ContextArgsInterface;
-        Detail::FormatIndex oldValuesIndex = m_ValuesIndex;
+        FormatBufferType                   oldFormat          = m_Format;
+        ContextArgsInterface*              oldArgsInterface   = m_ContextArgsInterface;
+        Detail::FormatIndex                oldValuesIndex     = m_ValuesIndex;
         Detail::TextProperties::Properties saveTextProperties = m_TextProperties.Save();
         // Set new context
-        m_Format = format;
+        m_Format               = format;
         m_ContextArgsInterface = argsInterface;
-        m_ValuesIndex = Detail::FormatIndex(0, static_cast<typename Detail::FormatIndex::BaseType>(argsInterface->Size()));
+        m_ValuesIndex          = Detail::FormatIndex(0, static_cast<typename Detail::FormatIndex::BaseType>(argsInterface->Size()));
         SetArgsInterfaceCurrentContex();
         // Run
         RunImpl();
         // Restore old context
-        m_Format = oldFormat;
+        m_Format               = oldFormat;
         m_ContextArgsInterface = oldArgsInterface;
-        m_ValuesIndex = oldValuesIndex;
+        m_ValuesIndex          = oldValuesIndex;
         m_TextProperties.Reload(saveTextProperties);
     }
 
     template <typename CharFormat>
     void BasicContext<CharFormat>::FormatDataApplyNextOverride()
     {
-        if (m_FormatData.NextOverride.size() == 0)
-            return;
-    
+        if (m_FormatData.NextOverride.size() == 0) return;
+
         FormatBufferType overrideAsFormat(m_FormatData.NextOverride);
         FormatBufferType formatCopy = m_Format;
-        m_Format = overrideAsFormat;
+        m_Format                    = overrideAsFormat;
         ParseFormatData();
         m_Format = formatCopy;
     }

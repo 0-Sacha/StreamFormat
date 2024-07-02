@@ -23,12 +23,12 @@ namespace ProjectCore::FLog
         };
 
     public:
-        static constexpr Value Trace    {Value::Trace};
-        static constexpr Value Debug    {Value::Debug};
-        static constexpr Value Info     {Value::Info};
-        static constexpr Value Warn     {Value::Warn};
-        static constexpr Value Error    {Value::Error};
-        static constexpr Value Fatal    {Value::Fatal};
+        static constexpr Value Trace{Value::Trace};
+        static constexpr Value Debug{Value::Debug};
+        static constexpr Value Info{Value::Info};
+        static constexpr Value Warn{Value::Warn};
+        static constexpr Value Error{Value::Error};
+        static constexpr Value Fatal{Value::Fatal};
         static constexpr Value DefaultSeverity = Trace;
 
     public:
@@ -37,21 +37,33 @@ namespace ProjectCore::FLog
         public:
             std::basic_string<char> TracePattern = "";
             std::basic_string<char> DebugPattern = "";
-            std::basic_string<char> InfoPattern = "";
-            std::basic_string<char> WarnPattern = "";
+            std::basic_string<char> InfoPattern  = "";
+            std::basic_string<char> WarnPattern  = "";
             std::basic_string<char> ErrorPattern = "";
             std::basic_string<char> FatalPattern = "";
 
-            std::basic_string_view<char> GetPattern(const Value& severity) const 
+            std::basic_string_view<char> GetPattern(const Value& severity) const
             {
-                switch(severity)
+                switch (severity)
                 {
-                    case Value::Trace:    if (TracePattern.empty() == false)    return TracePattern;    break;
-                    case Value::Debug:    if (DebugPattern.empty() == false)    return DebugPattern;    break;
-                    case Value::Info:     if (InfoPattern.empty() == false)     return InfoPattern;     break;
-                    case Value::Warn:     if (WarnPattern.empty() == false)     return WarnPattern;     break;
-                    case Value::Error:    if (ErrorPattern.empty() == false)    return ErrorPattern;    break;
-                    case Value::Fatal:    if (FatalPattern.empty() == false)    return FatalPattern;    break;
+                    case Value::Trace:
+                        if (TracePattern.empty() == false) return TracePattern;
+                        break;
+                    case Value::Debug:
+                        if (DebugPattern.empty() == false) return DebugPattern;
+                        break;
+                    case Value::Info:
+                        if (InfoPattern.empty() == false) return InfoPattern;
+                        break;
+                    case Value::Warn:
+                        if (WarnPattern.empty() == false) return WarnPattern;
+                        break;
+                    case Value::Error:
+                        if (ErrorPattern.empty() == false) return ErrorPattern;
+                        break;
+                    case Value::Fatal:
+                        if (FatalPattern.empty() == false) return FatalPattern;
+                        break;
                 }
                 return std::basic_string_view<char>{nullptr, 0};
             }
@@ -73,47 +85,68 @@ namespace ProjectCore::FLog::Detail
         ~XLogger() override = default;
 
     public:
-        template <typename Severity, typename Format = std::string_view, typename ...Args>
-            requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        void Log(Severity status, const Format& format, Args&& ...args) { Master::template Log(status, format, std::forward<Args>(args)...); }
+        template <typename Severity, typename Format = std::string_view, typename... Args>
+        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
+        void Log(Severity status, const Format& format, Args&&... args) { Master::template Log(status, format, std::forward<Args>(args)...); }
 
         template <typename Severity, typename T>
-        void Log(Severity status, T&& t) { Master::template Log(status, std::forward<T>(t)); }
+        void Log(Severity status, T&& t)
+        {
+            Master::template Log(status, std::forward<T>(t));
+        }
 
     public:
         /////---------- Logger Severity with array as format ----------/////
-        template <typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Trace(const Format& format, Args&& ...args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
-        template <typename Format = std::string_view, typename ...Args>
+        inline void Trace(const Format& format, Args&&... args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Debug(const Format& format, Args&& ...args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
-        template <typename Format = std::string_view, typename ...Args>
+        inline void Debug(const Format& format, Args&&... args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Info(const Format& format, Args&& ...args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
-        template <typename Format = std::string_view, typename ...Args>
+        inline void Info(const Format& format, Args&&... args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Warn(const Format& format, Args&& ...args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
-        template <typename Format = std::string_view, typename ...Args>
+        inline void Warn(const Format& format, Args&&... args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Error(const Format& format, Args&& ...args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
-        template <typename Format = std::string_view, typename ...Args>
+        inline void Error(const Format& format, Args&&... args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Fatal(const Format& format, Args&& ...args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
+        inline void Fatal(const Format& format, Args&&... args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
 
         /////---------- NO-FORMAT Logger Severity ----------/////
         template <typename T>
-        inline void Trace(T&& t) { return Log(LogSeverity::Trace, std::forward<T>(t)); }
+        inline void Trace(T&& t)
+        {
+            return Log(LogSeverity::Trace, std::forward<T>(t));
+        }
         template <typename T>
-        inline void Debug(T&& t) { return Log(LogSeverity::Debug, std::forward<T>(t)); }
+        inline void Debug(T&& t)
+        {
+            return Log(LogSeverity::Debug, std::forward<T>(t));
+        }
         template <typename T>
-        inline void Info(T&& t) { return Log(LogSeverity::Info, std::forward<T>(t)); }
+        inline void Info(T&& t)
+        {
+            return Log(LogSeverity::Info, std::forward<T>(t));
+        }
         template <typename T>
-        inline void Warn(T&& t) { return Log(LogSeverity::Warn, std::forward<T>(t)); }
+        inline void Warn(T&& t)
+        {
+            return Log(LogSeverity::Warn, std::forward<T>(t));
+        }
         template <typename T>
-        inline void Error(T&& t) { return Log(LogSeverity::Error, std::forward<T>(t)); }
+        inline void Error(T&& t)
+        {
+            return Log(LogSeverity::Error, std::forward<T>(t));
+        }
         template <typename T>
-        inline void Fatal(T&& t) { return Log(LogSeverity::Fatal, std::forward<T>(t)); }
+        inline void Fatal(T&& t)
+        {
+            return Log(LogSeverity::Fatal, std::forward<T>(t));
+        }
     };
 }
 
@@ -127,24 +160,25 @@ namespace ProjectCore::FMT
             context.GetFormatData().KeepNewStyle = true;
             switch (t)
             {
-            case ProjectCore::FLog::LogSeverity::Trace:
-                FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, context);
-                break;
-            case ProjectCore::FLog::LogSeverity::Debug:
-                FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, context);
-                break;
-            case ProjectCore::FLog::LogSeverity::Info:
-                FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, context);
-                break;
-            case ProjectCore::FLog::LogSeverity::Warn:
-                FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, context);
-                break;
-            case ProjectCore::FLog::LogSeverity::Error:
-                FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, context);
-                break;
-            case ProjectCore::FLog::LogSeverity::Fatal:
-                FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta, context);
-                break;
+                case ProjectCore::FLog::LogSeverity::Trace:
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, context);
+                    break;
+                case ProjectCore::FLog::LogSeverity::Debug:
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, context);
+                    break;
+                case ProjectCore::FLog::LogSeverity::Info:
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, context);
+                    break;
+                case ProjectCore::FLog::LogSeverity::Warn:
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, context);
+                    break;
+                case ProjectCore::FLog::LogSeverity::Error:
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, context);
+                    break;
+                case ProjectCore::FLog::LogSeverity::Fatal:
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta,
+                                                                                                             context);
+                    break;
             }
         }
     };
@@ -152,7 +186,7 @@ namespace ProjectCore::FMT
 
 namespace ProjectCore::FLog
 {
-    using BasicLogger = Detail::XLogger<Detail::BasicLoggerImpl<LogSeverity>>;
+    using BasicLogger         = Detail::XLogger<Detail::BasicLoggerImpl<LogSeverity>>;
     using LoggerMultiSinkFast = Detail::XLogger<Detail::BasicLoggerMultiSinkFastImpl<LogSeverity, char>>;
     using LoggerMultiSinkSafe = Detail::XLogger<Detail::BasicLoggerMultiSinkSafeImpl<LogSeverity, char>>;
 
@@ -164,7 +198,7 @@ namespace ProjectCore::FLog
 namespace ProjectCore::FLog::Sinks
 {
     using ConsoleSink = BasicConsoleSink<LogSeverity, char>;
-    using FileSink = BasicFileSink<LogSeverity, char>;
+    using FileSink    = BasicFileSink<LogSeverity, char>;
 
     extern template class BasicConsoleSink<LogSeverity, char>;
     extern template class BasicFileSink<LogSeverity, char>;

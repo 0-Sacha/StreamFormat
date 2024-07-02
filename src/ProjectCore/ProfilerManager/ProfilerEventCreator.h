@@ -12,15 +12,19 @@ namespace ProjectCore::ProfilerManager
         ScopeProfile(Profiler& profiler, const std::string& name, const std::string& category = "ScopeProfiler")
             : DurationEvent(name, category)
             , m_Profiler(profiler)
-        { Start(); }
+        {
+            Start();
+        }
 
         ScopeProfile(Profiler& profiler, std::string&& name, std::string&& category = "ScopeProfiler")
             : DurationEvent(std::move(name), std::move(category))
             , m_Profiler(profiler)
-        { Start(); }
+        {
+            Start();
+        }
 
         ~ScopeProfile() override;
-    
+
     private:
         Profiler& m_Profiler;
     };
@@ -36,7 +40,7 @@ namespace ProjectCore::ProfilerManager
         void Snapshot();
 
     private:
-        Profiler& m_Profiler;
+        Profiler&   m_Profiler;
         std::string m_Name;
         std::string m_Category;
     };
@@ -62,9 +66,9 @@ namespace ProjectCore::ProfilerManager
         void Snapshot();
 
     private:
-        Profiler& m_Profiler;
-        std::string m_Name;
-        std::string m_Category;
+        Profiler&     m_Profiler;
+        std::string   m_Name;
+        std::string   m_Category;
         std::uint64_t m_Idx;
     };
 }

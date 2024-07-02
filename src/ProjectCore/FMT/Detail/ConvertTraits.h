@@ -17,18 +17,17 @@ namespace ProjectCore::FMT::Detail
     };
 
     template <typename From, typename To>
-    requires (std::is_convertible_v<From, To> && std::is_convertible_v<const From&, To>)
-    struct FMTContextConvert<From, To>
+    requires(std::is_convertible_v<From, To>&& std::is_convertible_v<const From&, To>) struct FMTContextConvert<From, To>
     {
         static constexpr bool IsConvertible = true;
-        static constexpr To Convert(const From& from) { return static_cast<To>(from); }
+        static constexpr To   Convert(const From& from) { return static_cast<To>(from); }
     };
 
     template <typename From>
-    requires (std::is_convertible_v<From, typename Detail::FormatIndex::BaseType> && std::is_convertible_v<const From&, typename Detail::FormatIndex::BaseType>)
-    struct FMTContextConvert<Detail::FormatIndex, From>
+    requires(std::is_convertible_v<From, typename Detail::FormatIndex::BaseType>&&
+                 std::is_convertible_v<const From&, typename Detail::FormatIndex::BaseType>) struct FMTContextConvert<Detail::FormatIndex, From>
     {
-        static constexpr bool IsConvertible = true;
+        static constexpr bool                IsConvertible = true;
         static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(static_cast<typename Detail::FormatIndex::BaseType>(from)); }
     };
 
@@ -36,7 +35,9 @@ namespace ProjectCore::FMT::Detail
     concept FMTCanContextConvert = requires(const From& from)
     {
         requires FMTContextConvert<From, To>::IsConvertible;
-        { FMTContextConvert<From, To>::Convert(from) } -> std::same_as<To>;
+        {
+            FMTContextConvert<From, To>::Convert(from)
+            } -> std::same_as<To>;
     };
 
     template <typename From, typename To>
@@ -46,8 +47,7 @@ namespace ProjectCore::FMT::Detail
     };
 
     template <typename From, typename To>
-    requires (std::is_same_v<Detail::GetBaseType<From>, Detail::GetBaseType<To>>)
-    struct FMTContextSame<From, To>
+    requires(std::is_same_v<Detail::GetBaseType<From>, Detail::GetBaseType<To>>) struct FMTContextSame<From, To>
     {
         static constexpr bool SameAs = true;
     };

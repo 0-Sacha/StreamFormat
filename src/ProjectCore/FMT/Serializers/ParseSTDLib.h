@@ -2,9 +2,9 @@
 
 #include "ProjectCore/FMT/Context/ParserContext/BasicParserContext.h"
 
+#include <sstream>
 #include <string>
 #include <string_view>
-#include <sstream>
 
 namespace ProjectCore::FMT
 {

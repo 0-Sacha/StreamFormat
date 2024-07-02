@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ProjectCore/FMT/Buffer/BasicBufferOut/BasicBufferOut.h"
 #include "JsonObjects.h"
+#include "ProjectCore/FMT/Buffer/BasicBufferOut/BasicBufferOut.h"
 
 namespace ProjectCore::JSON::Detail
 {
@@ -12,11 +12,11 @@ namespace ProjectCore::JSON::Detail
 
         struct FormatSettings
         {
-            std::size_t IndentSize = 4;
-            bool IndentWithSpaces = true;
-            bool OneLine = false;
-            bool OrderedStruct = false;
-            ProjectCore::FMT::Detail::FloatPrecision FloatPrecision = 7;
+            std::size_t                              IndentSize       = 4;
+            bool                                     IndentWithSpaces = true;
+            bool                                     OneLine          = false;
+            bool                                     OrderedStruct    = false;
+            ProjectCore::FMT::Detail::FloatPrecision FloatPrecision   = 7;
         };
 
     public:
@@ -32,10 +32,10 @@ namespace ProjectCore::JSON::Detail
         {}
 
     public:
-        JsonBufferOut& BufferOut() { return m_BufferOut; }
+        JsonBufferOut&       BufferOut() { return m_BufferOut; }
         const JsonBufferOut& BufferOut() const { return m_BufferOut; }
 
-        FormatSettings& Settings() { return m_Settings; }
+        FormatSettings&       Settings() { return m_Settings; }
         const FormatSettings& Settings() const { return m_Settings; }
 
     public:
@@ -45,7 +45,7 @@ namespace ProjectCore::JSON::Detail
         struct StructIntermediate;
         struct ArrayIntermediate;
         StructIntermediate GetStructIntermediate();
-        ArrayIntermediate GetArrayIntermediate();
+        ArrayIntermediate  GetArrayIntermediate();
 
     public:
         void Indent()
@@ -58,13 +58,18 @@ namespace ProjectCore::JSON::Detail
                 m_BufferOut.PushBack('\t', m_Indent * m_Settings.IndentSize);
         }
 
-        void NewLine()          { if (m_Settings.OneLine) return; m_BufferOut.PushBack('\n'); Indent(); }
-        void BeginNewObject()   { ++m_Indent; }
-        void EndNewObject()     { --m_Indent; }
+        void NewLine()
+        {
+            if (m_Settings.OneLine) return;
+            m_BufferOut.PushBack('\n');
+            Indent();
+        }
+        void BeginNewObject() { ++m_Indent; }
+        void EndNewObject() { --m_Indent; }
 
     protected:
-        JsonBufferOut m_BufferOut;
-        std::size_t m_Indent;
+        JsonBufferOut  m_BufferOut;
+        std::size_t    m_Indent;
         FormatSettings m_Settings;
     };
 }
@@ -83,7 +88,7 @@ namespace ProjectCore::JSON::Detail
 
     public:
         JsonFormatter& Formatter;
-        std::uint32_t Idx;
+        std::uint32_t  Idx;
     };
 
     struct JsonFormatter::ArrayIntermediate
@@ -98,7 +103,7 @@ namespace ProjectCore::JSON::Detail
 
     public:
         JsonFormatter& Formatter;
-        std::uint32_t Idx;
+        std::uint32_t  Idx;
     };
 
     inline JsonFormatter::StructIntermediate JsonFormatter::GetStructIntermediate()

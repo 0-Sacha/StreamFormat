@@ -6,8 +6,8 @@
 #include "TypesTraits.h"
 
 #include "Exception.h"
-#include "Specifiers.h"
 #include "IndentHandlers.h"
+#include "Specifiers.h"
 
 #define UNKOWN_TYPE_MESSAGE
 
@@ -20,14 +20,14 @@
 //        TOKENIZER bufferIn
 //
 //        GLOBBER
-// 
-//        REGEX        
+//
+//        REGEX
 //            {I:REGEX}
 //            {:regex=REGEX} (string / char array)
 //            {}
 //
 //        End writing all writer and reader (string / char pt)
-//        
+//
 
 namespace ProjectCore::FMT::Context
 {

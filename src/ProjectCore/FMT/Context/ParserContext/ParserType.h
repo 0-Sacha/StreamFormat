@@ -22,7 +22,7 @@ namespace ProjectCore::FMT
             throw Detail::FMTShouldNotEndHere{};
 #endif
 #ifdef UNKOWN_TYPE_DEBUG
-           PROJECTCORE_DEBUGBREAK();
+            PROJECTCORE_DEBUGBREAK();
 #endif
             return false;
         }
@@ -30,9 +30,9 @@ namespace ProjectCore::FMT
 
 }
 
-#define PROJECTCORE_AUTO_PARSER(Type, fmt, ...) template <typename ParserContext>\
-                                                struct ProjectCore::FMT::ParserType<Type, ParserContext> {\
-                                                    static bool Parse(Type& value, ParserContext& context) {\
-                                                        return context.SubContextArrayFMT(fmt, __VA_ARGS__);\
-                                                    }\
-                                                };
+#define PROJECTCORE_AUTO_PARSER(Type, fmt, ...)                                                                         \
+    template <typename ParserContext>                                                                                   \
+    struct ProjectCore::FMT::ParserType<Type, ParserContext>                                                            \
+    {                                                                                                                   \
+        static bool Parse(Type& value, ParserContext& context) { return context.SubContextArrayFMT(fmt, __VA_ARGS__); } \
+    };

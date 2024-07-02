@@ -8,8 +8,7 @@ namespace ProjectCore::FMT::Detail
     template <typename CharStr>
     inline void FMTBufferOut<CharBuffer>::WriteCharPtr(const CharStr* str, std::size_t size, ShiftType st, ShiftSize shift, ShiftPrint sp)
     {
-        if (CanMoveForward(std::max(static_cast<std::size_t>(shift.Value), size)) == false)
-            return WriteCharPtr(str, GetBufferRemainingSize(), st, shift, sp);
+        if (CanMoveForward(std::max(static_cast<std::size_t>(shift.Value), size)) == false) return WriteCharPtr(str, GetBufferRemainingSize(), st, shift, sp);
 
         if (static_cast<std::size_t>(shift) > size)
         {
@@ -45,7 +44,8 @@ namespace ProjectCore::FMT::Detail
             if (size > 0 && *str == '\n')
             {
                 NewLineIndent();
-                ++str; --size;
+                ++str;
+                --size;
             }
         }
     }

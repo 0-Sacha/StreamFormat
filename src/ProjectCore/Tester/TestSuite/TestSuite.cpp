@@ -25,23 +25,22 @@ namespace ProjectCore::Tester::Detail
 {
     TestStatusBank TestSuite::ExecAllTests()
     {
-        if (Parent == nullptr)
-            Profiler = new ProfilerManager::Profiler("TestSuite_" + Name);
+        if (Parent == nullptr) Profiler = new ProfilerManager::Profiler("TestSuite_" + Name);
         InitLogger();
 
         ProfilerManager::Profiler& profiler = GetProfiler();
         Logger.Info("{C:+black}BEGIN");
         ProfilerManager::DurationEvent testSuiteDuration(GetFullName(), "Profile");
         testSuiteDuration.Start();
-        bool firstTestSuite = true;
-        TestStatusBank testSuiteStatus;
+        bool                           firstTestSuite = true;
+        TestStatusBank                 testSuiteStatus;
         ProfilerManager::DurationEvent testsDuration("Tests", "Profile");
         testsDuration.Start();
         for (auto& [name, test] : Tests)
         {
             firstTestSuite = false;
             ProfilerManager::DurationEvent currentTestDuration(test->Name, "Profile");
-            TestStatus testStatus = TestStatus::Fail;
+            TestStatus                     testStatus = TestStatus::Fail;
             currentTestDuration.Start();
             if (TestSuitesManager::PerformanceTest.Enable == false)
                 testStatus = test->Run();
@@ -50,14 +49,12 @@ namespace ProjectCore::Tester::Detail
                 for (std::uint32_t i = 0; i < TestSuitesManager::PerformanceTest.NbSamples; ++i)
                 {
                     testStatus = test->Run();
-                    if (testStatus != TestStatus::Ok)
-                        break;
+                    if (testStatus != TestStatus::Ok) break;
                 }
             }
             currentTestDuration.Stop();
             if (testStatus != TestStatus::Ok)
-            {
-            }
+            {}
             testSuiteStatus.AddTestStatus(testStatus);
             Logger.Debug("{} -> {}", testStatus, name);
             profiler.AddEvent(currentTestDuration);
@@ -108,8 +105,7 @@ namespace ProjectCore::Tester::Detail
         }
 
         std::string timePattern = "";
-        if (TestSuitesManager::PrintTime)
-            timePattern = "[{T:pattern='%h:%m:%s:%ms'}] ";
+        if (TestSuitesManager::PrintTime) timePattern = "[{T:pattern='%h:%m:%s:%ms'}] ";
 
         if (Parent == nullptr)
         {
@@ -130,21 +126,18 @@ namespace ProjectCore::Tester::Detail
 
     std::string TestSuite::GetFullName()
     {
-        if (Parent == nullptr)
-            return Name;
+        if (Parent == nullptr) return Name;
         return Parent->GetFullName() + "::" + Name;
     }
 
     std::string TestSuite::GetCorrectedSizeName()
     {
-        if (Parent == nullptr)
-            return Name;
+        if (Parent == nullptr) return Name;
         std::size_t biggestName = 0;
         for (auto& [name, testSuite] : Parent->TestSuitesLinked)
         {
             std::size_t tmp = testSuite->Name.size();
-            if (tmp > biggestName)
-                biggestName = tmp;
+            if (tmp > biggestName) biggestName = tmp;
         }
         std::string res = GetFullName();
         biggestName -= Name.size();
@@ -156,8 +149,7 @@ namespace ProjectCore::Tester::Detail
 
     ProfilerManager::Profiler& TestSuite::GetProfiler()
     {
-        if (Parent == nullptr)
-            return *Profiler;
+        if (Parent == nullptr) return *Profiler;
         return Parent->GetProfiler();
     }
 }

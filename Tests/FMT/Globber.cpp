@@ -5,26 +5,17 @@
 #include "ProjectCore/FMT/Buffer/Utils/PatternMatching/Glob.h"
 
 PCT_TEST_GROUP(FMT, GLOBBER);
-#define TEST_GLOBBER(data, glob)  \
-                                    { \
-                                        ProjectCore::FMT::Detail::BasicBufferIn<char> p_buffer(data); \
-                                        ProjectCore::FMT::Detail::BasicBufferIn<char> p_glob(glob); \
-                                        ProjectCore::FMT::Detail::Globber<char, char>::BufferInExecGlob(p_buffer, p_glob); \
-                                        PCT_ASSERT(p_buffer.IsEnd()); \
-                                    }
+#define TEST_GLOBBER(data, glob)                                                           \
+    {                                                                                      \
+        ProjectCore::FMT::Detail::BasicBufferIn<char> p_buffer(data);                      \
+        ProjectCore::FMT::Detail::BasicBufferIn<char> p_glob(glob);                        \
+        ProjectCore::FMT::Detail::Globber<char, char>::BufferInExecGlob(p_buffer, p_glob); \
+        PCT_ASSERT(p_buffer.IsEnd());                                                      \
+    }
 
-PCT_TEST_FUNC(GLOBBER, BASIC_WILDCARD)
-{
-    TEST_GLOBBER("qwerty", "qwerty")
-    TEST_GLOBBER("qwerty", "q?erty")
-    TEST_GLOBBER("qwerty", "q?????")
-    TEST_GLOBBER("qwerty", "qwer?y")
-    TEST_GLOBBER("qwerty", "qwert?")
-    TEST_GLOBBER("qwerty", "??????")
-    TEST_GLOBBER("qwerty", "*")
-    TEST_GLOBBER("qwerty", "******")
-    TEST_GLOBBER("qwerty", "*?**?*")
-}
+PCT_TEST_FUNC(GLOBBER, BASIC_WILDCARD){TEST_GLOBBER("qwerty", "qwerty") TEST_GLOBBER("qwerty", "q?erty") TEST_GLOBBER("qwerty", "q?????") TEST_GLOBBER("qwerty", "qwer?y")
+                                           TEST_GLOBBER("qwerty", "qwert?") TEST_GLOBBER("qwerty", "??????") TEST_GLOBBER("qwerty", "*") TEST_GLOBBER("qwerty", "******")
+                                               TEST_GLOBBER("qwerty", "*?**?*")}
 
 PCT_TEST_GROUP(FMT, PARSE_GLOBBER);
 PCT_TEST_FUNC(PARSE_GLOBBER, PG_BASIC_WILDCARD)
@@ -44,7 +35,7 @@ PCT_TEST_FUNC(PARSE_GLOBBER, PG_BASIC_WILDCARD)
         ProjectCore::FMT::Parse("|test|", "|{:no-zero-end}|", test);
         PCT_EQ(std::string(test, 4), std::string("test"));
     }
-    
+
     {
         char test[4];
         ProjectCore::FMT::Parse("|test|", "|{}t|", test);
@@ -66,8 +57,12 @@ PCT_TEST_FUNC(PARSE_GLOBBER, PG_BASIC_WILDCARD)
     {
         char test[11];
         // just glob = '????' but compiler are anrgy about trigraph on '??'
-        ProjectCore::FMT::Parse("|test123456|", "|{:glob='?""?""?""?'}123456|", test);
+        ProjectCore::FMT::Parse("|test123456|",
+                                "|{:glob='?"
+                                "?"
+                                "?"
+                                "?'}123456|",
+                                test);
         PCT_EQ(std::string(test), std::string("test"));
     }
 }
-

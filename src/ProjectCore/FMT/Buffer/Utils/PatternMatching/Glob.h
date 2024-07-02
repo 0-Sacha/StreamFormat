@@ -9,7 +9,7 @@ namespace ProjectCore::FMT::Detail
     {
     public:
         using BufferInType = BasicBufferIn<CharBuffer>;
-        using PatternType = BasicBufferIn<CharBuffer>;
+        using PatternType  = BasicBufferIn<CharBuffer>;
 
     public:
         enum class PatternMatchType
@@ -21,11 +21,9 @@ namespace ProjectCore::FMT::Detail
     private:
         static const CharBuffer* BufferInExecGlob_(BufferInType bufferIn, PatternType glob)
         {
-            if (glob.IsEnd())
-                return bufferIn.GetBufferCurrentPos();
+            if (glob.IsEnd()) return bufferIn.GetBufferCurrentPos();
 
-            if (bufferIn.IsEnd())
-                return nullptr;
+            if (bufferIn.IsEnd()) return nullptr;
 
             if (glob.IsEqualTo('?'))
             {
@@ -41,9 +39,8 @@ namespace ProjectCore::FMT::Detail
                 {
                     bufferIn.Forward();
                     const CharBuffer* last = BufferInExecGlob_(bufferIn, glob);
-                    if (last > further || further == nullptr)
-                        further = last;
-                } 
+                    if (last > further || further == nullptr) further = last;
+                }
                 return further;
             }
             else if (glob.IsEqualTo('['))
@@ -53,11 +50,11 @@ namespace ProjectCore::FMT::Detail
                 glob.GoToForward(']');
                 const CharPattern* end = glob.GetBufferCurrentPos();
 
-                PatternType charSet(begin, end); 
+                PatternType charSet(begin, end);
 
-                bool is_inverted = glob.IsEqualToForward('!');
-                CharBuffer toMatch = bufferIn.GetAndForward();
-                bool found = false;
+                bool       is_inverted = glob.IsEqualToForward('!');
+                CharBuffer toMatch     = bufferIn.GetAndForward();
+                bool       found       = false;
 
                 while (found == false && charSet.CanMoveForward())
                 {
@@ -70,7 +67,7 @@ namespace ProjectCore::FMT::Detail
                     if (charSet.IsEqualTo('-'))
                     {
                         CharPattern beginSubSet = charSet.GetPrev();
-                        CharPattern endSubSet = charSet.GetNext();
+                        CharPattern endSubSet   = charSet.GetNext();
                         if (toMatch >= beginSubSet && toMatch <= endSubSet)
                         {
                             found = true;
@@ -90,8 +87,8 @@ namespace ProjectCore::FMT::Detail
 
             if (bufferIn.Get() == glob.Get())
             {
-                    glob.Forward();
-                    bufferIn.Forward();
+                glob.Forward();
+                bufferIn.Forward();
                 return BufferInExecGlob_(bufferIn, glob);
             }
             return nullptr;
@@ -101,8 +98,7 @@ namespace ProjectCore::FMT::Detail
         static void BufferInExecGlob(BufferInType& bufferIn, PatternType glob, [[maybe_unused]] PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest)
         {
             const CharBuffer* furtherPointMatched = BufferInExecGlob_(bufferIn, glob);
-            if (furtherPointMatched != nullptr)
-                bufferIn.SetBufferCurrentPos(furtherPointMatched);
+            if (furtherPointMatched != nullptr) bufferIn.SetBufferCurrentPos(furtherPointMatched);
         }
     };
 }

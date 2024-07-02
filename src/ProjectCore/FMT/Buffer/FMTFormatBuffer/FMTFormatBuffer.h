@@ -7,7 +7,6 @@ namespace ProjectCore::FMT::Detail
     template <typename CharFormat>
     class FMTFormatBuffer : public FMTBufferIn<CharFormat>
     {
-
     protected:
         using Base = FMTBufferIn<CharFormat>;
         using Base::m_Buffer;
@@ -117,7 +116,6 @@ namespace ProjectCore::FMT::Detail
         using Base::IsUpperCaseForwardThrow;
         using Base::IsADigitForwardThrow;
 
-
         using Base::IsSameSeq;
         using Base::IsSameSeqForward;
         using Base::IsSameSeqThrow;
@@ -144,59 +142,98 @@ namespace ProjectCore::FMT::Detail
         using Base::IgnoreAllBlanks;
         using Base::IgnoreAllSpaces;
 
-
     protected:
         using Base::SkipShiftBeginSpace;
         using Base::SkipShiftEnd;
 
     public:
-        FMTFormatBuffer()                                                     : Base() {}
-        FMTFormatBuffer(const BufferInProperties<CharFormat>& properties)     : Base(properties) {}
+        FMTFormatBuffer()
+            : Base()
+        {}
+        FMTFormatBuffer(const BufferInProperties<CharFormat>& properties)
+            : Base(properties)
+        {}
 
         FMTFormatBuffer(const CharFormat* const buffer, const std::size_t bufferSize)
             : Base(buffer, bufferSize)
         {}
 
         ~FMTFormatBuffer() noexcept override = default;
-        
+
     public:
         // Format commands in parameter (add check to '}' to avoid skip the end of the format specifier)
-        template <typename ...CharToTest> inline void ParamGoTo(const CharToTest ...ele)             { GoTo(ele..., '}'); }
-        template <typename ...CharToTest> inline void ParamGoToForward(const CharToTest ...ele)      { GoToForward(ele..., '}'); }
+        template <typename... CharToTest>
+        inline void ParamGoTo(const CharToTest... ele)
+        {
+            GoTo(ele..., '}');
+        }
+        template <typename... CharToTest>
+        inline void ParamGoToForward(const CharToTest... ele)
+        {
+            GoToForward(ele..., '}');
+        }
 
-        template <typename ...CharToTest> inline void GoToNextParamOr(const CharToTest ...ele)           { GoTo(ele..., '{'); }
-        template <typename ...CharToTest> inline void GoToNextParamOrForward(const CharToTest ...ele)    { GoToForward(ele..., '{'); }
+        template <typename... CharToTest>
+        inline void GoToNextParamOr(const CharToTest... ele)
+        {
+            GoTo(ele..., '{');
+        }
+        template <typename... CharToTest>
+        inline void GoToNextParamOrForward(const CharToTest... ele)
+        {
+            GoToForward(ele..., '{');
+        }
 
-        inline bool IsBeginOfParameter()        { return IsEqualTo('{'); }
-        inline void GoToBeginOfParameter()      { while (IsNotEqualTo('{') && CanMoveForward()) ForwardNoCheck(); }
-        inline void GoAfterBeginOfParameter()   { while (IsNotEqualTo('{') && CanMoveForward()) ForwardNoCheck(); Forward(); }
+        inline bool IsBeginOfParameter() { return IsEqualTo('{'); }
+        inline void GoToBeginOfParameter()
+        {
+            while (IsNotEqualTo('{') && CanMoveForward())
+                ForwardNoCheck();
+        }
+        inline void GoAfterBeginOfParameter()
+        {
+            while (IsNotEqualTo('{') && CanMoveForward())
+                ForwardNoCheck();
+            Forward();
+        }
 
-        inline bool IsEndOfParameter()      { return IsEqualTo('}'); }
-        inline void GoToEndOfParameter()    { while (IsNotEqualTo('}') && CanMoveForward()) ForwardNoCheck(); }
-        inline void GoOutOfParameter()      { while (IsNotEqualTo('}') && CanMoveForward()) ForwardNoCheck(); Forward(); }
+        inline bool IsEndOfParameter() { return IsEqualTo('}'); }
+        inline void GoToEndOfParameter()
+        {
+            while (IsNotEqualTo('}') && CanMoveForward())
+                ForwardNoCheck();
+        }
+        inline void GoOutOfParameter()
+        {
+            while (IsNotEqualTo('}') && CanMoveForward())
+                ForwardNoCheck();
+            Forward();
+        }
 
     public:
         // TODO Better way || way to verbous
-        template <typename ...CharToTest>
-        StringView ParamGoToAndGetStr(const CharToTest ...args)
+        template <typename... CharToTest>
+        StringView ParamGoToAndGetStr(const CharToTest... args)
         {
             const CharFormat* begin = GetBufferCurrentPos();
             ParamGoTo(args...);
             const CharFormat* end = GetBufferCurrentPos();
-            return StringView(begin, end); 
+            return StringView(begin, end);
         }
 
-        template <typename ...CharToTest>
-        StringView ParamGoToForwardAndGetStr(const CharToTest ...args)
+        template <typename... CharToTest>
+        StringView ParamGoToForwardAndGetStr(const CharToTest... args)
         {
             const CharFormat* begin = GetBufferCurrentPos();
             ParamGoToForward(args...);
             const CharFormat* end = GetBufferCurrentPos();
-            return StringView(begin, end); 
+            return StringView(begin, end);
         }
 
     public:
-        template <typename CharToTest> bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv) {
+        template <typename CharToTest>
+        bool NextIsANamedArgs(const std::basic_string_view<CharToTest>& sv)
+        {
             const CharToTest* const prevSubFormat = m_CurrentPos;
             if (IsSameForward(sv) && (IsEqualTo(':') || IsEqualTo('}'))) return true;
             m_CurrentPos = prevSubFormat;

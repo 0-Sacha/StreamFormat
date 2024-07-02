@@ -9,6 +9,5 @@ namespace ProjectCore::FLog
 {
     class LoggerFactory
     {
-
     };
 }

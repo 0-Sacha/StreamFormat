@@ -9,12 +9,12 @@ namespace ProjectCore::FMT::Detail
     {
     public:
         ~StaticBufferOutManager() override = default;
-        
+
     public:
-        CharType* GetBuffer() override { return m_Buffer; }
+        CharType*       GetBuffer() override { return m_Buffer; }
         const CharType* GetBuffer() const override { return m_Buffer; }
-        std::size_t GetBufferSize() const override { return Count; }
-    
+        std::size_t     GetBufferSize() const override { return Count; }
+
     public:
         bool AddSize(const std::size_t) override { return false; }
 

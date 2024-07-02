@@ -1,12 +1,12 @@
 
 #ifdef PROJECTCORE_PLATFORM_LINUX
-    #include <sys/types.h>
-    #include <unistd.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
 #ifdef PROJECTCORE_PLATFORM_WINDOWS
-    #include <Windows.h>
-    #include <process.h>
+#include <Windows.h>
+#include <process.h>
 #endif
 
 namespace ProjectCore::ProfilerManager
@@ -20,6 +20,6 @@ namespace ProjectCore::ProfilerManager
 #ifdef PROJECTCORE_PLATFORM_WINDOWS
         return _getpid();
 #endif
-        return 0; 
+        return 0;
     }
 }

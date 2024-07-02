@@ -1,8 +1,8 @@
 #pragma once
 
 #include "TextPropertiesColor.h"
-#include "TextPropertiesStyle.h"
 #include "TextPropertiesFront.h"
+#include "TextPropertiesStyle.h"
 
 namespace ProjectCore::FMT::Detail
 {
