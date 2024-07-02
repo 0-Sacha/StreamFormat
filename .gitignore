@@ -33,11 +33,13 @@ Asset
 # Tests
 TestSuite_FMT.json
 
+# Coverage
+genhtml
+
 # External Dev
 bazel_buildbuddy
 bazel_utilities
 bazel_winlibs_mingw
 WORKSPACE.dev
-
-# Coverage
-genhtml
+WORKSPACE.tmp
+bazel_modules_dev.sh
