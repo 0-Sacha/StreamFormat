@@ -12,12 +12,9 @@ namespace ProjectCore::FMT::Detail
             Context.FormatDataApplyNextOverride();
         }
 
-        inline ~FunctionApplyNextOverride()
-        {
-            Context.SetFormatData(FormatData);
-        }
+        inline ~FunctionApplyNextOverride() { Context.SetFormatData(FormatData); }
 
-        FormatterContext&                           Context;
-        typename FormatterContext::FormatDataType   FormatData;
+        FormatterContext&                         Context;
+        typename FormatterContext::FormatDataType FormatData;
     };
 }

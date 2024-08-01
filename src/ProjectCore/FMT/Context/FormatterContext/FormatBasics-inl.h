@@ -14,7 +14,7 @@ namespace ProjectCore::FMT
     {
         static void Format(const typename FormatterContext::FormatSpecifierType& specifier, FormatterContext& context)
         {
-            if(specifier.ValueIsText)
+            if (specifier.ValueIsText)
                 context.SubContextArrayFMT("{ '{}', '{}' }", specifier.Name, specifier.ValueAsText);
             else
                 context.SubContextArrayFMT("{ '{}', '{}' }", specifier.Name, specifier.ValueAsNumber);
@@ -30,7 +30,6 @@ namespace ProjectCore::FMT
         }
     };
 
-
     //----------------------------------------------//
     //----------------- Forwarders -----------------//
     //----------------------------------------------//
@@ -39,59 +38,45 @@ namespace ProjectCore::FMT
     template <typename T, typename FormatterContext>
     struct FormatterType<Detail::ForwardAsInt<T>, FormatterContext>
     {
-        static inline void Format(const T t, FormatterContext& context)
-        {
-            context.BufferOut().WriteIntFormatData(t, context.GetFormatData());
-        }
+        static inline void Format(const T t, FormatterContext& context) { context.BufferOut().WriteIntFormatData(t, context.GetFormatData()); }
     };
 
     // UInt Forwarders
     template <typename T, typename FormatterContext>
     struct FormatterType<Detail::ForwardAsUInt<T>, FormatterContext>
     {
-        static inline void Format(const T t, FormatterContext& context)
-        {
-            context.BufferOut().WriteUIntFormatData(t, context.GetFormatData());
-        }
+        static inline void Format(const T t, FormatterContext& context) { context.BufferOut().WriteUIntFormatData(t, context.GetFormatData()); }
     };
-
 
     // Float Forwarders
     template <typename T, typename FormatterContext>
-    struct FormatterType<Detail::ForwardAsFloat<T>, FormatterContext> 
+    struct FormatterType<Detail::ForwardAsFloat<T>, FormatterContext>
     {
-        static void Format(const T t, FormatterContext& context)
-        {
-            context.BufferOut().WriteFloatFormatData(t, context.GetFormatData());
-        }
+        static void Format(const T t, FormatterContext& context) { context.BufferOut().WriteFloatFormatData(t, context.GetFormatData()); }
     };
 
     // Char Forwarders
     template <typename T, typename FormatterContext>
     struct FormatterType<Detail::ForwardAsChar<T>, FormatterContext>
     {
-        inline static void Format(const T t, FormatterContext& context)
-        {
-            context.BufferOut().PushBack(t);
-        }
+        inline static void Format(const T t, FormatterContext& context) { context.BufferOut().PushBack(t); }
     };
 
     // Char Array Forwarders
     template <typename T, std::size_t SIZE, typename FormatterContext>
     struct FormatterType<Detail::ForwardAsCharArray<T, SIZE>, FormatterContext>
     {
-        static void Format(const T(&t)[SIZE], FormatterContext& context)
+        static void Format(const T (&t)[SIZE], FormatterContext& context)
         {
             const auto& data = context.GetFormatData();
 
             std::size_t begin = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-            std::size_t size = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>((t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin));
+            std::size_t size  = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>((t[SIZE - 1] == 0 ? SIZE - 1 : SIZE) - begin));
 
-            if (data.HasSpecifier("indent"))
-                return context.BufferOut().WriteIndentCharPtr(t + begin, static_cast<std::size_t>(size));
+            if (data.HasSpecifier("indent")) return context.BufferOut().WriteIndentCharPtr(t + begin, static_cast<std::size_t>(size));
 
-            if (data.TrueValue)     context.BufferOut().PushBack('\"');
-            
+            if (data.TrueValue) context.BufferOut().PushBack('\"');
+
             // TODO : this check is false becquse it need to check for a custom ShiftType/ShiftSize/ShiftPrint an no a HasSpec
             // Cause this check will use the costly one even when it is not needed
             if (data.HasSpec == false)
@@ -99,7 +84,7 @@ namespace ProjectCore::FMT
             else
                 context.BufferOut().WriteCharPtr(t + begin, static_cast<std::size_t>(size), data.ShiftType, data.ShiftSize, data.ShiftPrint);
 
-            if (data.TrueValue)     context.BufferOut().PushBack('\"');
+            if (data.TrueValue) context.BufferOut().PushBack('\"');
         }
     };
 
@@ -111,16 +96,14 @@ namespace ProjectCore::FMT
         {
             const auto& data = context.GetFormatData();
 
-            if (t == nullptr)
-                return context.BufferOut().FastWriteStringView(data.GetSpecifierAsText("null", "[nullptr string]"));
+            if (t == nullptr) return context.BufferOut().FastWriteStringView(data.GetSpecifierAsText("null", "[nullptr string]"));
 
             std::size_t begin = (std::size_t)data.GetSpecifierAsNumber("begin", 0);
-            std::size_t size = (std::size_t)data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
+            std::size_t size  = (std::size_t)data.GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
             if (data.HasSpecifier("indent"))
             {
-                if (size == Detail::FORMAT_DATA_NOT_SPECIFIED)
-                    return context.BufferOut().WriteIndentCharPtrNSize(t + begin);
+                if (size == Detail::FORMAT_DATA_NOT_SPECIFIED) return context.BufferOut().WriteIndentCharPtrNSize(t + begin);
                 return context.BufferOut().WriteIndentCharPtr(t + begin, size);
             }
 
@@ -130,19 +113,22 @@ namespace ProjectCore::FMT
             // Cause this check will use the costly one even when it is not needed
             if (data.HasSpec == false)
             {
-                if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)  context.BufferOut().FastWriteCharPtr(t + begin, size);
-                else                                            context.BufferOut().FastWriteCharPtrNSize(t + begin);
+                if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)
+                    context.BufferOut().FastWriteCharPtr(t + begin, size);
+                else
+                    context.BufferOut().FastWriteCharPtrNSize(t + begin);
             }
             else
             {
-                if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)  context.BufferOut().WriteCharPtr(t + begin, size, data.ShiftType, data.ShiftSize, data.ShiftPrint);
-                else                                            context.BufferOut().WriteCharPtrNSize(t + begin, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+                if (size != Detail::FORMAT_DATA_NOT_SPECIFIED)
+                    context.BufferOut().WriteCharPtr(t + begin, size, data.ShiftType, data.ShiftSize, data.ShiftPrint);
+                else
+                    context.BufferOut().WriteCharPtrNSize(t + begin, data.ShiftType, data.ShiftSize, data.ShiftPrint);
             }
 
             if (data.TrueValue) context.BufferOut().PushBack('\"');
         }
     };
-
 
     //-----------------------------------------------//
     //----------------- C/CXX Types -----------------//
@@ -156,13 +142,17 @@ namespace ProjectCore::FMT
         {
             if (!context.GetFormatData().TrueValue)
             {
-                if (t == true)  context.BufferOut().FastWriteCharArray("True");
-                else            context.BufferOut().FastWriteCharArray("False");
+                if (t == true)
+                    context.BufferOut().FastWriteCharArray("True");
+                else
+                    context.BufferOut().FastWriteCharArray("False");
             }
             else
             {
-                if (t == true)  context.BufferOut().PushBack('1');
-                else            context.BufferOut().PushBack('0');
+                if (t == true)
+                    context.BufferOut().PushBack('1');
+                else
+                    context.BufferOut().PushBack('0');
             }
         }
     };
@@ -172,10 +162,7 @@ namespace ProjectCore::FMT
     requires Detail::AsSignedIntegerType<T>
     struct FormatterType<T, FormatterContext>
     {
-        static inline void Format(const T t, FormatterContext& context)
-        {
-            FormatterType<Detail::ForwardAsInt<T>, FormatterContext>::Format(t, context);
-        }
+        static inline void Format(const T t, FormatterContext& context) { FormatterType<Detail::ForwardAsInt<T>, FormatterContext>::Format(t, context); }
     };
 
     // Unsigned Types
@@ -183,10 +170,7 @@ namespace ProjectCore::FMT
     requires Detail::AsUnsignedIntegerType<T>
     struct FormatterType<T, FormatterContext>
     {
-        static inline void Format(const T t, FormatterContext& context)
-        {
-            FormatterType<Detail::ForwardAsUInt<T>, FormatterContext>::Format(t, context);
-        }
+        static inline void Format(const T t, FormatterContext& context) { FormatterType<Detail::ForwardAsUInt<T>, FormatterContext>::Format(t, context); }
     };
 
     // Float Types
@@ -194,10 +178,7 @@ namespace ProjectCore::FMT
     requires Detail::AsFloatType<T>
     struct FormatterType<T, FormatterContext>
     {
-        static inline void Format(const T t, FormatterContext& context)
-        {
-            FormatterType<Detail::ForwardAsFloat<T>, FormatterContext>::Format(t, context);
-        }
+        static inline void Format(const T t, FormatterContext& context) { FormatterType<Detail::ForwardAsFloat<T>, FormatterContext>::Format(t, context); }
     };
 
     // Char Types
@@ -205,43 +186,33 @@ namespace ProjectCore::FMT
     requires Detail::AsCharType<T>
     struct FormatterType<T, FormatterContext>
     {
-        inline static void Format(const T t, FormatterContext& context)
-        {
-            FormatterType<Detail::ForwardAsChar<T>, FormatterContext>::Format(t, context);
-        }
+        inline static void Format(const T t, FormatterContext& context) { FormatterType<Detail::ForwardAsChar<T>, FormatterContext>::Format(t, context); }
     };
     // Char Arrays
     template <typename T, std::size_t SIZE, typename FormatterContext>
     requires Detail::AsCharType<T>
-    struct FormatterType<T [SIZE], FormatterContext>
+    struct FormatterType<T[SIZE], FormatterContext>
     {
-        static void Format(const T (&t)[SIZE], FormatterContext& context)
-        {
-            FormatterType<Detail::ForwardAsCharArray<T, SIZE>, FormatterContext>::Format(t, context);
-        }
+        static void Format(const T (&t)[SIZE], FormatterContext& context) { FormatterType<Detail::ForwardAsCharArray<T, SIZE>, FormatterContext>::Format(t, context); }
     };
     // Char Pointers
     template <typename T, typename FormatterContext>
     requires Detail::AsCharType<T>
     struct FormatterType<T*, FormatterContext>
     {
-        static void Format(const T* const t, FormatterContext& context)
-        {
-            FormatterType<Detail::ForwardAsCharPointer<T>, FormatterContext>::Format(t, context);
-        }
+        static void Format(const T* const t, FormatterContext& context) { FormatterType<Detail::ForwardAsCharPointer<T>, FormatterContext>::Format(t, context); }
     };
 
-    
     //-------------------------------------------------------//
     //----------------- Pointers and Arrays -----------------//
     //-------------------------------------------------------//
-    
+
     template <typename FormatterContext>
     struct FormatterType<void*, FormatterContext>
     {
-        static void Format(const void* const t, FormatterContext& context) {
-            if (t == nullptr)
-                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+        static void Format(const void* const t, FormatterContext& context)
+        {
+            if (t == nullptr) return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 
             if (context.GetFormatData().IntPrint == Detail::ValueIntPrint::Hex)
                 return context.SubContextArrayFMT("{:X,=,U}", reinterpret_cast<std::uintptr_t>(t));
@@ -253,11 +224,11 @@ namespace ProjectCore::FMT
     template <typename T, typename FormatterContext>
     struct FormatterType<T*, FormatterContext>
     {
-        static void Format(const T* const t, FormatterContext& context) {
-
+        static void Format(const T* const t, FormatterContext& context)
+        {
             auto size = context.GetFormatData().GetSpecifierAsNumber("size", Detail::FORMAT_DATA_NOT_SPECIFIED);
 
-            if(size == Detail::FORMAT_DATA_NOT_SPECIFIED)
+            if (size == Detail::FORMAT_DATA_NOT_SPECIFIED)
             {
                 if (context.GetFormatData().TrueValue)
                 {
@@ -271,8 +242,7 @@ namespace ProjectCore::FMT
                     bool all = context.GetFormatData().HasSpecifier("size");
                     if (all)
                     {
-                        if (t == nullptr)
-                            return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+                        if (t == nullptr) return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
                         return context.SubContextArrayFMT("{} -> {:{}}", static_cast<const void* const>(t), *t, context.ForwardFormatData());
                     }
                     else
@@ -281,8 +251,7 @@ namespace ProjectCore::FMT
                 return;
             }
 
-            if (t == nullptr)
-                return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
+            if (t == nullptr) return context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("null", "nullptr"));
 
             context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
@@ -290,13 +259,16 @@ namespace ProjectCore::FMT
 
             auto beginValue = context.GetFormatData().GetSpecifierAsNumber("begin", 0);
 
-            bool first = true;
-            const T* begin    = t + beginValue;
-            const T* end    = begin + size;
+            bool     first = true;
+            const T* begin = t + beginValue;
+            const T* end   = begin + size;
 
-            while (begin < end) {
-                if (first)  first = false;
-                else        context.BufferOut().WriteIndentStringView(join);
+            while (begin < end)
+            {
+                if (first)
+                    first = false;
+                else
+                    context.BufferOut().WriteIndentStringView(join);
                 context.WriteType(*begin++);
             }
 
@@ -305,24 +277,26 @@ namespace ProjectCore::FMT
     };
 
     template <typename T, std::size_t SIZE, typename FormatterContext>
-    struct FormatterType<T [SIZE], FormatterContext>
+    struct FormatterType<T[SIZE], FormatterContext>
     {
-        static void Format(T const (&t)[SIZE], FormatterContext& context) {
-
+        static void Format(T const (&t)[SIZE], FormatterContext& context)
+        {
             context.BufferOut().FastWriteStringView(context.GetFormatData().GetSpecifierAsText("begin", STDEnumerableUtility::DefaultBegin));
 
             const auto& join = context.GetFormatData().GetSpecifierAsText("join", STDEnumerableUtility::DefaultJoin);
 
-            bool first = true;
+            bool        first      = true;
             std::size_t beginValue = (std::size_t)context.GetFormatData().GetSpecifierAsNumber("begin", 0);
-            const T* begin     = t + beginValue;
+            const T*    begin      = t + beginValue;
             // FIXME : all thoses static_cast<Detail::DataType> for size of string are dangerous
-            const T* end      = begin + context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - beginValue));
+            const T* end = begin + context.GetFormatData().GetSpecifierAsNumber("size", static_cast<Detail::DataType>(SIZE - beginValue));
 
-            while(begin < end)
+            while (begin < end)
             {
-                if (first)    first = false;
-                else        context.BufferOut().WriteIndentStringView(join);
+                if (first)
+                    first = false;
+                else
+                    context.BufferOut().WriteIndentStringView(join);
                 context.WriteType(*begin++);
             }
 

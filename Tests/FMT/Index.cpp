@@ -1,5 +1,5 @@
-#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
 #include "ProjectCore/FMT.h"
+#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
 
 #include "BaseFMTTests.h"
 

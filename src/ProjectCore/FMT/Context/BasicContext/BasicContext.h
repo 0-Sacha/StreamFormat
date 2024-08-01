@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ProjectCore/FMT/Detail/Detail.h"
 #include "ProjectCore/FMT/Detail/ConvertTraits.h"
+#include "ProjectCore/FMT/Detail/Detail.h"
 
 #include "ProjectCore/FMT/Buffer/FMTFormatBuffer/FMTFormatBuffer.h"
 
@@ -15,21 +15,21 @@ namespace ProjectCore::FMT::Context
     class BasicContext
     {
     private:
-        using M_Type                = BasicContext<CharFormat>;
-    
+        using M_Type = BasicContext<CharFormat>;
+
     public:
-        using CharFormatType        = CharFormat;
+        using CharFormatType = CharFormat;
 
-        using FormatDataType        = Detail::FormatData<CharFormat>;
-        using FormatSpecifierType   = Detail::FormatSpecifier<CharFormat>;
+        using FormatDataType      = Detail::FormatData<CharFormat>;
+        using FormatSpecifierType = Detail::FormatSpecifier<CharFormat>;
 
-        using FormatBufferType      = Detail::FMTFormatBuffer<CharFormat>;
+        using FormatBufferType = Detail::FMTFormatBuffer<CharFormat>;
 
-        using StringViewFormat      = std::basic_string_view<CharFormat>;
+        using StringViewFormat = std::basic_string_view<CharFormat>;
 
-        using ContextArgsInterface  = Detail::BasicArgsTupleInterface<CharFormatType>;
+        using ContextArgsInterface = Detail::BasicArgsTupleInterface<CharFormatType>;
 
-        using TextProperties        = Detail::TextPropertiesManager<M_Type>;
+        using TextProperties = Detail::TextPropertiesManager<M_Type>;
 
     public:
         BasicContext(Detail::ITextPropertiesExecutor& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties = nullptr);
@@ -37,31 +37,31 @@ namespace ProjectCore::FMT::Context
         void Terminate();
 
     protected:
-        FormatBufferType        m_Format;
-        Detail::FormatIndex     m_ValuesIndex;
-        FormatDataType          m_FormatData;
-        ContextArgsInterface*   m_ContextArgsInterface;
-        TextProperties    m_TextProperties;
+        FormatBufferType      m_Format;
+        Detail::FormatIndex   m_ValuesIndex;
+        FormatDataType        m_FormatData;
+        ContextArgsInterface* m_ContextArgsInterface;
+        TextProperties        m_TextProperties;
 
     public:
-        inline FormatBufferType&        Format()        { return m_Format; }
-        inline const FormatBufferType&  Format() const  { return m_Format; }
+        inline FormatBufferType&       Format() { return m_Format; }
+        inline const FormatBufferType& Format() const { return m_Format; }
 
-        inline FormatDataType&          GetFormatData()                                     { return m_FormatData; }
-        inline const FormatDataType&    GetFormatData() const                               { return m_FormatData; }
-        inline FormatDataType           ForwardFormatData() const                           { return m_FormatData; }
-        inline void                     SetFormatData(const FormatDataType& formatData)     { m_FormatData = formatData; }
+        inline FormatDataType&       GetFormatData() { return m_FormatData; }
+        inline const FormatDataType& GetFormatData() const { return m_FormatData; }
+        inline FormatDataType        ForwardFormatData() const { return m_FormatData; }
+        inline void                  SetFormatData(const FormatDataType& formatData) { m_FormatData = formatData; }
 
-        inline ContextArgsInterface&        GetContextArgsInterface()           { return *m_ContextArgsInterface; }
-        inline const ContextArgsInterface&  GetContextArgsInterface() const     { return *m_ContextArgsInterface; }
+        inline ContextArgsInterface&       GetContextArgsInterface() { return *m_ContextArgsInterface; }
+        inline const ContextArgsInterface& GetContextArgsInterface() const { return *m_ContextArgsInterface; }
 
-        inline TextProperties&        GetTextProperties()           { return m_TextProperties; }
-        inline const TextProperties&  GetTextProperties() const     { return m_TextProperties; }
+        inline TextProperties&       GetTextProperties() { return m_TextProperties; }
+        inline const TextProperties& GetTextProperties() const { return m_TextProperties; }
 
     protected:
-        virtual void SetArgsInterfaceCurrentContex() = 0;
+        virtual void SetArgsInterfaceCurrentContex()                                  = 0;
         virtual void FormatToParamsString(const CharFormat* buffer, std::size_t size) = 0;
-        virtual void FormatExecParams() = 0;
+        virtual void FormatExecParams()                                               = 0;
 
     protected:
         void RunImpl();
@@ -97,19 +97,20 @@ namespace ProjectCore::FMT::Context
         virtual void ParseSetter() = 0;
 
     public:
-        template <typename T> void FormatReadParameterThrow(T& i, const T& defaultValue);
+        template <typename T>
+        void FormatReadParameterThrow(T& i, const T& defaultValue);
 
     public:
-        template <typename ...CharToTest>
-        inline StringViewFormat GetStringViewParamUntil(CharToTest ...c)
+        template <typename... CharToTest>
+        inline StringViewFormat GetStringViewParamUntil(CharToTest... c)
         {
             const char* namePos = m_Format.GetBufferCurrentPos();
             m_Format.ParamGoTo(c...);
             return StringViewFormat(namePos, static_cast<std::size_t>(m_Format.GetBufferCurrentPos() - namePos));
         }
 
-        template <typename ...CharToTest>
-        inline StringViewFormat GetStringViewUntil(CharToTest ...c)
+        template <typename... CharToTest>
+        inline StringViewFormat GetStringViewUntil(CharToTest... c)
         {
             const char* namePos = m_Format.GetBufferCurrentPos();
             m_Format.GoTo(c...);
@@ -133,11 +134,10 @@ namespace ProjectCore::FMT::Context
     {
         if (!m_Format.IsEqualTo('{'))
         {
-            if (m_Format.FastReadUInt(i) == false)
-                i = defaultValue;
+            if (m_Format.FastReadUInt(i) == false) i = defaultValue;
             return;
         }
-        
+
         // SubIndex
         Detail::FormatIndex formatIdx = GetFormatIndexThrow();
         m_Format.IsEqualToForwardThrow('}');

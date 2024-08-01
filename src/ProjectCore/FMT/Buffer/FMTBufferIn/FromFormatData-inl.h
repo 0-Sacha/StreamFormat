@@ -13,15 +13,17 @@ namespace ProjectCore::FMT::Detail
         {
             switch (formatData.IntPrint)
             {
-            case ValueIntPrint::Dec:
-                if (formatData.ShiftType == ShiftType::Nothing) return FastReadIntThrow(i);
-                else                                            return ReadInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
-            case ValueIntPrint::Bin:
-                return ReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
-            case ValueIntPrint::Hex:
-                return ReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
-            case ValueIntPrint::Oct:
-                return ReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+                case ValueIntPrint::Dec:
+                    if (formatData.ShiftType == ShiftType::Nothing)
+                        return FastReadIntThrow(i);
+                    else
+                        return ReadInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+                case ValueIntPrint::Bin:
+                    return ReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+                case ValueIntPrint::Hex:
+                    return ReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+                case ValueIntPrint::Oct:
+                    return ReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
             }
         }
         return FastReadIntThrow(i);
@@ -36,15 +38,17 @@ namespace ProjectCore::FMT::Detail
         {
             switch (formatData.IntPrint)
             {
-            case ValueIntPrint::Dec:
-                if (formatData.ShiftType == ShiftType::Nothing) return FastReadUIntThrow(i);
-                else                                            return ReadUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
-            case ValueIntPrint::Bin:
-                return ReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
-            case ValueIntPrint::Hex:
-                return ReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
-            case ValueIntPrint::Oct:
-                return ReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+                case ValueIntPrint::Dec:
+                    if (formatData.ShiftType == ShiftType::Nothing)
+                        return FastReadUIntThrow(i);
+                    else
+                        return ReadUInt(i, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+                case ValueIntPrint::Bin:
+                    return ReadIntAsBin(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
+                case ValueIntPrint::Hex:
+                    return ReadIntAsHex(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue, formatData.PrintStyle);
+                case ValueIntPrint::Oct:
+                    return ReadIntAsOct(i, formatData.DigitSize, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint, formatData.TrueValue);
             }
         }
         return FastReadUIntThrow(i);
@@ -57,8 +61,10 @@ namespace ProjectCore::FMT::Detail
     {
         if (formatData.HasSpec)
         {
-            if (formatData.ShiftType == ShiftType::Nothing) return FastReadFloatThrow(i, formatData.FloatPrecision);
-            else                                            return ReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
+            if (formatData.ShiftType == ShiftType::Nothing)
+                return FastReadFloatThrow(i, formatData.FloatPrecision);
+            else
+                return ReadFloat(i, formatData.FloatPrecision, formatData.ShiftType, formatData.ShiftSize, formatData.ShiftPrint);
         }
         return FastReadFloatThrow(i, formatData.FloatPrecision);
     }

@@ -58,9 +58,6 @@ namespace ProjectCore::FMT
     template <typename FormatterContext, typename CharType>
     struct FormatterType<ProjectCore::FLog::FuturConcateNameAndSinkName<CharType>, FormatterContext>
     {
-        static void Format(const ProjectCore::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterContext& context)
-        {
-            context.SubContext(names.LoggerName, "sink");
-        }
+        static void Format(const ProjectCore::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterContext& context) { context.SubContext(names.LoggerName, "sink"); }
     };
 }

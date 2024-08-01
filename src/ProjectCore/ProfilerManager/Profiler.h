@@ -3,8 +3,8 @@
 #include "ProjectCore/Core/Core.h"
 #include "ProjectCore/FLog.h"
 
-#include "Event.h"
 #include "AllEvents.h"
+#include "Event.h"
 #include "ProfilerEventCreator.h"
 
 namespace ProjectCore::ProfilerManager
@@ -25,17 +25,21 @@ namespace ProjectCore::ProfilerManager
         ~Profiler() {}
 
     public:
-        void AddEvent(const Event& event)                           { AddEventInfo(event.Info); }
-        void AddEventInfo(const EventInfo& eventInfo)               { Events.push_back(eventInfo); }
+        void                                   AddEvent(const Event& event) { AddEventInfo(event.Info); }
+        void                                   AddEventInfo(const EventInfo& eventInfo) { Events.push_back(eventInfo); }
         inline ProjectCore::FLog::BasicLogger& GetLogger() { return Logger; }
 
     public:
-        static Profiler& GetInstance()                              { static Profiler profiler("Profiler"); return profiler; }
+        static Profiler& GetInstance()
+        {
+            static Profiler profiler("Profiler");
+            return profiler;
+        }
 
     public:
-        std::string Name;
-        FLog::BasicLogger Logger;
-        DurationEvent ProfilerDuration;
+        std::string            Name;
+        FLog::BasicLogger      Logger;
+        DurationEvent          ProfilerDuration;
         std::vector<EventInfo> Events;
     };
 }

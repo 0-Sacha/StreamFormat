@@ -16,7 +16,7 @@ namespace ProjectCore::JSON::Detail
         JsonParser()
             : m_BufferIn()
         {}
-        
+
         JsonParser(const FMT::Detail::BufferInProperties<char>& bufferInProperties)
             : m_BufferIn(bufferInProperties)
         {}
@@ -26,16 +26,16 @@ namespace ProjectCore::JSON::Detail
         {}
 
     public:
-        inline bool IsJsonStringBegin() const       { return m_BufferIn.IsEqualTo('"'); }
-        inline bool IsJsonNumberBegin() const       { return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('+', '-', '.'); }
-        inline bool IsJsonBooleanBegin() const      { return m_BufferIn.IsEqualTo('t', 'f'); }
-        inline bool IsJsonStructBegin() const       { return m_BufferIn.IsEqualTo('{'); }
-        inline bool IsJsonArrayBegin() const        { return m_BufferIn.IsEqualTo('['); }
-        inline bool IsJsonNullBegin() const         { return m_BufferIn.IsEqualTo('n'); }
+        inline bool IsJsonStringBegin() const { return m_BufferIn.IsEqualTo('"'); }
+        inline bool IsJsonNumberBegin() const { return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('+', '-', '.'); }
+        inline bool IsJsonBooleanBegin() const { return m_BufferIn.IsEqualTo('t', 'f'); }
+        inline bool IsJsonStructBegin() const { return m_BufferIn.IsEqualTo('{'); }
+        inline bool IsJsonArrayBegin() const { return m_BufferIn.IsEqualTo('['); }
+        inline bool IsJsonNullBegin() const { return m_BufferIn.IsEqualTo('n'); }
 
     public:
-        JsonBufferIn& BufferIn()                { return m_BufferIn; }
-        const JsonBufferIn& BufferIn() const    { return m_BufferIn; }
+        JsonBufferIn&       BufferIn() { return m_BufferIn; }
+        const JsonBufferIn& BufferIn() const { return m_BufferIn; }
 
     protected:
         JsonBufferIn m_BufferIn;
@@ -46,11 +46,11 @@ namespace ProjectCore::JSON::Detail
     public:
         template <typename T>
         void Parse(T& t);
- 
+
         struct StructIntermediate;
         struct ArrayIntermediate;
         StructIntermediate GetStructIntermediate();
-        ArrayIntermediate GetArrayIntermediate();
+        ArrayIntermediate  GetArrayIntermediate();
     };
 }
 
@@ -77,15 +77,14 @@ namespace ProjectCore::JSON::Detail
 
     private:
         std::unordered_map<std::string, Detail::JsonParser::Intermediate> Objects;
-        
+
         void Parse(Detail::JsonParser& parser);
 
     public:
         template <typename T>
         void Parse(const std::string& name, T& t)
         {
-            if (Objects.contains(name) == false)
-                throw Detail::JsonGivenTypeError{};
+            if (Objects.contains(name) == false) throw Detail::JsonGivenTypeError{};
             Objects[name].Parse(t);
         }
     };
@@ -104,8 +103,7 @@ namespace ProjectCore::JSON::Detail
         template <typename T>
         void Parse(const std::size_t idx, T& t)
         {
-            if (idx >= Objects.size())
-                throw Detail::JsonGivenTypeError{};
+            if (idx >= Objects.size()) throw Detail::JsonGivenTypeError{};
             Objects[idx].Parse(t);
         }
     };

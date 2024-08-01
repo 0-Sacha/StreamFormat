@@ -18,8 +18,8 @@ namespace ProjectCore::ProfilerManager
         ~DurationEvent() override = default;
 
     public:
-        void Start()    { Trigger(); }
-        void Stop()     { Info.Duration = ProfilerManager::GetMicroseconds() - Info.TimeOfEvent; }
+        void Start() { Trigger(); }
+        void Stop() { Info.Duration = ProfilerManager::GetMicroseconds() - Info.TimeOfEvent; }
     };
 
     class SampleEvent : public Event

@@ -42,7 +42,7 @@ namespace ProjectCore::JSON::Detail
         }
         else if (parser.IsJsonArrayBegin())
         {
-            JsonArraySerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, JsonParser& jsonParser){
+            JsonArraySerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, JsonParser& jsonParser) {
                 JsonParser::Intermediate intermediate;
                 intermediate.Parse(jsonParser);
             });
@@ -51,23 +51,24 @@ namespace ProjectCore::JSON::Detail
         {
             JsonNullSerializer::ParseNull(parser);
         }
-        
+
         const char* end = parser.BufferIn().GetBufferCurrentPos();
-        Data = std::string_view(begin, end);
+        Data            = std::string_view(begin, end);
     };
 
     void JsonParser::StructIntermediate::Parse(Detail::JsonParser& parser)
     {
-        JsonStructSerializer::LoadAllSubObjects<JsonParser::StructIntermediate>(*this, parser, [](JsonParser::StructIntermediate& t, std::size_t, std::string&& name, JsonParser& jsonParser){
-            JsonParser::Intermediate intermediate;
-            intermediate.Parse(jsonParser);
-            t.Objects.insert({std::move(name), std::move(intermediate)});
-        });
+        JsonStructSerializer::LoadAllSubObjects<JsonParser::StructIntermediate>(*this, parser,
+                                                                                [](JsonParser::StructIntermediate& t, std::size_t, std::string&& name, JsonParser& jsonParser) {
+                                                                                    JsonParser::Intermediate intermediate;
+                                                                                    intermediate.Parse(jsonParser);
+                                                                                    t.Objects.insert({std::move(name), std::move(intermediate)});
+                                                                                });
     };
 
     void JsonParser::ArrayIntermediate::Parse(Detail::JsonParser& parser)
     {
-        JsonArraySerializer::LoadAllSubObjects<JsonParser::ArrayIntermediate>(*this, parser, [](JsonParser::ArrayIntermediate& t, std::size_t, JsonParser& jsonParser){
+        JsonArraySerializer::LoadAllSubObjects<JsonParser::ArrayIntermediate>(*this, parser, [](JsonParser::ArrayIntermediate& t, std::size_t, JsonParser& jsonParser) {
             JsonParser::Intermediate intermediate;
             intermediate.Parse(jsonParser);
             t.Objects.emplace_back(std::move(intermediate));

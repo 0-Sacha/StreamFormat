@@ -7,7 +7,9 @@
 namespace ProjectCore::FMT::Context
 {
     template <typename CharFormat, typename CharBuffer>
-    BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>& BufferOutManager, Detail::IFormatterTextPropertiesExecutor<BufferOutType>& textPropertiesExecutor, const Detail::TextProperties::Properties* parentContextProperties)
+    BasicFormatterContext<CharFormat, CharBuffer>::BasicFormatterContext(Detail::BasicBufferOutManager<CharBuffer>&               BufferOutManager,
+                                                                         Detail::IFormatterTextPropertiesExecutor<BufferOutType>& textPropertiesExecutor,
+                                                                         const Detail::TextProperties::Properties*                parentContextProperties)
         : Base(textPropertiesExecutor, parentContextProperties)
         , m_BufferOut(BufferOutManager)
     {

@@ -6,9 +6,9 @@ namespace ProjectCore::FMT::Detail
 {
     template <typename CharBuffer>
     template <typename CharStr>
-    inline void BasicBufferOut<CharBuffer>::FastWriteCharPtr(const CharStr* str, std::size_t size) {
-        if (CanMoveForward(size) == false)
-            return FastWriteCharPtr(str, GetBufferRemainingSize());
+    inline void BasicBufferOut<CharBuffer>::FastWriteCharPtr(const CharStr* str, std::size_t size)
+    {
+        if (CanMoveForward(size) == false) return FastWriteCharPtr(str, GetBufferRemainingSize());
 
         // TODO : Opti with bigger types
         while (size-- != 0 && *str != 0)

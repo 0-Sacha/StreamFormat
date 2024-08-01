@@ -5,7 +5,7 @@
 namespace ProjectCore::FLog::Detail
 {
     template <typename Severity, typename CharType>
-    class BasicLoggerMultiSinkSafeImpl: public BasicLoggerMultiSinkImpl<Severity, CharType>
+    class BasicLoggerMultiSinkSafeImpl : public BasicLoggerMultiSinkImpl<Severity, CharType>
     {
     public:
         using Base = BasicLoggerMultiSinkImpl<Severity, CharType>;
@@ -21,8 +21,10 @@ namespace ProjectCore::FLog::Detail
         using typename Base::SeverityValueType;
 
     public:
-        BasicLoggerMultiSinkSafeImpl() : Base() {}
-        
+        BasicLoggerMultiSinkSafeImpl()
+            : Base()
+        {}
+
         BasicLoggerMultiSinkSafeImpl(std::basic_string<CharType>&& name)
             : Base(std::forward<std::basic_string<CharType>>(name))
         {}
@@ -30,9 +32,9 @@ namespace ProjectCore::FLog::Detail
         ~BasicLoggerMultiSinkSafeImpl() override = default;
 
     public:
-        template <typename Format = std::string_view, typename ...Args>
+        template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        void Log(const SeverityValueType& severity, const Format& format, Args&& ...args)
+        void Log(const SeverityValueType& severity, const Format& format, Args&&... args)
         {
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
@@ -41,15 +43,17 @@ namespace ProjectCore::FLog::Detail
             {
                 if (sink->NeedToLog(severity))
                 {
-                    auto formatPatternStr = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime), FORMAT_SV("name", FuturConcateNameAndSinkName(m_Name)), FORMAT_SV("data", FLog::AddIndentInFormat(format)));
-                    auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(static_cast<std::string_view>(*formatPatternStr), std::forward<Args>(args)..., FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity));
+                    auto formatPatternStr =
+                        FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime),
+                                                           FORMAT_SV("name", FuturConcateNameAndSinkName(m_Name)), FORMAT_SV("data", FLog::AddIndentInFormat(format)));
+                    auto formatFormatStr = FMT::Detail::FormatAndGetBufferOut(static_cast<std::string_view>(*formatPatternStr), std::forward<Args>(args)...,
+                                                                              FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity));
                     sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatFormatStr));
                 }
             }
 
             for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity))
-                    sink->WaitUnitlFinishedToWrite();
+                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
         }
 
         template <typename T>
@@ -61,14 +65,14 @@ namespace ProjectCore::FLog::Detail
             {
                 if (sink->NeedToLog(severity))
                 {
-                    auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime), FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t));
+                    auto formatBuffer = FMT::Detail::FormatAndGetBufferOut(std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime),
+                                                                           FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t));
                     sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatBuffer));
                 }
             }
-            
+
             for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity))
-                    sink->WaitUnitlFinishedToWrite();
+                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
         }
     };
 }

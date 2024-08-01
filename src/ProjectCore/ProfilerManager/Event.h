@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Detail.h"
+#include "EventData.h"
 #include "ProjectCore/Core/Core.h"
 #include "ProjectCore/FMT.h"
-#include "EventData.h"
-#include "Detail.h"
 
-#include <string>
 #include <memory>
+#include <string>
 #include <thread>
 
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
@@ -20,31 +20,31 @@ namespace ProjectCore::ProfilerManager
         Unknow = '.',
 
         DurationBegin = 'B',
-        DurationEnd = 'E',
+        DurationEnd   = 'E',
 
-        AsyncStart = 'b',
+        AsyncStart   = 'b',
         AsyncInstant = 'n',
-        AsyncEnd = 'e',
+        AsyncEnd     = 'e',
 
         FlowStart = 's',
-        FlowStep = 't',
-        FlowEnd = 'f',
-        
-        ObjectCreated = 'N',
-        ObjectSnapshot = 'O',
+        FlowStep  = 't',
+        FlowEnd   = 'f',
+
+        ObjectCreated   = 'N',
+        ObjectSnapshot  = 'O',
         ObjectDestroyed = 'D',
-        
-        MemoryDumpGlobal = 'V',
+
+        MemoryDumpGlobal  = 'V',
         MemoryDumpProcess = 'v',
- 
-        Complete = 'X',
-        Instant = 'i',
-        Counter = 'C',
-        Sample = 'P',
-        MetaData = 'M',
-        Mark = 'R',
+
+        Complete        = 'X',
+        Instant         = 'i',
+        Counter         = 'C',
+        Sample          = 'P',
+        MetaData        = 'M',
+        Mark            = 'R',
         ClockSyncEvents = 'c',
-        Context = ',' // '(' ')'
+        Context         = ','  // '(' ')'
     };
 
     struct EventInfo
@@ -62,7 +62,7 @@ namespace ProjectCore::ProfilerManager
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
             , Data(nullptr)
         {}
-        
+
         EventInfo(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
             : Name(name)
             , Category(category)
@@ -90,14 +90,14 @@ namespace ProjectCore::ProfilerManager
         {}
 
     public:
-        std::string Name;
-        std::string Category;
-        EventType Type;
-        std::size_t Id;
-        double TimeOfEvent, ThreadTimeOfEvent;
-        double Duration;
-        int PID;
-        std::size_t TID;
+        std::string                Name;
+        std::string                Category;
+        EventType                  Type;
+        std::size_t                Id;
+        double                     TimeOfEvent, ThreadTimeOfEvent;
+        double                     Duration;
+        int                        PID;
+        std::size_t                TID;
         std::shared_ptr<EventData> Data;
     };
 
@@ -105,7 +105,7 @@ namespace ProjectCore::ProfilerManager
     {
     public:
         Event() = default;
-        
+
         Event(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
             : Info(name, category, type, data)
         {}
@@ -129,8 +129,6 @@ namespace ProjectCore::FMT
     template <typename FormatterContext>
     struct FormatterType<ProjectCore::ProfilerManager::EventType, FormatterContext>
     {
-        static void Format(const ProjectCore::ProfilerManager::EventType& t, FormatterContext& context) {
-            context.BufferOut().PushBack(static_cast<char>(t));
-        }
+        static void Format(const ProjectCore::ProfilerManager::EventType& t, FormatterContext& context) { context.BufferOut().PushBack(static_cast<char>(t)); }
     };
 }

@@ -8,12 +8,12 @@ namespace ProjectCore::FMT::Detail
 {
     template <typename CharBuffer>
     template <typename T>
-    bool BasicBufferIn<CharBuffer>::FastReadInt(T& i) {
+    bool BasicBufferIn<CharBuffer>::FastReadInt(T& i)
+    {
         T res = 0;
 
         bool sign = IsEqualToForward('-');
-        if (!IsADigit())
-            return false;
+        if (!IsADigit()) return false;
 
         while (IsADigit())
             res = res * static_cast<T>(10) + static_cast<T>(GetAndForward() - static_cast<CharBuffer>('0'));
@@ -24,11 +24,11 @@ namespace ProjectCore::FMT::Detail
 
     template <typename CharBuffer>
     template <typename T>
-    bool BasicBufferIn<CharBuffer>::FastReadUInt(T& i) {
+    bool BasicBufferIn<CharBuffer>::FastReadUInt(T& i)
+    {
         T res = (T)0;
 
-        if(!IsADigit())
-            return false;
+        if (!IsADigit()) return false;
 
         while (IsADigit())
             res = res * static_cast<T>(10) + static_cast<T>(GetAndForward() - static_cast<CharBuffer>('0'));
@@ -39,7 +39,8 @@ namespace ProjectCore::FMT::Detail
 
     template <typename CharBuffer>
     template <typename T>
-    bool BasicBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision) {
+    bool BasicBufferIn<CharBuffer>::FastReadFloat(T& i, FloatPrecision floatPrecision)
+    {
         bool sign = IsEqualToForward('-');
 
         bool hasIntPart = false;
@@ -56,7 +57,8 @@ namespace ProjectCore::FMT::Detail
         if (IsEqualToForward('.') == false) return hasIntPart;
 
         if (floatPrecision.IsDefault() || floatPrecision == 0)
-            while (IsADigit() && IsEnd() == false) ForwardNoCheck();
+            while (IsADigit() && IsEnd() == false)
+                ForwardNoCheck();
         else
         {
             while (IsADigit() && floatPrecision > 0 && IsEnd() == false)

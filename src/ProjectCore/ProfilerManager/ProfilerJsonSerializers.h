@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ProjectCore/Json.h"
 #include "ProfilerFactory.h"
+#include "ProjectCore/Json.h"
 
 namespace ProjectCore::JSON
 {
@@ -21,33 +21,21 @@ namespace ProjectCore::JSON
             intermediate.Parse("traceEvents", t.Events);
         }
     };
-    
+
     template <>
     struct JsonSerializer<ProfilerManager::EventType>
     {
-        static inline void Format(const ProfilerManager::EventType& t, Detail::JsonFormatter& formatter)
-        {
-            formatter.Format(static_cast<char>(t));
-        }
+        static inline void Format(const ProfilerManager::EventType& t, Detail::JsonFormatter& formatter) { formatter.Format(static_cast<char>(t)); }
 
-        static inline void Parse(ProfilerManager::EventType& t, Detail::JsonParser& parser)
-        {
-            parser.Parse(reinterpret_cast<char&>(t));
-        }
+        static inline void Parse(ProfilerManager::EventType& t, Detail::JsonParser& parser) { parser.Parse(reinterpret_cast<char&>(t)); }
     };
 
     template <>
     struct JsonSerializer<ProfilerManager::EventData>
     {
-        static inline void Format(const ProfilerManager::EventData& t, Detail::JsonFormatter& formatter)
-        {
-            t.ToJson(formatter);
-        }
+        static inline void Format(const ProfilerManager::EventData& t, Detail::JsonFormatter& formatter) { t.ToJson(formatter); }
 
-        static inline void Parse(ProfilerManager::EventData& t, Detail::JsonParser& parser)
-        {
-            t.FromJson(parser);
-        }
+        static inline void Parse(ProfilerManager::EventData& t, Detail::JsonParser& parser) { t.FromJson(parser); }
     };
 
     template <>
@@ -64,8 +52,7 @@ namespace ProjectCore::JSON
             intermediate.Format("ts", t.TimeOfEvent);
             intermediate.Format("dur", t.Duration);
             intermediate.Format("id", t.Id);
-            if (t.Data != nullptr)
-                intermediate.Format("args", *t.Data);
+            if (t.Data != nullptr) intermediate.Format("args", *t.Data);
         }
 
         static inline void Parse(ProfilerManager::EventInfo& t, Detail::JsonParser& parser)
@@ -91,9 +78,6 @@ namespace ProjectCore::JSON
             return JsonSerializer<ProfilerManager::EventInfo>::Format(t.Info, formatter);
         }
 
-        static inline void Parse(ProfilerManager::Event& t, Detail::JsonParser& parser)
-        {
-            return JsonSerializer<ProfilerManager::EventInfo>::Parse(t.Info, parser);
-        }
+        static inline void Parse(ProfilerManager::Event& t, Detail::JsonParser& parser) { return JsonSerializer<ProfilerManager::EventInfo>::Parse(t.Info, parser); }
     };
 }

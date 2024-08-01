@@ -20,23 +20,22 @@ namespace ProjectCore::FMT
             throw Detail::FMTShouldNotEndHere{};
 #endif
 #ifdef UNKOWN_TYPE_DEBUG
-           PROJECTCORE_DEBUGBREAK();
+            PROJECTCORE_DEBUGBREAK();
 #endif
         }
     };
 }
 
-#define PROJECTCORE_AUTO_FORMATTER(Type, fmt, ...)  template <typename FormatterContext>\
-                                                    struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
-                                                        static void Format(const Type& value, FormatterContext& context) {\
-                                                            context.SubContextArrayFMT(fmt, __VA_ARGS__);\
-                                                        }\
-                                                    };
+#define PROJECTCORE_AUTO_FORMATTER(Type, fmt, ...)                                                                         \
+    template <typename FormatterContext>                                                                                   \
+    struct ProjectCore::FMT::FormatterType<Type, FormatterContext>                                                         \
+    {                                                                                                                      \
+        static void Format(const Type& value, FormatterContext& context) { context.SubContextArrayFMT(fmt, __VA_ARGS__); } \
+    };
 
-#define PROJECTCORE_AUTO_FORMATTER_T(Type, fmt, ...)    template <typename FormatterContext>\
-                                                        struct ProjectCore::FMT::FormatterType<Type, FormatterContext> {\
-                                                            static void Format(const Type&, FormatterContext& context) {\
-                                                                context.SubContextArrayFMT(fmt, __VA_ARGS__);\
-                                                            }\
-                                                        };
-
+#define PROJECTCORE_AUTO_FORMATTER_T(Type, fmt, ...)                                                                 \
+    template <typename FormatterContext>                                                                             \
+    struct ProjectCore::FMT::FormatterType<Type, FormatterContext>                                                   \
+    {                                                                                                                \
+        static void Format(const Type&, FormatterContext& context) { context.SubContextArrayFMT(fmt, __VA_ARGS__); } \
+    };

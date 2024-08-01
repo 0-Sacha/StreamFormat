@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "ProjectCore/FMT/Detail/Detail.h"
 #include "ProjectCore/FMT/Detail/ConvertTraits.h"
+#include "ProjectCore/FMT/Detail/Detail.h"
 
 #include <any>
 #include <functional>
@@ -17,18 +17,18 @@ namespace ProjectCore::FMT::Detail
         virtual ~BasicArgsTupleInterface() = default;
 
     public:
-        virtual size_t Size() = 0;
-        virtual void SetContext(std::any context) = 0;
+        virtual size_t Size()                       = 0;
+        virtual void   SetContext(std::any context) = 0;
 
     public:
-        virtual void RunTypeAtIndex(Detail::FormatIndex idx) = 0;
-        virtual Detail::FormatIndex GetIndexOfCurrentNamedArg() = 0;
+        virtual void                RunTypeAtIndex(Detail::FormatIndex idx) = 0;
+        virtual Detail::FormatIndex GetIndexOfCurrentNamedArg()             = 0;
 
         virtual std::any GetTypeAtIndexImpl(Detail::FormatIndex idx) = 0;
 
-        virtual Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex idx) = 0;
-        virtual typename std::basic_string_view<CharFormat> GetStringAt(Detail::FormatIndex idx) = 0;
-        virtual int64_t GetIntAt(Detail::FormatIndex idx) = 0;
+        virtual Detail::FormatIndex                         GetFormatIndexAt(Detail::FormatIndex idx) = 0;
+        virtual typename std::basic_string_view<CharFormat> GetStringAt(Detail::FormatIndex idx)      = 0;
+        virtual int64_t                                     GetIntAt(Detail::FormatIndex idx)         = 0;
 
         virtual void RunFuncAtImpl(Detail::FormatIndex idx, std::function<void(std::any)> func) = 0;
 
@@ -40,7 +40,7 @@ namespace ProjectCore::FMT::Detail
             {
                 return std::any_cast<const T*>(GetTypeAtIndexImpl(idx));
             }
-            catch(...)
+            catch (...)
             {
                 return nullptr;
             }
@@ -50,18 +50,15 @@ namespace ProjectCore::FMT::Detail
         const T& GetTypeAtIndexThrow(Detail::FormatIndex idx)
         {
             const T* value = GetTypeAtIndex<T>(idx);
-            if (value != nullptr)
-                return *value;
+            if (value != nullptr) return *value;
             throw FMTGivenTypeError{};
         }
-
 
         template <typename T>
         void RunFuncFromTypeAtIndex(Detail::FormatIndex idx, std::function<void(const T&)> func)
         {
             const T* value = GetTypeAtIndex<T>(idx);
-            if (value != nullptr)
-                func(*value);
+            if (value != nullptr) func(*value);
         }
     };
 
@@ -76,7 +73,7 @@ namespace ProjectCore::FMT::Detail
 
     public:
         void SetContext(std::any context) override { m_Context = std::any_cast<Context*>(context); }
-        
+
     protected:
         Context* m_Context;
     };
@@ -91,16 +88,16 @@ namespace ProjectCore::FMT::Detail
     public:
         size_t Size() override { return 0; }
 
-        void RunTypeAtIndex(Detail::FormatIndex) override { }
+        void RunTypeAtIndex(Detail::FormatIndex) override {}
 
         Detail::FormatIndex GetIndexOfCurrentNamedArg() override { return Detail::FormatIndex{}; }
 
         std::any GetTypeAtIndexImpl(Detail::FormatIndex) override { return {}; }
 
-        void RunFuncAtImpl(Detail::FormatIndex, std::function<void(std::any)>) override { }
+        void RunFuncAtImpl(Detail::FormatIndex, std::function<void(std::any)>) override {}
 
-        Detail::FormatIndex GetFormatIndexAt(Detail::FormatIndex) override { return Detail::FormatIndex{}; }
+        Detail::FormatIndex                GetFormatIndexAt(Detail::FormatIndex) override { return Detail::FormatIndex{}; }
         typename Context::StringViewFormat GetStringAt(Detail::FormatIndex) override { return ""; }
-        std::int64_t GetIntAt(Detail::FormatIndex) override { return 0; }
+        std::int64_t                       GetIntAt(Detail::FormatIndex) override { return 0; }
     };
 }
