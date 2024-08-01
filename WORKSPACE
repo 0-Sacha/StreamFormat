@@ -19,6 +19,6 @@ http_archive(
 load("@bazel_buildbuddy//:rules.bzl", "buildbuddy_toolchain")
 
 buildbuddy_toolchain(
-    name = "buildbuddy_test",
+    name = "toolchain_ci_buildbuddy",
     auto_register_toolchain = False
 )

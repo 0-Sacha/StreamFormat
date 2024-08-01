@@ -6,6 +6,17 @@ common --show_timestamps
 common --verbose_failures
 test --test_output=errors
 
+common:clang_tidy --aspects @bazel_utilities//tools:clang_tidy.bzl%clang_tidy
+common:clang_tidy --output_groups=+report
+common:clang_tidy --spawn_strategy=local
+common:clang_tidy --aspects_parameters=skip_headers=True
+
+common:clang_format --aspects @bazel_utilities//tools:clang_format.bzl%clang_format
+common:clang_format --output_groups=+report
+common:clang_format --spawn_strategy=local
+
+common:tidy_format_error --aspects_parameters=enable_error=True
+
 # BuildBuddy
 common:linux --workspace_status_command=$(pwd)/.buildbuddy/workspace_status.sh
 common:windows --workspace_status_command=.buildbuddy/workspace_status.bat
@@ -18,7 +29,7 @@ common:buildbuddy --remote_executor=grpcs://sacha.buildbuddy.io
 common:buildbuddy --experimental_remote_cache_compression
 common:buildbuddy --jobs=50
 common:buildbuddy --nolegacy_important_outputs
-common:buildbuddy --platforms=@buildbuddy_test//:buildbuddy_linux_x86_64
-common:buildbuddy --extra_execution_platforms=@buildbuddy_test//:buildbuddy_linux_x86_64
-common:buildbuddy --remote_instance_name=projectcore
-common:buildbuddy --extra_toolchains=@buildbuddy_test//:toolchain_buildbuddy_gcc_12
+common:buildbuddy --platforms=@toolchain_ci_buildbuddy//:buildbuddy_linux_x86_64
+common:buildbuddy --extra_execution_platforms=@toolchain_ci_buildbuddy//:buildbuddy_linux_x86_64
+common:buildbuddy --remote_instance_name=streamformat
+common:buildbuddy --extra_toolchains=@toolchain_ci_buildbuddy//:toolchain_buildbuddy_gcc_12

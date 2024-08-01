@@ -1,4 +1,4 @@
-name: ProjectCore
+name: StreamFormat
 
 on:
   push:

@@ -3,8 +3,8 @@
 MODULE.bazel.lock
 bazel-bin
 bazel-out
-bazel-projectcore
-bazel-ProjectCore
+bazel-streamformat
+bazel-StreamFormat
 bazel-examples
 bazel-Examples
 bazel-testlogs
@@ -32,3 +32,14 @@ Asset
 
 # Tests
 TestSuite_FMT.json
+
+# Coverage
+genhtml
+
+# External Dev
+bazel_buildbuddy
+bazel_utilities
+bazel_winlibs_mingw
+WORKSPACE.dev
+WORKSPACE.tmp
+bazel_modules_dev.sh
