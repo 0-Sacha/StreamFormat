@@ -2,13 +2,13 @@
 
 # buildifier: disable=module-docstring
 module(
-    name = "projectcore_examples",
+    name = "streamformat_examples",
     version = "0.1",
-    repo_name = "com_sacha_projectcore_examples",
+    repo_name = "com_sacha_streamformat_examples",
 )
 
-bazel_dep(name = "projectcore")
+bazel_dep(name = "streamformat")
 local_path_override(
-    module_name = "projectcore",
+    module_name = "streamformat",
     path = "../",
 )

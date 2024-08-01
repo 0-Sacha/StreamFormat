@@ -2,9 +2,9 @@
 
 # buildifier: disable=module-docstring
 module(
-    name = "projectcore",
+    name = "streamformat",
     version = "0.1",
-    repo_name = "com_sacha_projectcore",
+    repo_name = "com_sacha_streamformat",
 )
 
 # Deps

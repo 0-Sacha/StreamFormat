@@ -1,5 +1,5 @@
-#include "ProjectCore/FMT.h"
-#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "StreamFormat/FMT.h"
+#include "StreamFormat/Tester/TestSuite/AllTestSuite.h"
 
 #include "BaseFMTTests.h"
 

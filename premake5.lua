@@ -1,13 +1,13 @@
 
 -- TODO:bazel remove Solution.Projects Infos:
-Solution.Projects["ProjectCore"].PlatformDefineName = "PROJECTCORE"
-Solution.Projects["ProjectCore"].Type = "StaticLib"
-Solution.Projects["ProjectCore"].IncludeDirs = {
-    "%{Solution.Projects.ProjectCore.Path}/src/"
+Solution.Projects["StreamFormat"].PlatformDefineName = "STREAMFORMAT"
+Solution.Projects["StreamFormat"].Type = "StaticLib"
+Solution.Projects["StreamFormat"].IncludeDirs = {
+    "%{Solution.Projects.StreamFormat.Path}/src/"
 }
 
-project "ProjectCore"
-    kind           (Solution.Projects["ProjectCore"].Type)
+project "StreamFormat"
+    kind           (Solution.Projects["StreamFormat"].Type)
     language        "C++"
     cppdialect      "C++20"
 
@@ -22,26 +22,26 @@ project "ProjectCore"
          "src/**.cpp",
     }
     
-    Solution.Project("ProjectCore")
+    Solution.Project("StreamFormat")
 
     defines {
-         "PROJECTCORE_BASE_LOGGER_NAME=\"%{Solution.Name}\""
+         "STREAMFORMAT_BASE_LOGGER_NAME=\"%{Solution.Name}\""
     }
 
-if (ProjectCoreTestsEnable)
+if (StreamFormatTestsEnable)
 then
 
-Solution.AddProject("ProjectCoreTests", Solution.Projects["ProjectCore"].Path)
-Solution.Projects["ProjectCoreTests"].ProjectDependencies = {
-     "ProjectCore"
+Solution.AddProject("StreamFormatTests", Solution.Projects["StreamFormat"].Path)
+Solution.Projects["StreamFormatTests"].ProjectDependencies = {
+     "StreamFormat"
 }
 
-ProjectCoreTestsLaunch = {}
-ProjectCoreTestsLaunch.Project = "ProjectCoreTests"
-Solution.Launch["ProjectCoreTests"] = ProjectCoreTestsLaunch
+StreamFormatTestsLaunch = {}
+StreamFormatTestsLaunch.Project = "StreamFormatTests"
+Solution.Launch["StreamFormatTests"] = StreamFormatTestsLaunch
 
-project "ProjectCoreTests"
-    kind           (Solution.Projects["ProjectCoreTests"].Type)
+project "StreamFormatTests"
+    kind           (Solution.Projects["StreamFormatTests"].Type)
     language      "C++"
     cppdialect      "C++20"
 
@@ -57,5 +57,5 @@ project "ProjectCoreTests"
          "Tests/**.cpp",
     }
 
-    Solution.Project("ProjectCoreTests")
+    Solution.Project("StreamFormatTests")
 end

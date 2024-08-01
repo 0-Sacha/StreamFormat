@@ -1,11 +1,11 @@
-#include "ProjectCore/FMT.h"
-#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "StreamFormat/FMT.h"
+#include "StreamFormat/Tester/TestSuite/AllTestSuite.h"
 
 #include "BaseFMTTests.h"
 
 PCT_TEST_GROUP(FMT, SPECIFIER);
 
-#define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected) PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, test_data), expected)
+#define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected) PCT_EQ(StreamFormat::FMT::FormatString(fmt_test, test_data), expected)
 
 PCT_TEST_FUNC(SPECIFIER, BEGIN_END)
 {

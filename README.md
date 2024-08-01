@@ -1,9 +1,9 @@
-[![Build status](https://badge.buildkite.com/c74bfd00e5543dcb5645acecbfd9d1fc3a0487bc5de13db0b9.svg)](https://buildkite.com/sacha/projectcore)
-[![ProjectCore](https://github.com/0-Sacha/ProjectCore/actions/workflows/ProjectCore.yml/badge.svg)](https://github.com/0-Sacha/ProjectCore/actions/workflows/ProjectCore.yml)
+[![Build status](https://badge.buildkite.com/c74bfd00e5543dcb5645acecbfd9d1fc3a0487bc5de13db0b9.svg)](https://buildkite.com/sacha/streamformat)
+[![StreamFormat](https://github.com/0-Sacha/StreamFormat/actions/workflows/StreamFormat.yml/badge.svg)](https://github.com/0-Sacha/StreamFormat/actions/workflows/StreamFormat.yml)
 
-# ProjectCore
+# StreamFormat
 
-ProjectCore is a C++20 String Formatter, like [&lt;fmt&gt;](https://github.com/fmtlib/fmt)
+StreamFormat is a C++20 String Formatter, like [&lt;fmt&gt;](https://github.com/fmtlib/fmt)
 Using this formatter, it define others functionalities:
 - Logger like [spdlog](https://github.com/gabime/spdlog)
 - Json Serializer
@@ -21,13 +21,13 @@ For now, at least, you have the [Examples](Examples/README.md) (and maybe the Te
 
 ## Download
 ```
-git clone git@github.com:0-Sacha/ProjectCore.git
+git clone git@github.com:0-Sacha/StreamFormat.git
 ```
 
 ## Using the Lib
 It can be used using [Bazel](https://bazel.build/).
-A `cc_library` rule has been created: `@ProjectCore//:ProjectCore`.
-You need to add the module `projectcore` to your dependencies.
+A `cc_library` rule has been created: `@StreamFormat//:StreamFormat`.
+You need to add the module `streamformat` to your dependencies.
 
 You will need at least to give an c++ standard to use (at least c++20) since no one have been forced. You can check the [bazelrc](.bazelrc) to see how you can add one.
 

@@ -3,8 +3,8 @@
 MODULE.bazel.lock
 bazel-bin
 bazel-out
-bazel-projectcore
-bazel-ProjectCore
+bazel-streamformat
+bazel-StreamFormat
 bazel-examples
 bazel-Examples
 bazel-testlogs

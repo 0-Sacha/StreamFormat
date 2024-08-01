@@ -1,11 +1,11 @@
-#include "ProjectCore/FMT.h"
-#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "StreamFormat/FMT.h"
+#include "StreamFormat/Tester/TestSuite/AllTestSuite.h"
 
 #include "BaseFMTTests.h"
 
 PCT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-#define TEST_FMT(fmt_test, expected) PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, 0)), Escaper(expected))
+#define TEST_FMT(fmt_test, expected) PCT_EQ(Escaper(StreamFormat::FMT::FormatString(fmt_test, 0)), Escaper(expected))
 
 static std::string Escaper(const std::string& str)
 {
@@ -81,9 +81,9 @@ PCT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
 class TEST_FMT_ContextOut
 {
 };
-PROJECTCORE_AUTO_FORMATTER_T(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
+STREAMFORMAT_AUTO_FORMATTER_T(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
-#define TEST_FMT_CONTEXT(fmt_test, expected) PCT_EQ(Escaper(ProjectCore::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{})), Escaper(expected))
+#define TEST_FMT_CONTEXT(fmt_test, expected) PCT_EQ(Escaper(StreamFormat::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{})), Escaper(expected))
 
 PCT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 {

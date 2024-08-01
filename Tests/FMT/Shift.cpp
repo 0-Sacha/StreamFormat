@@ -1,11 +1,11 @@
-#include "ProjectCore/FMT.h"
-#include "ProjectCore/Tester/TestSuite/AllTestSuite.h"
+#include "StreamFormat/FMT.h"
+#include "StreamFormat/Tester/TestSuite/AllTestSuite.h"
 
 #include "BaseFMTTests.h"
 
 PCT_TEST_GROUP(FMT, SHIFT);
 
-#define TEST_FMT(fmt_test, expected, ...) PCT_EQ(ProjectCore::FMT::FormatString(fmt_test, __VA_ARGS__), expected)
+#define TEST_FMT(fmt_test, expected, ...) PCT_EQ(StreamFormat::FMT::FormatString(fmt_test, __VA_ARGS__), expected)
 
 PCT_TEST_GROUP(SHIFT, NUMBER_SHIFT);
 PCT_TEST_GROUP(NUMBER_SHIFT, ONE_DIGIT);

@@ -31,5 +31,5 @@ common:buildbuddy --jobs=50
 common:buildbuddy --nolegacy_important_outputs
 common:buildbuddy --platforms=@toolchain_ci_buildbuddy//:buildbuddy_linux_x86_64
 common:buildbuddy --extra_execution_platforms=@toolchain_ci_buildbuddy//:buildbuddy_linux_x86_64
-common:buildbuddy --remote_instance_name=projectcore
+common:buildbuddy --remote_instance_name=streamformat
 common:buildbuddy --extra_toolchains=@toolchain_ci_buildbuddy//:toolchain_buildbuddy_gcc_12
