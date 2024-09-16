@@ -37,9 +37,5 @@ TestSuite_FMT.json
 genhtml
 
 # External Dev
-bazel_buildbuddy
-bazel_utilities
-bazel_winlibs_mingw
-WORKSPACE.dev
-WORKSPACE.tmp
-bazel_modules_dev.sh
+external_dev
+
