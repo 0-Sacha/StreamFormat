@@ -33,8 +33,9 @@ Asset
 # Tests
 TestSuite_FMT.json
 
-# Coverage
+# Coverage / Checker
 genhtml
+.codechecker
 
 # External Dev
 external_dev
