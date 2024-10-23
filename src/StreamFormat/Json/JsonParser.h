@@ -13,12 +13,8 @@ namespace StreamFormat::JSON::Detail
             : BufferIn()
         {}
 
-        JsonParser(const FMT::Detail::BufferInfo<const char>& input)
+        JsonParser(FMT::Detail::BufferInfoView<char>& input)
             : BufferIn(input)
-        {}
-
-        JsonParser(const char* const buffer, const std::size_t bufferSize)
-            : BufferIn(buffer, bufferSize)
         {}
 
     public:

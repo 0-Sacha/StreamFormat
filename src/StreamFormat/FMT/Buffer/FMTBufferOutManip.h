@@ -10,7 +10,7 @@ namespace StreamFormat::FMT::Detail
     class FMTBufferOutInfo : public BufferOutInfo<CharType>
     {
     public:
-        using BufferOutInfo<CharType>::TChar;
+        using typename BufferOutInfo<CharType>::TChar;
 
         using BufferOutInfo<CharType>::Buffer;
         using BufferOutInfo<CharType>::CurrentPos;

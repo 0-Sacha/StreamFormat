@@ -11,9 +11,9 @@ namespace StreamFormat::FMT
     //---------------------------------------------//
 
     template <typename FormatterExecutor>
-    struct FormatterType<typename FormatterExecutor::Detail::template FormatSpecifier<FormatterExecutor::TChar>, FormatterExecutor>
+    struct FormatterType<typename FormatterExecutor::Detail::template FormatSpecifier<typename FormatterExecutor::TChar>, FormatterExecutor>
     {
-        static void Format(const typename FormatterExecutor::Detail::template FormatSpecifier<FormatterExecutor::TChar>& specifier, FormatterExecutor& executor)
+        static void Format(const typename FormatterExecutor::Detail::template FormatSpecifier<typename FormatterExecutor::TChar>& specifier, FormatterExecutor& executor)
         {
             if (specifier.ValueIsText)
                 executor.Run("{ '{}', '{}' }", specifier.Name, specifier.AsText);

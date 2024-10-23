@@ -55,7 +55,7 @@ namespace StreamFormat::JSON
         file.read(buffer.data(), size);
         file.close();
 
-        FMT::Detail::BufferInfo<char> input(buffer.data(), buffer.size());
+        FMT::Detail::BufferInfoView<char> input(buffer.data(), buffer.size());
         Detail::JsonParser parser(input);
         T res;
         JsonSerializer<T>::Parse(res, parser);

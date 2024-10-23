@@ -24,7 +24,7 @@ jobs:
         run: |
           bazelisk clean
           bazelisk build //...
-          bazelisk run //:refresh_compile_commands
+          bazelisk run //conf:compile_commands
 
       - uses: whisperity/CodeChecker-Action@v1.0.4
         id: codechecker

@@ -37,7 +37,7 @@ namespace StreamFormat::FMT::Detail
     class BufferInfoView : public BufferInfo<const CharType>
     {
     public:
-        using BufferInfo<const CharType>::TChar;
+        using typename BufferInfo<const CharType>::TChar;
         
         using BufferInfo<const CharType>::Buffer;
         using BufferInfo<const CharType>::CurrentPos;

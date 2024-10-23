@@ -11,7 +11,7 @@ namespace StreamFormat::FMT::Detail
     class BufferOutInfo : public BufferInfo<CharType>
     {
     public:
-        using BufferInfo<CharType>::TChar;
+        using typename BufferInfo<CharType>::TChar;
 
         using BufferInfo<CharType>::Buffer;
         using BufferInfo<CharType>::CurrentPos;
