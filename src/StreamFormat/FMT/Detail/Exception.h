@@ -16,43 +16,6 @@ namespace StreamFormat::FMT::Detail
         const char* what() const noexcept override { return "FMTError"; }
     };
 
-    class FMTBufferError : public FMTError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTBufferError"; }
-    };
-    class FMTBufferFull : public FMTBufferError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTBufferFull"; }
-    };
-    class FMTBufferLock : public FMTBufferError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTBufferLock"; }
-    };
-    class FMTBufferEnd : public FMTBufferError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTBufferEnd"; }
-    };
-
-    class FMTIndexError : public FMTError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTIndexError"; }
-    };
-    class FMTBufferWrongIndex : public FMTIndexError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTBufferWrongIndex"; }
-    };
-    class FMTBufferIndexOutOfRange : public FMTIndexError
-    {
-    public:
-        const char* what() const noexcept override { return "FMTBufferIndexOutOfRange"; }
-    };
-
     class FMTParseError : public FMTError
     {
     public:
@@ -62,6 +25,11 @@ namespace StreamFormat::FMT::Detail
     {
     public:
         const char* what() const noexcept override { return "FMTGivenTypeError"; }
+    };
+    class FMTGivenIndexError : public FMTParseError
+    {
+    public:
+        const char* what() const noexcept override { return "FMTGivenIndexError"; }
     };
 
     class FMTImplError : public FMTError

@@ -26,10 +26,10 @@ namespace StreamFormat::JSON
 #include "StreamFormat/FMT.h"
 namespace StreamFormat::FMT
 {
-    template <typename FormatterContext>
-    struct FormatterType<JSON::JsonObject, FormatterContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<JSON::JsonObject, FormatterExecutor>
     {
-        static void Format(const JSON::JsonObject& object, FormatterContext& context) { context.RunType(JSON::FormatAsJson<JSON::JsonObject>(object)); }
+        static void Format(const JSON::JsonObject& object, FormatterExecutor& executor) { executor.WriteType(JSON::FormatAsJson<JSON::JsonObject>(object)); }
     };
 }
 
@@ -55,9 +55,9 @@ namespace StreamFormat::JSON
         file.read(buffer.data(), size);
         file.close();
 
-        FMT::Detail::BufferInProperties<char> parserProperties(buffer.data(), buffer.size());
-        Detail::JsonParser                    parser(parserProperties);
-        T                                     res;
+        FMT::Detail::BufferInfoView<char> input(buffer.data(), buffer.size());
+        Detail::JsonParser parser(input);
+        T res;
         JsonSerializer<T>::Parse(res, parser);
         return res;
     }
@@ -70,7 +70,8 @@ namespace StreamFormat::JSON
         if (file.is_open() == false) throw std::runtime_error("unable to open file");
 
         FMT::Detail::DynamicBufferOutManager<char> BufferOutManager(256);
-        Detail::JsonFormatter                      formatter(BufferOutManager, settings);
+        FMT::Detail::BufferOutInfo<char> bufferOut{BufferOutManager};
+        Detail::JsonFormatter formatter(bufferOut, settings);
         JsonSerializer<T>::Format(json, formatter);
 
         file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));

@@ -192,68 +192,68 @@ namespace StreamFormat::Tester::Detail
 
 namespace StreamFormat::FMT
 {
-    template <typename FormatContext>
-    struct FormatterType<StreamFormat::Tester::Detail::TestSuite, FormatContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<StreamFormat::Tester::Detail::TestSuite, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::Detail::TestSuite& t, FormatContext& context) { context.BufferOut().FastWriteString(t.Name); }
+        static void Format(const StreamFormat::Tester::Detail::TestSuite& t, FormatterExecutor& executor) { executor.BufferOut.FastWriteString(t.Name); }
     };
 
-    template <typename FormatContext>
-    struct FormatterType<StreamFormat::Tester::Detail::Test, FormatContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<StreamFormat::Tester::Detail::Test, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::Detail::Test& t, FormatContext& context)
+        static void Format(const StreamFormat::Tester::Detail::Test& t, FormatterExecutor& executor)
         {
-            context.BufferOut().FastWriteString(t.Link.Name);
-            context.BufferOut().FastWriteCharArray("::");
-            context.BufferOut().FastWriteString(t.Name);
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t.Link.Name);
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("::");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t.Name);
         }
     };
 
-    template <typename FormatContext>
-    struct FormatterType<StreamFormat::Tester::TestStatus, FormatContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<StreamFormat::Tester::TestStatus, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::TestStatus& status, FormatContext& context)
+        static void Format(const StreamFormat::Tester::TestStatus& status, FormatterExecutor& executor)
         {
             switch (status)
             {
                 case StreamFormat::Tester::TestStatus::Ok:
-                    context.SubContextArrayFMT("[  {C:green}OK{C}  ]");
+                    executor.Run("[  {C:green}OK{C}  ]");
                     break;
                 case StreamFormat::Tester::TestStatus::Fail:
-                    context.SubContextArrayFMT("[ {C:red}FAIL{C} ]");
+                    executor.Run("[ {C:red}FAIL{C} ]");
                     break;
                 case StreamFormat::Tester::TestStatus::Crash:
-                    context.SubContextArrayFMT("[{C:magenta}Crash{C} ]");
+                    executor.Run("[{C:magenta}Crash{C} ]");
                     break;
             }
         }
     };
 
-    template <typename FormatContext>
-    struct FormatterType<StreamFormat::Tester::Detail::TestStatusBank, FormatContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<StreamFormat::Tester::Detail::TestStatusBank, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::Detail::TestStatusBank& statusBank, FormatContext& context)
+        static void Format(const StreamFormat::Tester::Detail::TestStatusBank& statusBank, FormatterExecutor& executor)
         {
-            context.BufferOut().FastWriteCharArray("TestsDone ");
-            context.SubContextArrayFMT("{:C:white}", statusBank.TestsDone);
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("TestsDone ");
+            executor.Run("{:C:white}", statusBank.TestsDone);
 
-            context.BufferOut().FastWriteCharArray(" | TestsOK ");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsOK ");
             if (statusBank.TestsOk == statusBank.TestsDone)
-                context.SubContextArrayFMT("{:C:green}", statusBank.TestsOk);
+                executor.Run("{:C:green}", statusBank.TestsOk);
             else
-                context.SubContextArrayFMT("{:C:yellow}", statusBank.TestsOk);
+                executor.Run("{:C:yellow}", statusBank.TestsOk);
 
-            context.BufferOut().FastWriteCharArray(" | TestsFAIL ");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsFAIL ");
             if (statusBank.TestsFail == 0)
-                context.SubContextArrayFMT("{:C:green}", statusBank.TestsFail);
+                executor.Run("{:C:green}", statusBank.TestsFail);
             else
-                context.SubContextArrayFMT("{:C:red}", statusBank.TestsFail);
+                executor.Run("{:C:red}", statusBank.TestsFail);
 
-            context.BufferOut().FastWriteCharArray(" | TestCrash ");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestCrash ");
             if (statusBank.TestsCrash == 0)
-                context.SubContextArrayFMT("{:C:green}", statusBank.TestsCrash);
+                executor.Run("{:C:green}", statusBank.TestsCrash);
             else
-                context.SubContextArrayFMT("{:C:magenta}", statusBank.TestsCrash);
+                executor.Run("{:C:magenta}", statusBank.TestsCrash);
         }
     };
 }

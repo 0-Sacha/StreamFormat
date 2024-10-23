@@ -1,0 +1,37 @@
+name: CodeChecker
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  codechecker-ubuntu-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bazelbuild/setup-bazelisk@v3
+      - name: Mount bazel cache
+        uses: actions/cache@v4
+        with:
+          path: "~/.cache/bazel"
+          key: bazel
+      
+      - name: build & retreive compile_commands.json
+        run: |
+          bazelisk clean
+          bazelisk build //...
+          bazelisk run //conf:compile_commands
+
+      - uses: whisperity/CodeChecker-Action@v1.0.4
+        id: codechecker
+        with:
+          logfile: ${{ github.workspace }}/compile_commands.json
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "CodeChecker Bug Reports"
+          path: ${{ steps.codechecker.outputs.result-html-dir }}

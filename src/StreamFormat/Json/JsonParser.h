@@ -1,7 +1,6 @@
 #pragma once
 
-#include "StreamFormat/FMT/Buffer/BasicBufferIn/BasicBufferIn.h"
-#include "StreamFormat/FMT/Buffer/BufferInProperties/BufferInProperties.h"
+#include "StreamFormat/FMT/Buffer/BufferInfo.h"
 
 #include "JsonObjects.h"
 
@@ -10,35 +9,24 @@ namespace StreamFormat::JSON::Detail
     class JsonParser
     {
     public:
-        using JsonBufferIn = FMT::Detail::BasicBufferIn<char>;
-
-    public:
         JsonParser()
-            : m_BufferIn()
+            : BufferIn()
         {}
 
-        JsonParser(const FMT::Detail::BufferInProperties<char>& bufferInProperties)
-            : m_BufferIn(bufferInProperties)
-        {}
-
-        JsonParser(const char* const buffer, const std::size_t bufferSize)
-            : m_BufferIn(buffer, bufferSize)
+        JsonParser(FMT::Detail::BufferInfoView<char>& input)
+            : BufferIn(input)
         {}
 
     public:
-        inline bool IsJsonStringBegin() const { return m_BufferIn.IsEqualTo('"'); }
-        inline bool IsJsonNumberBegin() const { return m_BufferIn.IsADigit() || m_BufferIn.IsEqualTo('+', '-', '.'); }
-        inline bool IsJsonBooleanBegin() const { return m_BufferIn.IsEqualTo('t', 'f'); }
-        inline bool IsJsonStructBegin() const { return m_BufferIn.IsEqualTo('{'); }
-        inline bool IsJsonArrayBegin() const { return m_BufferIn.IsEqualTo('['); }
-        inline bool IsJsonNullBegin() const { return m_BufferIn.IsEqualTo('n'); }
+        inline FMT::Detail::BufferManipResult IsJsonStringBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('"'); }
+        inline FMT::Detail::BufferManipResult IsJsonNumberBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsADigit() || FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('+', '-', '.'); }
+        inline FMT::Detail::BufferManipResult IsJsonBooleanBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('t', 'f'); }
+        inline FMT::Detail::BufferManipResult IsJsonStructBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('{'); }
+        inline FMT::Detail::BufferManipResult IsJsonArrayBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('['); }
+        inline FMT::Detail::BufferManipResult IsJsonNullBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('n'); }
 
     public:
-        JsonBufferIn&       BufferIn() { return m_BufferIn; }
-        const JsonBufferIn& BufferIn() const { return m_BufferIn; }
-
-    protected:
-        JsonBufferIn m_BufferIn;
+        FMT::Detail::BufferInfo<const char> BufferIn;
 
     public:
         struct Intermediate;

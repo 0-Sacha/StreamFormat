@@ -24,11 +24,11 @@ namespace StreamFormat::FMT::Detail
     };
 
     template <typename From>
-    requires(std::is_convertible_v<From, typename Detail::FormatIndex::BaseType>&&
-                 std::is_convertible_v<const From&, typename Detail::FormatIndex::BaseType>) struct FMTContextConvert<Detail::FormatIndex, From>
+    requires(std::is_convertible_v<From, typename std::int32_t>&&
+                 std::is_convertible_v<const From&, typename std::int32_t>) struct FMTContextConvert<std::int32_t, From>
     {
         static constexpr bool                IsConvertible = true;
-        static constexpr Detail::FormatIndex Convert(const From& from) { return Detail::FormatIndex(static_cast<typename Detail::FormatIndex::BaseType>(from)); }
+        static constexpr std::int32_t Convert(const From& from) { return std::int32_t(static_cast<typename std::int32_t>(from)); }
     };
 
     template <class From, class To>

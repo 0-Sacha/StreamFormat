@@ -1,16 +1,16 @@
 #pragma once
 
 #include <forward_list>
-#include "StreamFormat/FMT/Context/FormatterContext/FormatterType.h"
+#include "StreamFormat/FMT/Context/FormatterExecutor/FormatterType.h"
 
 namespace StreamFormat::FMT
 {
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::forward_list<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::forward_list<T>, FormatterExecutor>
     {
-        static void Format(const std::forward_list<T>& t, FormatterContext& context)
+        static void Format(const std::forward_list<T>& t, FormatterExecutor& executor)
         {
-            FormatterType<ForwardAsSTDEnumerable<std::forward_list<T>>, FormatterContext>::Format(t, context);
+            FormatterType<ForwardAsSTDEnumerable<std::forward_list<T>>, FormatterExecutor>::Format(t, executor);
         }
     };
 }

@@ -2,6 +2,9 @@
 
 #include "StreamFormat/FMT.h"
 
+#include "StreamFormat/FMT/Buffer/BufferManip.h"
+#include "StreamFormat/FMT/Buffer/BufferWriteManip.h"
+
 namespace StreamFormat::FLog
 {
     template <typename FormatStr>
@@ -36,28 +39,28 @@ namespace StreamFormat::FLog
 
 namespace StreamFormat::FMT
 {
-    template <typename FormatterContext, typename FormatStr>
-    struct FormatterType<StreamFormat::FLog::AddIndentInFormat<FormatStr>, FormatterContext>
+    template <typename FormatterExecutor, typename FormatStr>
+    struct FormatterType<StreamFormat::FLog::AddIndentInFormat<FormatStr>, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::AddIndentInFormat<FormatStr>& format, FormatterContext& context)
+        static void Format(const StreamFormat::FLog::AddIndentInFormat<FormatStr>& format, FormatterExecutor& executor)
         {
-            context.BufferOut().FastWriteCharArray("{K:indent}");
-            context.RunType(format.Format);
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("{K:indent}");
+            executor.WriteType(format.Format);
         }
     };
 
-    template <typename FormatterContext, typename CharType>
-    struct FormatterType<StreamFormat::FLog::ConcateNameAndSinkName<CharType>, FormatterContext>
+    template <typename FormatterExecutor, typename CharType>
+    struct FormatterType<StreamFormat::FLog::ConcateNameAndSinkName<CharType>, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::ConcateNameAndSinkName<CharType>& names, FormatterContext& context)
+        static void Format(const StreamFormat::FLog::ConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor)
         {
-            context.SubContext(names.LoggerName, FORMAT_SV("sink", names.SinkName));
+            executor.Run(names.LoggerName, FORMAT_SV("sink", names.SinkName));
         }
     };
 
-    template <typename FormatterContext, typename CharType>
-    struct FormatterType<StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>, FormatterContext>
+    template <typename FormatterExecutor, typename CharType>
+    struct FormatterType<StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterContext& context) { context.SubContext(names.LoggerName, "sink"); }
+        static void Format(const StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor) { executor.Run(names.LoggerName, "sink"); }
     };
 }

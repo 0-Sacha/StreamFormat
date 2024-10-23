@@ -91,7 +91,7 @@ PCT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 
     TEST_FMT_CONTEXT("{} 123 ", "\033[31m TEST_FMT_ContextOut 0 \033[39m 123 ");
 
-    // TODO : check before doing a TextPropertiesExecution, should only have one \033[31m
+    // TODO : check before doing a Detail::TextPropertiesExecution, should only have one \033[31m
     TEST_FMT_CONTEXT("{C:red}{} 123 ", "\033[31m TEST_FMT_ContextOut 0  123 \033[39m");
 
     TEST_FMT_CONTEXT("{C:+red}{} 123 ", "\033[91m\033[31m TEST_FMT_ContextOut 0 \033[91m 123 \033[39m");

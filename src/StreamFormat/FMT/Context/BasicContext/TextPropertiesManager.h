@@ -1,38 +1,41 @@
 #pragma once
 
-#include "ITextPropertiesExecutor.h"
 #include "StreamFormat/FMT/Detail/Detail.h"
+#include "ITextPropertiesExecutor.h"
+#include "BasicArgsInterface.h"
+#include "StreamFormat/FMT/Buffer/BufferInfo.h"
+#include "StreamFormat/FMT/Buffer/BufferTestManip.h"
+#include "StreamFormat/FMT/Buffer/Utils/BufferUtils.h"
 
 namespace StreamFormat::FMT::Detail
 {
     class TextPropertiesApplyManager
     {
     public:
-        TextPropertiesApplyManager(ITextPropertiesExecutor& textPropertiesExecutor, const TextProperties::Properties* baseContextProperties)
+        TextPropertiesApplyManager(ITextPropertiesExecutor& textPropertiesExecutor)
             : m_TextPropertiesExecutor{textPropertiesExecutor}
-            , m_BaseContextProperties{baseContextProperties}
-            , m_CurrentContextProperties{baseContextProperties == nullptr ? TextProperties::Properties{} : *baseContextProperties}
+            , m_CurrentContextProperties{}
         {}
 
         void Terminate() { ReloadDefault(); }
 
     public:
         template <typename T>
-        requires TextPropertiesColorCanApply<T>
+        requires Detail::TextPropertiesColorCanApply<T>
         void ApplyColor(const T& modif)
         {
             m_CurrentContextProperties.Color.Apply(modif);
             m_TextPropertiesExecutor.ExecuteColor(modif);
         }
         template <typename T>
-        requires TextPropertiesStyleCanApply<T>
+        requires Detail::TextPropertiesStyleCanApply<T>
         void ApplyStyle(const T& modif)
         {
             m_CurrentContextProperties.Style.Apply(modif);
             m_TextPropertiesExecutor.ExecuteStyle(modif);
         }
         template <typename T>
-        requires TextPropertiesFrontCanApply<T>
+        requires Detail::TextPropertiesFrontCanApply<T>
         void ApplyFront(const T& modif)
         {
             m_CurrentContextProperties.Front.Apply(modif);
@@ -62,7 +65,7 @@ namespace StreamFormat::FMT::Detail
         }
 
     public:
-        TextProperties::Properties Save() { return m_CurrentContextProperties; }
+        Detail::TextProperties::Properties Save() { return m_CurrentContextProperties; }
 
     public:
         void ReloadDefault()
@@ -76,59 +79,57 @@ namespace StreamFormat::FMT::Detail
             ReloadDefaultColorFG();
             ReloadDefaultColorBG();
         }
-        void ReloadDefaultColorFG() { m_BaseContextProperties != nullptr ? ReloadColorFG(m_BaseContextProperties->Color.Fg) : ReloadColorFG(TextProperties::TextColor::ColorFG{}); }
-        void ReloadDefaultColorBG() { m_BaseContextProperties != nullptr ? ReloadColorBG(m_BaseContextProperties->Color.Bg) : ReloadColorBG(TextProperties::TextColor::ColorBG{}); }
-        void ReloadDefaultStyle() { m_BaseContextProperties != nullptr ? ReloadStyle(m_BaseContextProperties->Style) : ReloadStyle(TextProperties::TextStyle::Style{}); }
-        void ReloadDefaultFront() { m_BaseContextProperties != nullptr ? ReloadFront(m_BaseContextProperties->Front) : ReloadFront(TextProperties::TextFront::Front{}); }
+        void ReloadDefaultColorFG() { ReloadColorFG(Detail::TextProperties::TextColor::ColorFG{}); }
+        void ReloadDefaultColorBG() { ReloadColorBG(Detail::TextProperties::TextColor::ColorBG{}); }
+        void ReloadDefaultStyle() { ReloadStyle(Detail::TextProperties::TextStyle::Style{}); }
+        void ReloadDefaultFront() { ReloadFront(Detail::TextProperties::TextFront::Front{}); }
 
-        void Reload(const TextProperties::Properties& target)
+        void Reload(const Detail::TextProperties::Properties& target)
         {
             ReloadColor(target.Color);
             ReloadStyle(target.Style);
             ReloadFront(target.Front);
         }
-        void ReloadColor(const TextProperties::TextColor::Color& target)
+        void ReloadColor(const Detail::TextProperties::TextColor::Color& target)
         {
             ReloadColorFG(target.Fg);
             ReloadColorBG(target.Bg);
         }
 
-        void ReloadColorFG(const TextProperties::TextColor::ColorFG& target);
-        void ReloadColorBG(const TextProperties::TextColor::ColorBG& target);
-        void ReloadStyle(const TextProperties::TextStyle::Style& target);
-        void ReloadFront(const TextProperties::TextFront::Front& target);
+        void ReloadColorFG(const Detail::TextProperties::TextColor::ColorFG& target);
+        void ReloadColorBG(const Detail::TextProperties::TextColor::ColorBG& target);
+        void ReloadStyle(const Detail::TextProperties::TextStyle::Style& target);
+        void ReloadFront(const Detail::TextProperties::TextFront::Front& target);
 
     public:
-        ITextPropertiesExecutor&          GetTextPropertiesExecutor() { return m_TextPropertiesExecutor; }
-        const TextProperties::Properties* GetBaseContextProperties() { return m_BaseContextProperties; }
-        TextProperties::Properties&       GetCurrentContextProperties() { return m_CurrentContextProperties; }
+        ITextPropertiesExecutor&                    GetTextPropertiesExecutor() { return m_TextPropertiesExecutor; }
+        Detail::TextProperties::Properties&         GetCurrentContextProperties() { return m_CurrentContextProperties; }
 
     protected:
-        ITextPropertiesExecutor&          m_TextPropertiesExecutor;
-        const TextProperties::Properties* m_BaseContextProperties;
-        TextProperties::Properties        m_CurrentContextProperties;
+        ITextPropertiesExecutor&                    m_TextPropertiesExecutor;
+        Detail::TextProperties::Properties          m_CurrentContextProperties;
 
     public:
         template <typename T>
-        requires TextPropertiesColorCanApply<T>
+        requires Detail::TextPropertiesColorCanApply<T>
         inline void AskApplyColor(const T& modif)
         {
             if (m_CurrentContextProperties.Color.NeedModif(modif)) ApplyColor(modif);
         }
         template <typename T>
-        requires TextPropertiesStyleCanApply<T>
+        requires Detail::TextPropertiesStyleCanApply<T>
         inline void AskApplyStyle(const T& modif)
         {
             if (m_CurrentContextProperties.Style.NeedModif(modif)) ApplyStyle(modif);
         }
         template <typename T>
-        requires TextPropertiesFrontCanApply<T>
+        requires Detail::TextPropertiesFrontCanApply<T>
         inline void AskApplyFront(const T& modif)
         {
             if (m_CurrentContextProperties.Front.NeedModif(modif)) ApplyFront(modif);
         }
 
-        void AskApplyColor(const TextProperties::TextColor::BasicColor& modif)
+        void AskApplyColor(const Detail::TextProperties::TextColor::BasicColor& modif)
         {
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
             {
@@ -138,7 +139,7 @@ namespace StreamFormat::FMT::Detail
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg)) return ApplyColor(modif.Bg);
         }
 
-        void AskApplyColor(const TextProperties::TextColor::ColorCube& modif)
+        void AskApplyColor(const Detail::TextProperties::TextColor::ColorCube& modif)
         {
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
             {
@@ -148,7 +149,7 @@ namespace StreamFormat::FMT::Detail
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg)) return ApplyColor(modif.Bg);
         }
 
-        void AskApplyColor(const TextProperties::TextColor::Color24b& modif)
+        void AskApplyColor(const Detail::TextProperties::TextColor::Color24b& modif)
         {
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
             {
@@ -158,53 +159,51 @@ namespace StreamFormat::FMT::Detail
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg)) return ApplyColor(modif.Bg);
         }
 
-        void AskApplyColor(const TextProperties::TextColor::ColorFG& modif) { ReloadColorFG(modif); }
-        void AskApplyColor(const TextProperties::TextColor::ColorBG& modif) { ReloadColorBG(modif); }
-        void AskApplyColor(const TextProperties::TextColor::Color& modif) { ReloadColor(modif); }
+        void AskApplyColor(const Detail::TextProperties::TextColor::ColorFG& modif) { ReloadColorFG(modif); }
+        void AskApplyColor(const Detail::TextProperties::TextColor::ColorBG& modif) { ReloadColorBG(modif); }
+        void AskApplyColor(const Detail::TextProperties::TextColor::Color& modif) { ReloadColor(modif); }
     };
 
-    template <typename Context>
+    template <typename TChar>
     class TextPropertiesManager : public TextPropertiesApplyManager
     {
     public:
-        TextPropertiesManager(Context& context, ITextPropertiesExecutor& textPropertiesExecutor, const TextProperties::Properties* baseContextProperties)
-            : m_Context{context}
-            , TextPropertiesApplyManager(textPropertiesExecutor, baseContextProperties)
+        TextPropertiesManager(ITextPropertiesExecutor& textPropertiesExecutor)
+            : TextPropertiesApplyManager(textPropertiesExecutor)
         {}
 
     public:
-        void ApplyColorOnIndex(const FormatIndex& index);
-        void ApplyStyleOnIndex(const FormatIndex& index);
-        void ApplyFrontOnIndex(const FormatIndex& index);
+        void ApplyColorOnIndex(Context::BasicContext<TChar>& context, std::int32_t index);
+        void ApplyStyleOnIndex(Context::BasicContext<TChar>& context, std::int32_t index);
+        void ApplyFrontOnIndex(Context::BasicContext<TChar>& context, std::int32_t index);
 
     public:
-        void ParseColor();
-        void ParseStyle();
-        void ParseFront();
+        void ParseColor(Context::BasicContext<TChar>& context);
+        void ParseStyle(Context::BasicContext<TChar>& context);
+        void ParseFront(Context::BasicContext<TChar>& context);
 
     private:
         template <typename T>
-        bool                                                 GetColorCode(T& t);
-        void                                                 ParseStyleNamed();
-        TextProperties::TextStyle::UnderlineColor::ColorCube SelectUnderlinedColorStyle();
-
-    private:
-        Context& m_Context;
+        bool GetColorCode(BufferInfoView<TChar>& format, T& t);
+        void ParseStyleNamed(BufferInfoView<TChar>& format);
+        Detail::TextProperties::TextStyle::UnderlineColor::ColorCube SelectUnderlinedColorStyle(BufferInfoView<TChar>& format);
     };
 }
 
 namespace StreamFormat::FMT::Detail
 {
-    template <typename BasicContext>
+    template <typename TChar>
     template <typename T>
-    bool TextPropertiesManager<BasicContext>::GetColorCode(T& t)
+    bool Detail::TextPropertiesManager<TChar>::GetColorCode(BufferInfoView<TChar>& format, T& t)
     {
         static constexpr std::string_view colorCode[] = {"black", "red", "green", "yellow", "blue", "magenta", "cyan", "white", "      ", "default"};
 
-        std::uint8_t step = static_cast<std::uint8_t>(m_Context.Format().IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
-        std::uint8_t code = static_cast<std::uint8_t>(m_Context.Format().GetWordFromList(colorCode));
-        if (code == m_Context.Format().GET_WORD_FROM_LIST_NOT_FOUND) return false;
+        std::uint8_t step = static_cast<std::uint8_t>(BufferTestManip(format).IsEqualToForward('+') ? T::BaseBStep : T::BaseStep);
+        std::uint8_t code = static_cast<std::uint8_t>(BufferUtilsManip(format).GetWordFromList(colorCode));
+        if (code == BufferUtilsManip<TChar>::GET_WORD_FROM_LIST_NOT_FOUND) return false;
         t = static_cast<T>(code + step);
         return true;
     }
 }
+
+#include "TextPropertiesManager-impl.h"

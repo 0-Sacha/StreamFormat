@@ -1,13 +1,13 @@
 #pragma once
 
 #include <vector>
-#include "StreamFormat/FMT/Context/FormatterContext/FormatterType.h"
+#include "StreamFormat/FMT/Context/FormatterExecutor/FormatterType.h"
 
 namespace StreamFormat::FMT
 {
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::vector<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::vector<T>, FormatterExecutor>
     {
-        static void Format(const std::vector<T>& t, FormatterContext& context) { FormatterType<ForwardAsSTDEnumerable<std::vector<T>>, FormatterContext>::Format(t, context); }
+        static void Format(const std::vector<T>& t, FormatterExecutor& executor) { FormatterType<ForwardAsSTDEnumerable<std::vector<T>>, FormatterExecutor>::Format(t, executor); }
     };
 }

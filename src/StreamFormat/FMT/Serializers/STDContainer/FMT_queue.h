@@ -1,13 +1,13 @@
 #pragma once
 
 #include <queue>
-#include "StreamFormat/FMT/Context/FormatterContext/FormatterType.h"
+#include "StreamFormat/FMT/Context/FormatterExecutor/FormatterType.h"
 
 namespace StreamFormat::FMT
 {
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::queue<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::queue<T>, FormatterExecutor>
     {
-        static void Format(const std::queue<T>& t, FormatterContext& context) {}
+        static void Format(const std::queue<T>& t, FormatterExecutor& executor) {}
     };
 }

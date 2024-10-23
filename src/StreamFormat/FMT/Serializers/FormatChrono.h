@@ -1,108 +1,112 @@
 #pragma once
 
+#include "StreamFormat/FMT/Buffer/BufferTestManip.h"
+#include "StreamFormat/FMT/Buffer/BufferWriteManip.h"
+#include "StreamFormat/FMT/Buffer/BufferReadManip.h"
+#include "StreamFormat/FMT/Buffer/FMTBufferWriteManip.h"
+
+#include "StreamFormat/FMT/Context/FormatterExecutor/BasicFormatterExecutor.h"
+
 #include <chrono>
-#include "StreamFormat/FMT/Context/FormatterContext/BasicFormatterContext.h"
 
 namespace StreamFormat::FMT::Detail
 {
-    template <typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
-    void WriteSubTimeFull(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context)
+    enum class TimePrintMode : std::uint8_t
     {
-        Detail::ShiftSize nbDigit{};
-        pattern.FastReadUInt(nbDigit.Value);
+        FullTime,
+        Mod,
+        Sub,
+    };
 
-        if (pattern.IsSameSeqForward('n', 's'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('u', 's'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count()),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('m', 's'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count()),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('s'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count()),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('m'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count()),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('h'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count()),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-    }
-
-    template <typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
-    void WriteSubTimeMod(const std::chrono::time_point<Clock, Duration>& value, PatternFormat& pattern, FormatterContext& context)
+    template <typename Clock, typename Duration, typename TChar>
+    BufferManipResult WriteSubTime_(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar>& pattern, FMTBufferOutInfo<TChar>& buffer, TimePrintMode mode)
     {
-        Detail::ShiftSize nbDigit;
-        pattern.FastReadUInt(nbDigit.Value);
-        bool isDefault = nbDigit.IsDefault();
+        ShiftInfo shift;
+        shift.Type = Detail::ShiftInfo::ShiftType::Right;
+        shift.Print = Detail::ShiftInfo::ShiftPrint('0', ' ');
+        BufferReadManip(pattern).FastReadInteger(shift.Size);
 
-        if (isDefault) nbDigit.Value = 3;
-        if (pattern.IsSameSeqForward('n', 's'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count() % 1000),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('u', 's'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count() % 1000),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('m', 's'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count() % 1000),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (isDefault) nbDigit.Value = 2;
-        if (pattern.IsSameSeqForward('s'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count() % 60),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('m'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count() % 60),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('h'))
-            return context.BufferOut().WriteUInt(static_cast<uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count() % 24),
-                                                 Detail::ShiftType::Right, nbDigit, Detail::ShiftPrint_Zeros);
-    }
+        if (mode == TimePrintMode::Mod && shift.Size < 0)
+            shift.Size = 3;
 
-    template <typename Clock, typename Duration, typename PatternFormat, typename FormatterContext>
-    void WriteSubTimeSub([[maybe_unused]] const std::chrono::time_point<Clock, Duration>& value, [[maybe_unused]] PatternFormat& pattern,
-                         [[maybe_unused]] FormatterContext& context)
-    {
-        Detail::ShiftSize nbDigit{};
-        pattern.ReadUInt(nbDigit.Value);
-
-        Detail::FloatPrecision nbDecimal{};
-        if (pattern.IsEqualToForward('.')) pattern.ReadUInt(nbDecimal.Value);
-
-        if (pattern.IsSameSeqForward('u', 's'))
-            return context.BufferOut().WriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()) / 1000, nbDecimal,
-                                                  Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('m', 's'))
-            return context.BufferOut().WriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()) / 1000000, nbDecimal,
-                                                  Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
-        if (pattern.IsSameSeqForward('s'))
-            return context.BufferOut().WriteFloat(static_cast<float>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count()) / 1000000000,
-                                                  nbDecimal, Detail::ShiftType::Right, nbDigit.Value + 1 + nbDecimal.Value, Detail::ShiftPrint_Zeros);
-    }
-
-    template <typename Clock, typename Duration, typename FormatterContext>
-    bool WriteTime(const std::chrono::time_point<Clock, Duration>& value, FormatterContext& context, bool useDefaultPattern = true)
-    {
-        auto patternPtr = context.GetFormatData().GetSpecifierOnlyText("pattern");
-        if (patternPtr == nullptr && useDefaultPattern == false) return false;
-
-        std::basic_string_view<typename FormatterContext::CharFormatType> patternStr = "%h:%m:%s.%ms";
-
-        if (patternPtr != nullptr) patternStr = patternPtr->ValueAsText;
-
-        Detail::FMTFormatBuffer pattern(patternStr.data(), patternStr.size());
-        context.BufferOut().FastWriteStringView(pattern.ParamGoToAndGetStr('%', '#', '/'));
-        while (!pattern.IsEnd())
+        if (BufferTestManip(pattern).IsSameForward("ns", 2))
         {
-            if (pattern.IsEqualToForward('%'))
-                WriteSubTimeMod(value, pattern, context);
-            else if (pattern.IsEqualToForward('#'))
-                WriteSubTimeFull(value, pattern, context);
-            else if (pattern.IsEqualToForward('/'))
-                WriteSubTimeSub(value, pattern, context);
+            std::uint32_t ns = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count());
+            if (mode == TimePrintMode::Mod)
+                ns = ns % 1000;
+            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ns) % 1000, shift);
+        }
+        else if (BufferTestManip(pattern).IsSameForward("us", 2))
+        {
+            std::uint32_t us = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count());
+            if (mode == TimePrintMode::Mod)
+                us = us % 1000;
+            else if (mode == TimePrintMode::Sub)
+                us = us / 1000;
+            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(us) % 1000, shift);
+        }
+        else if (BufferTestManip(pattern).IsSameForward("ms", 2))
+        {
+            std::uint32_t ms = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count());
+            if (mode == TimePrintMode::Mod)
+                ms = ms % 1000;
+            else if (mode == TimePrintMode::Sub)
+                ms = ms / 1000000;
+            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ms) % 1000, shift);
+        }
+        else if (BufferTestManip(pattern).IsEqualToForward('s'))
+        {
+            std::uint32_t sec = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count());
+            if (mode == TimePrintMode::Mod)
+                sec = sec % 60;
+            else if (mode == TimePrintMode::Sub)
+                sec = sec / 1000000000;
+            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(sec) % 1000, shift);
+        }
+        else if (BufferTestManip(pattern).IsEqualToForward('m'))
+        {
+            std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count());
+            if (mode == TimePrintMode::Mod)
+                min = min % 60;
+            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift);
+        }
+        else if (BufferTestManip(pattern).IsEqualToForward('h'))
+        {
+            std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count());
+            if (mode == TimePrintMode::Mod)
+                min = min % 24;
+            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift);
+        }
 
-            context.BufferOut().FastWriteStringView(pattern.ParamGoToAndGetStr('%', '#', '/'));
+        return true;
+    }
+
+    template <typename Clock, typename Duration, typename TChar>
+    BufferManipResult WriteTime(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar> pattern, FMTBufferOutInfo<TChar>& buffer)
+    {
+        BufferWriteManip(buffer).FastWriteString(
+            BufferTestManip(pattern).ViewExec(
+                [&]{FMTBufferParamsManip(pattern).ParamGoTo('%', '#', '/'); }
+            )
+        );
+
+        while (!BufferAccess(pattern).IsEndOfString())
+        {
+            TimePrintMode mode;
+            if (BufferTestManip(pattern).IsEqualToForward('%'))
+                mode = TimePrintMode::Mod;
+            else if (BufferTestManip(pattern).IsEqualToForward('#'))
+                mode = TimePrintMode::FullTime;
+            else if (BufferTestManip(pattern).IsEqualToForward('/'))
+                mode = TimePrintMode::Sub;
+            
+            WriteSubTime_(value, pattern, buffer, mode);
+
+            BufferWriteManip(buffer).FastWriteString(
+                BufferTestManip(pattern).ViewExec(
+                    [&]{FMTBufferParamsManip(pattern).ParamGoTo('%', '#', '/'); }
+                )
+            );
         }
 
         return true;
@@ -111,96 +115,43 @@ namespace StreamFormat::FMT::Detail
 
 namespace StreamFormat::FMT
 {
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::chrono::time_point<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::chrono::time_point<T>, FormatterExecutor>
     {
-        static void Format(const std::chrono::time_point<T>& t, FormatterContext& context) { Detail::WriteTime(t, context); }
-    };
-
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::seconds, FormatterContext>
-    {
-        static void Format(const std::chrono::seconds& t, FormatterContext& context)
+        static void Format(const std::chrono::time_point<T>& t, FormatterExecutor& executor)
         {
-            std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::seconds> time(t);
-            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::seconds>(time, context))
-            {
-                context.BufferOut().BasicWriteType(t.count());
-                context.BufferOut().PushBack('s');
-            }
+            Detail::WriteTime(t, Detail::BufferInfoView(executor.Data.Specifiers.GetAsText("pattern", "%h:%m:%s.%ms")), executor.BufferOut);
         }
     };
 
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::minutes, FormatterContext>
+    template <typename Rep, typename Period, typename FormatterExecutor>
+    struct FormatterType<std::chrono::duration<Rep, Period>, FormatterExecutor>
     {
-        static void Format(const std::chrono::minutes& t, FormatterContext& context)
+        static void Format(const std::chrono::duration<Rep, Period>& t, FormatterExecutor& executor)
         {
-            std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::minutes> time(t);
-            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::minutes>(time, context))
+            if (executor.Data.Specifiers.Has("pattern"))
             {
-                context.BufferOut().BasicWriteType(t.count());
-                context.BufferOut().PushBack('m');
+                Detail::WriteTime(
+                    std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::duration<Rep, Period>>(t),
+                    Detail::BufferInfoView(executor.Data.Specifiers.GetAsText("pattern", "%h:%m:%s.%ms")),
+                    executor.BufferOut
+                );
+                return;
             }
-        }
-    };
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteInteger(t.count());
 
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::hours, FormatterContext>
-    {
-        static void Format(const std::chrono::hours& t, FormatterContext& context)
-        {
-            std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::hours> time(t);
-            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::hours>(time, context))
-            {
-                context.BufferOut().BasicWriteType(t.count());
-                context.BufferOut().PushBack('h');
-            }
-        }
-    };
-
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::milliseconds, FormatterContext>
-    {
-        static void Format(const std::chrono::milliseconds& t, FormatterContext& context)
-        {
-            std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::milliseconds> time(t);
-            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::milliseconds>(time, context))
-            {
-                context.BufferOut().BasicWriteType(t.count());
-                context.BufferOut().PushBack('m');
-                context.BufferOut().PushBack('s');
-            }
-        }
-    };
-
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::microseconds, FormatterContext>
-    {
-        static void Format(const std::chrono::microseconds& t, FormatterContext& context)
-        {
-            std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::microseconds> time(t);
-            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::microseconds>(time, context))
-            {
-                context.BufferOut().BasicWriteType(t.count());
-                context.BufferOut().PushBack('u');
-                context.BufferOut().PushBack('s');
-            }
-        }
-    };
-
-    template <typename FormatterContext>
-    struct FormatterType<std::chrono::nanoseconds, FormatterContext>
-    {
-        static void Format(const std::chrono::nanoseconds& t, FormatterContext& context)
-        {
-            std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds> time(t);
-            if (!Detail::WriteTime<std::chrono::high_resolution_clock, std::chrono::nanoseconds>(time, context))
-            {
-                context.BufferOut().BasicWriteType(t.count());
-                context.BufferOut().PushBack('n');
-                context.BufferOut().PushBack('s');
-            }
+            if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::seconds>)
+                Detail::BufferOutManip(executor.BufferOut).Pushback('s');
+            else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::minutes>)
+                Detail::BufferOutManip(executor.BufferOut).Pushback('m');
+            else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::hours>)
+                Detail::BufferOutManip(executor.BufferOut).Pushback('h');
+            else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::milliseconds>)
+                Detail::BufferOutManip(executor.BufferOut).Pushback('m', 's');
+            else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::microseconds>)
+                Detail::BufferOutManip(executor.BufferOut).Pushback('u', 's');
+            else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::nanoseconds>)
+                Detail::BufferOutManip(executor.BufferOut).Pushback('n', 's');
         }
     };
 }
