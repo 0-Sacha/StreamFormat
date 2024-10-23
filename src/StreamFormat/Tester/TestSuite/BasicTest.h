@@ -40,7 +40,8 @@ namespace StreamFormat::Tester::Detail
     template <typename T>
     void TestFunction::TestEq(T result, std::convertible_to<T> auto expected, std::string_view testView, [[maybe_unused]] int line)
     {
-        if (result != static_cast<T>(expected))
+        T expected_as_T = static_cast<T>(expected);
+        if (result != expected_as_T)
         {
             Link.TestLogger.Error("{C:red}{} return {} instead of {}", testView, result, expected, FORMAT_SV("test_name", Name));
             throw TestFailure{};

@@ -11,6 +11,9 @@ namespace StreamFormat::FMT::Detail
         virtual ~ITextPropertiesExecutor() = default;
 
     public:
+        virtual void LinkToExecutor(void* executor) = 0;
+
+    public:
         virtual void AllPropertiesReset() = 0;
 
     public:

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Buffer/BufferInfo.h"
 
 namespace StreamFormat::FMT::Detail
 {
@@ -12,13 +13,13 @@ namespace StreamFormat::FMT::Detail
 
     protected:
         virtual void BeginContextImpl() {}
-        virtual void EndContextImpl(const std::size_t /* totalGeneratedLength */) {}
+        virtual void ComputeGeneratedSizeImpl(const std::size_t /* totalGeneratedLength */) {}
 
     public:
         void BeginContext() { BeginContextImpl(); }
-        void EndContext(std::size_t totalGeneratedLength)
+        void ComputeGeneratedSize(std::size_t totalGeneratedLength)
         {
-            EndContextImpl(totalGeneratedLength);
+            ComputeGeneratedSizeImpl(totalGeneratedLength);
             SetLastGeneratedDataSize(totalGeneratedLength);
         }
 
@@ -31,10 +32,13 @@ namespace StreamFormat::FMT::Detail
         virtual bool AddSize(const std::size_t count) = 0;
 
     public:
+        BufferInfoView<CharType> GetLastGeneratedBufferInfoView() const { return BufferInfoView<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
+        operator BufferInfoView<CharType>() const { return GetLastGeneratedBufferInfoView(); }
+
         std::basic_string_view<CharType> GetLastGeneratedStringView() const { return std::basic_string_view<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
-                                         operator std::basic_string_view<CharType>() const { return GetLastGeneratedStringView(); }
-        std::basic_string<CharType>      GetLastGeneratedString() const { return std::basic_string<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
-                                         operator std::basic_string<CharType>() const { return GetLastGeneratedString(); }
+        operator std::basic_string_view<CharType>() const { return GetLastGeneratedStringView(); }
+        std::basic_string<CharType> GetLastGeneratedString() const { return std::basic_string<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
+        operator std::basic_string<CharType>() const { return GetLastGeneratedString(); }
 
     public:
         std::size_t GetLastGeneratedDataSize() const { return m_LastGeneratedDataSize; }

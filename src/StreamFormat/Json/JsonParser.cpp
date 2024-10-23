@@ -10,18 +10,21 @@ namespace StreamFormat::JSON::Detail
 {
     void JsonParser::Intermediate::Parse(Detail::JsonParser& parser)
     {
-        parser.BufferIn().IgnoreAllBlanks();
-        const char* begin = parser.BufferIn().GetBufferCurrentPos();
+        FMT::Detail::BufferTestAccess access(parser.BufferIn);
+        FMT::Detail::BufferTestManip manip(parser.BufferIn);
+
+        manip.SkipAllBlanks();
+        const char* begin = parser.BufferIn.CurrentPos;
 
         if (parser.IsJsonStringBegin())
         {
-            parser.BufferIn().Skip('"');
+            manip.Skip('"');
             while (true)
             {
-                parser.BufferIn().GoTo('"');
-                if (parser.BufferIn().PrevIsNotEqualTo('\\')) break;
+                manip.GoTo('"');
+                if (FMT::Detail::BufferTestAccess(parser.BufferIn).PrevIsNotEqualTo('\\')) break;
             }
-            parser.BufferIn().Skip('"');
+            manip.Skip('"');
         }
         else if (parser.IsJsonNumberBegin())
         {
@@ -52,7 +55,7 @@ namespace StreamFormat::JSON::Detail
             JsonNullSerializer::ParseNull(parser);
         }
 
-        const char* end = parser.BufferIn().GetBufferCurrentPos();
+        const char* end = parser.BufferIn.CurrentPos;
         Data            = std::string_view(begin, end);
     };
 

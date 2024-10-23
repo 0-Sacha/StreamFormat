@@ -87,7 +87,8 @@ namespace StreamFormat::FLog::Detail
 
         void FormatAndWriteToSinkSync(PatternTransfertType pattern, const std::chrono::nanoseconds& logTime, const NameType& loggerName, const BufferType& formatBuffer)
         {
-            auto       formatPatternStr = FMT::Detail::FormatAndGetBufferOut(pattern, FORMAT_SV("time", logTime), FORMAT_SV("name", ConcateNameAndSinkName(loggerName, Name)),
+            FMT::Detail::DynamicBufferOutManager<CharType> manager(256);
+            auto formatPatternStr = FMT::Detail::FormatInManager(manager, false, pattern, FORMAT_SV("time", logTime), FORMAT_SV("name", ConcateNameAndSinkName(loggerName, Name)),
                                                                              FORMAT_SV("data", formatBuffer));
             BufferType buffer(*formatPatternStr);
             WriteToSinkSync(buffer);

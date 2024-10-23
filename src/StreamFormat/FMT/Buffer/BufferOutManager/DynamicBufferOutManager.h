@@ -69,7 +69,7 @@ namespace StreamFormat::FMT::Detail
 
     protected:
         void BeginContextImpl() override { ShrinkIfNeeded(); }
-        void EndContextImpl(std::size_t totalGeneratedLength) override
+        void ComputeGeneratedSizeImpl(std::size_t totalGeneratedLength) override
         {
             m_MeanGeneratedSize = (m_MeanGeneratedSize * MEAN_CALCFACT_OLD + totalGeneratedLength * MEAN_CALCFACT_LAST) / (MEAN_CALCFACT_OLD + MEAN_CALCFACT_LAST);
         }
@@ -96,14 +96,14 @@ namespace StreamFormat::FMT::Detail
                 newBufferSize *= GROW_UP_BUFFER_SIZE;
         }
 
-        CharType* safeBuffer = new CharType[newBufferSize];
-        if (safeBuffer == nullptr) return false;
+        CharType* newBuffer = new CharType[newBufferSize];
+        if (newBuffer == nullptr) return false;
 
-        std::memcpy(safeBuffer, m_Buffer.get(), std::min(newBufferSize, m_BufferSize));
+        std::memcpy(newBuffer, m_Buffer.get(), std::min(newBufferSize, m_BufferSize));
 
         if constexpr (DEBUG_RESIZE) std::cout << "Resize from " << m_BufferSize << " to " << newBufferSize << std::endl;
 
-        m_Buffer.reset(safeBuffer);
+        m_Buffer.reset(newBuffer);
         m_BufferSize = newBufferSize;
 
         return true;

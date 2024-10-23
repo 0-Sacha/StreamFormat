@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StreamFormat/FMT/Context/FormatterContext/BasicFormatterContext.h"
+#include "StreamFormat/FMT/Context/FormatterExecutor/BasicFormatterExecutor.h"
 
 #include <memory>
 #include <sstream>
@@ -13,22 +13,22 @@ namespace StreamFormat::FMT
     //----------------- String -----------------//
     //------------------------------------------//
 
-    template <typename FormatterContext, typename Char>
-    struct FormatterType<std::basic_string<Char>, FormatterContext>
+    template <typename FormatterExecutor, typename Char>
+    struct FormatterType<std::basic_string<Char>, FormatterExecutor>
     {
-        inline static void Format(const std::basic_string<Char>& t, FormatterContext& context) { context.BufferOut().FastWriteCharPtr(t.data(), t.size()); }
+        static inline void Format(const std::basic_string<Char>& t, FormatterExecutor& executor) { Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t); }
     };
 
-    template <typename FormatterContext, typename Char>
-    struct FormatterType<std::basic_string_view<Char>, FormatterContext>
+    template <typename FormatterExecutor, typename Char>
+    struct FormatterType<std::basic_string_view<Char>, FormatterExecutor>
     {
-        inline static void Format(const std::basic_string_view<Char>& t, FormatterContext& context) { context.BufferOut().FastWriteCharPtr(t.data(), t.size()); }
+        static inline void Format(std::basic_string_view<Char> t, FormatterExecutor& executor) { Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t); }
     };
 
-    template <typename FormatterContext, typename Char>
-    struct FormatterType<std::basic_stringstream<Char>, FormatterContext>
+    template <typename FormatterExecutor, typename Char>
+    struct FormatterType<std::basic_stringstream<Char>, FormatterExecutor>
     {
-        inline static void Format(const std::basic_stringstream<Char>& t, FormatterContext& context) { context.BufferOut().FastWriteCharPtr(t.str(), t.size()); }
+        static inline void Format(const std::basic_stringstream<Char>& t, FormatterExecutor& executor) { Detail::BufferWriteManip(executor.BufferOut).FastWriteCharArray(t.str(), t.size()); }
     };
 
     //------------------------------------------//
@@ -36,35 +36,35 @@ namespace StreamFormat::FMT
     //------------------------------------------//
 
     // UniquePtr
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::unique_ptr<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::unique_ptr<T>, FormatterExecutor>
     {
-        inline static void Format(const std::unique_ptr<T>& t, FormatterContext& context)
+        static inline void Format(const std::unique_ptr<T>& t, FormatterExecutor& executor)
         {
-            if (context.GetFormatData().TrueValue)
-                FormatterType<T*, FormatterContext>::Format(t.get(), context);
+            if (executor.Data.TrueValue)
+                FormatterType<T*, FormatterExecutor>::Format(t.get(), executor);
             else
-                FormatterType<T, FormatterContext>::Format(*t, context);
+                FormatterType<T, FormatterExecutor>::Format(*t, executor);
         }
     };
 
     // SharedPtr
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::shared_ptr<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::shared_ptr<T>, FormatterExecutor>
     {
-        inline static void Format(const std::shared_ptr<T>& t, FormatterContext& context)
+        static inline void Format(const std::shared_ptr<T>& t, FormatterExecutor& executor)
         {
-            if (context.GetFormatData().TrueValue)
-                FormatterType<T*, FormatterContext>::Format(t.get(), context);
+            if (executor.Data.TrueValue)
+                FormatterType<T*, FormatterExecutor>::Format(t.get(), executor);
             else
-                FormatterType<T, FormatterContext>::Format(*t, context);
+                FormatterType<T, FormatterExecutor>::Format(*t, executor);
         }
     };
 
     // WeakPtr
-    template <typename T, typename FormatterContext>
-    struct FormatterType<std::weak_ptr<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<std::weak_ptr<T>, FormatterExecutor>
     {
-        inline static void Format(const std::weak_ptr<T>& t, FormatterContext& context) { FormatterType<std::shared_ptr<T>, FormatterContext>::Format(t.lock(), context); }
+        static inline void Format(const std::weak_ptr<T>& t, FormatterExecutor& executor) { FormatterType<std::shared_ptr<T>, FormatterExecutor>::Format(t.lock(), executor); }
     };
 }

@@ -15,7 +15,7 @@ namespace StreamFormat::JSON
     {
         static inline void Parse(std::unique_ptr<JsonObject>& t, Detail::JsonParser& parser)
         {
-            parser.BufferIn().IgnoreAllBlanks();
+            FMT::Detail::BufferTestManip(parser.BufferIn).SkipAllBlanks();
             if (parser.IsJsonStringBegin())
                 t = std::make_unique<JsonStringObject>();
             else if (parser.IsJsonNumberBegin())
@@ -83,7 +83,7 @@ namespace StreamFormat::JSON
         static inline void Parse(JsonStructObject& t, Detail::JsonParser& parser) { parser.Parse(t.Objects); }
         static inline void Format(const JsonStructObject& t, Detail::JsonFormatter& formatter)
         {
-            if (formatter.Settings().OrderedStruct == false)
+            if (formatter.Settings.OrderedStruct == false)
             {
                 formatter.Format(t.Objects);
                 return;

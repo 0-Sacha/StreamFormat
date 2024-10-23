@@ -2,7 +2,7 @@
 
 #include <tuple>
 #include <utility>
-#include "StreamFormat/FMT/Context/FormatterContext/FormatterType.h"
+#include "StreamFormat/FMT/Context/FormatterExecutor/FormatterType.h"
 
 namespace StreamFormat::FMT::TupleDetail
 {
@@ -16,49 +16,49 @@ namespace StreamFormat::FMT::TupleDetail
         return std::get<N>(tuple);
     }
 
-    template <typename FormatterContext>
-    static void TupleFormatRec(FormatterContext& context)
+    template <typename FormatterExecutor>
+    static void TupleFormatRec(FormatterExecutor& executor)
     {}
 
-    template <typename T, typename FormatterContext>
-    static void TupleFormatRec(FormatterContext& context, const T& t)
+    template <typename T, typename FormatterExecutor>
+    static void TupleFormatRec(FormatterExecutor& executor, const T& t)
     {
-        context.WriteType(t);
+        executor.WriteType(t);
     }
 
-    template <typename T, typename FormatterContext, typename... Args>
-    static void TupleFormatRec(FormatterContext& context, const T& t, Args&&... args)
+    template <typename T, typename FormatterExecutor, typename... Args>
+    static void TupleFormatRec(FormatterExecutor& executor, const T& t, Args&&... args)
     {
-        context.WriteType(t);
-        context.BufferOut().PushBack(',');
-        context.BufferOut().PushBack(' ');
+        executor.WriteType(t);
+        executor.BufferOut.Pushback(',');
+        executor.BufferOut.Pushback(' ');
         TupleFormatRec(context, args...);
     }
 }
 
 namespace StreamFormat::FMT
 {
-    template <typename... T, typename FormatterContext>
-    struct FormatterType<std::tuple<T...>, FormatterContext>
+    template <typename... T, typename FormatterExecutor>
+    struct FormatterType<std::tuple<T...>, FormatterExecutor>
     {
-        static void Format(const std::tuple<T...>& t, FormatterContext& context)
+        static void Format(const std::tuple<T...>& t, FormatterExecutor& executor)
         {
-            context.BufferOut().PushBack('<');
+            executor.BufferOut.Pushback('<');
             std::apply([&context](auto&&... args) { TupleDetail::TupleFormatRec(context, args...); }, t);
-            context.BufferOut().PushBack('>');
+            executor.BufferOut.Pushback('>');
         }
     };
 
-    template <typename T1, typename T2, typename FormatterContext>
-    struct FormatterType<std::pair<T1, T2>, FormatterContext>
+    template <typename T1, typename T2, typename FormatterExecutor>
+    struct FormatterType<std::pair<T1, T2>, FormatterExecutor>
     {
-        static void Format(const std::pair<T1, T2>& t, FormatterContext& context)
+        static void Format(const std::pair<T1, T2>& t, FormatterExecutor& executor)
         {
-            context.BufferOut().PushBack('<');
-            context.WriteType(t.first);
-            context.BufferOut().PushBack(':');
-            context.WriteType(t.second);
-            context.BufferOut().PushBack('>');
+            executor.BufferOut.Pushback('<');
+            executor.WriteType(t.first);
+            executor.BufferOut.Pushback(':');
+            executor.WriteType(t.second);
+            executor.BufferOut.Pushback('>');
         }
     };
 }

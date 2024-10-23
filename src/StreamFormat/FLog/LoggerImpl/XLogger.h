@@ -86,8 +86,8 @@ namespace StreamFormat::FLog::Detail
 
     public:
         template <typename Severity, typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        void Log(Severity status, const Format& format, Args&&... args) { Master::template Log(status, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        void Log(Severity status, Format&& format, Args&&... args) { Master::template Log(status, format, std::forward<Args>(args)...); }
 
         template <typename Severity, typename T>
         void Log(Severity status, T&& t)
@@ -98,23 +98,23 @@ namespace StreamFormat::FLog::Detail
     public:
         /////---------- Logger Severity with array as format ----------/////
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Trace(const Format& format, Args&&... args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        inline void Trace(Format&& format, Args&&... args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Debug(const Format& format, Args&&... args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        inline void Debug(Format&& format, Args&&... args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Info(const Format& format, Args&&... args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        inline void Info(Format&& format, Args&&... args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Warn(const Format& format, Args&&... args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        inline void Warn(Format&& format, Args&&... args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Error(const Format& format, Args&&... args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        inline void Error(Format&& format, Args&&... args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        inline void Fatal(const Format& format, Args&&... args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        inline void Fatal(Format&& format, Args&&... args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
 
         /////---------- NO-FORMAT Logger Severity ----------/////
         template <typename T>
@@ -152,32 +152,31 @@ namespace StreamFormat::FLog::Detail
 
 namespace StreamFormat::FMT
 {
-    template <typename FormatterContext>
-    struct FormatterType<StreamFormat::FLog::LogSeverity::Value, FormatterContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<StreamFormat::FLog::LogSeverity::Value, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::LogSeverity::Value t, FormatterContext& context)
+        static void Format(const StreamFormat::FLog::LogSeverity::Value t, FormatterExecutor& executor)
         {
-            context.GetFormatData().KeepNewStyle = true;
+            executor.Data.KeepNewStyle = true;
             switch (t)
             {
                 case StreamFormat::FLog::LogSeverity::Trace:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, context);
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, executor);
                     break;
                 case StreamFormat::FLog::LogSeverity::Debug:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, context);
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, executor);
                     break;
                 case StreamFormat::FLog::LogSeverity::Info:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, context);
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, executor);
                     break;
                 case StreamFormat::FLog::LogSeverity::Warn:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, context);
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, executor);
                     break;
                 case StreamFormat::FLog::LogSeverity::Error:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, context);
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, executor);
                     break;
                 case StreamFormat::FLog::LogSeverity::Fatal:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterContext>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta,
-                                                                                                             context);
+                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta, executor);
                     break;
             }
         }

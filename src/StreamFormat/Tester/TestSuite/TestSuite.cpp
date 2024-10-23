@@ -29,7 +29,7 @@ namespace StreamFormat::Tester::Detail
         InitLogger();
 
         ProfilerManager::Profiler& profiler = GetProfiler();
-        Logger.Info("{C:+black}BEGIN");
+        Logger.Info("{C:+black}{}", "BEGIN");
         ProfilerManager::DurationEvent testSuiteDuration(GetFullName(), "Profile");
         testSuiteDuration.Start();
         bool                           firstTestSuite = true;

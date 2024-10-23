@@ -75,18 +75,17 @@ namespace StreamFormat::FLog::Detail
         void NewLine() { m_Stream.write("\n", 1); }
 
         template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::CanBeUseForFMTBufferIn<Format>
-        void Log(const SeverityValueType& severity, const Format& format, Args&&... args)
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        void Log(const SeverityValueType& severity, Format&& format, Args&&... args)
         {
             if (severity < m_Severity) return;
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
-            FMT::Detail::BufferInProperties<char> preFormatBufferInProperties(m_Pattern);
-            FMT::Detail::FormatInBufferOutManager(preFormatBufferOutManager, preFormatBufferInProperties, false, FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name),
+            FMT::Detail::FormatInManager(preFormatBufferOutManager, false, FMT::Detail::BufferInfoView<char>(m_Pattern), FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name),
                                                   FORMAT_SV("data", FLog::AddIndentInFormat(format)));
-            FMT::Detail::BufferInProperties<char> fullFormatBufferInProperties(preFormatBufferOutManager.GetLastGeneratedStringView());
-            FMT::Detail::FormatInBufferOutManager(fullFormatBufferOutManager, fullFormatBufferInProperties, true, std::forward<Args>(args)..., FORMAT_SV("color", severity));
+            
+            FMT::Detail::FormatInManager(fullFormatBufferOutManager, true, preFormatBufferOutManager.GetLastGeneratedBufferInfoView(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
             m_Stream.write(fullFormatBufferOutManager.GetBuffer(), static_cast<std::streamsize>(fullFormatBufferOutManager.GetLastGeneratedDataSize()));
             m_Stream.flush();
         }
@@ -98,8 +97,7 @@ namespace StreamFormat::FLog::Detail
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
-            FMT::Detail::BufferInProperties<char> fullFormatBufferInProperties(m_Pattern);
-            FMT::Detail::FormatInBufferOutManager(fullFormatBufferOutManager, fullFormatBufferInProperties, true, FORMAT_SV("data", t), FORMAT_SV("color", severity),
+            FMT::Detail::FormatInManager(fullFormatBufferOutManager, true, FMT::Detail::BufferInfoView<char>(m_Pattern), FORMAT_SV("data", t), FORMAT_SV("color", severity),
                                                   FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name));
             m_Stream.write(fullFormatBufferOutManager.GetBuffer(), static_cast<std::streamsize>(fullFormatBufferOutManager.GetLastGeneratedDataSize()));
             m_Stream.flush();

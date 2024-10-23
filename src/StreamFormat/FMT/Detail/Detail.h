@@ -2,7 +2,6 @@
 
 #include "StreamFormat/Core/Core.h"
 
-#include "ContextTypes.h"
 #include "TypesTraits.h"
 
 #include "Exception.h"
@@ -31,11 +30,14 @@
 
 namespace StreamFormat::FMT::Context
 {
-    template <typename CharFormat = char, typename CharBuffer = CharFormat>
-    class BasicFormatterContext;
+    template <typename TChar>
+    class BasicContext;
+
+    template <typename TChar>
+    class BasicFormatterExecutor;
 
     struct ParserContextError;
 
-    template <typename CharFormat = char, typename CharBuffer = CharFormat>
-    class BasicParserContext;
+    template <typename TChar>
+    class BasicParserExecutor;
 }

@@ -2,322 +2,285 @@
 
 #include "BasicContext.h"
 
+#include "StreamFormat/FMT/Buffer/BufferManip.h"
+#include "StreamFormat/FMT/Buffer/BufferTestManip.h"
+#include "StreamFormat/FMT/Buffer/BufferWriteManip.h"
+#include "StreamFormat/FMT/Buffer/BufferReadManip.h"
+#include "StreamFormat/FMT/Buffer/FMTBufferOutManip.h"
+#include "StreamFormat/FMT/Buffer/FMTBufferReadManip.h"
+
 namespace StreamFormat::FMT::Context
 {
-    template <typename CharFormat>
-    std::basic_string_view<CharFormat> BasicContext<CharFormat>::ParseNextOverrideFormatData()
+    template <typename TChar>
+    std::basic_string_view<TChar> BasicContext<TChar>::ParseNextOverrideFormatData()
     {
-        m_Format.IgnoreAllSpaces();
-        m_Format.ParamGoTo('{', '=', ':');
-        m_Format.IgnoreAllSpaces();
-        m_Format.IsEqualToForward('=', ':');
-        m_Format.IgnoreAllSpaces();
-        m_Format.ParamGoTo('{');
+        Detail::BufferTestAccess access(Format);
+        Detail::BufferTestManip manip(Format);
 
-        const CharFormat* begin = m_Format.GetBufferCurrentPos();
-        m_Format.IsEqualToForwardThrow('{');
+        manip.SkipAllSpaces();
+        Detail::FMTBufferParamsManip(Format).ParamGoTo('{', '=', ':');
+        manip.SkipAllSpaces();
+        manip.IsEqualToForward('=', ':');
+        manip.SkipAllSpaces();
+        Detail::FMTBufferParamsManip(Format).ParamGoTo('{');
+
+        const TChar* begin = Format.CurrentPos;
+        manip.IsEqualToForward('{').ThrowIfFailed();
         int scopes = 0;
-        while (m_Format.IsEndOfParameter() == false || scopes > 0)
+        while (Detail::FMTBufferParamsManip(Format).IsEndOfParameter() == false || scopes > 0)
         {
-            m_Format.GoTo('\'', '}', '{');
-            if (m_Format.IsEqualToForward('\''))
-                m_Format.GoToForward('\'');
-            else if (m_Format.IsEqualToForward('{'))
+            manip.GoTo('\'', '}', '{');
+            if (manip.IsEqualToForward('\''))
+                manip.GoToForward('\'');
+            else if (manip.IsEqualToForward('{'))
                 scopes++;
-            else if (scopes > 0 && m_Format.IsEqualToForward('}'))
+            else if (scopes > 0 && manip.IsEqualToForward('}'))
                 scopes--;
         }
-        m_Format.IsEqualToForwardThrow('}');
-        const CharFormat* end = m_Format.GetBufferCurrentPos();
-        return std::basic_string_view<CharFormat>(begin, end);
+        manip.IsEqualToForward('}').ThrowIfFailed();
+        const TChar* end = Format.CurrentPos;
+        return std::basic_string_view<TChar>(begin, end - begin);
     }
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseFormatDataBase_ValueIntPrint(const typename Detail::ValueIntPrint type)
+    template <typename TChar>
+    void BasicContext<TChar>::ParseFormatDataBase()
     {
-        m_FormatData.IntPrint = type;
-        if (m_Format.IsEqualToForward('#'))
-            m_FormatData.DigitSize.Value = Detail::DigitSize::MAX_DIGIT_SIZE;
-        else
-            FormatReadParameterThrow(m_FormatData.DigitSize.Value, Detail::DigitSize::DEFAULT);
+        Detail::BufferTestManip manip(Format);
+
+        if (manip.IsEqualToForward('C'))
+            Executor.TextManager.ParseColor(*this);
+        else if (manip.IsEqualToForward('S'))
+            Executor.TextManager.ParseStyle(*this);
+        else if (manip.IsEqualToForward('F'))
+            Executor.TextManager.ParseFront(*this);
+
+        else if (manip.IsEqualToForward('K'))
+            Executor.Data.KeepNewStyle = true;
+
+        else if (manip.IsEqualToForward('N'))
+            Executor.Data.NextOverride = ParseNextOverrideFormatData();
     }
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseFormatDataBase()
+    template <typename TChar>
+    void BasicContext<TChar>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftInfo::ShiftType type)
     {
-        if (m_Format.IsEqualToForward('C'))
+        Executor.Data.Shift.Type = type;
+        FormatReadParameter(Executor.Data.Shift.Size, -1);
+        if (Detail::BufferTestManip(Format).IsEqualToForward(':'))
         {
-            m_TextProperties.ParseColor();
-        }
-        else if (m_Format.IsEqualToForward('S'))
-        {
-            m_TextProperties.ParseStyle();
-        }
-        else if (m_Format.IsEqualToForward('F'))
-        {
-            m_TextProperties.ParseFront();
-        }
-
-        else if (m_Format.IsEqualToForward('B'))
-        {
-            ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Bin);
-        }
-        else if (m_Format.IsEqualToForward('X'))
-        {
-            ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Hex);
-        }
-        else if (m_Format.IsEqualToForward('O'))
-        {
-            ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Oct);
-        }
-        else if (m_Format.IsEqualToForward('D'))
-        {
-            ParseFormatDataBase_ValueIntPrint(Detail::ValueIntPrint::Dec);
-        }
-
-        else if (m_Format.IsEqualToForward('L'))
-        {
-            m_FormatData.PrintStyle = Detail::PrintStyle::LowerCase;
-        }
-        else if (m_Format.IsEqualToForward('U'))
-        {
-            m_FormatData.PrintStyle = Detail::PrintStyle::UpperCase;
-        }
-
-        else if (m_Format.IsEqualToForward('A'))
-        {
-            m_FormatData.Safe = true;
-        }
-
-        else if (m_Format.IsEqualToForward('K'))
-        {
-            m_FormatData.KeepNewStyle = true;
-        }
-
-        else if (m_Format.IsEqualToForward('N'))
-        {
-            m_FormatData.NextOverride = ParseNextOverrideFormatData();
+            Executor.Data.Shift.Print.Before = Detail::BufferManip(Format).ThrowIfFailed().GetAndForward();
+            Executor.Data.Shift.Print.After  = Executor.Data.Shift.Print.Before;
+            if (Detail::BufferTestManip(Format).IsEqualToForward('|'))
+                Executor.Data.Shift.Print.After = Detail::BufferManip(Format).ThrowIfFailed().GetAndForward();
         }
     }
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftType type)
+    template <typename TChar>
+    void BasicContext<TChar>::ParseFormatDataSpecial()
     {
-        m_FormatData.ShiftType = type;
-        FormatReadParameterThrow(m_FormatData.ShiftSize.Value, Detail::ShiftSize::DEFAULT);
-        if (m_Format.IsEqualToForward(':'))
-        {
-            m_FormatData.ShiftPrint.Before = m_Format.GetAndForward();
-            m_FormatData.ShiftPrint.After  = m_FormatData.ShiftPrint.Before;
-            if (m_Format.IsEqualToForward('|')) m_FormatData.ShiftPrint.After = m_Format.GetAndForward();
-        }
-    }
+        Detail::BufferTestAccess access(Format);
+        Detail::BufferTestManip manip(Format);
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseFormatDataSpecial()
-    {
-        if (m_Format.IsEqualToForward('{'))
+        if (manip.IsEqualToForward('{'))
         {
-            Detail::FormatIndex formatIndex = GetFormatIndexThrow();
-            // TODO: Why ?
-            if ((m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<FormatDataType>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<FormatSpecifierType>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ValueIntPrint>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::PrintStyle>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::DigitSize>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftSize>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::FloatPrecision>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftPrint>(formatIndex)) ||
-                 m_FormatData.TestApply(m_ContextArgsInterface->template GetTypeAtIndex<Detail::ShiftType>(formatIndex))) == false)
+            std::int32_t formatIndex = 0;
+            if (GetFormatIndex(formatIndex) == false) return;
+
+            if ((Executor.Data.TestApply(ArgsInterface.template GetTypeAtIndex<Detail::FormatData<TChar>>(formatIndex)) ||
+                 Executor.Data.TestApply(ArgsInterface.template GetTypeAtIndex<Detail::FormatSpecifier<TChar>>(formatIndex)) ||
+                 Executor.Data.TestApply(ArgsInterface.template GetTypeAtIndex<Detail::IntegerPrintBase>(formatIndex)) ||
+                 Executor.Data.TestApply(ArgsInterface.template GetTypeAtIndex<Detail::ShiftInfo>(formatIndex))) == false)
                 throw Detail::FMTGivenTypeError{};
-            m_Format.IsEqualToForwardThrow('}');
-        }
-        else if (m_Format.IsEqualToForward('='))
-        {
-            m_FormatData.TrueValue = true;
+            manip.IsEqualToForward('}');
         }
 
-        else if (m_Format.IsEqualToForward('.'))
-        {
-            FormatReadParameterThrow(m_FormatData.FloatPrecision.Value, Detail::FloatPrecision::DEFAULT);
-        }
+        else if (manip.IsEqualToForward('.'))
+            FormatReadParameter(Executor.Data.FloatPrecision, -1);
 
-        else if (m_Format.IsEqualToForward('>'))
-        {
-            ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Right);
-        }
-        else if (m_Format.IsEqualToForward('<'))
-        {
-            ParseFormatDataSpecial_ShiftType(Detail::ShiftType::Left);
-        }
+        else if (access.IsEqualTo('d', 'b', 'B', 'o', 'O', 'x', 'X'))
+            Executor.Data.IntegerPrint = static_cast<Detail::IntegerPrintBase>(Detail::BufferManip(Format).ThrowIfFailed().GetAndForward());
 
-        else if (m_Format.IsEqualToForward('^'))
+        else if (manip.IsEqualToForward('#'))
+            Executor.Data.PrefixSuffix = true;
+
+
+        else if (manip.IsEqualToForward('>'))
+            ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::Right);
+
+        else if (manip.IsEqualToForward('<'))
+            ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::Left);
+            
+        else if (manip.IsEqualToForward('^'))
         {
-            if (m_Format.IsEqualToForward('<'))
-                ParseFormatDataSpecial_ShiftType(Detail::ShiftType::CenterLeft);
+            if (manip.IsEqualToForward('<'))
+                ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterLeft);
             else
             {
-                m_Format.IsEqualToForward('>');
-                ParseFormatDataSpecial_ShiftType(Detail::ShiftType::CenterRight);
+                manip.IsEqualToForward('>');
+                ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterRight);
             }
         }
     }
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseFormatDataCustom()
+    template <typename TChar>
+    void BasicContext<TChar>::ParseFormatDataCustom()
     {
-        StringViewFormat name = GetStringViewParamUntil(' ', '=', '\'', '{', ',');
-        m_Format.ParamGoTo('=', '\'', '{', ',');
-        m_Format.IsEqualToForward('=');
-        m_Format.IgnoreAllSpaces();
+        Detail::BufferTestAccess access(Format);
+        Detail::BufferTestManip manip(Format);
 
-        if (m_Format.IsEqualToForward('\''))
+        std::basic_string_view<TChar> name = manip.ViewExec(
+            [&]{Detail::FMTBufferParamsManip(Format).ParamGoTo(' ', '=', '\'', '{', ',');}
+        );
+        Detail::FMTBufferParamsManip(Format).ParamGoTo('=', '\'', '{', ',');
+        manip.IsEqualToForward('=');
+        manip.SkipAllSpaces();
+
+        if (manip.IsEqualToForward('\''))
         {
-            StringViewFormat value = GetStringViewUntil('\'');
-            m_FormatData.AddSpecifier(name, value);
+            std::basic_string_view<TChar> value = Detail::BufferTestManip(Format).ViewUntil('\'');
+            Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, value});
         }
-        else if (m_Format.IsADigit())
+        else if (access.IsADigit())
         {
-            Detail::DataType value = ReadDataType();
-            m_FormatData.AddSpecifier(name, value);
+            std::int32_t value = 0;
+            Detail::BufferReadManip(Format).FastReadInteger(value);
+            Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, value});
         }
-        else if (m_Format.IsEqualToForward('{'))
+        else if (manip.IsEqualToForward('{'))
         {
-            [[maybe_unused]] Detail::FormatIndex idx = GetFormatIndexThrow();
-            // FIXME
-            // m_FormatData.AddSpecifier(name, GetTypeAtIndexAuto(idx));
-            m_Format.IsEqualToForward('}');
+            std::int32_t idx = 0;
+            GetFormatIndex(idx);
+            // TODO / FIXME
+            // Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, GetTypeAtIndexAuto(idx)});
+            manip.IsEqualToForward('}');
         }
-        else if (m_Format.IsEqualTo(',', '}'))
+        else if (access.IsEqualTo(',', '}'))
         {
-            m_FormatData.AddSpecifier(name);
+            Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name});
         }
     }
 
     /////---------- Impl ----------/////
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseFormatData()
+    template <typename TChar>
+    void BasicContext<TChar>::ParseFormatData()
     {
-        // ':' for classic use ; '{' for NextOverride
-        if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('{'))
+        Detail::BufferTestAccess access(Format);
+        Detail::BufferTestManip manip(Format);
+
+        Executor.Data.HasSpec = true;
+        while (Detail::BufferAccess(Format).IsEndOfString() == false && Detail::FMTBufferParamsManip(Format).IsEndOfParameter() == false)
         {
-            m_FormatData.HasSpec = true;
-            while (!m_Format.IsEndOfParameter())
-            {
-                m_Format.Forward();
-                m_Format.IgnoreAllSpaces();
+            manip.SkipAllSpaces();
 
-                if (m_Format.IsUpperCase())
-                    ParseFormatDataBase();
-                else if (!m_Format.IsLowerCase())
-                    ParseFormatDataSpecial();
-                else
-                    ParseFormatDataCustom();
+            if (access.IsUpperCase())
+                ParseFormatDataBase();
+            else if (!access.IsLowerCase())
+                ParseFormatDataSpecial();
+            else
+                ParseFormatDataCustom();
 
-                m_Format.ParamGoTo(',');
-            }
+            Detail::FMTBufferParamsManip(Format).ParamGoTo(',');
+            Detail::BufferTestManip(Format).IsEqualToForward(',');
         }
     }
 
-    template <typename CharFormat>
-    Detail::FormatIndex BasicContext<CharFormat>::GetFormatIndexThrow()
+    template <typename TChar>
+    Detail::BufferManipResult BasicContext<TChar>::GetFormatIndex(std::int32_t& idx)
     {
-        const CharFormat* mainSubFormat = m_Format.GetBufferCurrentPos();
+        const TChar* mainSubFormat = Format.CurrentPos;
+
+        Detail::BufferTestAccess access(Format);
+        Detail::BufferTestManip manip(Format);
 
         // I : if there is no number specified : ':' or '}'
-        if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('}'))
-            if (m_ValuesIndex.IsValid()) return m_ValuesIndex.GetAndNext();
+        if (access.IsEqualTo(':') || access.IsEqualTo('}'))
+            if (ValuesIndex < ArgsInterface.Size())
+            {
+                idx = ValuesIndex++;
+                return true;
+            }
 
         // II: A number(idx)
-        Detail::FormatIndex subIndex;
-        subIndex.SetContext(m_ValuesIndex);
-        if (m_Format.FastReadUInt(subIndex.Index))
-            if (m_Format.IsEqualTo(':') || m_Format.IsEqualTo('}'))
-                if (subIndex.IsValid()) return subIndex;
-        m_Format.SetBufferCurrentPos(mainSubFormat);
+        std::int32_t subIndex = -1;
+        if (Detail::BufferReadManip(Format).FastReadInteger(subIndex))
+            if (access.IsEqualTo(':') || access.IsEqualTo('}'))
+                if (subIndex >= 0 && subIndex < ArgsInterface.Size())
+                {
+                    idx = subIndex;
+                    return true;
+                }
+        Format.CurrentPos = mainSubFormat;
 
         // III : A name
-        Detail::FormatIndex indexOfNamedArg = m_ContextArgsInterface->GetIndexOfCurrentNamedArg();
-        indexOfNamedArg.SetContext(m_ValuesIndex);
-        if (indexOfNamedArg.IsValid()) return indexOfNamedArg;
-        m_Format.SetBufferCurrentPos(mainSubFormat);
+        std::int32_t indexOfNamedArg = ArgsInterface.GetIndexOfCurrentNamedArg(Format);
+        if (indexOfNamedArg >= 0 && indexOfNamedArg < ArgsInterface.Size())
+        {
+            idx = indexOfNamedArg;
+            return true;
+        }
+        Format.CurrentPos = mainSubFormat;
 
         // VI : { which is a idx to an argument
-        if (m_Format.IsEqualToForward('{'))
+        if (manip.IsEqualToForward('{'))
         {
-            Detail::FormatIndex recIndex = GetFormatIndexThrow();
-            recIndex.SetContext(m_ValuesIndex);
+            std::int32_t recIndex = -1;
+            if (GetFormatIndex(recIndex) == false)
+                return false;
 
-            if (m_Format.IsEqualToForward('}') && recIndex.IsValid())
+            if (manip.IsEqualToForward('}') && recIndex >= 0 && recIndex < ArgsInterface.Size())
             {
-                m_Format.IgnoreAllSpaces();
-                if (m_Format.IsEqualTo(':', '}'))
+                manip.SkipAllSpaces();
+                if (access.IsEqualTo(':', '}'))
                 {
-                    Detail::FormatIndex finalRecIndex = m_ContextArgsInterface->GetFormatIndexAt(recIndex);
-                    finalRecIndex.SetContext(m_ValuesIndex);
-                    if (finalRecIndex.IsValid()) return finalRecIndex;
-                    throw Detail::FMTIndexError{};
+                    std::int32_t finalRecIndex = ArgsInterface.GetFormatIndexAt(recIndex);
+                    if (finalRecIndex >= 0 && finalRecIndex < ArgsInterface.Size())
+                        return finalRecIndex;
+                    return false;
                 }
             }
         }
-        m_Format.SetBufferCurrentPos(mainSubFormat);
-        return Detail::FormatIndex();
+        Format.CurrentPos = mainSubFormat;
+        return false;
     }
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseSpecial()
+    template <typename TChar>
+    void BasicContext<TChar>::ParseVariable(std::int32_t formatIdx)
     {
-        if (m_Format.IsEqualToForward('C'))
+        Detail::FormatData<TChar> saveFormatData = Executor.Data;
+        Executor.Data = Detail::FormatData<TChar>{};
+        Detail::TextProperties::Properties saveTextProperties = Executor.TextManager.Save();
+
+        if (Detail::BufferTestAccess(Format).IsEqualTo(':', '{'))
         {
-            m_TextProperties.ParseColor();
+            Detail::BufferManip(Format).Forward();
+            ParseFormatData();
         }
-        else if (m_Format.IsEqualToForward('S'))
-        {
-            m_TextProperties.ParseStyle();
-        }
-        else if (m_Format.IsEqualToForward('F'))
-        {
-            m_TextProperties.ParseFront();
-        }
-        else if (m_Format.IsEqualToForward('K'))
-        {
-            ParseSetter();
-        }
+
+        ArgsInterface.RunTypeAtIndex(formatIdx);
+
+        if (Executor.Data.KeepNewStyle == false)
+            Executor.TextManager.Reload(saveTextProperties);
+
+        Executor.Data = saveFormatData;
     }
 
-    template <typename CharFormat>
-    void BasicContext<CharFormat>::ParseVariable(Detail::FormatIndex formatIdx)
+    template <typename TChar>
+    bool BasicContext<TChar>::Parse()
     {
-        FormatDataType saveFormatData                         = m_FormatData;
-        m_FormatData                                          = FormatDataType{};
-        Detail::TextProperties::Properties saveTextProperties = m_TextProperties.Save();
+        Detail::BufferManip(Format).Forward();  // Skip {
 
-        if (!m_FormatData.IsInit) ParseFormatData();
-
-        m_ContextArgsInterface->RunTypeAtIndex(formatIdx);
-
-        if (m_FormatData.KeepNewStyle == false) m_TextProperties.Reload(saveTextProperties);
-
-        m_FormatData = saveFormatData;
-    }
-
-    template <typename CharFormat>
-    bool BasicContext<CharFormat>::Parse()
-    {
-        m_Format.Forward();  // Skip {
-
-        if (m_Format.IsUpperCase())
+        if (Detail::BufferTestAccess(Format).IsUpperCase())
         {
-            ParseSpecial();
-            m_Format.GoOutOfParameter();  // Skip }
+            ParseFormatData();
+            Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
             return true;
         }
 
-        Detail::FormatIndex formatIdx = GetFormatIndexThrow();
-        if (formatIdx.IsValid())
+        std::int32_t formatIdx = -1;
+        if (GetFormatIndex(formatIdx) && formatIdx >= 0 && formatIdx < ArgsInterface.Size())
         {
             ParseVariable(formatIdx);
-            m_Format.GoOutOfParameter();  // Skip }
+            Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
             return true;
         }
 

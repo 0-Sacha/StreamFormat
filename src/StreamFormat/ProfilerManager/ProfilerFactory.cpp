@@ -12,7 +12,7 @@ namespace StreamFormat::ProfilerManager
 
         if (path == "") path = std::string(profiler.Name) + ".json";
 
-        std::ofstream                file(path.string(), std::ios::out);
+        std::ofstream file(path.string(), std::ios::out);
         JSON::FormatAsJson<Profiler> formatProfiler(profiler);
         FMT::FilePrint(file, formatProfiler);
         file.close();

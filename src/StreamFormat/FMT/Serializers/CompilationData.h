@@ -45,25 +45,25 @@ namespace StreamFormat::FMT::Detail
 
 namespace StreamFormat::FMT
 {
-    template <typename FormatterContext>
-    struct FormatterType<Detail::FileLocation, FormatterContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<Detail::FileLocation, FormatterExecutor>
     {
-        static void Format(const Detail::FileLocation& t, FormatterContext& context)
+        static void Format(const Detail::FileLocation& t, FormatterExecutor& executor)
         {
-            context.RunType(t.FileName);
-            context.BufferOut().PushBack(':');
-            context.RunType(t.FileLine);
+            executor.WriteType(t.FileName);
+            executor.BufferOut.Pushback(':');
+            executor.WriteType(t.FileLine);
         }
     };
 
-    template <typename FormatterContext>
-    struct FormatterType<Detail::FunctionProperties, FormatterContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<Detail::FunctionProperties, FormatterExecutor>
     {
-        static void Format(const Detail::FunctionProperties& t, FormatterContext& context)
+        static void Format(const Detail::FunctionProperties& t, FormatterExecutor& executor)
         {
-            context.RunType(t.Location);
-            context.BufferOut().WriteCharArray(" @ ");
-            context.RunType(t.FunctionName);
+            executor.WriteType(t.Location);
+            executor.BufferOut.WriteCharArray(" @ ");
+            executor.WriteType(t.FunctionName);
         }
     };
 }

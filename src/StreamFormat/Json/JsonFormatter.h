@@ -1,42 +1,33 @@
 #pragma once
 
 #include "JsonObjects.h"
-#include "StreamFormat/FMT/Buffer/BasicBufferOut/BasicBufferOut.h"
+#include "StreamFormat/FMT/Buffer/BufferOutManip.h"
 
 namespace StreamFormat::JSON::Detail
 {
     class JsonFormatter
     {
     public:
-        using JsonBufferOut = StreamFormat::FMT::Detail::BasicBufferOut<char>;
-
         struct FormatSettings
         {
-            std::size_t                              IndentSize       = 4;
-            bool                                     IndentWithSpaces = true;
-            bool                                     OneLine          = false;
-            bool                                     OrderedStruct    = false;
-            StreamFormat::FMT::Detail::FloatPrecision FloatPrecision   = 7;
+            std::size_t  IndentSize       = 4;
+            bool         IndentWithSpaces = true;
+            bool         OneLine          = false;
+            bool         OrderedStruct    = false;
+            std::int32_t FloatPrecision   = 7;
         };
 
     public:
-        JsonFormatter(StreamFormat::FMT::Detail::BasicBufferOutManager<char>& BufferOutManager)
-            : m_BufferOut(BufferOutManager)
+        JsonFormatter(StreamFormat::FMT::Detail::BufferOutInfo<char>& bufferOut)
+            : BufferOut(bufferOut)
+            , Settings()
             , m_Indent(0)
-            , m_Settings()
         {}
-        JsonFormatter(StreamFormat::FMT::Detail::BasicBufferOutManager<char>& BufferOutManager, FormatSettings settings)
-            : m_BufferOut(BufferOutManager)
+        JsonFormatter(StreamFormat::FMT::Detail::BufferOutInfo<char>& bufferOut, FormatSettings settings)
+            : BufferOut(bufferOut)
+            , Settings(settings)
             , m_Indent(0)
-            , m_Settings(settings)
         {}
-
-    public:
-        JsonBufferOut&       BufferOut() { return m_BufferOut; }
-        const JsonBufferOut& BufferOut() const { return m_BufferOut; }
-
-        FormatSettings&       Settings() { return m_Settings; }
-        const FormatSettings& Settings() const { return m_Settings; }
 
     public:
         template <typename T>
@@ -50,27 +41,29 @@ namespace StreamFormat::JSON::Detail
     public:
         void Indent()
         {
-            if (m_Settings.OneLine) return;
+            if (Settings.OneLine) return;
 
-            if (m_Settings.IndentWithSpaces)
-                m_BufferOut.PushBack(' ', m_Indent * m_Settings.IndentSize);
+            if (Settings.IndentWithSpaces)
+                FMT::Detail::BufferOutManip(BufferOut).Pushback(' ', m_Indent * Settings.IndentSize);
             else
-                m_BufferOut.PushBack('\t', m_Indent * m_Settings.IndentSize);
+                FMT::Detail::BufferOutManip(BufferOut).Pushback('\t', m_Indent * Settings.IndentSize);
         }
 
         void NewLine()
         {
-            if (m_Settings.OneLine) return;
-            m_BufferOut.PushBack('\n');
+            if (Settings.OneLine) return;
+            FMT::Detail::BufferOutManip(BufferOut).Pushback('\n');
             Indent();
         }
         void BeginNewObject() { ++m_Indent; }
         void EndNewObject() { --m_Indent; }
 
+    public:
+        StreamFormat::FMT::Detail::BufferOutInfo<char>&  BufferOut;
+        FormatSettings Settings;
+    
     protected:
-        JsonBufferOut  m_BufferOut;
         std::size_t    m_Indent;
-        FormatSettings m_Settings;
     };
 }
 

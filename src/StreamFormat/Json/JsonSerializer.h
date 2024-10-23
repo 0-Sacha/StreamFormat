@@ -4,6 +4,8 @@
 #include "JsonParser.h"
 
 #include "StreamFormat/FMT.h"
+#include "StreamFormat/FMT/Buffer/BufferReadManip.h"
+#include "StreamFormat/FMT/Buffer/BufferWriteManip.h"
 #include "StreamFormat/FMT/Buffer/Utils/BufferUtils.h"
 
 #include <functional>
@@ -33,8 +35,8 @@ namespace StreamFormat::JSON
 
         static inline void Format(const T&, Detail::JsonFormatter& formatter)
         {
-            formatter.BufferOut().FastWriteCharArray("Unkown JsonFormatter for type : ");
-            formatter.BufferOut().FastWriteCharPtrNSize(typeid(T).name());
+            FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteString(std::string_view("Unknown JsonFormatter for type : "));
+            FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteString(std::string_view(typeid(T).name()));
 
 #ifdef UNKOWN_TYPE_MESSAGE
             FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::Format<{}> not impl", typeid(T).name());
@@ -94,18 +96,17 @@ namespace StreamFormat::JSON
     {
         static inline void ParseSTDString(std::string& t, Detail::JsonParser& parser)
         {
-            StreamFormat::FMT::Detail::DynamicBufferOutManager<char> bufferData;
-            StreamFormat::FMT::Detail::BasicBufferOut<char>          buffer(bufferData);
-            StreamFormat::FMT::BufferUtils<char>::ParseEscapedQuotedString(parser.BufferIn(), buffer);
-            buffer.EndContext();
+            FMT::Detail::DynamicBufferOutManager<char> bufferData;
+            FMT::Detail::BufferOutInfo<char> buffer(bufferData);
+            FMT::Detail::BufferUtils::ParseEscapedQuotedString(parser.BufferIn, buffer);
+            FMT::Detail::BufferOutManip(buffer).ComputeGeneratedSize();
             t = bufferData.GetLastGeneratedString();
         }
 
         static inline void FormatSTDString(const std::string_view t, Detail::JsonFormatter& formatter)
         {
-            StreamFormat::FMT::Detail::BufferInProperties<char> bufferInProperties(t);
-            StreamFormat::FMT::Detail::BasicBufferIn<char>      buffer(bufferInProperties);
-            StreamFormat::FMT::BufferUtils<char>::FormatEscapedQuotedString(formatter.BufferOut(), buffer);
+            FMT::Detail::BufferInfo<const char> buffer(t.data(), t.size());
+            FMT::Detail::BufferUtils::FormatEscapedQuotedString(formatter.BufferOut, buffer);
         }
     };
 
@@ -114,53 +115,32 @@ namespace StreamFormat::JSON
         template <typename FloatType>
         static inline void ParseFloat(FloatType& t, Detail::JsonParser& parser)
         {
-            parser.BufferIn().FastReadFloatThrow<FloatType>(t);
+            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadFloat(t);
         }
 
         template <typename IntType>
-        static inline void ParseInt(IntType& t, Detail::JsonParser& parser)
+        static inline void ParseInteger(IntType& t, Detail::JsonParser& parser)
         {
-            const char* begin = parser.BufferIn().GetBufferCurrentPos();
-            float       tmp   = 0;
-            parser.BufferIn().FastReadFloatThrow<float>(tmp);
-            const char* end = parser.BufferIn().GetBufferCurrentPos();
+            const char* begin = parser.BufferIn.CurrentPos;
+            float tmp = 0;
+            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadFloat(tmp);
+            const char* end = parser.BufferIn.CurrentPos;
 
-            parser.BufferIn().SetBufferCurrentPos(begin);
-            parser.BufferIn().FastReadIntThrow(t);
-
-            parser.BufferIn().SetBufferCurrentPos(end);
-        }
-
-        template <typename UIntType>
-        static inline void ParseUInt(UIntType& t, Detail::JsonParser& parser)
-        {
-            const char* begin = parser.BufferIn().GetBufferCurrentPos();
-            float       tmp   = 0;
-            parser.BufferIn().FastReadFloatThrow<float>(tmp);
-            const char* end = parser.BufferIn().GetBufferCurrentPos();
-
-            parser.BufferIn().SetBufferCurrentPos(begin);
-            parser.BufferIn().FastReadUIntThrow(t);
-
-            parser.BufferIn().SetBufferCurrentPos(end);
+            parser.BufferIn.CurrentPos = begin;
+            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadInteger(t);
+            parser.BufferIn.CurrentPos = end;
         }
 
         template <typename FloatType>
         static inline void FormatFloat(const FloatType& t, Detail::JsonFormatter& formatter)
         {
-            formatter.BufferOut().FastWriteFloat(t, formatter.Settings().FloatPrecision);
+            FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteFloat(t, formatter.Settings.FloatPrecision);
         }
 
         template <typename IntType>
-        static inline void FormatInt(const IntType& t, Detail::JsonFormatter& formatter)
+        static inline void FormatInteger(const IntType& t, Detail::JsonFormatter& formatter)
         {
-            formatter.BufferOut().FastWriteInt(t);
-        }
-
-        template <typename UIntType>
-        static inline void FormatUInt(const UIntType& t, Detail::JsonFormatter& formatter)
-        {
-            formatter.BufferOut().FastWriteUInt(t);
+            FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteInteger(t);
         }
     };
 
@@ -168,18 +148,18 @@ namespace StreamFormat::JSON
     {
         static inline void ParseBool(bool& t, Detail::JsonParser& parser)
         {
-            if (parser.BufferIn().IsSameSeqForward('t', 'r', 'u', 'e'))
+            if (FMT::Detail::BufferTestManip<const char>(parser.BufferIn).IsSameForward("true", 5))
                 t = true;
-            else if (parser.BufferIn().IsSameSeqForward('f', 'a', 'l', 's', 'e'))
+            else if (FMT::Detail::BufferTestManip<const char>(parser.BufferIn).IsSameForward("false", 5))
                 t = false;
         }
 
         static inline void FormatBool(const bool& t, Detail::JsonFormatter& formatter)
         {
             if (t)
-                formatter.BufferOut().PushBackSeq('t', 'r', 'u', 'e');
+                FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteCharArray("true", 5);
             else
-                formatter.BufferOut().PushBackSeq('f', 'a', 'l', 's', 'e');
+                FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteCharArray("false", 5);
         }
     };
 
@@ -188,28 +168,31 @@ namespace StreamFormat::JSON
         template <typename T>
         static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser, std::function<void(T&, std::size_t, std::string&&, Detail::JsonParser&)> subObjectParsingFunction)
         {
-            parser.BufferIn().Skip('{');
+            FMT::Detail::BufferTestAccess access(parser.BufferIn);
+            FMT::Detail::BufferTestManip manip(parser.BufferIn);
+
+            manip.Skip('{');
             std::size_t idx = 0;
 
-            while (parser.BufferIn().IsEnd() == false)
+            while (FMT::Detail::BufferAccess(parser.BufferIn).IsEndOfString() == false)
             {
-                parser.BufferIn().GoTo('"', '}');
-                if (parser.BufferIn().IsEqualTo('}')) break;
+                manip.GoTo('"', '}');
+                if (access.IsEqualTo('}')) break;
 
                 std::string name;
                 JsonStringSerializer::ParseSTDString(name, parser);
 
-                parser.BufferIn().IgnoreAllBlanks();
-                parser.BufferIn().Skip(':');
-                parser.BufferIn().IgnoreAllBlanks();
+                manip.SkipAllBlanks();
+                manip.Skip(':');
+                manip.SkipAllBlanks();
 
                 subObjectParsingFunction(t, idx++, std::move(name), parser);
 
-                parser.BufferIn().GoTo(',', '}');
-                parser.BufferIn().Ignore(',');
+                manip.GoTo(',', '}');
+                manip.Skip(',');
             }
 
-            parser.BufferIn().Skip('}');
+            manip.Skip('}');
         }
 
         template <typename T>
@@ -222,24 +205,24 @@ namespace StreamFormat::JSON
             });
         }
 
-        static inline void FormatBegin(Detail::JsonFormatter& formatter) { formatter.BufferOut().PushBack('{'); }
+        static inline void FormatBegin(Detail::JsonFormatter& formatter) { FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback('{'); }
 
         static inline void FormatEnd(Detail::JsonFormatter& formatter)
         {
             formatter.NewLine();
-            formatter.BufferOut().PushBack('}');
+            FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback('}');
         }
 
         template <typename SubObject>
         static inline void FormatObject(const std::string_view name, const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
-            if (idx != 0) formatter.BufferOut().PushBack(',');
+            if (idx != 0) FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback(',');
 
             formatter.BeginNewObject();
             formatter.NewLine();
             JsonStringSerializer::FormatSTDString(name, formatter);
-            formatter.BufferOut().PushBack(':');
-            formatter.BufferOut().PushBack(' ');
+            FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback(':');
+            FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback(' ');
             formatter.Format(subObject);
             formatter.EndNewObject();
         }
@@ -250,22 +233,25 @@ namespace StreamFormat::JSON
         template <typename T>
         static inline void LoadAllSubObjects(T& t, Detail::JsonParser& parser, std::function<void(T&, std::size_t, Detail::JsonParser&)> subObjectParsingFunction)
         {
-            parser.BufferIn().Skip('[');
+            FMT::Detail::BufferTestAccess access(parser.BufferIn);
+            FMT::Detail::BufferTestManip manip(parser.BufferIn);
+            
+            manip.Skip('[');
             std::size_t idx = 0;
 
-            while (parser.BufferIn().IsEnd() == false)
+            while (FMT::Detail::BufferAccess(parser.BufferIn).IsEndOfString() == false)
             {
-                parser.BufferIn().IgnoreAllBlanks();
+                manip.SkipAllBlanks();
 
-                if (parser.BufferIn().IsEqualTo(']')) break;
+                if (access.IsEqualTo(']')) break;
 
                 subObjectParsingFunction(t, idx++, parser);
 
-                parser.BufferIn().GoTo(',', ']');
-                parser.BufferIn().Ignore(',');
+                manip.GoTo(',', ']');
+                manip.Skip(',');
             }
 
-            parser.BufferIn().Skip(']');
+            manip.Skip(']');
         }
 
         template <typename T>
@@ -278,18 +264,18 @@ namespace StreamFormat::JSON
             });
         }
 
-        static inline void FormatBegin(Detail::JsonFormatter& formatter) { formatter.BufferOut().PushBack('['); }
+        static inline void FormatBegin(Detail::JsonFormatter& formatter) { FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback('['); }
 
         static inline void FormatEnd(Detail::JsonFormatter& formatter)
         {
             formatter.NewLine();
-            formatter.BufferOut().PushBack(']');
+            FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback(']');
         }
 
         template <typename SubObject>
         static inline void FormatObject(const SubObject& subObject, const std::size_t idx, Detail::JsonFormatter& formatter)
         {
-            if (idx != 0) formatter.BufferOut().PushBack(',');
+            if (idx != 0) FMT::Detail::BufferOutManip(formatter.BufferOut).Pushback(',');
 
             formatter.BeginNewObject();
             formatter.NewLine();
@@ -300,9 +286,9 @@ namespace StreamFormat::JSON
 
     struct JsonNullSerializer
     {
-        static inline void ParseNull(Detail::JsonParser& parser) { parser.BufferIn().IsSameSeqForwardThrow('n', 'u', 'l', 'l'); }
+        static inline void ParseNull(Detail::JsonParser& parser) { FMT::Detail::BufferTestManip(parser.BufferIn).IsSameForward("null", 4); }
 
-        static inline void FormatNull(Detail::JsonFormatter& formatter) { formatter.BufferOut().PushBackSeq('n', 'u', 'l', 'l'); }
+        static inline void FormatNull(Detail::JsonFormatter& formatter) { FMT::Detail::BufferWriteManip(formatter.BufferOut).FastWriteCharArray("null", 4); }
     };
 }
 
@@ -340,32 +326,30 @@ namespace StreamFormat::JSON
 namespace StreamFormat::FMT
 {
 #ifdef STREAMFORMAT_FORMATTER_DECLARED
-    template <typename T, typename FormatterContext>
-    struct FormatterType<JSON::FormatAsJson<T>, FormatterContext>
+    template <typename T, typename FormatterExecutor>
+    struct FormatterType<JSON::FormatAsJson<T>, FormatterExecutor>
     {
-        static void Format(const JSON::FormatAsJson<T>& json, FormatterContext& context)
+        static void Format(const JSON::FormatAsJson<T>& json, FormatterExecutor& executor)
         {
-            bool                                        ordered_struct = context.GetFormatData().HasSpecifier("ordered_struct");
-            JSON::Detail::JsonFormatter::FormatSettings settings{.OrderedStruct = ordered_struct, .FloatPrecision = context.GetFormatData().FloatPrecision};
-            JSON::Detail::JsonFormatter                 jsonFormatter(context.BufferOut().GetBufferOutManager(), settings);
-            jsonFormatter.BufferOut().ReloadBuffer(context.BufferOut());
+            bool ordered_struct = executor.Data.Specifiers.Has("ordered_struct");
+            JSON::Detail::JsonFormatter::FormatSettings settings{.OrderedStruct = ordered_struct, .FloatPrecision = executor.Data.FloatPrecision};
+            JSON::Detail::JsonFormatter jsonFormatter(executor.BufferOut, settings);
             JSON::JsonSerializer<T>::Format(json.Value, jsonFormatter);
-            context.BufferOut().ReloadBuffer(jsonFormatter.BufferOut());
         }
     };
 #endif
 
 #ifdef STREAMFORMAT_PARSER_DECLARED
-    template <typename T, typename ParserContext>
-    struct ParserType<JSON::FormatAsJson<T>, ParserContext>
+    template <typename T, typename ParserExecutor>
+    struct ParserType<JSON::FormatAsJson<T>, ParserExecutor>
     {
-        static inline void Parse(T& json, ParserContext& context)
+        static inline void Parse(T& json, ParserExecutor& executor)
         {
-            JSON::Detail::JsonParser jsonParser(context.BufferIn().GetBufferOutManager());
-            jsonParser.BufferIn().ReloadBuffer(context.BufferIn());
+            JSON::Detail::JsonParser jsonParser(*executor.BufferIn.Manager);
+            jsonParser.BufferIn.CurrentPos = executor.BufferIn.CurrentPos;
             // TODO:
             // JSON::JsonSerializer<T>::Parse(json.Value, jsonParser);
-            context.BufferIn().ReloadBuffer(jsonParser.BufferIn());
+            executor.BufferIn.CurrentPos = jsonParser.BufferIn.CurrentPos;
         }
     };
 #endif

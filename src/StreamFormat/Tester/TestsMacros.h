@@ -50,34 +50,34 @@ namespace StreamFormat::Test
         STREAMFORMAT_TEST_FAIL("{C:red}{} != {}", #x, #y)
 
 #define STREAMFORMAT_TEST_FN(fn, resExpected)                                                   \
-    {                                                                                          \
-        auto res = fn;                                                                         \
-        if (res == resExpected)                                                                \
+    {                                                                                           \
+        auto res = fn;                                                                          \
+        if (res == resExpected)                                                                 \
             STREAMFORMAT_TEST_OK("{C:green}{} return {}", #fn, res);                            \
-        else                                                                                   \
+        else                                                                                    \
             STREAMFORMAT_TEST_FAIL("{C:red}{} return {} instead of {}", #fn, res, resExpected); \
     }
 
 #define STREAMFORMAT_TEST_FNFMT(fn, resExpected, ...)                                           \
-    {                                                                                          \
+    {                                                                                           \
         STREAMFORMAT_TEST_INFO(__VA_ARGS__);                                                    \
-        auto res = fn;                                                                         \
-        if (res == resExpected)                                                                \
+        auto res = fn;                                                                          \
+        if (res == resExpected)                                                                 \
             STREAMFORMAT_TEST_OK("{C:green}{} return {}", #fn, res);                            \
-        else                                                                                   \
+        else                                                                                    \
             STREAMFORMAT_TEST_FAIL("{C:red}{} return {} instead of {}", #fn, res, resExpected); \
     }
 
-#ifdef STREAMFORMAT_ECTM_ENABLE
+#ifdef STREAMFORMAT_SFTM_ENABLE
 
-#define ECTM_ASSERT(x)                   STREAMFORMAT_TEST_ASSERT(x)
-#define ECTM_TEST(x)                     STREAMFORMAT_TEST_TEST(x)
-#define ECTM_EQ(x, y)                    STREAMFORMAT_TEST_EQ(x, y)
-#define ECTM_NEQ(x, y)                   STREAMFORMAT_TEST_NEQ(x, y)
-#define ECTM_FN(fn, resExpected)         STREAMFORMAT_TEST_FN(fn, resExpected)
-#define ECTM_FNFMT(fn, resExpected, ...) STREAMFORMAT_TEST_FNFMT(fn, resExpected, __VA_ARGS__)
+#define SFTM_ASSERT(x)                   STREAMFORMAT_TEST_ASSERT(x)
+#define SFTM_TEST(x)                     STREAMFORMAT_TEST_TEST(x)
+#define SFTM_EQ(x, y)                    STREAMFORMAT_TEST_EQ(x, y)
+#define SFTM_NEQ(x, y)                   STREAMFORMAT_TEST_NEQ(x, y)
+#define SFTM_FN(fn, resExpected)         STREAMFORMAT_TEST_FN(fn, resExpected)
+#define SFTM_FNFMT(fn, resExpected, ...) STREAMFORMAT_TEST_FNFMT(fn, resExpected, __VA_ARGS__)
 
-#endif /* STREAMFORMAT_ECTM_ENABLE */
+#endif /* STREAMFORMAT_SFTM_ENABLE */
 
 //******************************************************//
 //******************************************************//

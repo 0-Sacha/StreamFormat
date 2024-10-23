@@ -126,9 +126,9 @@ namespace StreamFormat::ProfilerManager
 
 namespace StreamFormat::FMT
 {
-    template <typename FormatterContext>
-    struct FormatterType<StreamFormat::ProfilerManager::EventType, FormatterContext>
+    template <typename FormatterExecutor>
+    struct FormatterType<StreamFormat::ProfilerManager::EventType, FormatterExecutor>
     {
-        static void Format(const StreamFormat::ProfilerManager::EventType& t, FormatterContext& context) { context.BufferOut().PushBack(static_cast<char>(t)); }
+        static void Format(const StreamFormat::ProfilerManager::EventType& t, FormatterExecutor& executor) { executor.BufferOut.Pushback(static_cast<char>(t)); }
     };
 }
