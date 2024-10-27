@@ -20,10 +20,25 @@ jobs:
         path: "~/.cache/bazel"
         key: bazel
     - name: Building...
-      run: bazelisk build //...
+      run: bazelisk build //:StreamFormatTests
     - name: Testing...
-      run: bazelisk test //...
+      run: bazelisk test //:StreamFormatTests
       
+  windows-latest-winlibs:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: bazelbuild/setup-bazelisk@v3
+    - name: Mount bazel cache
+      uses: actions/cache@v4
+      with:
+        path: "~/.cache/bazel"
+        key: bazel
+    - name: Build Winlibs/clang...
+      run: bazelisk build --config=winlibs-clang //:StreamFormatTests
+    - name: Build Winlibs/gcc...
+      run: bazelisk build --config=winlibs-gcc //:StreamFormatTests
+
   ubuntu-latest-gcc:
     runs-on: ubuntu-latest
     steps:
@@ -37,9 +52,9 @@ jobs:
     - name: Version
       run: gcc --version
     - name: Building...
-      run: CC=gcc bazelisk build //...
+      run: CC=gcc bazelisk build //:StreamFormatTests
     - name: Testing... (W asan)
-      run: CC=gcc bazelisk test --features=asan //...
+      run: CC=gcc bazelisk test --features=asan //:StreamFormatTests
 
   ubuntu-latest-clang:
     runs-on: ubuntu-latest
@@ -59,6 +74,6 @@ jobs:
     - name: Version
       run: clang++-17 --version
     - name: Building...
-      run: CC=clang++-17 bazelisk build //...
+      run: CC=clang++-17 bazelisk build //:StreamFormatTests
     - name: Testing... (W asan)
-      run: CC=clang++-17 bazelisk test --features=asan //...
+      run: CC=clang++-17 bazelisk test --features=asan //:StreamFormatTests

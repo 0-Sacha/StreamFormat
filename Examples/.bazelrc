@@ -4,3 +4,7 @@ common --incompatible_strict_action_env
 common --show_timestamps
 common --verbose_failures
 test --test_output=errors
+
+# Winlibs
+common:winlibs-gcc --extra_toolchains=@ex_winlibs//:gcc-toolchain
+common:winlibs-clang --extra_toolchains=@pthread-ex_winlibs//:clang-toolchain

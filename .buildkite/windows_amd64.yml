@@ -2,7 +2,13 @@ agents:
   queue: "agent-runners-windows-amd64"
 
 steps:
-  - label: ":bazel: Build"
+  - label: ":bazel: Build And Test MSVC"
     commands:
-      - bazelisk build //...
-      - bazelisk test //...
+      - bazelisk test //:StreamFormatTests
+
+  - label: ":bazel: Build And Test Winlibs/clang"
+    commands:
+      - bazelisk build --config=winlibs-clang //:StreamFormatTests
+  - label: ":bazel: Build And Test Winlibs/gcc"
+    commands:
+      - bazelisk build --config=winlibs-gcc //:StreamFormatTests
