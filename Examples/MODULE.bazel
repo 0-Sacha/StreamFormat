@@ -4,11 +4,24 @@
 module(
     name = "streamformat_examples",
     version = "0.1",
-    repo_name = "com_sacha_streamformat_examples",
 )
 
+
+git_override(module_name="bazel_utilities", remote="https://github.com/0-Sacha/bazel_utilities.git", commit="7f6c3585c41278918428ed48d45b12413c197fc0")
+git_override(module_name="bazel_buildbuddy", remote="https://github.com/0-Sacha/bazel_buildbuddy.git", commit="65259b523c8cd5c0c1698114c948a6cff33ddb92")
+git_override(module_name="bazel_winlibs", remote="https://github.com/0-Sacha/bazel_winlibs.git", commit="05f805d85dd5a4c1fa5bcab6244e6ad01d2ce737")
+local_path_override(module_name = "streamformat", path = "../")
+
+bazel_dep(name = "rules_cc", version = "0.0.10")
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "bazel_utilities", version = "0.0.1")
+bazel_dep(name = "bazel_winlibs", version = "0.0.1")
 bazel_dep(name = "streamformat")
-local_path_override(
-    module_name = "streamformat",
-    path = "../",
-)
+
+winlibs_toolchain_extension = use_extension("@bazel_winlibs//:rules.bzl", "winlibs_toolchain_extension")
+inject_repo(winlibs_toolchain_extension, "platforms", "bazel_utilities")
+winlibs_toolchain_extension.winlibs_toolchain(name = "winlibs")
+winlibs_toolchain_extension.winlibs_toolchain(name = "pthread-winlibs", linklibs = [ "pthread" ])
+use_repo(winlibs_toolchain_extension, "winlibs")
+use_repo(winlibs_toolchain_extension, "pthread-winlibs")
+# register_toolchains("@winlibs//:clang-toolchain")
