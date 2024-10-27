@@ -34,14 +34,10 @@ jobs:
       with:
         path: "~/.cache/bazel"
         key: bazel
-    - name: Building Winlibs/clang...
-      run: bazelisk build --config=winlibs-clang //:StreamFormatTests
-    - name: Testing Winlibs/clang...
-      run: ./bazel-bin/StreamFormatTests.exe
+    - name: Build And Test Winlibs/clang...
+      run: Build And Test test --config=winlibs-clang //:StreamFormatTests
     - name: Building Winlibs/gcc...
-      run: bazelisk build --config=winlibs-gcc //:StreamFormatTests
-    - name: Testing Winlibs/gcc...
-      run: ./bazel-bin/StreamFormatTests.exe
+      run: bazelisk test --config=winlibs-gcc //:StreamFormatTests
 
   ubuntu-latest-gcc:
     runs-on: ubuntu-latest

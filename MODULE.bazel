@@ -31,7 +31,7 @@ use_repo(winlibs_toolchain_extension, "winlibs")
 use_repo(winlibs_toolchain_extension, "pthread-winlibs")
 # register_toolchains("@winlibs//:clang-toolchain")
 
-buildbuddy_toolchain_extension = use_extension("@bazel_winlibs//:rules.bzl", "buildbuddy_toolchain_extension")
+buildbuddy_toolchain_extension = use_extension("@bazel_buildbuddy//:rules.bzl", "buildbuddy_toolchain_extension")
 inject_repo(buildbuddy_toolchain_extension, "platforms", "bazel_utilities")
 buildbuddy_toolchain_extension.winlibs_toolchain(name = "winlibs")
 use_repo(buildbuddy_toolchain_extension, "buildbuddy")
