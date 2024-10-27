@@ -1,5 +1,6 @@
 
 #include "StreamFormat/Tester/TestSuite/AllTestSuite.h"
+#include "StreamFormat/FLog/DefaultLogger.h"
 
 int main()
 {
