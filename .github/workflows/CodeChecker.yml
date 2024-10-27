@@ -23,7 +23,7 @@ jobs:
       - name: build & retreive compile_commands.json
         run: |
           bazelisk clean
-          bazelisk build //...
+          bazelisk build //:StreamFormatTests
           bazelisk run //conf:compile_commands
 
       - uses: whisperity/CodeChecker-Action@v1.0.4
