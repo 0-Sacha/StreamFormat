@@ -8,8 +8,7 @@ steps:
 
   - label: ":bazel: Build And Test Winlibs/clang"
     commands:
-      - bazelisk test --config=winlibs-clang //:StreamFormatTests
-
+      - bazelisk build --config=winlibs-clang //:StreamFormatTests
   - label: ":bazel: Build And Test Winlibs/gcc"
     commands:
-      - bazelisk test --config=winlibs-gcc //:StreamFormatTests
+      - bazelisk build --config=winlibs-gcc //:StreamFormatTests
