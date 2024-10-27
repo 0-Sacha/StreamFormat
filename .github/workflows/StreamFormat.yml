@@ -24,7 +24,7 @@ jobs:
     - name: Testing...
       run: bazelisk test //...
       
-  windows-latest-winlobs:
+  windows-latest-winlibs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4

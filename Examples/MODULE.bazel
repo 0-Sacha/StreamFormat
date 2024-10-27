@@ -9,7 +9,7 @@ module(
 
 git_override(module_name="bazel_utilities", remote="https://github.com/0-Sacha/bazel_utilities.git", commit="7f6c3585c41278918428ed48d45b12413c197fc0")
 git_override(module_name="bazel_buildbuddy", remote="https://github.com/0-Sacha/bazel_buildbuddy.git", commit="65259b523c8cd5c0c1698114c948a6cff33ddb92")
-git_override(module_name="bazel_winlibs", remote="https://github.com/0-Sacha/bazel_winlibs.git", commit="05f805d85dd5a4c1fa5bcab6244e6ad01d2ce737")
+git_override(module_name="bazel_winlibs", remote="https://github.com/0-Sacha/bazel_winlibs.git", commit="7124bbc17fe68f89aa419451f935f318cc86e908")
 local_path_override(module_name = "streamformat", path = "../")
 
 bazel_dep(name = "rules_cc", version = "0.0.10")
