@@ -15,6 +15,7 @@ namespace StreamFormat::FMT::Detail
     class BasicBufferOutManager
     {
     public:
+        BasicBufferOutManager() = default;
         virtual ~BasicBufferOutManager() = default;
         BasicBufferOutManager(BasicBufferOutManager&) = delete;
         BasicBufferOutManager& operator=(BasicBufferOutManager&) = delete;

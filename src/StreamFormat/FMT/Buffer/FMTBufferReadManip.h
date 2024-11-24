@@ -30,7 +30,7 @@ namespace StreamFormat::FMT::Detail
             bool sign = false;
             if constexpr (std::is_signed_v<T>)
             {
-                sign = manip.IsEqualToForward('-');
+                sign = SF_TRY(manip.IsEqualToForward('-'));
                 if (sign) --shift.Size;
             }
 
@@ -38,7 +38,8 @@ namespace StreamFormat::FMT::Detail
 
             while (access.IsADigit())
             {
-                res = res * 10 + (BufferManipException(Buffer).GetAndForward() - '0');
+                char c = SF_TRY(BufferManip(Buffer).GetAndForward());
+                res = res * 10 + (c - '0');
                 --shift.Size;
             }
 
@@ -48,7 +49,7 @@ namespace StreamFormat::FMT::Detail
         }
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> ReadFloat(T& i, std::int32_t floatPrecision = -1, ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> ReadFloat(T& t, std::int32_t floatPrecision = -1, ShiftInfo shift = ShiftInfo{})
         {
             BufferShiftReadManip shiftManip(Buffer);
             Detail::BufferTestAccess access(Buffer);
@@ -59,22 +60,20 @@ namespace StreamFormat::FMT::Detail
             bool sign = manip.IsEqualToForward('-');
             if (sign) --shift.Size;
 
-            T res = 0;
-
-            bool hasIntPart = false;
-            if (access.IsNotEqualTo('.'))
+            T intpart = static_cast<T>(0);
+            if (access.IsADigit())
             {
-                hasIntPart = access.IsADigit();
-                if (hasIntPart == false) return;
                 while (access.IsADigit())
                 {
-                    res = res * 10 + (BufferManipException(Buffer).GetAndForward() - '0');
+                    char c = SF_TRY(BufferManip(Buffer).GetAndForward());
+                    intpart = intpart * 10 + (c - '0');
                     --shift.Size;
                 }
             }
-
-            sign ? i = -res : i = res;
-            if (manip.IsEqualToForward('.') == false) return;
+            else if (access.IsEqualTo('.'))
+                { SF_TRY(Detail::BufferManip(Buffer).Forward()); }
+            else
+                { return std::unexpected(FMTResult::Parse_NonValidDigit); }
 
             if (floatPrecision <= 0)
                 while (access.IsADigit() && access.IsEndOfString() == false)
@@ -102,7 +101,8 @@ namespace StreamFormat::FMT::Detail
 
             shiftManip.SkipShiftEnd(shift);
 
-            sign ? i = -res - dec : i = res + dec;
+            t = sign ? - intpart - dec : intpart + dec;
+            return {};
         }
 
     public:

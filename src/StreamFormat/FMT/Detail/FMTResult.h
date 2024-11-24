@@ -21,6 +21,9 @@ namespace StreamFormat::FMT
 
         Context_ParsingFormat,
         Context_ArgumentIndexResolution,
+        Context_ArgumentIndexExpected,
         Context_CannotApplyType,
+        
+        GivenArgs_UnableToDeduceSize,
     };
 }

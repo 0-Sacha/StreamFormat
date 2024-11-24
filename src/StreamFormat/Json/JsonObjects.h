@@ -83,7 +83,7 @@ namespace StreamFormat::JSON
             JsonObjectSerializer<T>::WriteObject(t, *this);
         }
 
-        std::string ToString() { return FMT::FormatString(*this); }
+        std::string ToString() { return FMT::FormatString(*this).value(); }
 
     public:
         virtual void ParserExecute(Detail::JsonParser& parser)                = 0;

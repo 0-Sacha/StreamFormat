@@ -56,7 +56,7 @@ namespace StreamFormat::FMT::Detail
         [[nodiscard]] constexpr inline std::expected<void, FMTResult> PushbackCheckIndent(const TChar c)
         {
             SF_TRY(BufferOutManip(Buffer).Pushback(c));
-            return if (c == '\n') BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
+            if (c == '\n') return BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
         }
     };
 

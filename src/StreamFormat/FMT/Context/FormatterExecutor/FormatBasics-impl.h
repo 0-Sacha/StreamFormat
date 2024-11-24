@@ -38,10 +38,7 @@ namespace StreamFormat::FMT
             std::size_t size = executor.Data.Specifiers.GetAsNumber("size", totalsize - beginIdx);
 
             if (size == std::numeric_limits<std::size_t>::max())
-            {
-                Detail::BufferWriteManip(executor.BufferOut).FastWriteString("<unable to deduce size>");
-                return;
-            }
+                { return std::unexpected(FMTResult::GivenArgs_UnableToDeduceSize); }
 
             Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("begin", STDEnumerableUtility::DefaultBegin));
 
@@ -72,7 +69,7 @@ namespace StreamFormat::FMT
 
             if (executor.Data.Specifiers.Has("array")) return FormatObjectArray(buffer, size, executor);
 
-            if (beginIdx > size) return;
+            if (beginIdx > size) return {};
             const T* begin = buffer + beginIdx;
 
             // TODO: current indent ignore shift

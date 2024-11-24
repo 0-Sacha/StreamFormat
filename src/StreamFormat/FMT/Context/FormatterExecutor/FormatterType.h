@@ -5,11 +5,6 @@
 #define STREAMFORMAT_FORMATTER_DECLARED
 namespace StreamFormat::FMT
 {
-    enum class FMTResult
-    {
-        BufferManip,
-    };
-
     template <typename T, typename FormatterExecutor>
     struct FormatterType
     {

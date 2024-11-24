@@ -12,7 +12,7 @@
 namespace StreamFormat::FMT::Context
 {
     template <typename TChar>
-    std::basic_string_view<TChar> BasicContext<TChar>::ParseNextOverrideFormatData()
+    [[nodiscard]] std::expected<std::basic_string_view<TChar>, FMTResult> BasicContext<TChar>::ParseNextOverrideFormatData()
     {
         Detail::BufferTestAccess access(Format);
         Detail::BufferTestManip manip(Format);
@@ -43,26 +43,26 @@ namespace StreamFormat::FMT::Context
     }
 
     template <typename TChar>
-    std::expected<void, FMTResult> BasicContext<TChar>::ParseFormatDataBase()
+    [[nodiscard]] std::expected<void, FMTResult> BasicContext<TChar>::ParseFormatDataBase()
     {
         Detail::BufferTestManip manip(Format);
 
         if (manip.IsEqualToForward('C'))
-            Executor.TextManager.ParseColor(*this);
+            { SF_TRY(Executor.TextManager.ParseColor(*this)); }
         else if (manip.IsEqualToForward('S'))
-            Executor.TextManager.ParseStyle(*this);
+            { SF_TRY(Executor.TextManager.ParseStyle(*this)); }
         else if (manip.IsEqualToForward('F'))
-            Executor.TextManager.ParseFront(*this);
+            { SF_TRY(Executor.TextManager.ParseFront(*this)); }
 
         else if (manip.IsEqualToForward('K'))
-            Executor.Data.KeepNewStyle = true;
+            { Executor.Data.KeepNewStyle = true; }
 
         else if (manip.IsEqualToForward('N'))
-            Executor.Data.NextOverride = ParseNextOverrideFormatData();
+            { Executor.Data.NextOverride = SF_TRY(ParseNextOverrideFormatData()); }
     }
 
     template <typename TChar>
-    std::expected<void, FMTResult> BasicContext<TChar>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftInfo::ShiftType type)
+    [[nodiscard]] std::expected<void, FMTResult> BasicContext<TChar>::ParseFormatDataSpecial_ShiftType(const Detail::ShiftInfo::ShiftType type)
     {
         Executor.Data.Shift.Type = type;
         Executor.Data.Shift.Size = SF_TRY(FormatReadParameter(-1));
@@ -70,32 +70,45 @@ namespace StreamFormat::FMT::Context
         {
             Executor.Data.Shift.Print.Before = SF_TRY(Detail::BufferManip(Format).GetAndForward());
             Executor.Data.Shift.Print.After  = Executor.Data.Shift.Print.Before;
-            if (SF_TRY(Detail::BufferTestManip(Format).IsEqualToForward('|')))
+            if (Detail::BufferTestAccess(Format).IsEqualTo('|'))
+            {
+                Detail::BufferManip(Format).Forward();
                 Executor.Data.Shift.Print.After = SF_TRY(Detail::BufferManip(Format).GetAndForward());
+            }
         }
     }
 
     template <typename TChar>
-    std::expected<void, FMTResult> BasicContext<TChar>::ParseFormatDataSpecial()
+    [[nodiscard]] std::expected<void, FMTResult> BasicContext<TChar>::ParseFormatDataSpecial()
     {
         Detail::BufferTestAccess access(Format);
         Detail::BufferTestManip manip(Format);
 
-        if (manip.IsEqualToForward('{'))
+        if (access.IsEqualTo('{'))
         {
-            std::int32_t formatIndex = 0;
-            if (GetFormatIndex(formatIndex) == false) return;
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            std::int32_t formatIndex = (std::int32_t)SF_TRY(GetFormatIndex());
+            bool ableToApply = false;
+            
+            auto applyFormatData = SF_TRY(ArgsInterface.template GetTypeAt<Detail::FormatData<TChar>>(formatIndex));
+            ableToApply |= Executor.Data.TestApply(applyFormatData);
+            auto applyFormatSpecifier = SF_TRY(ArgsInterface.template GetTypeAt<Detail::FormatSpecifier<TChar>>(formatIndex));
+            ableToApply |= Executor.Data.TestApply(applyFormatSpecifier);
+            auto applyIntegerPrintBase = SF_TRY(ArgsInterface.template GetTypeAt<Detail::IntegerPrintBase>(formatIndex));
+            ableToApply |= Executor.Data.TestApply(applyIntegerPrintBase);
+            auto applyShiftInfo = SF_TRY(ArgsInterface.template GetTypeAt<Detail::ShiftInfo>(formatIndex));
+            ableToApply |= Executor.Data.TestApply(applyShiftInfo);
 
-            if ((Executor.Data.TestApply(ArgsInterface.template GetTypeAt<Detail::FormatData<TChar>>(formatIndex)) ||
-                 Executor.Data.TestApply(ArgsInterface.template GetTypeAt<Detail::FormatSpecifier<TChar>>(formatIndex)) ||
-                 Executor.Data.TestApply(ArgsInterface.template GetTypeAt<Detail::IntegerPrintBase>(formatIndex)) ||
-                 Executor.Data.TestApply(ArgsInterface.template GetTypeAt<Detail::ShiftInfo>(formatIndex))) == false)
-                return std::unexpected(FMTResult::CannotApplyType);
+            if (not ableToApply)
+                return std::unexpected(FMTResult::Context_CannotApplyType);
             SF_TRY(manip.IsEqualToForward('}'));
         }
 
-        else if (manip.IsEqualToForward('.'))
+        else if (access.IsEqualTo('.'))
+        {
+            SF_TRY(Detail::BufferManip(Format).Forward());
             Executor.Data.FloatPrecision = SF_TRY(FormatReadParameter(-1));
+        }
 
         else if (access.IsEqualTo('d', 'b', 'B', 'o', 'O', 'x', 'X'))
         {
@@ -103,26 +116,38 @@ namespace StreamFormat::FMT::Context
             Executor.Data.IntegerPrint = static_cast<Detail::IntegerPrintBase>(get);
         }
 
-        else if (manip.IsEqualToForward('#'))
-            Executor.Data.PrefixSuffix = true;
-
-
-        else if (manip.IsEqualToForward('>'))
-            ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::Right);
-
-        else if (manip.IsEqualToForward('<'))
-            ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::Left);
-            
-        else if (manip.IsEqualToForward('^'))
+        else if (access.IsEqualTo('#'))
         {
-            if (manip.IsEqualToForward('<'))
-                ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterLeft);
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            Executor.Data.PrefixSuffix = true;
+        }
+
+        else if (access.IsEqualTo('>'))
+        {
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            SF_TRY(ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::Right));
+        }
+        else if (access.IsEqualTo('<'))
+        {
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            SF_TRY(ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::Left));
+        }
+        else if (access.IsEqualTo('^'))
+        {
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            if (access.IsEqualTo('<'))
+            {
+                SF_TRY(Detail::BufferManip(Format).Forward());
+                SF_TRY(ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterLeft));
+            }
             else
             {
-                manip.IsEqualToForward('>');
-                ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterRight);
+                SF_TRY(manip.IsEqualToForward('>'));
+                SF_TRY(ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterRight));
             }
         }
+
+        return {};
     }
 
     template <typename TChar>
@@ -131,36 +156,37 @@ namespace StreamFormat::FMT::Context
         Detail::BufferTestAccess access(Format);
         Detail::BufferTestManip manip(Format);
 
-        std::basic_string_view<TChar> name = manip.ViewExec(
-            [&]{Detail::FMTBufferParamsManip(Format).ParamGoTo(' ', '=', '\'', '{', ',');}
-        );
+        std::basic_string_view<TChar> name = SF_TRY(manip.ViewExec(
+            [&] -> std::expected<void, FMTResult> { Detail::FMTBufferParamsManip(Format).ParamGoTo(' ', '=', '\'', '{', ','); return {}; }
+        ));
         Detail::FMTBufferParamsManip(Format).ParamGoTo('=', '\'', '{', ',');
-        manip.IsEqualToForward('=');
+        SF_TRY(manip.IsEqualToForward('='));
         manip.SkipAllSpaces();
 
         if (manip.IsEqualToForward('\''))
         {
-            std::basic_string_view<TChar> value = Detail::BufferTestManip(Format).ViewUntil('\'');
-            Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, value});
+            std::basic_string_view<TChar> value = SF_TRY(Detail::BufferTestManip(Format).ViewUntil('\''));
+            SF_TRY(Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, value}));
         }
         else if (access.IsADigit())
         {
             std::int32_t value = 0;
-            Detail::BufferReadManip(Format).FastReadInteger(value);
-            Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, value});
+            SF_TRY(Detail::BufferReadManip(Format).FastReadInteger(value));
+            SF_TRY(Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, value}));
         }
         else if (manip.IsEqualToForward('{'))
         {
-            std::int32_t idx = 0;
-            GetFormatIndex(idx);
+            std::int32_t idx = SF_TRY(GetFormatIndex());
             // TODO / FIXME
             // Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name, GetTypeAtIndexAuto(idx)});
-            manip.IsEqualToForward('}');
+            SF_TRY(manip.IsEqualToForward('}'));
         }
         else if (access.IsEqualTo(',', '}'))
         {
-            Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name});
+            SF_TRY(Executor.Data.Specifiers.Concat(Detail::FormatSpecifier{name}));
         }
+
+        return {};
     }
 
     /////---------- Impl ----------/////
@@ -188,7 +214,7 @@ namespace StreamFormat::FMT::Context
     }
 
     template <typename TChar>
-    std::expected<std::int32_t, FMTResult> BasicContext<TChar>::GetFormatIndex()
+    [[nodiscard]] std::expected<std::int32_t, FMTResult> BasicContext<TChar>::GetFormatIndex()
     {
         const TChar* mainSubFormat = Format.CurrentPos;
 
@@ -198,20 +224,14 @@ namespace StreamFormat::FMT::Context
         // I : if there is no number specified : ':' or '}'
         if (access.IsEqualTo(':') || access.IsEqualTo('}'))
             if (ValuesIndex < ArgsInterface.Size())
-            {
-                idx = ValuesIndex++;
-                return true;
-            }
+                { return ValuesIndex++; }
 
         // II: A number(idx)
         std::int32_t subIndex = -1;
         if (Detail::BufferReadManip(Format).FastReadInteger(subIndex).has_value())
             if (access.IsEqualTo(':') || access.IsEqualTo('}'))
                 if (subIndex >= 0 && subIndex < ArgsInterface.Size())
-                {
-                    idx = subIndex;
-                    return true;
-                }
+                    { return subIndex; }
         Format.CurrentPos = mainSubFormat;
 
         // III : A name
@@ -220,10 +240,7 @@ namespace StreamFormat::FMT::Context
         {
             std::int32_t indexOfNamedArg = currentNamedArg.value();
             if (indexOfNamedArg >= 0 && indexOfNamedArg < ArgsInterface.Size())
-            {
-                idx = indexOfNamedArg;
-                return true;
-            }
+                { return indexOfNamedArg; }
             Format.CurrentPos = mainSubFormat;
         }
 
@@ -232,22 +249,22 @@ namespace StreamFormat::FMT::Context
         {
             SF_TRY(Detail::BufferManip(Format).Forward());
             std::int32_t recIndex = SF_TRY(GetFormatIndex());
-            if (manip.IsEqualTo('}') && recIndex >= 0 && recIndex < ArgsInterface.Size())
+            if (access.IsEqualTo('}') && recIndex >= 0 && recIndex < ArgsInterface.Size())
             {
                 SF_TRY(Detail::BufferManip(Format).Forward());
                 manip.SkipAllSpaces();
                 if (access.IsEqualTo(':', '}'))
                 {
-                    std::int32_t finalRecIndex = SF_TRY(ArgsInterface.GetFormatIndexAt(recIndex));
+                    std::int32_t finalRecIndex = (std::int32_t)SF_TRY(ArgsInterface.GetIntAt(recIndex));
                     if (finalRecIndex >= 0 && finalRecIndex < ArgsInterface.Size())
                         return finalRecIndex;
-                    return false;
+                    return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
                 }
             }
         }
         Format.CurrentPos = mainSubFormat;
 
-        return std::unexpected(FMTResult::ArgumentIndexResolution);
+        return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
     }
 
     template <typename TChar>
@@ -278,19 +295,18 @@ namespace StreamFormat::FMT::Context
 
         if (Detail::BufferTestAccess(Format).IsUpperCase())
         {
-            ParseFormatData();
-            Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
-            return true;
+            SF_TRY(ParseFormatData());
+            return Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
         }
 
-        std::int32_t formatIdx = -1;
-        if (GetFormatIndex(formatIdx) && formatIdx >= 0 && formatIdx < ArgsInterface.Size())
+        std::int32_t formatIdx = SF_TRY(GetFormatIndex());
+        if (formatIdx >= 0 && formatIdx < ArgsInterface.Size())
         {
-            ParseVariable(formatIdx);
-            Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
-            return true;
+            SF_TRY(ParseVariable(formatIdx));
+            return Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
         }
 
-        return false;
+        SF_TRY(Executor.ExecRawString("{"));
+        return {};
     }
 }

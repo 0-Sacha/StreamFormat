@@ -25,6 +25,19 @@ namespace StreamFormat::FMT::Detail
         constexpr inline bool IsEmpty() const noexcept { return Buffer.CurrentPos >= Buffer.BufferEnd; }
         constexpr inline bool IsEndOfString() const noexcept { return IsEmpty() || Buffer.Get() == 0; }
 
+        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> GetNext(const std::size_t count = 1) const
+        {
+            if (BufferAccess(Buffer).CanMoveForward(count) == false)
+                return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+            return BufferManip(Buffer).GetNextForce(count);
+        }
+        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> GetPrev(const std::size_t count = 1) const
+        {
+            if (BufferAccess(Buffer).CanMoveBackward(count) == false)
+                return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+            return BufferManip(Buffer).GetPrevForce(count);
+        }
+
         constexpr inline TChar GetNextForce(const std::size_t count = 1) const noexcept { return *(Buffer.CurrentPos + count); }
         constexpr inline TChar GetPrevForce(const std::size_t count = 1) const noexcept { return *(Buffer.CurrentPos - count); }
     };
@@ -71,6 +84,19 @@ namespace StreamFormat::FMT::Detail
                 return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
             Buffer.CurrentPos -= count;
             return {};
+        }
+
+        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> GetAndForward()
+        {
+            if (BufferAccess(Buffer).CanMoveForward(1) == false)
+                return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+            return *Buffer.CurrentPos++;
+        }
+        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> GetAndBackward()
+        {
+            if (BufferAccess(Buffer).CanMoveBackward(1) == false)
+                return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+            return *Buffer.CurrentPos--;
         }
 
         constexpr inline TChar GetAndForceForward() noexcept { return *Buffer.CurrentPos++; }

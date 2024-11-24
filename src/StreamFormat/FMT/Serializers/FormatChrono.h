@@ -78,38 +78,37 @@ namespace StreamFormat::FMT::Detail
             SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift));
         }
 
-        return true;
+        return {};
     }
 
     template <typename Clock, typename Duration, typename TChar>
     [[nodiscard]] std::expected<void, FMTResult> WriteTime(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar> pattern, FMTBufferOutInfo<TChar>& buffer)
     {
-        BufferWriteManip(buffer).FastWriteString(
-            BufferTestManip(pattern).ViewExec(
-                [&]{FMTBufferParamsManip(pattern).ParamGoTo('%', '#', '/'); }
-            )
-        );
+        auto view = SF_TRY(BufferTestManip(pattern).ViewExec(
+            [&] -> std::expected<void, FMTResult> { FMTBufferParamsManip(pattern).ParamGoTo('%', '#', '/'); return {}; }
+        ));
+        SF_TRY(BufferWriteManip(buffer).FastWriteString(view));
 
         while (!BufferAccess(pattern).IsEndOfString())
         {
             TimePrintMode mode;
-            if (BufferTestManip(pattern).IsEqualToForward('%'))
+            if (BufferTestAccess(pattern).IsEqualTo('%'))
                 mode = TimePrintMode::Mod;
-            else if (BufferTestManip(pattern).IsEqualToForward('#'))
+            else if (BufferTestAccess(pattern).IsEqualTo('#'))
                 mode = TimePrintMode::FullTime;
-            else if (BufferTestManip(pattern).IsEqualToForward('/'))
+            else if (BufferTestAccess(pattern).IsEqualTo('/'))
                 mode = TimePrintMode::Sub;
             
-            WriteSubTime_(value, pattern, buffer, mode);
+            SF_TRY(BufferManip(pattern).Forward());
+            SF_TRY(WriteSubTime_(value, pattern, buffer, mode));
 
-            BufferWriteManip(buffer).FastWriteString(
-                BufferTestManip(pattern).ViewExec(
-                    [&]{FMTBufferParamsManip(pattern).ParamGoTo('%', '#', '/'); }
-                )
-            );
+            auto view = SF_TRY(BufferTestManip(pattern).ViewExec(
+                [&] -> std::expected<void, FMTResult> { FMTBufferParamsManip(pattern).ParamGoTo('%', '#', '/'); return {}; }
+            ));
+            SF_TRY(BufferWriteManip(buffer).FastWriteString(view));
         }
 
-        return true;
+        return {};
     }
 }
 
@@ -131,12 +130,11 @@ namespace StreamFormat::FMT
         {
             if (executor.Data.Specifiers.Has("pattern"))
             {
-                Detail::WriteTime(
+                return Detail::WriteTime(
                     std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::duration<Rep, Period>>(t),
                     Detail::BufferInfoView(executor.Data.Specifiers.GetAsText("pattern", "%h:%m:%s.%ms")),
                     executor.BufferOut
                 );
-                return;
             }
             Detail::BufferWriteManip(executor.BufferOut).FastWriteInteger(t.count());
 

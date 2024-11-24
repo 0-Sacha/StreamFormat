@@ -217,13 +217,13 @@ namespace StreamFormat::FMT
             switch (status)
             {
                 case StreamFormat::Tester::TestStatus::Ok:
-                    executor.Run("[  {C:green}OK{C}  ]");
+                    executor.Run("[  {C:green}OK{C}  ]").value();
                     break;
                 case StreamFormat::Tester::TestStatus::Fail:
-                    executor.Run("[ {C:red}FAIL{C} ]");
+                    executor.Run("[ {C:red}FAIL{C} ]").value();
                     break;
                 case StreamFormat::Tester::TestStatus::Crash:
-                    executor.Run("[{C:magenta}Crash{C} ]");
+                    executor.Run("[{C:magenta}Crash{C} ]").value();
                     break;
             }
         }
@@ -234,26 +234,26 @@ namespace StreamFormat::FMT
     {
         static void Format(const StreamFormat::Tester::Detail::TestStatusBank& statusBank, FormatterExecutor& executor)
         {
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("TestsDone ");
-            executor.Run("{:C:white}", statusBank.TestsDone);
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("TestsDone ").value();
+            executor.Run("{:C:white}", statusBank.TestsDone).value();
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsOK ");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsOK ").value();
             if (statusBank.TestsOk == statusBank.TestsDone)
-                executor.Run("{:C:green}", statusBank.TestsOk);
+                executor.Run("{:C:green}", statusBank.TestsOk).value();
             else
-                executor.Run("{:C:yellow}", statusBank.TestsOk);
+                executor.Run("{:C:yellow}", statusBank.TestsOk).value();
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsFAIL ");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsFAIL ").value();
             if (statusBank.TestsFail == 0)
-                executor.Run("{:C:green}", statusBank.TestsFail);
+                executor.Run("{:C:green}", statusBank.TestsFail).value();
             else
-                executor.Run("{:C:red}", statusBank.TestsFail);
+                executor.Run("{:C:red}", statusBank.TestsFail).value();
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestCrash ");
+            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestCrash ").value();
             if (statusBank.TestsCrash == 0)
-                executor.Run("{:C:green}", statusBank.TestsCrash);
+                executor.Run("{:C:green}", statusBank.TestsCrash).value();
             else
-                executor.Run("{:C:magenta}", statusBank.TestsCrash);
+                executor.Run("{:C:magenta}", statusBank.TestsCrash).value();
         }
     };
 }

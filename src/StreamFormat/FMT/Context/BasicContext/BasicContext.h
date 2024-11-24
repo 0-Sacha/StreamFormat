@@ -2,6 +2,7 @@
 
 #include "StreamFormat/FMT/Detail/ConvertTraits.h"
 #include "StreamFormat/FMT/Detail/Prelude.h"
+#include "StreamFormat/FMT/Detail/Specifiers.h"
 
 #include "StreamFormat/FMT/Buffer/BufferInfo.h"
 #include "StreamFormat/FMT/Buffer/BufferManip.h"
@@ -67,10 +68,10 @@ namespace StreamFormat::FMT::Context
         [[nodiscard]] std::expected<T, FMTResult> FormatReadParameter(const T& defaultValue);
 
     protected:
-        std::expected<void, FMTResult> FormatDataApplyNextOverride();
+        void FormatDataApplyNextOverride();
 
     protected:
-        std::basic_string_view<TChar> ParseNextOverrideFormatData();
+        [[nodiscard]] std::expected<std::basic_string_view<TChar>, FMTResult> ParseNextOverrideFormatData();
 
         [[nodiscard]] std::expected<void, FMTResult> ParseFormatDataBase();
         [[nodiscard]] std::expected<void, FMTResult> ParseFormatDataSpecial();
@@ -110,7 +111,7 @@ namespace StreamFormat::FMT::Context
     {}
 
     template <typename TChar>
-    std::expected<void, FMTResult> BasicContext<TChar>::Run()
+    [[nodiscard]] std::expected<void, FMTResult> BasicContext<TChar>::Run()
     {
         while (!Detail::BufferAccess(Format).IsEndOfString())
         {
@@ -124,11 +125,7 @@ namespace StreamFormat::FMT::Context
             SF_TRY(Executor.ExecRawString(std::basic_string_view<TChar>(beginContinousString, sizeContinousString)));
 
             if (Detail::BufferAccess(Format).IsEndOfString() == false && Detail::BufferTestAccess(Format).IsEqualTo('{'))
-            {
-                bool parseArg = Parse();
-                if (parseArg == false)
-                    SF_TRY(Executor.ExecRawString("{"));
-            }
+                { Parse(); }
         }
     }
 
@@ -156,14 +153,12 @@ namespace StreamFormat::FMT::Context
         }
 
         // SubIndex
-        std::int32_t formatIdx = SF_TRY(GetFormatIndex(formatIdx));
         SF_TRY(Detail::BufferTestManip(Format).SkipOneOf('}'));
+        std::int32_t formatIdx = SF_TRY(GetFormatIndex());
         if constexpr (std::is_convertible_v<T, int64_t>)
-            i = static_cast<T>(ArgsInterface.GetIntAt(formatIdx));
+            return ArgsInterface.GetIntAt(formatIdx);
         else if constexpr (std::is_convertible_v<T, std::basic_string_view<TChar>>)
-            i = static_cast<T>(ArgsInterface.GetStringAt(formatIdx));
-        
-        return true;
+            return ArgsInterface.GetStringAt(formatIdx);
     }
 }
 

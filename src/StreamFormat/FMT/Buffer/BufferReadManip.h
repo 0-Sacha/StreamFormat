@@ -19,7 +19,7 @@ namespace StreamFormat::FMT::Detail
         {
             bool sign = false;
             if constexpr (std::is_signed_v<T>)
-                { sign = BufferTestManip(Buffer).IsEqualToForward('-'); }
+                { sign = SF_TRY(BufferTestManip(Buffer).IsEqualToForward('-')); }
 
             if (!BufferTestAccess(Buffer).IsADigit())
                 { return std::unexpected(FMTResult::Parse_NonValidDigit); }
@@ -47,14 +47,11 @@ namespace StreamFormat::FMT::Detail
             bool sign = SF_TRY(manip.IsEqualToForward('-'));
 
             if (access.IsADigit())
-            {
-                SF_TRY(FastReadInteger<T>(intpart));
-            }
-            else if (access.IsEqualTo('.') == false)
-            {
-                SF_TRY(manip.Forward());
-                return std::unexpected(FMTResult::Parse_NonValidDigit);
-            }
+                { SF_TRY(FastReadInteger<T>(intpart)); }
+            else if (access.IsEqualTo('.'))
+                { SF_TRY(Detail::BufferManip(Buffer).Forward()); }
+            else
+                { return std::unexpected(FMTResult::Parse_NonValidDigit); }
 
             if (floatPrecision < 0)
             {
@@ -92,8 +89,8 @@ namespace StreamFormat::FMT::Detail
             }
 
             // TODO : Opti with bigger types
-            while (sizeToCopy-- != 0)
                 { *str++ = BufferManip(Buffer).GetAndForward(); }
+            while (sizeToCopy-- != 0)
             if (isZeroEnded) { *str = 0; }
 
             return {};

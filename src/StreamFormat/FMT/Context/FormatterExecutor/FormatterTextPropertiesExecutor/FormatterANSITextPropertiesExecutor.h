@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FormatterTextPropertiesExecutor.h"
+#include "StreamFormat/FMT/Detail/IndentHandlers.h"
 
 namespace StreamFormat::FMT::Detail
 {

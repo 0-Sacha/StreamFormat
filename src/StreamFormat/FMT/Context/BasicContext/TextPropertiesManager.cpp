@@ -2,7 +2,7 @@
 
 namespace StreamFormat::FMT::Detail
 {
-    std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadColorFG(const TextProperties::TextColor::ColorFG& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadColorFG(const TextProperties::TextColor::ColorFG& target)
     {
         if (target.Type != m_CurrentContextProperties.Color.Fg.Type)
         {
@@ -37,7 +37,7 @@ namespace StreamFormat::FMT::Detail
         return {};
     }
 
-    std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadColorBG(const TextProperties::TextColor::ColorBG& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadColorBG(const TextProperties::TextColor::ColorBG& target)
     {
         if (target.Type != m_CurrentContextProperties.Color.Bg.Type)
         {
@@ -72,7 +72,7 @@ namespace StreamFormat::FMT::Detail
         return {};
     }
 
-    std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadStyle(const TextProperties::TextStyle::Style& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadStyle(const TextProperties::TextStyle::Style& target)
     {
         if (target.Intensity != m_CurrentContextProperties.Style.Intensity)
         {
@@ -107,7 +107,7 @@ namespace StreamFormat::FMT::Detail
 
         if (target.Underline != m_CurrentContextProperties.Style.Underline)
         {
-            ApplyStyle(target.Underline);
+            SF_TRY(ApplyStyle(target.Underline));
             m_CurrentContextProperties.Style.Underline = target.Underline;
         }
 
@@ -154,7 +154,7 @@ namespace StreamFormat::FMT::Detail
         return {};
     }
 
-    std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadFront(const TextProperties::TextFront::Front& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadFront(const TextProperties::TextFront::Front& target)
     {
         if (m_CurrentContextProperties.Front == target)
             return {};

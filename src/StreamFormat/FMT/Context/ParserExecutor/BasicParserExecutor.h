@@ -37,7 +37,8 @@ namespace StreamFormat::FMT::Context
     protected:
         [[nodiscard]] std::expected<void, FMTResult> ExecRawString(std::basic_string_view<TChar> sv) override
         {
-            return Detail::BufferTestManip(BufferIn).IsSameForward(sv.data(), sv.size());
+            SF_TRY(Detail::BufferTestManip(BufferIn).IsSameForward(sv.data(), sv.size()));
+            return {};
         }
         [[nodiscard]] std::expected<void, FMTResult> ExecSettings() override {};
 

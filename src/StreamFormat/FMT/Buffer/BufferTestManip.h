@@ -80,14 +80,20 @@ namespace StreamFormat::FMT::Detail
         [[nodiscard]] constexpr inline std::expected<bool, FMTResult> IsEqualToForward(const CharToTest... ele) noexcept
         {
             if (Access().IsEqualTo(ele...))
-                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
+            {
+                SF_TRY(BufferManip(Buffer).Forward());
+                return true;
+            }
             return false;
         }
         template <typename... CharToTest>
         [[nodiscard]] constexpr inline std::expected<bool, FMTResult> IsNotEqualForward(const CharToTest... ele) noexcept
         {
             if (Access().IsNotEqualTo(ele...))
-                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
+            {
+                SF_TRY(BufferManip(Buffer).Forward());
+                return true;
+            }
             return false;
         }
 
@@ -96,20 +102,31 @@ namespace StreamFormat::FMT::Detail
         [[nodiscard]] constexpr std::expected<bool, FMTResult> IsSameForward(const CharToTest* str, std::size_t size) noexcept
         {
             if (Access().IsSame(str, size))
-                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
+            {
+                SF_TRY(BufferManip(Buffer).Forward());
+                return true;
+            }
             return false;
         }
         template <typename CharToTest>
         [[nodiscard]] constexpr inline std::expected<bool, FMTResult> IsSameForward(std::basic_string_view<CharToTest> sv) noexcept
         {
             if (Access().IsSame(sv))
-                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
+            {
+                SF_TRY(BufferManip(Buffer).Forward());
+                return true;
+            }
             return false;
         }
 
     public:
         template <typename... CharToTest>
-        [[nodiscard]] inline std::expected<void, FMTResult> SkipOneOf(const CharToTest... ele) noexcept { return IsEqualToForward(ele...).transform([]{}); }
+        [[nodiscard]] inline std::expected<void, FMTResult> SkipOneOf(const CharToTest... ele) noexcept
+        {
+            SF_TRY(IsEqualToForward(ele...));
+            return {};
+        }
+
         template <typename... CharToTest>
         inline void SkipEvery(const CharToTest... ele) noexcept
         {
@@ -140,18 +157,18 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename Func>
-        std::basic_string_view<TConstChar> ViewExec(Func&& func)
+        [[nodiscard]] std::expected<std::basic_string_view<TConstChar>, FMTResult> ViewExec(Func&& func)
         {
             TChar* begin = Buffer.CurrentPos;
-            func();
+            SF_TRY(func());
             TChar* end = Buffer.CurrentPos;
             return std::basic_string_view<TConstChar>(begin, end - begin);
         }
 
         template <typename... CharToTest>
-        inline std::basic_string_view<TConstChar> ViewUntil(CharToTest&&... c)
+        [[nodiscard]] inline std::expected<std::basic_string_view<TConstChar>, FMTResult> ViewUntil(CharToTest&&... c)
         {
-            return ViewExec([&]{BufferTestManip(Buffer).GoTo(std::forward<CharToTest>(c)...);});
+            return ViewExec([&] -> std::expected<void, FMTResult> { BufferTestManip(Buffer).GoTo(std::forward<CharToTest>(c)...); return {}; });
         }
     };
 }

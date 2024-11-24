@@ -118,12 +118,15 @@ namespace StreamFormat::FMT::Detail
         template <typename CharInput>
         [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteCharArray(const CharInput* str, std::size_t size)
         {
-            if (BufferOutManip(Buffer).Reserve(size) == false) 
+            auto reserve = BufferOutManip(Buffer).Reserve(size);
+            if (reserve.has_value() == false) 
                 return FastWriteCharArray(str, BufferAccess(Buffer).GetBufferRemainingSize());
 
             // TODO: Opti with bigger types
             while (size-- != 0 && *str != 0)
                 BufferOutManip(Buffer).ForcePushback(*str++);
+
+            return {};
         }
         template <typename CharInput>
         [[nodiscard]] inline constexpr std::expected<void, FMTResult> FastWriteString(std::basic_string_view<CharInput> sv)

@@ -14,128 +14,128 @@ namespace StreamFormat::FMT::Detail
         using IParserTextPropertiesExecutor<TChar>::Buffer;
 
     public:
-        std::expected<void, FMTResult> AllPropertiesReset() override
+        [[nodiscard]] std::expected<void, FMTResult> AllPropertiesReset() override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', 0, 'm');*/
         }
 
     public:
-        std::expected<void, FMTResult> ResetColor() override
+        [[nodiscard]] std::expected<void, FMTResult> ResetColor() override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', 39, ';', 49, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColorFG&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColorFG&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColorBG&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColorBG&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColor&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColor&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t.Fg) , ';', static_cast<std::uint8_t>(t.Bg), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24bFG&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24bFG&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[38;2;", t.R, ';', t.G, ';', t.B, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24bBG&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24bBG&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[48;2;", t.R, ';', t.G, ';', t.B, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24b&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24b&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[38;2;", t.Fg.R, ';', t.Fg.G, ';', t.Fg.B, "; 48; 2;", t.Bg.R, ';', t.Bg.G, ';', t.Bg.B, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeFG&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeFG&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[38;5;", t.GetColorRef(), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeBG&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeBG&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[48;5;", t.GetColorRef(), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCube&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCube&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[48;5;", t.Fg.GetColorRef(), ";48;5;", t.Bg.GetColorRef(), 'm');*/
         }
 
     public:
-        std::expected<void, FMTResult> ResetFront() override
+        [[nodiscard]] std::expected<void, FMTResult> ResetFront() override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', Detail::TextProperties::TextFront::FrontID::DefaultFrontID, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteFront(const Detail::TextProperties::TextFront::FrontID&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteFront(const Detail::TextProperties::TextFront::FrontID&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', t.ID, 'm');*/
         }
 
     public:
-        std::expected<void, FMTResult> ResetStyle() override
+        [[nodiscard]] std::expected<void, FMTResult> ResetStyle() override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', 0, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Intensity&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Intensity&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Italic&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Italic&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Underline&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Underline&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[59m");*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::ColorCube&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::ColorCube&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[58;5;", t.GetColorRef(), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color24b&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color24b&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType("\033[58;2;", t.R, ';', t.G, ';', t.B, 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Blink&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Blink&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Inverted&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Inverted&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Ideogram&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Ideogram&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/
         }
-        std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Script&) override
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Script&) override
         {
             return std::unexpected(FMTResult::FunctionNotImpl);
             /*BufferReadManip(Buffer).BasicReadType('\033', '[', static_cast<std::uint8_t>(t), 'm');*/

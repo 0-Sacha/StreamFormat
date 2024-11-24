@@ -14,7 +14,7 @@ namespace StreamFormat::ProfilerManager
 
         std::ofstream file(path.string(), std::ios::out);
         JSON::FormatAsJson<Profiler> formatProfiler(profiler);
-        FMT::FilePrint(file, formatProfiler);
+        FMT::FilePrint(file, formatProfiler).value();
         file.close();
     }
 }

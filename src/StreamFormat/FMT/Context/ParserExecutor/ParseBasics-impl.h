@@ -16,28 +16,43 @@ namespace StreamFormat::FMT
     template <typename ParserExecutor>
     struct ParserType<bool, ParserExecutor>
     {
-        [[nodiscard]] static std::expected<void, ParseTypeError> Parse(bool& t, ParserExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Parse(bool& t, ParserExecutor& executor)
         {
             if (!executor.Data.PrefixSuffix)
             {
-                if (Detail::BufferTestManip(executor.BufferIn).IsEqualToForward('t', 'T'))
+                if (Detail::BufferTestManip(executor.BufferIn).IsEqualTo('t', 'T'))
                 {
-                    if (Detail::BufferTestManip(executor.BufferIn).IsSameForward("rue"))
+                    SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
+                    if (Detail::BufferTestManip(executor.BufferIn).IsSame("rue"))
+                    {
+                        SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                         t = true;
+                    }
                 }
                 else if (Detail::BufferTestManip(executor.BufferIn).IsEqualToForward('f', 'F'))
                 {
+                    SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                     if (Detail::BufferTestManip(executor.BufferIn).IsSameForward("alse"))
+                    {
+                        SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                         t = false;
+                    }
                 }
             }
             else
             {
-                if (Detail::BufferTestManip(executor.BufferIn).IsEqualToForward('1'))
-                    { t = true; return; }
-                else if (Detail::BufferTestManip(executor.BufferIn).IsEqualToForward('1'))
-                    { t = false; return; }
+                if (Detail::BufferTestManip(executor.BufferIn).IsEqualTo('1'))
+                {
+                    SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
+                    t = true;
+                }
+                else if (Detail::BufferTestManip(executor.BufferIn).IsEqualTo('0'))
+                {
+                    SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
+                    t = false;
+                }
             }
+            return {};
         }
     };
 

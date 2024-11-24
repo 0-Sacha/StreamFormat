@@ -183,7 +183,7 @@ namespace StreamFormat::FMT::Detail
     public:
         [[nodiscard]] std::expected<void, FMTResult> Pushback(const FormatSpecifier<TChar>& specifier)
         {
-            if (SpecifierCount => SIZE)
+            if (SpecifierCount >= SIZE)
                 return std::unexpected(FMTResult::Specifers_Full);
             Specifier[SpecifierCount++] = specifier;
             return {};
@@ -193,7 +193,7 @@ namespace StreamFormat::FMT::Detail
         {
             FormatSpecifier<TChar>* local = Get(specifier.Name);
             if (local == nullptr)
-                return SF_TRY(Pushback(specifier));
+                return Pushback(specifier);
 
             if (specifier.HasText)
                 { local->HasText = true; local->AsText  = specifier.AsText; }

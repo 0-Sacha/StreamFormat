@@ -18,13 +18,14 @@ namespace StreamFormat::JSON::Detail
 
         if (parser.IsJsonStringBegin())
         {
-            manip.SkipOneOf('"');
+            manip.SkipOneOf('"').value();
             while (true)
             {
                 manip.GoTo('"');
-                if (FMT::Detail::BufferTestAccess(parser.BufferIn).PrevIsNotEqualTo('\\')) break;
+                if (FMT::Detail::BufferTestAccess(parser.BufferIn).PrevIsNotEqualTo('\\'))
+                    break;
             }
-            manip.SkipOneOf('"');
+            manip.SkipOneOf('"').value();
         }
         else if (parser.IsJsonNumberBegin())
         {

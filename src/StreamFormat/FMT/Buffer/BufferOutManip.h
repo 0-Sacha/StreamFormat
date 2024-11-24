@@ -65,7 +65,7 @@ namespace StreamFormat::FMT::Detail
         [[nodiscard]] std::expected<void, FMTResult> AddSize(const std::size_t count) noexcept
         {
             if (Buffer.Manager == nullptr)
-                return std::unexpected(FMTResult::NonValidBuffer);
+                return std::unexpected(FMTResult::Buffer_NonValid);
             std::size_t currentSize = BufferAccess(Buffer).GetBufferCurrentSize();
             if (not Buffer.Manager->AddSize(count))
                 return std::unexpected(FMTResult::Buffer_UnableToReserveMemory);

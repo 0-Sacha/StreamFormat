@@ -26,8 +26,8 @@ namespace StreamFormat::FMT::Detail
         {
             return std::unexpected(FMTResult::ArgsInterface_Unavaible);
         }
-        template <typename FormatterExecutor>
-        [[nodiscard]] inline std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(FormatterExecutor&, std::int32_t)
+        template <typename TChar>
+        [[nodiscard]] inline std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format, std::int32_t)
         {
             return std::unexpected(FMTResult::ArgsInterface_Unavaible);
         }
@@ -36,7 +36,7 @@ namespace StreamFormat::FMT::Detail
             return std::unexpected(FMTResult::ArgsInterface_Unavaible);
         }
         template <typename T>
-        [[nodiscard]] inline std::expected<void, FMTResult> GetConvertedTypeAt(T*, std::int32_t)
+        [[nodiscard]] inline std::expected<T, FMTResult> GetConvertedTypeAt(std::int32_t)
         {
             return std::unexpected(FMTResult::ArgsInterface_Unavaible);
         }
@@ -77,16 +77,15 @@ namespace StreamFormat::FMT::Detail
         {
             if constexpr (Detail::IsANamedArgs<Detail::GetBaseType<TypeWithoutRef>>::value)
             {
-                std::expected<bool, FMTResult> currentNamedArg = Detail::FMTBufferParamsManip(format).NextIsNamedArgs(m_Value.GetName());
-                if (not currentNamedArg)
-                    { return std::unexpected(FMTResult::BufferManipError); }
-                return beginSearchIndex;
+                bool currentIsANamedArg = SF_TRY(Detail::FMTBufferParamsManip(format).NextIsNamedArgs(m_Value.GetName()));
+                if (currentIsANamedArg)
+                    return beginSearchIndex;
             }
-            return FormatterArgs<Rest...>::GetIndexOfCurrentNamedArg(format, beginSearchIndex + 1);
+            return ParserArgs<Rest...>::GetIndexOfCurrentNamedArg(format, beginSearchIndex + 1);
         }
 
     public:
-        inline PointerID GetPointerIDAt(std::int32_t idx)
+        [[nodiscard]] inline std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t idx)
         {
             if (idx == 0) return PointerID{.TypeInfo = typeid(TypeWithoutRef), .Ptr = static_cast<void*>(&m_Value)};
             return ParserArgs<Rest...>::GetPointerIDAt(idx - 1);
@@ -103,7 +102,7 @@ namespace StreamFormat::FMT::Detail
                 else
                     { return std::unexpected(FMTResult::ArgsInterface_InvalidConversion); }
             }
-            return ParserArgs<Rest...>::template GetConvertedTypeAt<T>(value, idx - 1);
+            return ParserArgs<Rest...>::template GetConvertedTypeAt<T>(idx - 1);
         }
     };
 
@@ -137,7 +136,7 @@ namespace StreamFormat::FMT::Detail
         {
             return ArgsInterface.GetIndexOfCurrentNamedArg(format, std::int32_t{0});
         }
-        PointerID GetPointerIDAt(std::int32_t idx) override
+        [[nodiscard]] inline std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t idx) override
         {
             return ArgsInterface.GetPointerIDAt(idx);
         }

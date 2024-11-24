@@ -44,15 +44,15 @@ namespace StreamFormat::JSON::Detail
             if (Settings.OneLine) return;
 
             if (Settings.IndentWithSpaces)
-                FMT::Detail::BufferOutManip(BufferOut).Pushback(' ', m_Indent * Settings.IndentSize);
+                FMT::Detail::BufferOutManip(BufferOut).Pushback(' ', m_Indent * Settings.IndentSize).value();
             else
-                FMT::Detail::BufferOutManip(BufferOut).Pushback('\t', m_Indent * Settings.IndentSize);
+                FMT::Detail::BufferOutManip(BufferOut).Pushback('\t', m_Indent * Settings.IndentSize).value();
         }
 
         void NewLine()
         {
             if (Settings.OneLine) return;
-            FMT::Detail::BufferOutManip(BufferOut).Pushback('\n');
+            FMT::Detail::BufferOutManip(BufferOut).Pushback('\n').value();
             Indent();
         }
         void BeginNewObject() { ++m_Indent; }

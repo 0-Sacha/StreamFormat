@@ -16,7 +16,7 @@ namespace StreamFormat::FMT::Detail
         };
 
     private:
-        static const TChar* BufferInExecGlob_(BufferInfo<TChar>& bufferIn, BufferInfo<TChar>& glob)
+        [[nodiscard]] static std::expected<const TChar*, FMTResult> BufferInExecGlob_(BufferInfo<TChar>& bufferIn, BufferInfo<TChar>& glob)
         {
             if (BufferAccess(glob).IsEndOfString()) return bufferIn.CurrentPos;
 
@@ -31,11 +31,11 @@ namespace StreamFormat::FMT::Detail
             else if (BufferTestAccess(glob).IsEqualTo('*'))
             {
                 BufferManip(glob).Forward();
-                const TChar* further = BufferInExecGlob_(bufferIn, glob);
+                const TChar* further = SF_TRY(BufferInExecGlob_(bufferIn, glob));
                 while (BufferAccess(bufferIn).CanMoveForward())
                 {
                     BufferManip(bufferIn).Forward();
-                    const TChar* last = BufferInExecGlob_(bufferIn, glob);
+                    const TChar* last = SF_TRY(BufferInExecGlob_(bufferIn, glob));
                     if (last > further || further == nullptr) further = last;
                 }
                 return further;
@@ -49,8 +49,8 @@ namespace StreamFormat::FMT::Detail
 
                 BufferInfoView<TChar> charSet(begin, end - begin);
 
-                bool is_inverted = BufferTestManip(glob).IsEqualToForward('!');
-                TChar toMatch = BufferManipException(bufferIn).GetAndForward();
+                bool is_inverted = SF_TRY(BufferTestManip(glob).IsEqualToForward('!'));
+                TChar toMatch = SF_TRY(BufferManip(bufferIn).GetAndForward());
                 bool found = false;
 
                 while (found == false && BufferAccess(charSet).CanMoveForward())
@@ -92,9 +92,9 @@ namespace StreamFormat::FMT::Detail
         }
 
     public:
-        static void BufferInExecGlob(BufferInfo<TChar>& bufferIn, BufferInfo<TChar>& glob, [[maybe_unused]] PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest)
+        [[nodiscard]] static std::expected<void, FMTResult> BufferInExecGlob(BufferInfo<TChar>& bufferIn, BufferInfo<TChar>& glob, [[maybe_unused]] PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest)
         {
-            const TChar* furtherPointMatched = BufferInExecGlob_(bufferIn, glob);
+            const TChar* furtherPointMatched = SF_TRY(BufferInExecGlob_(bufferIn, glob));
             if (furtherPointMatched != nullptr)
                 bufferIn.CurrentPos = furtherPointMatched;
         }

@@ -39,12 +39,13 @@ namespace StreamFormat::FMT::Detail
         using DictPairs = std::pair<std::basic_string_view<TConstChar>, T>;
         
         template <typename T, std::size_t SIZE>
-        [[nodiscard]] std::expected<T&, FMTResult> GetWordFromDictPairs(const DictPairs<T> (&data)[SIZE])
+        [[nodiscard]] std::expected<T, FMTResult> GetWordFromDictPairs(const DictPairs<T> (&data)[SIZE])
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
             {
                 bool found = SF_TRY(BufferTestManip(Buffer).IsSameForward(data[idx].first));
-                if (found) return data[idx].second;
+                if (found)
+                    return data[idx].second;
             }
             return std::unexpected(FMTResult::Specifers_Invalid);
         }
@@ -59,9 +60,8 @@ namespace StreamFormat::FMT::Detail
             SF_TRY(Detail::BufferTestManip(buffer).SkipOneOf('"'));
             while (Detail::BufferAccess(buffer).IsEndOfString() == false)
             {
-                SF_TRY(Detail::BufferWriteManip(stringOut).FastWriteString(
-                    Detail::BufferTestManip(buffer).ViewUntil('"', '\\')
-                ));
+                auto view = SF_TRY(Detail::BufferTestManip(buffer).ViewUntil('"', '\\'));
+                SF_TRY(Detail::BufferWriteManip(stringOut).FastWriteString(view));
 
                 if (Detail::BufferTestAccess(buffer).IsEqualTo('"')) break;
 
@@ -94,9 +94,8 @@ namespace StreamFormat::FMT::Detail
             SF_TRY(Detail::BufferOutManip(buffer).Pushback('"'));
             while (Detail::BufferAccess(stringIn).IsEndOfString() == false)
             {
-                SF_TRY(Detail::BufferWriteManip(buffer).FastWriteString(
-                    Detail::BufferTestManip(stringIn).ViewUntil('\\')
-                ));
+                auto view = SF_TRY(Detail::BufferTestManip(stringIn).ViewUntil('\\'));
+                SF_TRY(Detail::BufferWriteManip(buffer).FastWriteString(view));
 
                 if (Detail::BufferAccess(stringIn).IsEndOfString()) break;
 
