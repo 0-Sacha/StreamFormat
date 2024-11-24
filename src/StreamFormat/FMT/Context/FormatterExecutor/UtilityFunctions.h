@@ -17,7 +17,7 @@ namespace StreamFormat::FMT
     {
         template <typename TChar, typename... Args>
         requires(IsCharType<TChar>::Value)
-        void FormatInManager(
+        std::expected<void, FMTResult> FormatInManager(
             Detail::BasicBufferOutManager<TChar>& bufferOutManager,
             bool newline,
             BufferInfoView<TChar> format,
@@ -36,7 +36,7 @@ namespace StreamFormat::FMT
 
         template <typename TChar, typename T>
         requires(IsCharType<TChar>::Value)
-        void FormatInManager(Detail::BasicBufferOutManager<TChar>& bufferOutManager, bool newline, T&& t)
+        std::expected<void, FMTResult> FormatInManager(Detail::BasicBufferOutManager<TChar>& bufferOutManager, bool newline, T&& t)
         {
             using TCharResolved = std::remove_const_t<TChar>;
 
@@ -51,7 +51,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, std::size_t BUFFER_SIZE, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void FormatInChar(TChar (&buffer)[BUFFER_SIZE], Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> FormatInChar(TChar (&buffer)[BUFFER_SIZE], Format&& formatInput, Args&&... args)
     {
         Detail::GivenBufferOutManager<TChar> bufferOutManager(buffer);
         Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -59,7 +59,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void FormatInChar(TChar* const buffer, const std::size_t bufferSize, Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> FormatInChar(TChar* const buffer, const std::size_t bufferSize, Format&& formatInput, Args&&... args)
     {
         Detail::GivenBufferOutManager<TChar> bufferOutManager(buffer, bufferSize);
         Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -67,7 +67,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void CFilePrint(FILE* stream, Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> CFilePrint(FILE* stream, Format&& formatInput, Args&&... args)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -78,7 +78,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void CFilePrintLn(FILE* stream, Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> CFilePrintLn(FILE* stream, Format&& formatInput, Args&&... args)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         Detail::FormatInManager(bufferOutManager, true, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -89,7 +89,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void FilePrint(std::basic_ostream<TChar>& stream, Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> FilePrint(std::basic_ostream<TChar>& stream, Format&& formatInput, Args&&... args)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -100,7 +100,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void FilePrintLn(std::basic_ostream<TChar>& stream, Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> FilePrintLn(std::basic_ostream<TChar>& stream, Format&& formatInput, Args&&... args)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         Detail::FormatInManager(bufferOutManager, true, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -111,7 +111,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    void FormatInString(std::basic_string<TChar>& str, Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> FormatInString(std::basic_string<TChar>& str, Format&& formatInput, Args&&... args)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -120,7 +120,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename Format, typename... Args>
     requires(Detail::IsCharType<TChar>::Value && Detail::ConvertibleToBufferInfoView<Format>)
-    inline std::basic_string<TChar> FormatString(Format&& formatInput, Args&&... args)
+    inline std::expected<std::basic_string<TChar>, FMTResult> FormatString(Format&& formatInput, Args&&... args)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
@@ -131,7 +131,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, size_t BUFFER_SIZE, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void FormatInChar(TChar (&buffer)[BUFFER_SIZE], T&& t)
+    std::expected<void, FMTResult> FormatInChar(TChar (&buffer)[BUFFER_SIZE], T&& t)
     {
         Detail::GivenBufferOutManager<TChar> bufferOutManager(buffer, BUFFER_SIZE);
         Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
@@ -139,7 +139,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void FormatInChar(TChar* const buffer, const std::size_t bufferSize, T&& t)
+    std::expected<void, FMTResult> FormatInChar(TChar* const buffer, const std::size_t bufferSize, T&& t)
     {
         Detail::GivenBufferOutManager<TChar> bufferOutManager(buffer, bufferSize);
         Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
@@ -147,7 +147,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void CFilePrint(FILE* stream, T&& t)
+    std::expected<void, FMTResult> CFilePrint(FILE* stream, T&& t)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
@@ -158,7 +158,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void CFilePrintLn(FILE* stream, T&& t)
+    std::expected<void, FMTResult> CFilePrintLn(FILE* stream, T&& t)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         Detail::FormatInManager(bufferOutManager, true, std::forward<T>(t));
@@ -169,7 +169,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void FilePrint(std::basic_ostream<TChar>& stream, T&& t)
+    std::expected<void, FMTResult> FilePrint(std::basic_ostream<TChar>& stream, T&& t)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
@@ -180,7 +180,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void FilePrintLn(std::basic_ostream<TChar>& stream, T&& t)
+    std::expected<void, FMTResult> FilePrintLn(std::basic_ostream<TChar>& stream, T&& t)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         Detail::FormatInManager(bufferOutManager, true, std::forward<T>(t));
@@ -191,7 +191,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    void FormatInString(std::basic_string<TChar>& str, T&& t)
+    std::expected<void, FMTResult> FormatInString(std::basic_string<TChar>& str, T&& t)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
@@ -200,7 +200,7 @@ namespace StreamFormat::FMT
 
     template <typename TChar = char, typename T>
     requires(Detail::IsCharType<TChar>::Value)
-    inline std::basic_string<TChar> FormatString(T&& t)
+    inline std::expected<std::basic_string<TChar>, FMTResult> FormatString(T&& t)
     {
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));

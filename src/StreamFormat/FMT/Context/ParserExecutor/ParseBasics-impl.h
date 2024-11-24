@@ -16,7 +16,7 @@ namespace StreamFormat::FMT
     template <typename ParserExecutor>
     struct ParserType<bool, ParserExecutor>
     {
-        static void Parse(bool& t, ParserExecutor& executor)
+        [[nodiscard]] static std::expected<void, ParseTypeError> Parse(bool& t, ParserExecutor& executor)
         {
             if (!executor.Data.PrefixSuffix)
             {
@@ -38,8 +38,6 @@ namespace StreamFormat::FMT
                 else if (Detail::BufferTestManip(executor.BufferIn).IsEqualToForward('1'))
                     { t = false; return; }
             }
-
-            throw Detail::FMTParseError();
         }
     };
 
@@ -47,14 +45,16 @@ namespace StreamFormat::FMT
     requires (std::is_integral_v<T> && !std::is_floating_point_v<T> && !Detail::IsCharType<T>::Value)
     struct ParserType<T, ParserExecutor>
     {
-        static inline void Parse(T& t, ParserExecutor& executor) { Detail::FMTBufferReadManip(executor.BufferIn).ReadIntegerFormatData(t, executor.Data); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T& t, ParserExecutor& executor)
+            { return Detail::FMTBufferReadManip(executor.BufferIn).ReadIntegerFormatData(t, executor.Data); }
     };
 
     template <typename T, typename ParserExecutor>
     requires std::is_floating_point_v<T>
     struct ParserType<T, ParserExecutor>
     {
-        static inline void Parse(T& t, ParserExecutor& executor) { Detail::FMTBufferReadManip(executor.BufferIn).ReadFloatFormatData(t, executor.Data); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T& t, ParserExecutor& executor)
+            { return Detail::FMTBufferReadManip(executor.BufferIn).ReadFloatFormatData(t, executor.Data); }
     };
 
     //-------------------------------------------------------//
@@ -64,7 +64,7 @@ namespace StreamFormat::FMT
     template <typename ParserExecutor>
     struct ParserType<void*, ParserExecutor>
     {
-        static inline void Parse(void*&, ParserExecutor&)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(void*&, ParserExecutor&)
         {
             // FIXME
             // TODO
@@ -74,7 +74,7 @@ namespace StreamFormat::FMT
     template <typename T, typename ParserExecutor>
     struct ParserType<T*, ParserExecutor>
     {
-        static inline void Parse(T*&, ParserExecutor&)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T*&, ParserExecutor&)
         {
             // FIXME
             // TODO
@@ -84,7 +84,7 @@ namespace StreamFormat::FMT
     template <typename T, std::size_t SIZE, typename ParserExecutor>
     struct ParserType<T[SIZE], ParserExecutor>
     {
-        static inline void Parse(T (&)[SIZE], ParserExecutor&)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T (&)[SIZE], ParserExecutor&)
         {
             // FIXME
             // TODO

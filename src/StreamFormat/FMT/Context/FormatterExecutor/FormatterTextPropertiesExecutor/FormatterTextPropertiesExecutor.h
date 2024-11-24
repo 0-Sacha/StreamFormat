@@ -32,35 +32,35 @@ namespace StreamFormat::FMT::Detail
         ~FormatterNOTextPropertiesExecutor() override = default;
 
     public:
-        void AllPropertiesReset() override {}
+        [[nodiscard]] std::expected<void, FMTResult> AllPropertiesReset() override {}
 
     public:
-        void ResetColor() override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::BasicColorFG&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::BasicColorBG&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::BasicColor&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::Color24bFG&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::Color24bBG&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::Color24b&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeFG&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeBG&) override {}
-        void ExecuteColor(const Detail::TextProperties::TextColor::ColorCube&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ResetColor() override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColorFG&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColorBG&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::BasicColor&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24bFG&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24bBG&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::Color24b&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeFG&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCubeBG&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteColor(const Detail::TextProperties::TextColor::ColorCube&) override {}
 
     public:
-        void ResetFront() override {}
-        void ExecuteFront(const Detail::TextProperties::TextFront::FrontID&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ResetFront() override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteFront(const Detail::TextProperties::TextFront::FrontID&) override {}
 
     public:
-        void ResetStyle() override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Intensity&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Italic&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Underline&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::ColorCube&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color24b&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Blink&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Inverted&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Ideogram&) override {}
-        void ExecuteStyle(const Detail::TextProperties::TextStyle::Script&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ResetStyle() override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Intensity&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Italic&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Underline&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::ColorCube&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::UnderlineColor::Color24b&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Blink&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Inverted&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Ideogram&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> ExecuteStyle(const Detail::TextProperties::TextStyle::Script&) override {}
     };
 }

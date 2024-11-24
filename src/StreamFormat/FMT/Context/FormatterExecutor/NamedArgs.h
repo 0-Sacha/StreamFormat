@@ -33,7 +33,10 @@ namespace StreamFormat::FMT
     template <typename T, typename CharName, typename FormatterExecutor>
     struct FormatterType<StringViewNamedArgs<T, CharName>, FormatterExecutor>
     {
-        static inline void Format(const StringViewNamedArgs<T, CharName>& t, FormatterExecutor& executor) { executor.WriteType(t.GetValue()); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const StringViewNamedArgs<T, CharName>& t, FormatterExecutor& executor)
+        {
+            return executor.WriteType(t.GetValue());
+        }
     };
 
     /////---------- stringNamedArgs Allocate memory (Only if necessary) ----------/////
@@ -64,7 +67,10 @@ namespace StreamFormat::FMT
     template <typename T, typename CharName, typename FormatterExecutor>
     struct FormatterType<StringNamedArgs<T, CharName>, FormatterExecutor>
     {
-        static inline void Format(const StringNamedArgs<T, CharName>& t, FormatterExecutor& executor) { executor.WriteType(t.GetValue()); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const StringNamedArgs<T, CharName>& t, FormatterExecutor& executor)
+        {
+            return executor.WriteType(t.GetValue());
+        }
     };
 
     namespace Detail

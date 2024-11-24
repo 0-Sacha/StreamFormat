@@ -109,7 +109,7 @@ namespace StreamFormat::FMT::Detail
         BufferInfo<TChar>& Buffer;
     
     public:
-        BufferManipResult FastReadCharPtrGlobber(std::basic_string_view<TChar> globPattern, TChar* str, std::size_t sizeToCopy)
+        [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtrGlobber(std::basic_string_view<TChar> globPattern, TChar* str, std::size_t sizeToCopy)
         {
             BufferInfo<TChar> globber(globPattern);
             const TChar* begin = Buffer.CurrentPos;
@@ -120,9 +120,9 @@ namespace StreamFormat::FMT::Detail
             return BufferReadManip(subContext).FastReadCharPtr(str, sizeToCopy);
         }
 
-        BufferManipResult FastReadCharPtrRegex(std::basic_string_view<TChar> regexPattern, TChar* str, std::size_t sizeToCopy)
+        [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtrRegex(std::basic_string_view<TChar> regexPattern, TChar* str, std::size_t sizeToCopy)
         {
-            throw FMTImplError{};
+            return std::unexpected(FMTResult::FunctionNotImpl);
         }
     };
 }

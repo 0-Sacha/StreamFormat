@@ -18,7 +18,9 @@ namespace StreamFormat::FMT::Detail
             m_BufferSize = beginSize;
         }
         ~DynamicBufferOutManager() override = default;
-
+        DynamicBufferOutManager(DynamicBufferOutManager&) = delete;
+        DynamicBufferOutManager& operator=(DynamicBufferOutManager&) = delete;
+    
     public:
         static constexpr std::size_t DEFAULT_BEGIN_SIZE  = 128;
         static constexpr std::size_t GROW_UP_BUFFER_SIZE = 2;
@@ -30,8 +32,8 @@ namespace StreamFormat::FMT::Detail
         std::size_t     GetBufferSize() const override { return m_BufferSize; }
 
     public:
-        bool AddSize(const std::size_t count) override { return Resize(count + m_BufferSize); }
-        bool Resize(const std::size_t targetBufferSize);
+        [[nodiscard]] std::expected<void, BufferManagerError> AddSize(const std::size_t count) override { return Resize(count + m_BufferSize); }
+        [[nodiscard]] std::expected<void, BufferManagerError> Resize(const std::size_t targetBufferSize);
 
     protected:
         std::unique_ptr<CharType[]> m_Buffer;
@@ -64,8 +66,9 @@ namespace StreamFormat::FMT::Detail
             : Base(beginSize)
             , m_MeanGeneratedSize(beginSize)
         {}
-
         ~ShrinkDynamicBufferOutManager() override = default;
+        ShrinkDynamicBufferOutManager(ShrinkDynamicBufferOutManager&) = delete;
+        ShrinkDynamicBufferOutManager& operator=(ShrinkDynamicBufferOutManager&) = delete;
 
     protected:
         void BeginContextImpl() override { ShrinkIfNeeded(); }
@@ -85,7 +88,7 @@ namespace StreamFormat::FMT::Detail
     };
 
     template <typename CharType>
-    bool DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize)
+    [[nodiscard]] std::expected<void, BufferManagerError> DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize)
     {
         std::size_t newBufferSize = targetBufferSize;
 
@@ -97,7 +100,8 @@ namespace StreamFormat::FMT::Detail
         }
 
         CharType* newBuffer = new CharType[newBufferSize];
-        if (newBuffer == nullptr) return false;
+        if (newBuffer == nullptr)
+            return std::unexpected(BufferManagerError::AllocationFailed);
 
         std::memcpy(newBuffer, m_Buffer.get(), std::min(newBufferSize, m_BufferSize));
 
@@ -106,6 +110,6 @@ namespace StreamFormat::FMT::Detail
         m_Buffer.reset(newBuffer);
         m_BufferSize = newBufferSize;
 
-        return true;
+        return {};
     }
 }

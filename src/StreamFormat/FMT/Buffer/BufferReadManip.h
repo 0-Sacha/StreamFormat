@@ -15,49 +15,52 @@ namespace StreamFormat::FMT::Detail
     
     public:
         template <typename T>
-        constexpr BufferManipResult FastReadInteger(T& i) noexcept
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastReadInteger(T& t) noexcept
         {
-            T res = 0;
-
             bool sign = false;
             if constexpr (std::is_signed_v<T>)
+                { sign = BufferTestManip(Buffer).IsEqualToForward('-'); }
+
+            if (!BufferTestAccess(Buffer).IsADigit())
+                { return std::unexpected(FMTResult::Parse_NonValidDigit); }
+            
+            T value = static_cast<T>(0);
+            while (BufferTestAccess(Buffer).IsADigit())
             {
-                sign = BufferTestManip(Buffer).IsEqualToForward('-');
-                if (!BufferTestAccess(Buffer).IsADigit()) return false;
+                char c = SF_TRY(BufferManip(Buffer).GetAndForward());
+                value = value * static_cast<T>(10) + static_cast<T>(c - static_cast<TChar>('0'));
             }
 
-            while (BufferTestAccess(Buffer).IsADigit())
-                res = res * static_cast<T>(10) + static_cast<T>(BufferManip(Buffer).ThrowIfFailed().GetAndForward() - static_cast<TChar>('0'));
-
-            i = sign ? -res : res;
-            return true;
+            t = sign ? -value : value;
+            return {};
         }
 
     public:
         template <typename T>
-        constexpr inline BufferManipResult FastReadFloat(T& i, std::int32_t floatPrecision = -1) noexcept
+        [[nodiscard]] constexpr inline std::expected<void, FMTResult> FastReadFloat(T& t, std::int32_t floatPrecision = -1) noexcept
         {
+            T intpart = static_cast<T>(0);
+
             BufferTestAccess access(Buffer);
             BufferTestManip manip(Buffer);
 
-            bool sign = manip.IsEqualToForward('-');
+            bool sign = SF_TRY(manip.IsEqualToForward('-'));
 
-            bool hasIntPart = false;
-            if (access.IsNotEqualTo('.'))
+            if (access.IsADigit())
             {
-                hasIntPart = access.IsADigit();
-                if (hasIntPart == false) return false;
-                T res = 0;
-                while (access.IsADigit())
-                    res = res * static_cast<T>(10) + static_cast<T>(BufferManipException(Buffer).GetAndForward() - static_cast<TChar>('0'));
-                i = sign ? -res : res;
+                SF_TRY(FastReadInteger<T>(intpart));
+            }
+            else if (access.IsEqualTo('.') == false)
+            {
+                SF_TRY(manip.Forward());
+                return std::unexpected(FMTResult::Parse_NonValidDigit);
             }
 
-            if (manip.IsEqualToForward('.') == false) return hasIntPart;
-
             if (floatPrecision < 0)
+            {
                 while (access.IsADigit() && BufferAccess(Buffer).IsEndOfString() == false)
-                    BufferManip(Buffer).ForceForward();
+                    { BufferManip(Buffer).ForceForward(); }
+            }
             else
             {
                 while (access.IsADigit() && floatPrecision > 0 && BufferAccess(Buffer).IsEndOfString() == false)
@@ -68,37 +71,40 @@ namespace StreamFormat::FMT::Detail
             }
             BufferManip(Buffer).ForceBackward();
 
-            T dec = (T)0;
+            T dec = static_cast<T>(0);
             while (access.IsADigit())
             {
                 dec += static_cast<T>(BufferManip(Buffer).GetAndForceBackward() - '0');
                 dec /= 10;
             }
-            i += dec;
-            return true;
+
+            t = sign ? - intpart - dec : intpart + dec;
+            return {};
         }
 
     public:
         template <typename CharPtr>
-        BufferManipResult FastReadCharPtr(const CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true)
+        [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtr(const CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true)
         {
             if (BufferAccess(Buffer).CanMoveForward(sizeToCopy) == false)
+            {
                 return BufferReadManip(Buffer).FastReadCharPtr(str, BufferAccess(Buffer).GetBufferRemainingSize(), isZeroEnded);
+            }
 
             // TODO : Opti with bigger types
             while (sizeToCopy-- != 0)
-                *str++ = BufferManip(Buffer).GetAndForward();
-            if (isZeroEnded) *str = 0;
+                { *str++ = BufferManip(Buffer).GetAndForward(); }
+            if (isZeroEnded) { *str = 0; }
 
-            return true;
+            return {};
         }
         template <typename CharStr, std::size_t SIZE>
-        inline BufferManipResult FastReadCharArray(const CharStr (&str)[SIZE], bool isZeroEnded = true)
+        [[nodiscard]] inline std::expected<void, FMTResult> FastReadCharArray(const CharStr (&str)[SIZE], bool isZeroEnded = true)
         {
             return FastReadCharPtr(str, SIZE);
         }
         template <typename CharStr>
-        inline BufferManipResult FastReadCharBound(const CharStr* begin, const CharStr* end, bool isZeroEnded = true)
+        [[nodiscard]] inline std::expected<void, FMTResult> FastReadCharBound(const CharStr* begin, const CharStr* end, bool isZeroEnded = true)
         {
             return FastReadCharPtr(begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded);
         }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StreamFormat/Core/Core.h"
+#include "StreamFormat/Core/Prelude.h"
 #include "StreamFormat/FLog.h"
 
 namespace StreamFormat::FMT::Detail
@@ -48,7 +48,7 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<Detail::FileLocation, FormatterExecutor>
     {
-        static void Format(const Detail::FileLocation& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const Detail::FileLocation& t, FormatterExecutor& executor)
         {
             executor.WriteType(t.FileName);
             executor.BufferOut.Pushback(':');
@@ -59,7 +59,7 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<Detail::FunctionProperties, FormatterExecutor>
     {
-        static void Format(const Detail::FunctionProperties& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const Detail::FunctionProperties& t, FormatterExecutor& executor)
         {
             executor.WriteType(t.Location);
             executor.BufferOut.WriteCharArray(" @ ");

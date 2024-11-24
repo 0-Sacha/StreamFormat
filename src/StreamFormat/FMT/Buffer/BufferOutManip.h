@@ -31,7 +31,7 @@ namespace StreamFormat::FMT::Detail
         BasicBufferOutManager<CharType>* Manager;
 
     public:
-        void SetManager(BasicBufferOutManager<CharType>& bufferOutManager)
+        [[nodiscard]] std::expected<void, FMTResult> SetManager(BasicBufferOutManager<CharType>& bufferOutManager)
         {
             Manager = &bufferOutManager;
             Manager->BeginContext();
@@ -54,83 +54,72 @@ namespace StreamFormat::FMT::Detail
         BufferOutInfo<TChar>& Buffer;
 
     public:
-        void SetManager(BasicBufferOutManager<TChar>& bufferOutManager)
+        [[nodiscard]] void SetManager(BasicBufferOutManager<TChar>& bufferOutManager) noexcept
         {
-            Buffer.SetManager(bufferOutManager);
+            return Buffer.SetManager(bufferOutManager);
         }
 
-        void ComputeGeneratedSize() { Buffer.Manager->ComputeGeneratedSize(BufferAccess(Buffer).GetBufferCurrentSize()); }
+        void ComputeGeneratedSize() noexcept { Buffer.Manager->ComputeGeneratedSize(BufferAccess(Buffer).GetBufferCurrentSize()); }
 
     public:
-        bool AddSize(const std::size_t count)
+        [[nodiscard]] std::expected<void, FMTResult> AddSize(const std::size_t count) noexcept
         {
-            if (Buffer.Manager == nullptr) throw Detail::FMTShouldNotEndHere{};
-            if (Buffer.CurrentPos > Buffer.BufferEnd) throw Detail::FMTParseError{};
+            if (Buffer.Manager == nullptr)
+                return std::unexpected(FMTResult::NonValidBuffer);
             std::size_t currentSize = BufferAccess(Buffer).GetBufferCurrentSize();
-            if (Buffer.Manager->AddSize(count) == false) return false;
+            if (not Buffer.Manager->AddSize(count))
+                return std::unexpected(FMTResult::Buffer_UnableToReserveMemory);
             BufferManip(Buffer).Set(Buffer.Manager->GetBuffer(), Buffer.Manager->GetBufferSize());
             Buffer.CurrentPos = Buffer.Manager->GetBuffer() + currentSize;
-            return true;
+            return {};
         }
 
-        inline BufferManipResult Reserve(const std::size_t count = 1)
+        [[nodiscard]] inline std::expected<void, FMTResult> Reserve(const std::size_t count = 1) noexcept
         {
             if (Buffer.CurrentPos + count <= Buffer.BufferEnd)
-                return true;
+                return {};
             return AddSize(static_cast<std::size_t>(count));
         }
 
-        inline BufferManipResult Forward(const std::size_t count = 1)
+        [[nodiscard]] inline std::expected<void, FMTResult> Forward(const std::size_t count = 1) noexcept
         {
-            if (Reserve(count))
-            {
-                Buffer.CurrentPos += count;
-                return true;
-            }
-            return false;
+            SF_TRY(Reserve(count));
+            Buffer.CurrentPos += count;
+            return {};
         }
 
     public:
-        inline void SetChar(const TChar c) { *Buffer.CurrentPos = c; }
-        inline BufferManipResult Pushback(const TChar c)
+        inline void SetChar(const TChar c) noexcept { *Buffer.CurrentPos = c; }
+        [[nodiscard]] inline std::expected<void, FMTResult> Pushback(const TChar c) noexcept
         {
-            if (Reserve(1))
-            {
-                *Buffer.CurrentPos++ = c;
-                return true;
-            }
-            return false;
+            SF_TRY(Reserve(1));
+            *Buffer.CurrentPos++ = c;
+            return {};
         }
-        inline BufferManipResult SetInverse(const TChar c)
+        [[nodiscard]] inline std::expected<void, FMTResult> SetInverse(const TChar c) noexcept
         {
-            if (BufferAccess(Buffer).CanMoveBackward(1))
-            {
-                *--Buffer.CurrentPos = c;
-                return true;
-            }
-            return false;
+            SF_TRY(BufferAccess(Buffer).CanMoveBackward(1));
+            *--Buffer.CurrentPos = c;
+            return {};
         }
-        inline void ForcePushback(const TChar c) { *Buffer.CurrentPos++ = c; }
-        inline void ForceSetInverse(const TChar c) { *--Buffer.CurrentPos = c; }
+        inline void ForcePushback(const TChar c) noexcept { *Buffer.CurrentPos++ = c; }
+        inline void ForceSetInverse(const TChar c) noexcept { *--Buffer.CurrentPos = c; }
 
     public:
-        inline BufferManipResult Pushback(const TChar c, auto count)
+        [[nodiscard]] inline std::expected<void, FMTResult> Pushback(const TChar c, auto count) noexcept
         {
-            if (Reserve(count))
-            {
-                while (count-- > 0)
-                    ForcePushback(c);
-                return true;
-            }
-            return false;
+            SF_TRY(Reserve(count))
+            while (count-- > 0)
+                ForcePushback(c);
+            return {};
         }
 
     public:
-        inline void AddSpaces(const auto count) { Pushback(' ', count); }
+        [[nodiscard]] inline std::expected<void, FMTResult> AddSpaces(const auto count) noexcept { return Pushback(' ', count); }
 
-    protected:
+    private:
         template <typename... Rest>
-        inline void PushbackSeqImpl(const TChar c, const Rest... rest)
+        inline void PushbackSeqImpl(const TChar c, const Rest... rest) noexcept
         {
             ForcePushback(c);
             if constexpr (sizeof...(rest) > 0) PushbackSeqImpl(rest...);
@@ -138,14 +127,11 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename... CharToPush>
-        inline BufferManipResult PushbackSeq(const CharToPush... ele)
+        [[nodiscard]] inline std::expected<void, FMTResult> PushbackSeq(const CharToPush... ele) noexcept
         {
-            if (Reserve(sizeof...(ele)))
-            {
-                PushbackSeqImpl(ele...);
-                return true;
-            }
-            return false;
+            SF_TRY(Reserve(sizeof...(ele)))
+            PushbackSeqImpl(ele...);
+            return {};
         }
     };
 }

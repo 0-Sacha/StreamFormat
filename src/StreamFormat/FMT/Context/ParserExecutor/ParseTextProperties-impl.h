@@ -11,36 +11,36 @@ namespace StreamFormat::FMT
     template <typename ParserExecutor>
     struct ParserType<Detail::TextProperties::ResetProperties, ParserExecutor>
     {
-        static void Parse(Detail::TextProperties::ResetProperties, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(Detail::TextProperties::ResetProperties, ParserExecutor& executor)
         {
-            executor.TextManager.AllPropertiesReset();
+            return executor.TextManager.AllPropertiesReset();
         }
     };
 
     template <typename ParserExecutor>
     struct ParserType<Detail::TextProperties::TextColor::ResetColor, ParserExecutor>
     {
-        static void Parse(Detail::TextProperties::TextColor::ResetColor, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(Detail::TextProperties::TextColor::ResetColor, ParserExecutor& executor)
         {
-            executor.TextManager.ApplyColorReset();
+            return executor.TextManager.ApplyColorReset();
         }
     };
 
     template <typename ParserExecutor>
     struct ParserType<Detail::TextProperties::TextStyle::ResetStyle, ParserExecutor>
     {
-        static void Parse(Detail::TextProperties::TextStyle::ResetStyle, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(Detail::TextProperties::TextStyle::ResetStyle, ParserExecutor& executor)
         {
-            executor.TextManager.ApplyStyleReset();
+            return executor.TextManager.ApplyStyleReset();
         }
     };
 
     template <typename ParserExecutor>
     struct ParserType<Detail::TextProperties::TextFront::ResetFront, ParserExecutor>
     {
-        static void Parse(Detail::TextProperties::TextFront::ResetFront, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(Detail::TextProperties::TextFront::ResetFront, ParserExecutor& executor)
         {
-            executor.TextManager.ApplyFrontReset();
+            return executor.TextManager.ApplyFrontReset();
         }
     };
 
@@ -52,9 +52,9 @@ namespace StreamFormat::FMT
     requires Detail::TextPropertiesColorIsApply<T>
     struct ParserType<T, ParserExecutor>
     {
-        static void Parse(T& t, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T& t, ParserExecutor& executor)
         {
-            executor.TextManager.AskApplyColor(t);
+            return executor.TextManager.AskApplyColor(t);
         }
     };
 
@@ -62,9 +62,9 @@ namespace StreamFormat::FMT
     requires Detail::TextPropertiesStyleIsApply<T>
     struct ParserType<T, ParserExecutor>
     {
-        static void Parse(T& t, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T& t, ParserExecutor& executor)
         {
-            executor.TextManager.AskApplyStyle(t);
+            return executor.TextManager.AskApplyStyle(t);
         }
     };
 
@@ -72,9 +72,9 @@ namespace StreamFormat::FMT
     requires Detail::TextPropertiesFrontIsApply<T>
     struct ParserType<T, ParserExecutor>
     {
-        static void Parse(T& t, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Parse(T& t, ParserExecutor& executor)
         {
-            executor.TextManager.AskApplyFront(t);
+            return executor.TextManager.AskApplyFront(t);
         }
     };
 }

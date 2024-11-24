@@ -1,12 +1,8 @@
 #pragma once
 
-#include "StreamFormat/Core/Core.h"
-
+#include "StreamFormat/Core/Prelude.h"
 #include "TypesTraits.h"
-
-#include "Exception.h"
-#include "IndentHandlers.h"
-#include "Specifiers.h"
+#include "FMTResult.h"
 
 #define UNKOWN_TYPE_MESSAGE
 
@@ -36,7 +32,7 @@ namespace StreamFormat::FMT::Context
     template <typename TChar>
     class BasicFormatterExecutor;
 
-    struct ParserContextError;
+    struct ParserFMTError;
 
     template <typename TChar>
     class BasicParserExecutor;

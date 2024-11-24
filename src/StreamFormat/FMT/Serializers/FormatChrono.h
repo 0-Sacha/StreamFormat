@@ -19,12 +19,12 @@ namespace StreamFormat::FMT::Detail
     };
 
     template <typename Clock, typename Duration, typename TChar>
-    BufferManipResult WriteSubTime_(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar>& pattern, FMTBufferOutInfo<TChar>& buffer, TimePrintMode mode)
+    [[nodiscard]] std::expected<void, FMTResult> WriteSubTime_(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar>& pattern, FMTBufferOutInfo<TChar>& buffer, TimePrintMode mode)
     {
         ShiftInfo shift;
         shift.Type = Detail::ShiftInfo::ShiftType::Right;
         shift.Print = Detail::ShiftInfo::ShiftPrint('0', ' ');
-        BufferReadManip(pattern).FastReadInteger(shift.Size);
+        SF_TRY(BufferReadManip(pattern).FastReadInteger(shift.Size));
 
         if (mode == TimePrintMode::Mod && shift.Size < 0)
             shift.Size = 3;
@@ -34,7 +34,7 @@ namespace StreamFormat::FMT::Detail
             std::uint32_t ns = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 ns = ns % 1000;
-            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ns) % 1000, shift);
+            SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ns) % 1000, shift));
         }
         else if (BufferTestManip(pattern).IsSameForward("us", 2))
         {
@@ -43,7 +43,7 @@ namespace StreamFormat::FMT::Detail
                 us = us % 1000;
             else if (mode == TimePrintMode::Sub)
                 us = us / 1000;
-            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(us) % 1000, shift);
+            SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(us) % 1000, shift));
         }
         else if (BufferTestManip(pattern).IsSameForward("ms", 2))
         {
@@ -52,7 +52,7 @@ namespace StreamFormat::FMT::Detail
                 ms = ms % 1000;
             else if (mode == TimePrintMode::Sub)
                 ms = ms / 1000000;
-            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ms) % 1000, shift);
+            SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ms) % 1000, shift));
         }
         else if (BufferTestManip(pattern).IsEqualToForward('s'))
         {
@@ -61,28 +61,28 @@ namespace StreamFormat::FMT::Detail
                 sec = sec % 60;
             else if (mode == TimePrintMode::Sub)
                 sec = sec / 1000000000;
-            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(sec) % 1000, shift);
+            SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(sec) % 1000, shift));
         }
         else if (BufferTestManip(pattern).IsEqualToForward('m'))
         {
             std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 min = min % 60;
-            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift);
+            SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift));
         }
         else if (BufferTestManip(pattern).IsEqualToForward('h'))
         {
             std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 min = min % 24;
-            FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift);
+            SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift));
         }
 
         return true;
     }
 
     template <typename Clock, typename Duration, typename TChar>
-    BufferManipResult WriteTime(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar> pattern, FMTBufferOutInfo<TChar>& buffer)
+    [[nodiscard]] std::expected<void, FMTResult> WriteTime(const std::chrono::time_point<Clock, Duration>& value, BufferInfoView<TChar> pattern, FMTBufferOutInfo<TChar>& buffer)
     {
         BufferWriteManip(buffer).FastWriteString(
             BufferTestManip(pattern).ViewExec(
@@ -118,7 +118,7 @@ namespace StreamFormat::FMT
     template <typename T, typename FormatterExecutor>
     struct FormatterType<std::chrono::time_point<T>, FormatterExecutor>
     {
-        static void Format(const std::chrono::time_point<T>& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::chrono::time_point<T>& t, FormatterExecutor& executor)
         {
             Detail::WriteTime(t, Detail::BufferInfoView(executor.Data.Specifiers.GetAsText("pattern", "%h:%m:%s.%ms")), executor.BufferOut);
         }
@@ -127,7 +127,7 @@ namespace StreamFormat::FMT
     template <typename Rep, typename Period, typename FormatterExecutor>
     struct FormatterType<std::chrono::duration<Rep, Period>, FormatterExecutor>
     {
-        static void Format(const std::chrono::duration<Rep, Period>& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::chrono::duration<Rep, Period>& t, FormatterExecutor& executor)
         {
             if (executor.Data.Specifiers.Has("pattern"))
             {

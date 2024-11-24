@@ -1,21 +1,13 @@
 #pragma once
 
-#include "StreamFormat/Core/Core.h"
+#include "StreamFormat/Core/Prelude.h"
 
 #include <string>
 
 namespace StreamFormat::FMT::Detail
 {
-    //--------------------------------------------//
-    //----------------- BaseType -----------------//
-    //--------------------------------------------//
-
     template <typename T>
     using GetBaseType = std::remove_cv_t<std::remove_reference_t<T>>;
-
-    //------------------------------------------------------//
-    //----------------- CXX Types Concepts -----------------//
-    //------------------------------------------------------//
 
     template <typename T>
     struct IsCharType

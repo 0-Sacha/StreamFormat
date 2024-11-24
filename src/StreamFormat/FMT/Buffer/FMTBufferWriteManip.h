@@ -20,9 +20,11 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename T>
-        void WriteInteger(T i, Detail::ShiftInfo shift = Detail::ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> WriteInteger(T i, Detail::ShiftInfo shift = Detail::ShiftInfo{})
         {
-            shift.Print.ValidateForNumber();
+            char oldBefore = shift.Print.Before;
+            if (shift.Print.Before >= '0' && shift.Print.Before <= '9')
+                shift.Print.Before = ' ';
 
             std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(i);
 
@@ -55,13 +57,17 @@ namespace StreamFormat::FMT::Detail
             }
 
             BufferShiftWriteManip(Buffer).WriteShiftEnd(shift);
+
+            shift.Print.Before = oldBefore;
         }
 
     public:
         template <typename T>
-        void WriteFloat(T i, std::int32_t floatPrecision = 2, Detail::ShiftInfo shift = Detail::ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> WriteFloat(T i, std::int32_t floatPrecision = 2, Detail::ShiftInfo shift = Detail::ShiftInfo{})
         {
-            shift.Print.ValidateForNumber();
+            char oldBefore = shift.Print.Before;
+            if (shift.Print.Before >= '0' && shift.Print.Before <= '9')
+                shift.Print.Before = ' ';
 
             std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(std::trunc(i));
 
@@ -104,11 +110,13 @@ namespace StreamFormat::FMT::Detail
             }
 
             BufferShiftWriteManip(Buffer).WriteShiftEnd(shift);
+
+            shift.Print.Before = oldBefore;
         }
 
     public:
         template <typename T>
-        void WriteIntegerH(T i, std::uint8_t digitSize, const TChar* const lut, TChar base_prefix = '\0', ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> WriteIntegerH(T i, std::uint8_t digitSize, const TChar* const lut, TChar base_prefix = '\0', ShiftInfo shift = ShiftInfo{})
         {
             BufferOutManip manip(Buffer);
 
@@ -144,7 +152,7 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename T>
-        void WriteIntegerFormatData(T i, const FormatData<TChar>& formatData)
+        [[nodiscard]] std::expected<void, FMTResult> WriteIntegerFormatData(T i, const FormatData<TChar>& formatData)
         {
             if (formatData.HasSpec)
             {
@@ -171,7 +179,7 @@ namespace StreamFormat::FMT::Detail
             return BufferWriteManip(Buffer).FastWriteInteger(i);
         }
         template <typename T>
-        void WriteFloatFormatData(T i, const FormatData<TChar>& formatData)
+        [[nodiscard]] std::expected<void, FMTResult> WriteFloatFormatData(T i, const FormatData<TChar>& formatData)
         {
             if (formatData.HasSpec)
             {
@@ -184,7 +192,7 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename CharStr>
-        inline void WriteIndentCharPtr(const CharStr* str, std::size_t size)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteIndentCharPtr(const CharStr* str, std::size_t size)
         {
             while (size > 0)
             {
@@ -206,23 +214,23 @@ namespace StreamFormat::FMT::Detail
             }
         }
         template <typename CharStr>
-        inline void WriteIndentCharBound(const CharStr* begin, const CharStr* end)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteIndentCharBound(const CharStr* begin, const CharStr* end)
         {
             WriteIndentCharPtr(begin, end - begin);
         }
         template <typename CharStr>
-        inline void WriteIndentString(std::basic_string_view<CharStr> str)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteIndentString(std::basic_string_view<CharStr> str)
         {
             WriteIndentCharPtr(str.data(), str.size());
         }
 
         template <typename CharStr>
-        inline void WriteCharPtr(const CharStr* str, std::size_t size, ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteCharPtr(const CharStr* str, std::size_t size, ShiftInfo& shift)
         {
             if (shift.Size <= 0)
                 return BufferWriteManip(Buffer).FastWriteCharArray(str, size);
             
-            BufferOutManip(Buffer).Reserve(std::max(static_cast<std::size_t>(shift.Size), size)).ThrowIfFailed();
+            BufferOutManip(Buffer).Reserve(std::max(static_cast<std::size_t>(shift.Size), size));
 
             if (static_cast<std::size_t>(shift.Size) > size)
             {
@@ -240,14 +248,14 @@ namespace StreamFormat::FMT::Detail
             }
         }
         template <typename CharStr>
-        inline void WriteCharBound(const CharStr* begin, const CharStr* end, ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteCharBound(const CharStr* begin, const CharStr* end, ShiftInfo& shift)
         {
-            WriteCharPtr(begin, end - begin, shift);
+            return WriteCharPtr(begin, end - begin, shift);
         }
         template <typename CharStr>
-        inline void WriteString(std::basic_string_view<CharStr> str, ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteString(std::basic_string_view<CharStr> str, ShiftInfo& shift)
         {
-            WriteCharPtr(str.data(), str.size(), shift);
+            return WriteCharPtr(str.data(), str.size(), shift);
         }
     };
 }

@@ -57,11 +57,11 @@ namespace StreamFormat::FMT::Detail
     public:
         template <typename T>
         requires std::is_integral_v<T>
-        constexpr void FastWriteInteger(T i)
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteInteger(T i)
         {
             BufferOutManip manip(Buffer);
 
-            if (i == 0) { manip.Pushback('0'); return; }
+            if (i == 0) { manip.Pushback('0'); return {}; }
 
             if constexpr (std::is_signed_v<T>)
             {
@@ -69,28 +69,28 @@ namespace StreamFormat::FMT::Detail
             }
 
             std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(i);
-            manip.Forward(nbDigit).ThrowIfFailed();
+            SF_TRY(manip.Forward(nbDigit));
             while (i > 0)
             {
-                if (BufferAccess(Buffer).IsOutOfBound())
-                    BufferAccess(Buffer).IsOutOfBound();
                 manip.ForceSetInverse(i % 10 + '0');
                 i /= 10;
             }
-            manip.Forward(nbDigit).ThrowIfFailed();
+            SF_TRY(manip.Forward(nbDigit));
+
+            return {};
         }
 
     public:
         template <typename T>
         requires std::is_floating_point_v<T>
-        void FastWriteFloat(T i, std::int32_t floatPrecision = 2)
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteFloat(T i, std::int32_t floatPrecision = 2)
         {
             BufferOutManip manip(Buffer);
 
             if (i == 0)
-                { manip.Pushback('0'); return; }
+                { SF_TRY(manip.Pushback('0')); return {}; }
             if (i < 0)
-                { manip.Pushback('-'); i = -i; }
+                { SF_TRY(manip.Pushback('-')); i = -i; }
 
             T k = std::trunc(i);
             i = i - k;
@@ -116,7 +116,7 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename CharInput>
-        void FastWriteCharArray(const CharInput* str, std::size_t size)
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteCharArray(const CharInput* str, std::size_t size)
         {
             if (BufferOutManip(Buffer).Reserve(size) == false) 
                 return FastWriteCharArray(str, BufferAccess(Buffer).GetBufferRemainingSize());
@@ -126,30 +126,34 @@ namespace StreamFormat::FMT::Detail
                 BufferOutManip(Buffer).ForcePushback(*str++);
         }
         template <typename CharInput>
-        inline void FastWriteString(std::basic_string_view<CharInput> sv)
+        [[nodiscard]] inline constexpr std::expected<void, FMTResult> FastWriteString(std::basic_string_view<CharInput> sv)
         {
-            FastWriteCharArray(sv.data(), sv.size());
+            return FastWriteCharArray(sv.data(), sv.size());
         }
-        inline void FastWriteString(std::basic_string_view<TChar> sv)
+        [[nodiscard]] inline std::expected<void, FMTResult> FastWriteString(std::basic_string_view<TChar> sv)
         {
-            FastWriteCharArray(sv.data(), sv.size());
+            return FastWriteCharArray(sv.data(), sv.size());
         }
         template <typename CharInput, std::size_t SIZE>
-        inline void FastWriteStringLitteral(CharInput (&str)[SIZE])
+        [[nodiscard]] inline std::expected<void, FMTResult> FastWriteStringLitteral(CharInput (&str)[SIZE])
         {
             std::size_t size = SIZE;
             while (str[size - 1] == 0) --size;
-            FastWriteCharArray(str, size);
+            return FastWriteCharArray(str, size);
         }
 
     public:
-        template <typename CharInput> inline void BasicWriteType(std::basic_string_view<CharInput> str) { FastWriteString(str); }
-        template <typename CharInput, std::size_t SIZE> inline void BasicWriteType(CharInput (&str)[SIZE]) { FastWriteStringLitteral(str); }
-        template <typename T> requires std::is_integral_v<T> void BasicWriteType(T t) { FastWriteInteger(t); }
-        template <typename T> requires std::is_floating_point_v<T> void BasicWriteType(T t) { FastWriteFloat(t); }
+        template <typename CharInput>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(std::basic_string_view<CharInput> str) { return FastWriteString(str); }
+        template <typename CharInput, std::size_t SIZE>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(CharInput (&str)[SIZE]) { return FastWriteStringLitteral(str); }
+        template <typename T> requires std::is_integral_v<T>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(T t) { return FastWriteInteger(t); }
+        template <typename T> requires std::is_floating_point_v<T>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(T t) { return FastWriteFloat(t); }
 
         template <typename Type, typename... Rest>
-        inline void BasicWriteType(Type&& type, Rest&&... rest)
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(Type&& type, Rest&&... rest)
         {
             BasicWriteType(type);
             if constexpr (sizeof...(rest) > 0)

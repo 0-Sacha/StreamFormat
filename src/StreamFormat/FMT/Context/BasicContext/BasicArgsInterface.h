@@ -1,7 +1,8 @@
 #pragma once
 
 #include "StreamFormat/FMT/Detail/ConvertTraits.h"
-#include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Detail/Prelude.h"
+#include "StreamFormat/FMT/Buffer/BufferInfo.h"
 
 #include <any>
 #include <functional>
@@ -35,30 +36,27 @@ namespace StreamFormat::FMT::Detail
         virtual size_t Size() = 0;
 
     public:
-        virtual void RunTypeAtIndex(std::int32_t idx) = 0;
-
-        virtual std::int32_t GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) = 0;
-        virtual std::int32_t GetFormatIndexAt(std::int32_t idx) = 0;
-
-        virtual PointerID GetTypeAt(std::int32_t idx) = 0;
-        virtual typename std::basic_string_view<TChar> GetStringAt(std::int32_t idx) = 0;
-        virtual int64_t GetIntAt(std::int32_t idx) = 0;
+        [[nodiscard]] virtual std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t idx) = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> RunTypeAtIndex(std::int32_t idx) = 0;
+        [[nodiscard]] virtual std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) = 0;
+        [[nodiscard]] virtual std::expected<typename std::basic_string_view<TChar>, FMTResult> GetStringAt(std::int32_t idx) = 0;
+        [[nodiscard]] virtual std::expected<std::int64_t, FMTResult> GetIntAt(std::int32_t idx) = 0;
 
     public:
         template <typename T>
-        const T* GetTypeAtIndex(std::int32_t idx)
+        [[nodiscard]] std::expected<const T*, FMTResult> GetTypeAt(std::int32_t idx)
         {
-            PointerID ptr = GetTypeAt(idx);
+            PointerID ptr = SF_TRY(GetPointerIDAt(idx));
             if (ptr.TypeInfo != typeid(T))
-                return nullptr;
-            return static_cast<const T*>(ptr.Ptr);
+                { return std::unexpected(FMTResult::ArgsInterface_InvalidTypeID); }
+            return reinterpret_cast<const T*>(ptr.Ptr);
         }
 
         template <typename T>
-        void RunFuncFromTypeAtIndex(std::int32_t idx, std::function<void(const T&)> func)
+        [[nodiscard]] std::expected<void, FMTResult> RunFuncFromTypeAtIndex(std::int32_t idx, std::function<void(const T&)> func)
         {
-            const T* value = GetTypeAtIndex<T>(idx);
-            if (value != nullptr) func(*value);
+            const T* value = SF_TRY(GetTypeAt<T>(idx));
+            func(*value);
         }
     };
 
@@ -73,13 +71,10 @@ namespace StreamFormat::FMT::Detail
         size_t Size() override { return 0; }
 
     public:
-        void RunTypeAtIndex(std::int32_t) override {}
-
-        std::int32_t GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) override { return std::int32_t{-1}; }
-        std::int32_t GetFormatIndexAt(std::int32_t) override { return std::int32_t{-1}; }
-
-        PointerID GetTypeAt(std::int32_t) override { return PointerID{.TypeInfo = typeid(void), .Ptr = nullptr}; }
-        std::basic_string_view<TChar> GetStringAt(std::int32_t) override { return ""; }
-        std::int64_t GetIntAt(std::int32_t) override { return 0; }
+        [[nodiscard]] std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
+        [[nodiscard]] std::expected<PointerID, FMTResult> RunTypeAtIndex(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
+        [[nodiscard]] std::expected<std::basic_string_view<TChar>, FMTResult> GetStringAt(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
+        [[nodiscard]] std::expected<std::int64_t, FMTResult> GetIntAt(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
     };
 }

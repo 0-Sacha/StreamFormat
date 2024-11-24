@@ -40,23 +40,23 @@ namespace StreamFormat::FMT::Detail
         FMTBufferOutInfo<TChar>& Buffer;
 
     public:
-        constexpr inline void        AddNoStride(const std::size_t noStride) noexcept { Buffer.NoStride += noStride; }
+        constexpr inline void AddNoStride(const std::size_t noStride) noexcept { Buffer.NoStride += noStride; }
 
-        constexpr inline void        AddIndent(const std::size_t indent) noexcept { Buffer.Indent += indent; }
-        constexpr inline void        RemoveIndent(const std::size_t indent) noexcept { Buffer.Indent -= indent; }
-        constexpr inline void        SetIndent() noexcept { Buffer.Indent = BufferManip(Buffer).GetBufferCurrentSize() - Buffer.NoStride; }
+        constexpr inline void AddIndent(const std::size_t indent) noexcept { Buffer.Indent += indent; }
+        constexpr inline void RemoveIndent(const std::size_t indent) noexcept { Buffer.Indent -= indent; }
+        constexpr inline void SetIndent() noexcept { Buffer.Indent = BufferManip(Buffer).GetBufferCurrentSize() - Buffer.NoStride; }
     
     public:
-        constexpr inline void NewLineIndent()
+        [[nodiscard]] constexpr inline std::expected<void, FMTResult> NewLineIndent()
         {
-            BufferOutManip(Buffer).Pushback('\n');
-            BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
+            SF_TRY(BufferOutManip(Buffer).Pushback('\n'));
+            return BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
         }
 
-        constexpr inline void PushbackCheckIndent(const TChar c)
+        [[nodiscard]] constexpr inline std::expected<void, FMTResult> PushbackCheckIndent(const TChar c)
         {
-            BufferOutManip(Buffer).Pushback(c);
-            if (c == '\n') BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
+            SF_TRY(BufferOutManip(Buffer).Pushback(c));
+            return if (c == '\n') BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
         }
     };
 
@@ -75,29 +75,31 @@ namespace StreamFormat::FMT::Detail
             BufferTestManip(Buffer).GoTo(ele..., '}');
         }
         template <typename... CharToTest>
-        inline void ParamGoToForward(const CharToTest... ele)
+        [[nodiscard]] inline std::expected<void, FMTResult> ParamGoToForward(const CharToTest... ele)
         {
-            BufferTestManip(Buffer).GoToForward(ele..., '}');
+            return BufferTestManip(Buffer).GoToForward(ele..., '}');
         }
 
-        inline BufferManipResult IsBeginOfParameter()
+        inline bool IsBeginOfParameter()
         {
             return BufferTestAccess(Buffer).IsEqualTo('{');
         }
-        inline BufferManipResult IsEndOfParameter()
+        inline bool IsEndOfParameter()
         {
             return BufferTestAccess(Buffer).IsEqualTo('}');
         }
 
     public:
         template <typename CharToTest>
-        bool NextIsNamedArgs(const std::basic_string_view<CharToTest>& sv)
+        [[nodiscard]] std::expected<bool, FMTResult> NextIsNamedArgs(const std::basic_string_view<CharToTest>& sv)
         {
             BufferTestAccess access(Buffer);
             BufferTestManip manip(Buffer);
 
             TChar* const oldpos = Buffer.CurrentPos;
-            if (manip.IsSameForward(sv) && (access.IsEqualTo(':') || access.IsEqualTo('}'))) return true;
+            auto isSame = SF_TRY(manip.IsSameForward(sv));
+            if (isSame && (access.IsEqualTo(':') || access.IsEqualTo('}')))
+                { return true; }
             Buffer.CurrentPos = oldpos;
             return false;
         }

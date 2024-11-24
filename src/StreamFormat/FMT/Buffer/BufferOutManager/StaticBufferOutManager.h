@@ -9,6 +9,8 @@ namespace StreamFormat::FMT::Detail
     {
     public:
         ~StaticBufferOutManager() override = default;
+        StaticBufferOutManager(StaticBufferOutManager&) = delete;
+        StaticBufferOutManager& operator=(StaticBufferOutManager&) = delete;
 
     public:
         CharType*       GetBuffer() override { return m_Buffer; }
@@ -16,7 +18,10 @@ namespace StreamFormat::FMT::Detail
         std::size_t     GetBufferSize() const override { return Count; }
 
     public:
-        bool AddSize(const std::size_t) override { return false; }
+        [[nodiscard]] std::expected<void, BufferManagerError> AddSize(const std::size_t) override
+        {
+            return std::unexpected(BufferManagerError::StaticMemoryManager);
+        }
 
     private:
         CharType m_Buffer[Count];

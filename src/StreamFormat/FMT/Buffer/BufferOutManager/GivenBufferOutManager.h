@@ -21,13 +21,19 @@ namespace StreamFormat::FMT::Detail
 
         ~GivenBufferOutManager() override = default;
 
+        GivenBufferOutManager(GivenBufferOutManager&) = delete;
+        GivenBufferOutManager& operator=(GivenBufferOutManager&) = delete;
+
     public:
         CharType*       GetBuffer() override { return m_Buffer; }
         const CharType* GetBuffer() const override { return m_Buffer; }
         std::size_t     GetBufferSize() const override { return m_BufferSize; }
 
     public:
-        bool AddSize(const std::size_t /* count */) override { return false; }
+        [[nodiscard]] std::expected<void, BufferManagerError> AddSize(const std::size_t /* count */) override
+        {
+            return std::unexpected(BufferManagerError::StaticMemoryManager);
+        }
 
     private:
         CharType*   m_Buffer;

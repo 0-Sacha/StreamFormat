@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StreamFormat/Core/Core.h"
+#include "StreamFormat/Core/Prelude.h"
 #include "StreamFormat/FLog.h"
 
 #include "AllEvents.h"

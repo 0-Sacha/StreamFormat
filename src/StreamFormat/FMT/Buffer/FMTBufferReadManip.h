@@ -18,7 +18,7 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename T>
-        void ReadInteger(T& i, ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> ReadInteger(T& i, ShiftInfo shift = ShiftInfo{})
         {
             BufferShiftReadManip shiftManip(Buffer);
             Detail::BufferTestAccess access(Buffer);
@@ -44,13 +44,11 @@ namespace StreamFormat::FMT::Detail
 
             shiftManip.SkipShiftEnd(shift);
 
-            if (shift.Size > 0) throw FMTParseError();
-
             i = sign ? -res : res;
         }
     public:
         template <typename T>
-        void ReadFloat(T& i, std::int32_t floatPrecision = -1, ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> ReadFloat(T& i, std::int32_t floatPrecision = -1, ShiftInfo shift = ShiftInfo{})
         {
             BufferShiftReadManip shiftManip(Buffer);
             Detail::BufferTestAccess access(Buffer);
@@ -104,14 +102,12 @@ namespace StreamFormat::FMT::Detail
 
             shiftManip.SkipShiftEnd(shift);
 
-            if (shift.Size > 0) throw FMTParseError();
-
             sign ? i = -res - dec : i = res + dec;
         }
 
     public:
         template <typename T>
-        void ReadIntegerH(T& i, std::uint8_t digitSize, std::uint8_t (&digitLUT)(TChar), TChar base_prefix = '\0', ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> ReadIntegerH(T& i, std::uint8_t digitSize, std::uint8_t (&digitLUT)(TChar), TChar base_prefix = '\0', ShiftInfo shift = ShiftInfo{})
         {
             BufferShiftReadManip shiftManip(Buffer);
             Detail::BufferTestAccess access(Buffer);
@@ -123,7 +119,7 @@ namespace StreamFormat::FMT::Detail
             shiftManip.SkipShiftBeginSpace(shift);
 
             if (base_prefix != '\0')
-                { manip.Skip('0'); manip.Skip(base_prefix); }
+                { manip.SkipOneOf('0'); manip.SkipOneOf(base_prefix); }
 
             T res = 0;
 
@@ -135,8 +131,6 @@ namespace StreamFormat::FMT::Detail
             }
 
             shiftManip.SkipShiftEnd(shift);
-
-            if (shift.Size > 0) throw FMTParseError();
 
             i = res;
         }
@@ -179,7 +173,7 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename T, typename FormatDataCharType>
-        void ReadIntegerFormatData(T& i, const FormatData<FormatDataCharType>& formatData)
+        [[nodiscard]] std::expected<void, FMTResult> ReadIntegerFormatData(T& i, const FormatData<FormatDataCharType>& formatData)
         {
             if (formatData.HasSpec)
             {
@@ -187,7 +181,7 @@ namespace StreamFormat::FMT::Detail
                 {
                     case IntegerPrintBase::Dec:
                         if (formatData.Shift.Type == ShiftInfo::ShiftType::Nothing)
-                            return BufferReadManip(Buffer).FastReadInteger(i).ThrowIfFailed();
+                            return BufferReadManip(Buffer).FastReadInteger(i);
                         else
                             return ReadInteger(i, formatData.Shift);
                     case IntegerPrintBase::Bin:
@@ -202,37 +196,37 @@ namespace StreamFormat::FMT::Detail
                         return ReadIntegerH(i, 4, DigitLUT_HEXUPPER, formatData.PrefixSuffix ? (char)formatData.IntegerPrint : '\0', formatData.Shift);
                 }
             }
-            return BufferReadManip(Buffer).FastReadInteger(i).ThrowIfFailed();
+            return BufferReadManip(Buffer).FastReadInteger(i);
         }
         template <typename T, typename FormatDataCharType>
-        void ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData)
+        [[nodiscard]] std::expected<void, FMTResult> ReadFloatFormatData(T& i, const FormatData<FormatDataCharType>& formatData)
         {
             if (formatData.HasSpec)
             {
                 if (formatData.ShiftType == ShiftInfo::ShiftType::Nothing)
-                    return BufferReadManip(Buffer).FastReadFloat(i, formatData.FloatPrecision).ThrowIfFailed();
+                    return BufferReadManip(Buffer).FastReadFloat(i, formatData.FloatPrecision);
                 else
                     return ReadFloat(i, formatData.FloatPrecision, formatData.Shift);
             }
-            return BufferReadManip(Buffer).FastReadFloat(i, formatData.FloatPrecision).ThrowIfFailed();
+            return BufferReadManip(Buffer).FastReadFloat(i, formatData.FloatPrecision);
         }
 
     public:
         template <typename CharStr>
-        void ReadCharPtr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite, ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] std::expected<void, FMTResult> ReadCharPtr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite, ShiftInfo shift = ShiftInfo{})
         {
             // FIXME
             // TODO
-            throw FMTImplError{};
+            return std::unexpected(FMTResult::FunctionNotImpl);
         }
 
         template <typename CharStr, std::size_t SIZE>
-        inline void ReadCharArray(const CharStr (&str)[SIZE], ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] inline std::expected<void, FMTResult> ReadCharArray(const CharStr (&str)[SIZE], ShiftInfo shift = ShiftInfo{})
         {
             ReadCharPtr(str, SIZE, 0, shift);
         }
         template <typename CharStr>
-        inline void ReadCharBound(const CharStr* begin, const CharStr* end, ShiftInfo shift = ShiftInfo{})
+        [[nodiscard]] inline std::expected<void, FMTResult> ReadCharBound(const CharStr* begin, const CharStr* end, ShiftInfo shift = ShiftInfo{})
         {
             ReadCharPtr(begin, end - begin, 0, shift);
         }

@@ -2,7 +2,7 @@
 
 #include "FormatterType.h"
 #include "StreamFormat/FMT/Context/Utils/ContextFunctions.h"
-#include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Detail/Prelude.h"
 
 #include <algorithm>
 #include <utility>
@@ -88,7 +88,7 @@ namespace StreamFormat::FMT
     template <typename T, typename FormatterExecutor>
     struct FormatterType<ForwardAsSTDEnumerable<T>, FormatterExecutor>
     {
-        static void Format(const T& container, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const T& container, FormatterExecutor& executor)
         {
             STDEnumerable<T> enumerable(container, executor.Data.GetAsText("join", STDEnumerableUtility::DefaultJoin),
                                         executor.Data.GetAsText("begin", STDEnumerableUtility::DefaultBegin),
@@ -96,7 +96,7 @@ namespace StreamFormat::FMT
                                         executor.Data.GetAsNumber("begin", 0),
                                         executor.Data.GetAsNumber("size", -1));
 
-            executor.WriteType(enumerable);
+            return executor.WriteType(enumerable);
         }
     };
 

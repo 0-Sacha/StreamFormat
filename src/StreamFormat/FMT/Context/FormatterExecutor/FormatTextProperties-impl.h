@@ -11,36 +11,36 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<Detail::TextProperties::ResetProperties, FormatterExecutor>
     {
-        static void Format(const Detail::TextProperties::ResetProperties, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const Detail::TextProperties::ResetProperties, FormatterExecutor& executor)
         {
-            executor.TextManager.AllPropertiesReset();
+            return executor.TextManager.AllPropertiesReset();
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<Detail::TextProperties::TextColor::ResetColor, FormatterExecutor>
     {
-        static void Format(const Detail::TextProperties::TextColor::ResetColor, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const Detail::TextProperties::TextColor::ResetColor, FormatterExecutor& executor)
         {
-            executor.TextManager.ApplyColorReset();
+            return executor.TextManager.ApplyColorReset();
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<Detail::TextProperties::TextStyle::ResetStyle, FormatterExecutor>
     {
-        static void Format(const Detail::TextProperties::TextStyle::ResetStyle, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const Detail::TextProperties::TextStyle::ResetStyle, FormatterExecutor& executor)
         {
-            executor.TextManager.ApplyStyleReset();
+            return executor.TextManager.ApplyStyleReset();
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<Detail::TextProperties::TextFront::ResetFront, FormatterExecutor>
     {
-        static void Format(const Detail::TextProperties::TextFront::ResetFront, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const Detail::TextProperties::TextFront::ResetFront, FormatterExecutor& executor)
         {
-            executor.TextManager.ApplyFrontReset();
+            return executor.TextManager.ApplyFrontReset();
         }
     };
 
@@ -52,9 +52,9 @@ namespace StreamFormat::FMT
     requires Detail::TextPropertiesColorIsApply<T>
     struct FormatterType<T, FormatterExecutor>
     {
-        static void Format(const T& t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const T& t, FormatterExecutor& executor)
         {
-            executor.TextManager.AskApplyColor(t);
+            return executor.TextManager.AskApplyColor(t);
         }
     };
 
@@ -62,9 +62,9 @@ namespace StreamFormat::FMT
     requires Detail::TextPropertiesStyleIsApply<T>
     struct FormatterType<T, FormatterExecutor>
     {
-        static void Format(const T& t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const T& t, FormatterExecutor& executor)
         {
-            executor.TextManager.AskApplyStyle(t);
+            return executor.TextManager.AskApplyStyle(t);
         }
     };
 
@@ -72,9 +72,9 @@ namespace StreamFormat::FMT
     requires Detail::TextPropertiesFrontIsApply<T>
     struct FormatterType<T, FormatterExecutor>
     {
-        static void Format(const T& t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const T& t, FormatterExecutor& executor)
         {
-            executor.TextManager.AskApplyFront(t);
+            return executor.TextManager.AskApplyFront(t);
         }
     };
 }

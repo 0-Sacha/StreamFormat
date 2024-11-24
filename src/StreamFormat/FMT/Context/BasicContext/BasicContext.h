@@ -1,7 +1,7 @@
 #pragma once
 
 #include "StreamFormat/FMT/Detail/ConvertTraits.h"
-#include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Detail/Prelude.h"
 
 #include "StreamFormat/FMT/Buffer/BufferInfo.h"
 #include "StreamFormat/FMT/Buffer/BufferManip.h"
@@ -29,8 +29,8 @@ namespace StreamFormat::FMT::Context
         virtual ~ContextExecutor() = default;
         
     public:
-        virtual void ExecSettings() = 0;
-        virtual Detail::BufferManipResult ExecRawString(std::basic_string_view<TChar>) = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> ExecSettings() = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> ExecRawString(std::basic_string_view<TChar>) = 0;
 
     public:
         Detail::FormatData<TChar> Data;
@@ -59,28 +59,27 @@ namespace StreamFormat::FMT::Context
         std::int32_t ValuesIndex;
 
     public:
-        void Run();
+        [[nodiscard]] std::expected<void, FMTResult> Run();
 
     public:
-        Detail::BufferManipResult GetFormatIndex(std::int32_t& idx);
-
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex();
         template <typename T>
-        Detail::BufferManipResult FormatReadParameter(T& i, const T& defaultValue);
+        [[nodiscard]] std::expected<T, FMTResult> FormatReadParameter(const T& defaultValue);
 
-    public:
-        void FormatDataApplyNextOverride();
+    protected:
+        std::expected<void, FMTResult> FormatDataApplyNextOverride();
 
     protected:
         std::basic_string_view<TChar> ParseNextOverrideFormatData();
 
-        void ParseFormatDataBase();
-        void ParseFormatDataSpecial();
-        void ParseFormatDataSpecial_ShiftType(const Detail::ShiftInfo::ShiftType type);
-        void ParseFormatDataCustom();
-        void ParseFormatData();
+        [[nodiscard]] std::expected<void, FMTResult> ParseFormatDataBase();
+        [[nodiscard]] std::expected<void, FMTResult> ParseFormatDataSpecial();
+        [[nodiscard]] std::expected<void, FMTResult> ParseFormatDataSpecial_ShiftType(const Detail::ShiftInfo::ShiftType type);
+        [[nodiscard]] std::expected<void, FMTResult> ParseFormatDataCustom();
+        [[nodiscard]] std::expected<void, FMTResult> ParseFormatData();
 
-        void ParseVariable(std::int32_t formatIdx);
-        bool Parse();
+        [[nodiscard]] std::expected<void, FMTResult> ParseVariable(std::int32_t formatIdx);
+        [[nodiscard]] std::expected<void, FMTResult> Parse();
 
     public:
         template <typename Func, typename... Args>
@@ -111,7 +110,7 @@ namespace StreamFormat::FMT::Context
     {}
 
     template <typename TChar>
-    void BasicContext<TChar>::Run()
+    std::expected<void, FMTResult> BasicContext<TChar>::Run()
     {
         while (!Detail::BufferAccess(Format).IsEndOfString())
         {
@@ -122,13 +121,13 @@ namespace StreamFormat::FMT::Context
                 ++sizeContinousString;
                 Detail::BufferManip(Format).Forward();
             }
-            Executor.ExecRawString(std::basic_string_view<TChar>(beginContinousString, sizeContinousString));
+            SF_TRY(Executor.ExecRawString(std::basic_string_view<TChar>(beginContinousString, sizeContinousString)));
 
             if (Detail::BufferAccess(Format).IsEndOfString() == false && Detail::BufferTestAccess(Format).IsEqualTo('{'))
             {
                 bool parseArg = Parse();
                 if (parseArg == false)
-                    Executor.ExecRawString("{").ThrowIfFailed();
+                    SF_TRY(Executor.ExecRawString("{"));
             }
         }
     }
@@ -147,19 +146,18 @@ namespace StreamFormat::FMT::Context
 
     template <typename TChar>
     template <typename T>
-    Detail::BufferManipResult BasicContext<TChar>::FormatReadParameter(T& i, const T& defaultValue)
+    [[nodiscard]] std::expected<T, FMTResult> BasicContext<TChar>::FormatReadParameter(const T& defaultValue)
     {
         if (!Detail::BufferTestAccess(Format).IsEqualTo('{'))
         {
-            if (Detail::BufferReadManip(Format).FastReadInteger(i) == false)
-                i = defaultValue;
-            return true;
+            T t;
+            SF_TRY(Detail::BufferReadManip(Format).FastReadInteger(t));
+            return t;
         }
 
         // SubIndex
-        std::int32_t formatIdx = 0;
-        if (GetFormatIndex(formatIdx) == false) return false;
-        Detail::BufferTestManip(Format).IsEqualToForward('}');
+        std::int32_t formatIdx = SF_TRY(GetFormatIndex(formatIdx));
+        SF_TRY(Detail::BufferTestManip(Format).SkipOneOf('}'));
         if constexpr (std::is_convertible_v<T, int64_t>)
             i = static_cast<T>(ArgsInterface.GetIntAt(formatIdx));
         else if constexpr (std::is_convertible_v<T, std::basic_string_view<TChar>>)

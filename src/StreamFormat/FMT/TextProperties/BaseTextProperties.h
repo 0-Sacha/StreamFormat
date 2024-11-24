@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StreamFormat/Core/Core.h"
+#include "StreamFormat/Core/Prelude.h"
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 

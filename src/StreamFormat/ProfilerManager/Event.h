@@ -2,7 +2,7 @@
 
 #include "Detail.h"
 #include "EventData.h"
-#include "StreamFormat/Core/Core.h"
+#include "StreamFormat/Core/Prelude.h"
 #include "StreamFormat/FMT.h"
 
 #include <memory>

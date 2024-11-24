@@ -2,12 +2,15 @@
 #pragma once
 
 #include "StreamFormat/FMT/Context/BasicContext/BasicArgsInterface.h"
-#include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Detail/Prelude.h"
 
 #include "FormatterType.h"
 
 namespace StreamFormat::FMT::Detail
 {
+    /****************************/
+    /******** Args tuple ********/
+    /****************************/
     template <typename... Types>
     struct FormatterArgs;
 
@@ -15,29 +18,28 @@ namespace StreamFormat::FMT::Detail
     struct FormatterArgs<>
     {
     public:
-        FormatterArgs() = default;
-
-    public:
         static inline constexpr std::size_t Size() { return 0; }
 
     public:
         template <typename FormatterExecutor>
-        inline void RunTypeAtIndex(FormatterExecutor&, std::int32_t)
+        [[nodiscard]] inline std::expected<void, FMTResult> RunTypeAtIndex(FormatterExecutor&, std::int32_t)
         {
-            throw Detail::FMTGivenIndexError();
+            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
         }
-
         template <typename FormatterExecutor>
-        inline std::int32_t GetIndexOfCurrentNamedArg(FormatterExecutor&, std::int32_t)
+        [[nodiscard]] inline std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(FormatterExecutor&, std::int32_t)
         {
-            return std::int32_t{-1};
+            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
         }
-
-        inline PointerID GetTypeAtIndex(std::int32_t) { return PointerID{.TypeInfo = typeid(void), .Ptr = nullptr}; }
-
+        [[nodiscard]] inline std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t)
+        {
+            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        }
         template <typename T>
-        inline void GetTypeAtIndexConvert(T*, std::int32_t)
-            {}
+        [[nodiscard]] inline std::expected<void, FMTResult> GetConvertedTypeAt(T*, std::int32_t)
+        {
+            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        }
     };
 
     template <typename Type, typename... Rest>
@@ -60,52 +62,56 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename Executor>
-        inline void RunTypeAtIndex(Executor& executor, std::int32_t idx)
+        [[nodiscard]] inline std::expected<void, FMTResult> RunTypeAtIndex(Executor& executor, std::int32_t idx)
         {
-            if (idx == 0) return executor.WriteType(m_Value);
+            if (idx == 0)
+            {
+                return executor.WriteType(m_Value);
+            }
             return FormatterArgs<Rest...>::RunTypeAtIndex(executor, idx - 1);
         }
 
     public:
         template <typename TChar>
-        inline std::int32_t GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format, std::int32_t beginSearchIndex)
+        [[nodiscard]] inline std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format, std::int32_t beginSearchIndex)
         {
             if constexpr (Detail::IsANamedArgs<Detail::GetBaseType<TypeWithoutRef>>::value)
             {
-                if (Detail::FMTBufferParamsManip(format).NextIsNamedArgs(m_Value.GetName()))
-                    return beginSearchIndex;
+                std::expected<bool, FMTResult> currentNamedArg = Detail::FMTBufferParamsManip(format).NextIsNamedArgs(m_Value.GetName());
+                if (not currentNamedArg)
+                    { return std::unexpected(FMTResult::BufferManipError); }
+                return beginSearchIndex;
             }
             return FormatterArgs<Rest...>::GetIndexOfCurrentNamedArg(format, beginSearchIndex + 1);
         }
 
     public:
-        inline PointerID GetTypeAtIndex(std::int32_t idx)
+        inline PointerID GetPointerIDAt(std::int32_t idx)
         {
-            if (idx == 0) return PointerID{.TypeInfo = typeid(const TypeWithoutRef), .Ptr = const_cast<void*>(static_cast<const void*>(&m_Value))};
-            return FormatterArgs<Rest...>::GetTypeAtIndex(idx - 1);
+            if (idx == 0)
+                return PointerID{.TypeInfo = typeid(const TypeWithoutRef), .Ptr = const_cast<void*>(static_cast<const void*>(&m_Value))};
+            return FormatterArgs<Rest...>::GetPointerIDAt(idx - 1);
         }
 
     public:
         template <typename T>
-        inline void GetTypeAtIndexConvert(T* value, std::int32_t idx)
+        [[nodiscard]] inline std::expected<T, FMTResult> GetConvertedTypeAt(std::int32_t idx)
         {
             if (idx == 0)
             {
                 if constexpr (FMTCanContextConvert<TypeWithoutRef, T>)
-                {
-                    *value = FMTContextConvert<TypeWithoutRef, T>::Convert(m_Value);
-                    return;
-                }
+                    { return FMTContextConvert<TypeWithoutRef, T>::Convert(m_Value); }
                 else
-                {
-                    // Warrning : Need to transmit : 'Could not convert'
-                    return;
-                }
+                    { return std::unexpected(FMTResult::ArgsInterface_InvalidConversion); }
             }
-            return FormatterArgs<Rest...>::template GetTypeAtIndexConvert<T>(value, idx - 1);
+            return FormatterArgs<Rest...>::template GetConvertedTypeAt<T>(value, idx - 1);
         }
     };
 
+
+    /********************************/
+    /******** Args interface ********/
+    /********************************/
     template <typename TChar, typename FormatterExecutor, typename... Args>
     class FormatterArgsInterface : public BasicArgsInterface<TChar>
     {
@@ -123,36 +129,28 @@ namespace StreamFormat::FMT::Detail
     public:
         size_t Size() override { return ArgsInterface.Size(); }
 
-        void RunTypeAtIndex(std::int32_t idx) override
+        [[nodiscard]] std::expected<void, FMTResult> RunTypeAtIndex(std::int32_t idx) override
         {
             return ArgsInterface.RunTypeAtIndex(Executor, idx);
         }
-        std::int32_t GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) override
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) override
         {
             return ArgsInterface.GetIndexOfCurrentNamedArg(format, std::int32_t{0});
         }
-        PointerID GetTypeAt(std::int32_t idx) override
+        PointerID GetPointerIDAt(std::int32_t idx) override
         {
-            return ArgsInterface.GetTypeAtIndex(idx); 
+            return ArgsInterface.GetPointerIDAt(idx); 
         }
 
     public:
-        template <typename T>
-        T GetTAtConvert(std::int32_t idx)
+        [[nodiscard]] std::expected<std::basic_string_view<TChar>, FMTResult> GetStringAt(std::int32_t idx) override
         {
-            T res;
-            ArgsInterface.template GetTypeAtIndexConvert<T>(&res, idx);
-            return res;
+            return ArgsInterface.template GetConvertedTypeAt<std::basic_string_view<TChar>>(idx);
         }
-
-        std::int32_t GetFormatIndexAt(std::int32_t idx) override { return GetTAtConvert<std::int32_t>(idx); }
-
-        std::basic_string_view<TChar> GetStringAt(std::int32_t idx) override
+        [[nodiscard]] std::expected<std::int64_t, FMTResult> GetIntAt(std::int32_t idx) override
         {
-            return GetTAtConvert<std::basic_string_view<TChar>>(idx);
+            return ArgsInterface.template GetConvertedTypeAt<std::int64_t>(idx);
         }
-
-        std::int64_t GetIntAt(std::int32_t idx) override { return GetTAtConvert<std::int64_t>(idx); }
 
     protected:
         FormatterExecutor& Executor;

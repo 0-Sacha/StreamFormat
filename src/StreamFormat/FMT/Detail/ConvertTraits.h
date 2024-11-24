@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Detail.h"
+#include "Prelude.h"
 
 namespace StreamFormat::FMT::Detail
 {

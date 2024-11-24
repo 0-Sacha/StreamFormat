@@ -1,0 +1,26 @@
+#pragma once
+
+namespace StreamFormat::FMT
+{
+    enum class FMTResult
+    {
+        FunctionNotImpl,
+
+        Buffer_NonValid,
+        Buffer_OutOfBoundAccess,
+        Buffer_UnableToReserveMemory,
+        Parse_NonValidDigit,
+
+        ArgsInterface_Unavaible,
+        ArgsInterface_InvalidTypeID,
+        ArgsInterface_InvalidConversion,
+
+        Specifers_Full,
+        Specifers_Invalid,
+        Specifers_DoesNotExist,
+
+        Context_ParsingFormat,
+        Context_ArgumentIndexResolution,
+        Context_CannotApplyType,
+    };
+}

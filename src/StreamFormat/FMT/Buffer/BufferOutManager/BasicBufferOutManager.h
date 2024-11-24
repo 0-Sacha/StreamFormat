@@ -1,15 +1,23 @@
 #pragma once
 
-#include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Detail/Prelude.h"
 #include "StreamFormat/FMT/Buffer/BufferInfo.h"
 
 namespace StreamFormat::FMT::Detail
 {
+    enum class BufferManagerError
+    {
+        StaticMemoryManager,
+        AllocationFailed,
+    };
+
     template <typename CharType>
     class BasicBufferOutManager
     {
     public:
         virtual ~BasicBufferOutManager() = default;
+        BasicBufferOutManager(BasicBufferOutManager&) = delete;
+        BasicBufferOutManager& operator=(BasicBufferOutManager&) = delete;
 
     protected:
         virtual void BeginContextImpl() {}
@@ -29,7 +37,7 @@ namespace StreamFormat::FMT::Detail
         virtual std::size_t     GetBufferSize() const = 0;
 
     public:
-        virtual bool AddSize(const std::size_t count) = 0;
+        [[nodiscard]] virtual std::expected<void, BufferManagerError> AddSize(const std::size_t count) = 0;
 
     public:
         BufferInfoView<CharType> GetLastGeneratedBufferInfoView() const { return BufferInfoView<CharType>(GetBuffer(), m_LastGeneratedDataSize); }

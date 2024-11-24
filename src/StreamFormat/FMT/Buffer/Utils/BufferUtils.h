@@ -23,14 +23,15 @@ namespace StreamFormat::FMT::Detail
         using TConstChar = std::remove_const_t<TChar>;
     
     public:
-        static constexpr std::size_t GET_WORD_FROM_LIST_NOT_FOUND = (std::numeric_limits<std::size_t>::max)();
-        
         template <std::size_t SIZE>
-        std::size_t GetWordFromList(const std::basic_string_view<TConstChar> (&data)[SIZE], const std::size_t defaultValue = GET_WORD_FROM_LIST_NOT_FOUND)
+        [[nodiscard]] std::expected<std::size_t, FMTResult> GetWordFromList(const std::basic_string_view<TConstChar> (&data)[SIZE])
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
-                if (BufferTestManip(Buffer).IsSameForward(data[idx])) return idx;
-            return defaultValue;
+            {
+                bool found = SF_TRY(BufferTestManip(Buffer).IsSameForward(data[idx]));
+                if (found) return idx;
+            }
+            return std::unexpected(FMTResult::Specifers_Invalid);
         }
 
         // TODO: use static map ?
@@ -38,11 +39,14 @@ namespace StreamFormat::FMT::Detail
         using DictPairs = std::pair<std::basic_string_view<TConstChar>, T>;
         
         template <typename T, std::size_t SIZE>
-        T GetWordFromDictPairs(const DictPairs<T> (&data)[SIZE], std::convertible_to<T> auto defaultValue = T{})
+        [[nodiscard]] std::expected<T&, FMTResult> GetWordFromDictPairs(const DictPairs<T> (&data)[SIZE])
         {
             for (std::size_t idx = 0; idx < SIZE; ++idx)
-                if (BufferTestManip(Buffer).IsSameForward(data[idx].first)) return data[idx].second;
-            return defaultValue;
+            {
+                bool found = SF_TRY(BufferTestManip(Buffer).IsSameForward(data[idx].first));
+                if (found) return data[idx].second;
+            }
+            return std::unexpected(FMTResult::Specifers_Invalid);
         }
     };
 
@@ -50,73 +54,73 @@ namespace StreamFormat::FMT::Detail
     {
     public:
         template <typename CharIn, typename CharOut>
-        static void ParseEscapedQuotedString(Detail::BufferInfo<CharIn>& buffer, Detail::BufferOutInfo<CharOut>& stringOut)
+        [[nodiscard]] static std::expected<void, FMTResult> ParseEscapedQuotedString(Detail::BufferInfo<CharIn>& buffer, Detail::BufferOutInfo<CharOut>& stringOut)
         {
-            Detail::BufferTestManip(buffer).Skip('"');
+            SF_TRY(Detail::BufferTestManip(buffer).SkipOneOf('"'));
             while (Detail::BufferAccess(buffer).IsEndOfString() == false)
             {
-                Detail::BufferWriteManip(stringOut).FastWriteString(
+                SF_TRY(Detail::BufferWriteManip(stringOut).FastWriteString(
                     Detail::BufferTestManip(buffer).ViewUntil('"', '\\')
-                );
+                ));
 
                 if (Detail::BufferTestAccess(buffer).IsEqualTo('"')) break;
 
-                Detail::BufferTestManip(buffer).Skip('\\');
+                Detail::BufferTestManip(buffer).SkipOneOf('\\');
                 switch (buffer.Get())
                 {
                     // TODO : Do all others escape char
                     case '"':
-                        Detail::BufferOutManip(stringOut).Pushback('"');
+                        SF_TRY(Detail::BufferOutManip(stringOut).Pushback('"'));
                         break;
                     case 't':
-                        Detail::BufferOutManip(stringOut).Pushback('\t');
+                        SF_TRY(Detail::BufferOutManip(stringOut).Pushback('\t'));
                         break;
                     case 'r':
-                        Detail::BufferOutManip(stringOut).Pushback('\r');
+                        SF_TRY(Detail::BufferOutManip(stringOut).Pushback('\r'));
                         break;
                     case 'n':
-                        Detail::BufferOutManip(stringOut).Pushback('\n');
+                        SF_TRY(Detail::BufferOutManip(stringOut).Pushback('\n'));
                         break;
                     default:
                         break;
                 }
             }
-            Detail::BufferTestManip(buffer).Skip('"');
+            SF_TRY(Detail::BufferTestManip(buffer).SkipOneOf('"'));
         }
 
         template <typename CharIn, typename CharOut>
-        static void FormatEscapedQuotedString(Detail::BufferOutInfo<CharOut>& buffer, Detail::BufferInfo<CharIn>& stringIn)
+        [[nodiscard]] static std::expected<void, FMTResult> FormatEscapedQuotedString(Detail::BufferOutInfo<CharOut>& buffer, Detail::BufferInfo<CharIn>& stringIn)
         {
-            Detail::BufferOutManip(buffer).Pushback('"');
+            SF_TRY(Detail::BufferOutManip(buffer).Pushback('"'));
             while (Detail::BufferAccess(stringIn).IsEndOfString() == false)
             {
-                Detail::BufferWriteManip(buffer).FastWriteString(
+                SF_TRY(Detail::BufferWriteManip(buffer).FastWriteString(
                     Detail::BufferTestManip(stringIn).ViewUntil('\\')
-                );
+                ));
 
                 if (Detail::BufferAccess(stringIn).IsEndOfString()) break;
 
-                Detail::BufferTestManip(stringIn).Skip('\\');
+                SF_TRY(Detail::BufferTestManip(stringIn).SkipOneOf('\\'));
                 switch (stringIn.Get())
                 {
                     // TODO : Do all others escape char
                     case '"':
-                        Detail::BufferOutManip(buffer).Pushback('"');
+                        SF_TRY(Detail::BufferOutManip(buffer).Pushback('"'));
                         break;
                     case 't':
-                        Detail::BufferOutManip(buffer).Pushback('\t');
+                        SF_TRY(Detail::BufferOutManip(buffer).Pushback('\t'));
                         break;
                     case 'r':
-                        Detail::BufferOutManip(buffer).Pushback('\r');
+                        SF_TRY(Detail::BufferOutManip(buffer).Pushback('\r'));
                         break;
                     case 'n':
-                        Detail::BufferOutManip(buffer).Pushback('\n');
+                        SF_TRY(Detail::BufferOutManip(buffer).Pushback('\n'));
                         break;
                     default:
                         break;
                 }
             }
-            Detail::BufferOutManip(buffer).Pushback('"');
+            SF_TRY(Detail::BufferOutManip(buffer).Pushback('"'));
         }
     };
 }

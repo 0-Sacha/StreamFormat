@@ -18,12 +18,12 @@ namespace StreamFormat::JSON::Detail
         {}
 
     public:
-        inline FMT::Detail::BufferManipResult IsJsonStringBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('"'); }
-        inline FMT::Detail::BufferManipResult IsJsonNumberBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsADigit() || FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('+', '-', '.'); }
-        inline FMT::Detail::BufferManipResult IsJsonBooleanBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('t', 'f'); }
-        inline FMT::Detail::BufferManipResult IsJsonStructBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('{'); }
-        inline FMT::Detail::BufferManipResult IsJsonArrayBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('['); }
-        inline FMT::Detail::BufferManipResult IsJsonNullBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('n'); }
+        inline bool IsJsonStringBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('"'); }
+        inline bool IsJsonNumberBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsADigit() || FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('+', '-', '.'); }
+        inline bool IsJsonBooleanBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('t', 'f'); }
+        inline bool IsJsonStructBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('{'); }
+        inline bool IsJsonArrayBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('['); }
+        inline bool IsJsonNullBegin() const { return FMT::Detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('n'); }
 
     public:
         FMT::Detail::BufferInfo<const char> BufferIn;

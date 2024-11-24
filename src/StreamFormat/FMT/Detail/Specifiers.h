@@ -1,6 +1,7 @@
 #pragma once
 
-#include "StreamFormat/Core/Core.h"
+#include "StreamFormat/Core/Prelude.h"
+#include "StreamFormat/Core/Prelude.h"
 
 #include <array>
 #include <string_view>
@@ -56,11 +57,6 @@ namespace StreamFormat::FMT::Detail
 
         public:
             constexpr bool BeforeIsADigit() const { return Before >= '0' && Before <= '9'; }
-
-            constexpr void ValidateForNumber()
-            {
-                if (After >= '0' && After <= '9') After = ' ';
-            }
         };
 
     public:
@@ -185,22 +181,25 @@ namespace StreamFormat::FMT::Detail
         }
 
     public:
-        void Pushback(const FormatSpecifier<TChar>& specifier)
+        [[nodiscard]] std::expected<void, FMTResult> Pushback(const FormatSpecifier<TChar>& specifier)
         {
-            if (SpecifierCount < SIZE)
-                Specifier[SpecifierCount++] = specifier;
+            if (SpecifierCount => SIZE)
+                return std::unexpected(FMTResult::Specifers_Full);
+            Specifier[SpecifierCount++] = specifier;
+            return {};
         }
 
-        void Concat(const FormatSpecifier<TChar>& specifier)
+        [[nodiscard]] std::expected<void, FMTResult> Concat(const FormatSpecifier<TChar>& specifier)
         {
             FormatSpecifier<TChar>* local = Get(specifier.Name);
             if (local == nullptr)
-                return Pushback(specifier);
+                return SF_TRY(Pushback(specifier));
 
             if (specifier.HasText)
                 { local->HasText = true; local->AsText  = specifier.AsText; }
             if (specifier.HasNumber)
                 { local->HasNumber = true; local->AsNumber  = specifier.AsNumber; }
+            return {};
         }
     };
 

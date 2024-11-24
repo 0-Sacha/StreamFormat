@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StreamFormat/FMT/Detail/Detail.h"
+#include "StreamFormat/FMT/Detail/Prelude.h"
 
 #define STREAMFORMAT_PARSER_DECLARED
 namespace StreamFormat::FMT
@@ -12,14 +12,11 @@ namespace StreamFormat::FMT
         {
 #ifdef UNKOWN_TYPE_MESSAGE
             // FIXME
-            throw Detail::FMTShouldNotEndHere{};
-#endif
-#ifdef UNKOWN_TYPE_THROW
-            throw Detail::FMTShouldNotEndHere{};
+            STREAMFORMAT_DEBUGBREAK();
+            // static_cast(false);
 #endif
 #ifdef UNKOWN_TYPE_FAIL
-            // FIXME
-            throw Detail::FMTShouldNotEndHere{};
+            static_cast(false);
 #endif
 #ifdef UNKOWN_TYPE_DEBUG
             STREAMFORMAT_DEBUGBREAK();

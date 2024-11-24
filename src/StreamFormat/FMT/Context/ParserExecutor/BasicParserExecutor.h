@@ -26,7 +26,7 @@ namespace StreamFormat::FMT::Context
         BasicParserExecutor(Detail::BufferInfoView<TChar>& bufferIn, Detail::ITextPropertiesExecutor& textPropertiesExecutor);
         ~BasicParserExecutor() override = default;
 
-        void Terminate();
+        [[nodiscard]] std::expected<void, FMTResult> Terminate();
 
     public:
         Detail::BufferInfoView<TChar>& BufferIn;
@@ -35,18 +35,21 @@ namespace StreamFormat::FMT::Context
         using ContextExecutor<CharType>::TextManager;
 
     protected:
-        Detail::BufferManipResult ExecRawString(std::basic_string_view<TChar> sv) override { return Detail::BufferTestManip(BufferIn).IsSameForward(sv.data(), sv.size()); }
-        void ExecSettings() override {};
+        [[nodiscard]] std::expected<void, FMTResult> ExecRawString(std::basic_string_view<TChar> sv) override
+        {
+            return Detail::BufferTestManip(BufferIn).IsSameForward(sv.data(), sv.size());
+        }
+        [[nodiscard]] std::expected<void, FMTResult> ExecSettings() override {};
 
     public:
         template <typename... Args>
-        void Run_(Detail::BufferInfoView<TChar> format, Args&&... args);
+        [[nodiscard]] std::expected<void, FMTResult> Run_(Detail::BufferInfoView<TChar> format, Args&&... args);
         template <typename Format, typename... Args>
-        void Run(Format&& format, Args&&... args);
+        [[nodiscard]] std::expected<void, FMTResult> Run(Format&& format, Args&&... args);
 
     public:
         template <typename Type, typename... Rest>
-        inline void ReadType(Type& type, Rest&... rest)
+        [[nodiscard]] inline std::expected<void, FMTResult> ReadType(Type& type, Rest&... rest)
         {
             ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Parse(type, *this);
             if constexpr (sizeof...(rest) > 0)
@@ -66,13 +69,13 @@ namespace StreamFormat::FMT::Context
     }
 
     template <typename TChar>
-    void BasicParserExecutor<TChar>::Terminate()
+    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::Terminate()
     {
     }
 
     template <typename TChar>
     template <typename... Args>
-    void BasicParserExecutor<TChar>::Run_(Detail::BufferInfoView<TChar> format, Args&&... args)
+    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::Run_(Detail::BufferInfoView<TChar> format, Args&&... args)
     {
         auto argsInterface = Detail::ParserArgsInterface<TChar, BasicParserExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
 
@@ -84,7 +87,7 @@ namespace StreamFormat::FMT::Context
 
     template <typename TChar>
     template <typename Format, typename... Args>
-    void BasicParserExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
+    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
     {
         Run_(Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
     }

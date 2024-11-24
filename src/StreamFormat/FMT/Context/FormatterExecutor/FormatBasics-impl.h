@@ -13,7 +13,7 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<typename FormatterExecutor::Detail::template FormatSpecifier<typename FormatterExecutor::TChar>, FormatterExecutor>
     {
-        static void Format(const typename FormatterExecutor::Detail::template FormatSpecifier<typename FormatterExecutor::TChar>& specifier, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const typename FormatterExecutor::Detail::template FormatSpecifier<typename FormatterExecutor::TChar>& specifier, FormatterExecutor& executor)
         {
             if (specifier.ValueIsText)
                 executor.Run("{ '{}', '{}' }", specifier.Name, specifier.AsText);
@@ -29,7 +29,7 @@ namespace StreamFormat::FMT
     namespace Detail::Forwarders
     {
         template <typename T, typename FormatterExecutor>
-        void FormatObjectArray(const T* const buffer, std::size_t totalsize, FormatterExecutor& executor)
+        [[nodiscard]] std::expected<void, FMTResult> FormatObjectArray(const T* const buffer, std::size_t totalsize, FormatterExecutor& executor)
         {
             std::size_t beginIdx = (std::size_t)executor.Data.Specifiers.GetAsNumber("begin", 0);
             totalsize = executor.Data.Specifiers.GetAsNumber("totalsize", totalsize);
@@ -64,7 +64,7 @@ namespace StreamFormat::FMT
         }
 
         template <typename T, typename FormatterExecutor>
-        void FormatString(const T* buffer, std::size_t size, FormatterExecutor& executor)
+        [[nodiscard]] std::expected<void, FMTResult> FormatString(const T* buffer, std::size_t size, FormatterExecutor& executor)
         {
             std::size_t beginIdx = (std::size_t)executor.Data.Specifiers.GetAsNumber("begin", 0);
             size  = executor.Data.Specifiers.GetAsNumber("size", size);
@@ -98,7 +98,7 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<bool, FormatterExecutor>
     {
-        static void Format(const bool t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const bool t, FormatterExecutor& executor)
         {
             if (executor.Data.PrefixSuffix)
             {
@@ -121,21 +121,24 @@ namespace StreamFormat::FMT
     requires (std::is_integral_v<T> && !std::is_floating_point_v<T> && !Detail::IsCharType<T>::Value)
     struct FormatterType<T, FormatterExecutor>
     {
-        static inline void Format(const T t, FormatterExecutor& executor) { Detail::FMTBufferWriteManip(executor.BufferOut).WriteIntegerFormatData(t, executor.Data); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const T t, FormatterExecutor& executor)
+            { return Detail::FMTBufferWriteManip(executor.BufferOut).WriteIntegerFormatData(t, executor.Data); }
     };
 
     template <typename T, typename FormatterExecutor>
     requires std::is_floating_point_v<T>
     struct FormatterType<T, FormatterExecutor>
     {
-        static inline void Format(const T t, FormatterExecutor& executor) { Detail::FMTBufferWriteManip(executor.BufferOut).WriteFloatFormatData(t, executor.Data); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const T t, FormatterExecutor& executor)
+            { return Detail::FMTBufferWriteManip(executor.BufferOut).WriteFloatFormatData(t, executor.Data); }
     };
 
     template <typename T, typename FormatterExecutor>
     requires Detail::IsCharType<T>::Value
     struct FormatterType<T, FormatterExecutor>
     {
-        static inline void Format(const T t, FormatterExecutor& executor) { Detail::BufferOutManip(executor.BufferOut).Pushback(t); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const T t, FormatterExecutor& executor)
+            { return Detail::BufferOutManip(executor.BufferOut).Pushback(t); }
     };
 
     //-------------------------------------------------------//
@@ -145,47 +148,43 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<void*, FormatterExecutor>
     {
-        static void Format(const void* const t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const void* const t, FormatterExecutor& executor)
         {
             if (t == nullptr)
                 return Detail::BufferOutManip(executor.BufferOut).FastWriteString(executor.Data.GetAsText("null", "nullptr"));
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteInteger(std::size_t(t));
+            return Detail::BufferWriteManip(executor.BufferOut).FastWriteInteger(std::size_t(t));
         }
     };
 
     template <typename T, typename FormatterExecutor>
     struct FormatterType<T*, FormatterExecutor>
     {
-        static void Format(const T* const t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const T* const t, FormatterExecutor& executor)
         {
             if (t == nullptr)
-                return Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("null", "nullptr"));
+                { return Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("null", "nullptr")); }
 
             if constexpr (Detail::IsCharType<T>::Value)
-            {
-                Detail::Forwarders::FormatString(t, std::numeric_limits<std::size_t>::max(), executor);
-            }
+                { return Detail::Forwarders::FormatString(t, std::numeric_limits<std::size_t>::max(), executor); }
             else
-            {
-                Detail::Forwarders::FormatObjectArray(t, std::numeric_limits<std::size_t>::max(), executor);
-            }
+                { Detail::Forwarders::FormatObjectArray(t, std::numeric_limits<std::size_t>::max(), executor); }
         }
     };
 
     template <typename T, std::size_t SIZE, typename FormatterExecutor>
     struct FormatterType<T[SIZE], FormatterExecutor>
     {
-        static void Format(T const (&t)[SIZE], FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(T const (&t)[SIZE], FormatterExecutor& executor)
         {
             if constexpr (Detail::IsCharType<T>::Value)
             {
                 std::size_t size = SIZE;
                 while (t[size - 1] == '\0') --size;
-                Detail::Forwarders::FormatString(t, size, executor);
+                return Detail::Forwarders::FormatString(t, size, executor);
             }
             else
             {
-                Detail::Forwarders::FormatObjectArray(t, SIZE, executor);
+                return Detail::Forwarders::FormatObjectArray(t, SIZE, executor);
             }
         }
     };

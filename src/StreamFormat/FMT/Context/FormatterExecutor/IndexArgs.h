@@ -28,9 +28,9 @@ namespace StreamFormat::FMT
     struct FormatterType<FCIndexArgs<T, FormatterExecutor>, FormatterExecutor>
     {
         template <typename Char>
-        static inline void Format(const FCIndexArgs<T, FormatterExecutor>& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const FCIndexArgs<T, FormatterExecutor>& t, FormatterExecutor& executor)
         {
-            executor.WriteType(t.GetValue());
+            return executor.WriteType(t.GetValue());
         }
     };
 }

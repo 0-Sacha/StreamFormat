@@ -10,7 +10,7 @@ namespace StreamFormat::FMT
     template <typename T1, typename T2, typename FormatterExecutor>
     struct FormatterType<std::unordered_map<T1, T2>, FormatterExecutor>
     {
-        static void Format(const std::unordered_map<T1, T2>& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::unordered_map<T1, T2>& t, FormatterExecutor& executor)
         {
             FormatterType<ForwardAsSTDEnumerable<std::unordered_map<T1, T2>>, FormatterExecutor>::Format(t, executor);
         }
@@ -19,7 +19,7 @@ namespace StreamFormat::FMT
     template <typename T1, typename T2, typename FormatterExecutor>
     struct FormatterType<std::unordered_multimap<T1, T2>, FormatterExecutor>
     {
-        static void Format(const std::unordered_multimap<T1, T2>& t, FormatterExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::unordered_multimap<T1, T2>& t, FormatterExecutor& executor)
         {
             FormatterType<ForwardAsSTDEnumerable<std::unordered_multimap<T1, T2>>, FormatterExecutor>::Format(t, executor);
         }

@@ -171,7 +171,7 @@ namespace StreamFormat::JSON
             FMT::Detail::BufferTestAccess access(parser.BufferIn);
             FMT::Detail::BufferTestManip manip(parser.BufferIn);
 
-            manip.Skip('{');
+            manip.SkipOneOf('{');
             std::size_t idx = 0;
 
             while (FMT::Detail::BufferAccess(parser.BufferIn).IsEndOfString() == false)
@@ -183,16 +183,16 @@ namespace StreamFormat::JSON
                 JsonStringSerializer::ParseSTDString(name, parser);
 
                 manip.SkipAllBlanks();
-                manip.Skip(':');
+                manip.SkipOneOf(':');
                 manip.SkipAllBlanks();
 
                 subObjectParsingFunction(t, idx++, std::move(name), parser);
 
                 manip.GoTo(',', '}');
-                manip.Skip(',');
+                manip.SkipOneOf(',');
             }
 
-            manip.Skip('}');
+            manip.SkipOneOf('}');
         }
 
         template <typename T>
@@ -236,7 +236,7 @@ namespace StreamFormat::JSON
             FMT::Detail::BufferTestAccess access(parser.BufferIn);
             FMT::Detail::BufferTestManip manip(parser.BufferIn);
             
-            manip.Skip('[');
+            manip.SkipOneOf('[');
             std::size_t idx = 0;
 
             while (FMT::Detail::BufferAccess(parser.BufferIn).IsEndOfString() == false)
@@ -248,10 +248,10 @@ namespace StreamFormat::JSON
                 subObjectParsingFunction(t, idx++, parser);
 
                 manip.GoTo(',', ']');
-                manip.Skip(',');
+                manip.SkipOneOf(',');
             }
 
-            manip.Skip(']');
+            manip.SkipOneOf(']');
         }
 
         template <typename T>

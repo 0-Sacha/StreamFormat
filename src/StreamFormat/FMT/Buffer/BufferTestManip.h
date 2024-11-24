@@ -14,34 +14,35 @@ namespace StreamFormat::FMT::Detail
         const BufferInfo<TChar>& Buffer;
     
     public:
-        constexpr inline BufferManipResult IsEqualTo(const TChar c) const noexcept { return Buffer.Get() == c; }
-        constexpr inline BufferManipResult IsNotEqualTo(const TChar c) const noexcept { return Buffer.Get() != c; }
+        constexpr inline bool IsEqualTo(const TChar c) const noexcept { return Buffer.Get() == c; }
+        constexpr inline bool IsNotEqualTo(const TChar c) const noexcept { return Buffer.Get() != c; }
         template <typename... CharToTest>
-        constexpr inline BufferManipResult IsEqualTo(const TChar c, const CharToTest... ele) const noexcept
+        constexpr inline bool IsEqualTo(const TChar c, const CharToTest... ele) const noexcept
         {
             return IsEqualTo(c) || IsEqualTo(ele...);
         }
         template <typename... CharToTest>
-        constexpr inline BufferManipResult IsNotEqualTo(const TChar c, const CharToTest... ele) const noexcept
+        constexpr inline bool IsNotEqualTo(const TChar c, const CharToTest... ele) const noexcept
         {
             return IsNotEqualTo(c) && IsNotEqualTo(ele...);
         }
         
-        constexpr inline BufferManipResult NextIsEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetNextForce() + 1 == c; }
-        constexpr inline BufferManipResult NextIsNotEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetNextForce() + 1 != c; }
-        constexpr inline BufferManipResult PrevIsEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetPrevForce() - 1 == c; }
-        constexpr inline BufferManipResult PrevIsNotEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetPrevForce() - 1 != c; }
+        constexpr inline bool NextIsEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetNextForce() + 1 == c; }
+        constexpr inline bool NextIsNotEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetNextForce() + 1 != c; }
+        constexpr inline bool PrevIsEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetPrevForce() - 1 == c; }
+        constexpr inline bool PrevIsNotEqualTo(const TChar c) const noexcept { return BufferAccess(Buffer).GetPrevForce() - 1 != c; }
 
     public:
-        constexpr inline BufferManipResult IsLowerCase() const noexcept { return Buffer.Get() >= 'a' && Buffer.Get() <= 'z'; }
-        constexpr inline BufferManipResult IsUpperCase() const noexcept { return Buffer.Get() >= 'A' && Buffer.Get() <= 'Z'; }
-        constexpr inline BufferManipResult IsADigit() const noexcept { return Buffer.Get() >= '0' && Buffer.Get() <= '9'; }
+        constexpr inline bool IsLowerCase() const noexcept { return Buffer.Get() >= 'a' && Buffer.Get() <= 'z'; }
+        constexpr inline bool IsUpperCase() const noexcept { return Buffer.Get() >= 'A' && Buffer.Get() <= 'Z'; }
+        constexpr inline bool IsADigit() const noexcept { return Buffer.Get() >= '0' && Buffer.Get() <= '9'; }
 
     public:
         template <typename CharToTest>
-        constexpr BufferManipResult IsSame(const CharToTest* str, std::size_t size) const noexcept
+        constexpr bool IsSame(const CharToTest* str, std::size_t size) const noexcept
         {
-            if (size > BufferAccess(Buffer).GetBufferRemainingSize()) return false;
+            if (size > BufferAccess(Buffer).GetBufferRemainingSize())
+                { return false; }
 
             const TChar* bufferStr = Buffer.CurrentPos;
             bool isSame = true;
@@ -50,11 +51,12 @@ namespace StreamFormat::FMT::Detail
                 isSame = *bufferStr++ == *str++;
                 --size;
             }
-            if (size != 0 && *str != 0) isSame = false;
+            if (size != 0 && *str != 0)
+                { return false; }
             return isSame;
         }
         template <typename CharToTest>
-        constexpr inline BufferManipResult IsSame(std::basic_string_view<CharToTest> sv) const noexcept
+        constexpr inline bool IsSame(std::basic_string_view<CharToTest> sv) const noexcept
         {
             return IsSame(sv.data(), sv.size());
         }
@@ -75,52 +77,52 @@ namespace StreamFormat::FMT::Detail
 
     public:
         template <typename... CharToTest>
-        constexpr inline BufferManipResult IsEqualToForward(const CharToTest... ele) noexcept
+        [[nodiscard]] constexpr inline std::expected<bool, FMTResult> IsEqualToForward(const CharToTest... ele) noexcept
         {
             if (Access().IsEqualTo(ele...))
-                return BufferManip(Buffer).Forward();
+                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
             return false;
         }
         template <typename... CharToTest>
-        constexpr inline BufferManipResult IsNotEqualForward(const CharToTest... ele) noexcept
+        [[nodiscard]] constexpr inline std::expected<bool, FMTResult> IsNotEqualForward(const CharToTest... ele) noexcept
         {
             if (Access().IsNotEqualTo(ele...))
-                return BufferManip(Buffer).Forward();
+                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
             return false;
         }
 
     public:
         template <typename CharToTest>
-        constexpr BufferManipResult IsSameForward(const CharToTest* str, std::size_t size) noexcept
+        [[nodiscard]] constexpr std::expected<bool, FMTResult> IsSameForward(const CharToTest* str, std::size_t size) noexcept
         {
             if (Access().IsSame(str, size))
-                return BufferManip(Buffer).Forward(size);
+                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
             return false;
         }
         template <typename CharToTest>
-        constexpr inline BufferManipResult IsSameForward(std::basic_string_view<CharToTest> sv) noexcept
+        [[nodiscard]] constexpr inline std::expected<bool, FMTResult> IsSameForward(std::basic_string_view<CharToTest> sv) noexcept
         {
             if (Access().IsSame(sv))
-                return BufferManip(Buffer).Forward(sv.size());
+                { return BufferManip(Buffer).Forward().transform([]{return true;}); }
             return false;
         }
 
     public:
         template <typename... CharToTest>
-        inline void Skip(const CharToTest... ele) noexcept { IsEqualToForward(ele...); }
+        [[nodiscard]] inline std::expected<void, FMTResult> SkipOneOf(const CharToTest... ele) noexcept { return IsEqualToForward(ele...).transform([]{}); }
         template <typename... CharToTest>
-        inline void SkipAll(const CharToTest... ele) noexcept
+        inline void SkipEvery(const CharToTest... ele) noexcept
         {
             while (Access().IsEqualTo(ele...) && BufferAccess(Buffer).CanMoveForward())
-                BufferManip(Buffer).ForceForward();
+                { BufferManip(Buffer).ForceForward(); }
         }
         
     public:
-        inline void SkipSpace() noexcept { Skip(' ', '\t'); }
-        inline void SkipBlank() noexcept { Skip(' ', '\t', '\n', '\r', '\v'); }
+        [[nodiscard]] inline std::expected<void, FMTResult> SkipSpace() noexcept { return SkipOneOf(' ', '\t'); }
+        [[nodiscard]] inline std::expected<void, FMTResult> SkipBlank() noexcept { return SkipOneOf(' ', '\t', '\n', '\r', '\v'); }
 
-        inline void SkipAllSpaces() noexcept { SkipAll(' ', '\t'); }
-        inline void SkipAllBlanks() noexcept { SkipAll(' ', '\t', '\n', '\r', '\v'); }
+        inline void SkipAllSpaces() noexcept { SkipEvery(' ', '\t'); }
+        inline void SkipAllBlanks() noexcept { SkipEvery(' ', '\t', '\n', '\r', '\v'); }
 
     public:
         template <typename... CharToTest>
@@ -130,10 +132,10 @@ namespace StreamFormat::FMT::Detail
                 BufferManip(Buffer).ForceForward();
         }
         template <typename... CharToTest>
-        inline void GoToForward(const CharToTest... ele) noexcept
+        [[nodiscard]] inline std::expected<void, FMTResult> GoToForward(const CharToTest... ele) noexcept
         {
             GoTo(ele...);
-            BufferManip(Buffer).Forward();
+            return BufferManip(Buffer).Forward();
         }
 
     public:

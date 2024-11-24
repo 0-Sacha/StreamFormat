@@ -26,7 +26,7 @@ namespace StreamFormat::FMT::Context
         BasicFormatterExecutor(Detail::FMTBufferOutInfo<TChar>& bufferOut, Detail::ITextPropertiesExecutor& textPropertiesExecutor);
         ~BasicFormatterExecutor() override = default;
 
-        void Terminate();
+        std::expected<void, FMTResult> Terminate();
 
     public:
         Detail::FMTBufferOutInfo<TChar>& BufferOut;
@@ -35,18 +35,21 @@ namespace StreamFormat::FMT::Context
         using ContextExecutor<CharType>::TextManager;
     
     protected:
-        Detail::BufferManipResult ExecRawString(std::basic_string_view<TChar> sv) override { Detail::BufferWriteManip(BufferOut).FastWriteString(sv); return true; }
-        void ExecSettings() override;
+        [[nodiscard]] std::expected<void, FMTResult> ExecRawString(std::basic_string_view<TChar> sv) override
+        {
+            return Detail::BufferWriteManip(BufferOut).FastWriteString(sv);
+        }
+        std::expected<void, FMTResult> ExecSettings() override;
 
     public:
         template <typename... Args>
-        void Run_(Detail::BufferInfoView<TChar> format, Args&&... args);
+        std::expected<void, FMTResult> Run_(Detail::BufferInfoView<TChar> format, Args&&... args);
         template <typename Format, typename... Args>
-        void Run(Format&& format, Args&&... args);
+        std::expected<void, FMTResult> Run(Format&& format, Args&&... args);
 
     public:
         template <typename Type, typename... Rest>
-        inline void WriteType(Type&& type, Rest&&... rest)
+        inline std::expected<void, FMTResult> WriteType(Type&& type, Rest&&... rest)
         {
             FormatterType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Format(std::forward<Type>(type), *this);
             if constexpr (sizeof...(rest) > 0)
@@ -66,7 +69,7 @@ namespace StreamFormat::FMT::Context
     }
 
     template <typename TChar>
-    void BasicFormatterExecutor<TChar>::Terminate()
+    std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Terminate()
     {
         Detail::BufferOutManip(BufferOut).ComputeGeneratedSize();
         
@@ -76,7 +79,7 @@ namespace StreamFormat::FMT::Context
     }
 
     template <typename TChar>
-    void BasicFormatterExecutor<TChar>::ExecSettings()
+    std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::ExecSettings()
     {
         // Indent
         auto indent = Data.Specifiers.Get("indent");
@@ -86,7 +89,7 @@ namespace StreamFormat::FMT::Context
 
     template <typename TChar>
     template <typename... Args>
-    void BasicFormatterExecutor<TChar>::Run_(Detail::BufferInfoView<TChar> format, Args&&... args)
+    std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Run_(Detail::BufferInfoView<TChar> format, Args&&... args)
     {
         auto argsInterface = Detail::FormatterArgsInterface<TChar, BasicFormatterExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
 
@@ -98,7 +101,7 @@ namespace StreamFormat::FMT::Context
 
     template <typename TChar>
     template <typename Format, typename... Args>
-    void BasicFormatterExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
+    std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
     {
         Run_(Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
     }

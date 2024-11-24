@@ -14,7 +14,7 @@ namespace StreamFormat::FMT::Detail
         BufferOutInfo<TChar>& Buffer;
 
     public:
-        inline void WriteShiftCenterBegin(Detail::ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftCenterBegin(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::CenterRight || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft)
             {
@@ -25,31 +25,31 @@ namespace StreamFormat::FMT::Detail
             }
         }
 
-        inline void WriteShiftCenterEnd(Detail::ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftCenterEnd(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::CenterRight || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft)
                 BufferOutManip(Buffer).Pushback(shift.Print.After, shift.Size);
         }
 
-        inline void WriteShiftRightAll(Detail::ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftRightAll(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Right)
                 BufferOutManip(Buffer).Pushback(shift.Print.Before, shift.Size);
         }
 
-        inline void WriteShiftLeftAll(Detail::ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftLeftAll(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Left)
                 BufferOutManip(Buffer).Pushback(shift.Print.After, shift.Size);
         }
 
-        inline void WriteShiftBegin(Detail::ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftBegin(Detail::ShiftInfo& shift)
         {
             WriteShiftCenterBegin(shift);
             WriteShiftRightAll(shift);
         }
 
-        inline void WriteShiftEnd(Detail::ShiftInfo& shift)
+        [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftEnd(Detail::ShiftInfo& shift)
         {
             WriteShiftLeftAll(shift);
             WriteShiftCenterEnd(shift);
@@ -65,7 +65,7 @@ namespace StreamFormat::FMT::Detail
         BufferInfo<TChar>& Buffer;
 
     public:
-        void SkipShiftBeginSpace(Detail::ShiftInfo& shift)
+        [[nodiscard]] std::expected<void, FMTResult> SkipShiftBeginSpace(Detail::ShiftInfo& shift)
         {
             if (shift.Print.BeforeIsADigit() == false) return;
             if (shift.Type == Detail::ShiftInfo::ShiftType::Right || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft || shift.Type == Detail::ShiftInfo::ShiftType::CenterRight)
@@ -76,7 +76,7 @@ namespace StreamFormat::FMT::Detail
                 }
         }
 
-        void SkipShiftEnd(Detail::ShiftInfo& shift)
+        [[nodiscard]] std::expected<void, FMTResult> SkipShiftEnd(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Left || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft || shift.Type == Detail::ShiftInfo::ShiftType::CenterRight)
                 while (Buffer.Get() == ' ' && shift.Size > 0)

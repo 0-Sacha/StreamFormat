@@ -10,7 +10,7 @@
 namespace StreamFormat::FMT
 {
     template <typename Buffer, typename Format, typename... Args>
-    void Parse(Buffer&& bufferInput, Format&& formatInput, Args&&... args)
+    [[nodiscard]] std::expected<void, FMTResult> Parse(Buffer&& bufferInput, Format&& formatInput, Args&&... args)
     {
         Detail::BufferInfoView buffer{bufferInput};
         Detail::BufferInfoView format{formatInput};

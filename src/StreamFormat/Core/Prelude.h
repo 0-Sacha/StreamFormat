@@ -1,7 +1,5 @@
 #pragma once
 
-#include "CompilerInfo.h"
-
 #include <cstdint>
 
 #define STREAMFORMAT_DEBUG
@@ -32,9 +30,21 @@
 #define STREAMFORMAT_DEBUGBREAK()
 #endif
 
-// NOT USED YET
-#define STREAMFORMAT_NODISCARD [[nodiscard]]
-#define STREAMFORMAT_INLINE    inline
+#include <system_error>
+#include <expected>
+// https://github.com/SerenityOS/serenity/blob/50642f85ac547a3caee353affcb08872cac49456/AK/Try.h
+#define SF_TRY(exp) ({ \
+        auto __expected = exp; \
+        if (not __expected) [[unlikely]] \
+            return __expected; \
+        __expected.value(); \
+    });
 
-#define UNKOWN_TYPE_MESSAGE
-#define UNKOWN_TYPE_DEBUG
+#define SF_TRY_TERR(exp, transform_error) ({ \
+        auto __expected = exp; \
+        if (not __expected) [[unlikely]] \
+            return __expected.transform_error(transform_error); \
+        __expected.value(); \
+    });
+
+#define SF_TRY_OR(exp, new_error) SF_TRY_TERR(exp, [](auto){return new_error;})
