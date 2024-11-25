@@ -53,10 +53,11 @@ namespace StreamFormat::FMT::Detail
         }
 
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> RunFuncFromTypeAtIndex(std::int32_t idx, std::function<void(const T&)> func)
+        [[nodiscard]] std::expected<void, FMTResult> RunFuncFromTypeAtIndex(std::int32_t idx, std::function<std::expected<void, FMTResult>(const T&)> func)
         {
             const T* value = SF_TRY(GetTypeAt<T>(idx));
-            func(*value);
+            SF_TRY(func(*value));
+            return {};
         }
     };
 

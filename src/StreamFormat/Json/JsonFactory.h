@@ -29,7 +29,8 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<JSON::JsonObject, FormatterExecutor>
     {
-        static void Format(const JSON::JsonObject& object, FormatterExecutor& executor) { executor.WriteType(JSON::FormatAsJson<JSON::JsonObject>(object)); }
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const JSON::JsonObject& object, FormatterExecutor& executor)
+            { return executor.WriteType(JSON::FormatAsJson<JSON::JsonObject>(object)); }
     };
 }
 

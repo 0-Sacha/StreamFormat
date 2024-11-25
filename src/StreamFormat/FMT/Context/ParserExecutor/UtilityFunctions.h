@@ -18,7 +18,7 @@ namespace StreamFormat::FMT
 
         Detail::ParserANSITextPropertiesExecutor<std::remove_const_t<TChar>> textPropertiesExecutor;
         Context::BasicParserExecutor<std::remove_const_t<TChar>> executor(buffer, textPropertiesExecutor);
-        executor.Run(format, std::forward<Args>(args)...);
-        executor.Terminate();
+        SF_TRY(executor.Run(format, std::forward<Args>(args)...));
+        return executor.Terminate();
     }
 }

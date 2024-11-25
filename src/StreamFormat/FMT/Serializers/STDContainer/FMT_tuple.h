@@ -18,21 +18,23 @@ namespace StreamFormat::FMT::TupleDetail
 
     template <typename FormatterExecutor>
     [[nodiscard]] static inline std::expected<void, FMTResult> TupleFormatRec(FormatterExecutor& executor)
-    {}
+    {
+        return {};
+    }
 
     template <typename T, typename FormatterExecutor>
     [[nodiscard]] static inline std::expected<void, FMTResult> TupleFormatRec(FormatterExecutor& executor, const T& t)
     {
-        executor.WriteType(t);
+        return executor.WriteType(t);
     }
 
     template <typename T, typename FormatterExecutor, typename... Args>
     [[nodiscard]] static inline std::expected<void, FMTResult> TupleFormatRec(FormatterExecutor& executor, const T& t, Args&&... args)
     {
-        executor.WriteType(t);
-        executor.BufferOut.Pushback(',');
-        executor.BufferOut.Pushback(' ');
-        TupleFormatRec(context, args...);
+        SF_TRY(executor.WriteType(t));
+        SF_TRY(executor.BufferOut.Pushback(','));
+        SF_TRY(executor.BufferOut.Pushback(' '));
+        return TupleFormatRec(context, args...);
     }
 }
 
@@ -43,9 +45,15 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::tuple<T...>& t, FormatterExecutor& executor)
         {
-            executor.BufferOut.Pushback('<');
-            std::apply([&context](auto&&... args) { TupleDetail::TupleFormatRec(context, args...); }, t);
-            executor.BufferOut.Pushback('>');
+            SF_TRY(executor.BufferOut.Pushback('<'));
+            std::expected<void, FMTResult> err = {};
+            std::apply([&context, &err](auto&&... args)
+                {
+                    auto&& res = TupleDetail::TupleFormatRec(context, args...);
+                    if (not res)
+                        { err = res.error(); }
+                }, t);
+            SF_TRY(executor.BufferOut.Pushback('>'));
         }
     };
 
@@ -54,11 +62,13 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::pair<T1, T2>& t, FormatterExecutor& executor)
         {
-            executor.BufferOut.Pushback('<');
-            executor.WriteType(t.first);
-            executor.BufferOut.Pushback(':');
-            executor.WriteType(t.second);
-            executor.BufferOut.Pushback('>');
+            SF_TRY(executor.BufferOut.Pushback('<'));
+            SF_TRY(executor.WriteType(t.first));
+            SF_TRY(executor.BufferOut.Pushback(':'));
+            SF_TRY(executor.WriteType(t.second));
+            SF_TRY(executor.BufferOut.Pushback('>'));
+
+            return {};
         }
     };
 }

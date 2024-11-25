@@ -20,23 +20,30 @@ namespace StreamFormat::FMT::Detail
         using BufferInfo<CharType>::Get;
         using BufferInfo<CharType>::Manip;
         
-    public:
+    protected:
         BufferOutInfo(BasicBufferOutManager<CharType>& bufferOutManager) noexcept
             : BufferInfo<CharType>()
+            , Manager(bufferOutManager)
+        {}
+
+    protected:
+        [[nodiscard]] static std::expected<void, FMTResult> Init(BufferOutInfo<CharType>& in)
         {
-            SetManager(bufferOutManager);
+            SF_TRY(in.Manager.BeginContext());
+            BufferManip(in).Set(in.Manager.GetBuffer(), in.Manager.GetBufferSize());
+            return {};
         }
 
     public:
-        BasicBufferOutManager<CharType>* Manager;
+        [[nodiscard]] static std::expected<BufferOutInfo<CharType>, FMTResult> Create(BasicBufferOutManager<CharType>& bufferOutManager)
+        {
+            BufferOutInfo<CharType> res(bufferOutManager);
+            SF_TRY(Init(res));
+            return res;
+        }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> SetManager(BasicBufferOutManager<CharType>& bufferOutManager)
-        {
-            Manager = &bufferOutManager;
-            Manager->BeginContext();
-            BufferManip(*this).Set(Manager->GetBuffer(), Manager->GetBufferSize());
-        }
+        BasicBufferOutManager<CharType>& Manager;
     };
 
     template <typename T>
@@ -54,23 +61,15 @@ namespace StreamFormat::FMT::Detail
         BufferOutInfo<TChar>& Buffer;
 
     public:
-        [[nodiscard]] void SetManager(BasicBufferOutManager<TChar>& bufferOutManager) noexcept
-        {
-            return Buffer.SetManager(bufferOutManager);
-        }
-
-        void ComputeGeneratedSize() noexcept { Buffer.Manager->ComputeGeneratedSize(BufferAccess(Buffer).GetBufferCurrentSize()); }
+        void ComputeGeneratedSize() noexcept { Buffer.Manager.ComputeGeneratedSize(BufferAccess(Buffer).GetBufferCurrentSize()); }
 
     public:
         [[nodiscard]] std::expected<void, FMTResult> AddSize(const std::size_t count) noexcept
         {
-            if (Buffer.Manager == nullptr)
-                return std::unexpected(FMTResult::Buffer_NonValid);
             std::size_t currentSize = BufferAccess(Buffer).GetBufferCurrentSize();
-            if (not Buffer.Manager->AddSize(count))
-                return std::unexpected(FMTResult::Buffer_UnableToReserveMemory);
-            BufferManip(Buffer).Set(Buffer.Manager->GetBuffer(), Buffer.Manager->GetBufferSize());
-            Buffer.CurrentPos = Buffer.Manager->GetBuffer() + currentSize;
+            SF_TRY(Buffer.Manager.AddSize(count))
+            BufferManip(Buffer).Set(Buffer.Manager.GetBuffer(), Buffer.Manager.GetBufferSize());
+            Buffer.CurrentPos = Buffer.Manager.GetBuffer() + currentSize;
             return {};
         }
 
@@ -115,7 +114,10 @@ namespace StreamFormat::FMT::Detail
         }
 
     public:
-        [[nodiscard]] inline std::expected<void, FMTResult> AddSpaces(const auto count) noexcept { return Pushback(' ', count); }
+        [[nodiscard]] inline std::expected<void, FMTResult> AddSpaces(const auto count) noexcept
+        {
+            return Pushback(' ', count);
+        }
 
     private:
         template <typename... Rest>

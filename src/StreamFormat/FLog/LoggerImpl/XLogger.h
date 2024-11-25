@@ -155,30 +155,25 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<StreamFormat::FLog::LogSeverity::Value, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::LogSeverity::Value t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::FLog::LogSeverity::Value t, FormatterExecutor& executor)
         {
             executor.Data.KeepNewStyle = true;
             switch (t)
             {
                 case StreamFormat::FLog::LogSeverity::Trace:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, executor);
-                    break;
+                    return FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightBlack, executor);
                 case StreamFormat::FLog::LogSeverity::Debug:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, executor);
-                    break;
+                    return FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Blue, executor);
                 case StreamFormat::FLog::LogSeverity::Info:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, executor);
-                    break;
+                    return FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Green, executor);
                 case StreamFormat::FLog::LogSeverity::Warn:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, executor);
-                    break;
+                    return FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Yellow, executor);
                 case StreamFormat::FLog::LogSeverity::Error:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, executor);
-                    break;
+                    return FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::Red, executor);
                 case StreamFormat::FLog::LogSeverity::Fatal:
-                    FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta, executor);
-                    break;
+                    return FormatterType<Detail::TextProperties::TextColor::BasicColorFG, FormatterExecutor>::Format(Detail::TextProperties::TextColor::BasicColorFG::BrightMagenta, executor);
             }
+            return {};
         }
     };
 }

@@ -16,19 +16,22 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_string<Char>, FormatterExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::basic_string<Char>& t, FormatterExecutor& executor) { Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::basic_string<Char>& t, FormatterExecutor& executor)
+            { return Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t); }
     };
 
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_string_view<Char>, FormatterExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> Format(std::basic_string_view<Char> t, FormatterExecutor& executor) { Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(std::basic_string_view<Char> t, FormatterExecutor& executor)
+            { return Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t); }
     };
 
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_stringstream<Char>, FormatterExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::basic_stringstream<Char>& t, FormatterExecutor& executor) { Detail::BufferWriteManip(executor.BufferOut).FastWriteCharArray(t.str(), t.size()); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::basic_stringstream<Char>& t, FormatterExecutor& executor)
+            { return Detail::BufferWriteManip(executor.BufferOut).FastWriteCharArray(t.str(), t.size()); }
     };
 
     //------------------------------------------//
@@ -42,9 +45,11 @@ namespace StreamFormat::FMT
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::unique_ptr<T>& t, FormatterExecutor& executor)
         {
             if (executor.Data.TrueValue)
-                FormatterType<T*, FormatterExecutor>::Format(t.get(), executor);
+                return FormatterType<T*, FormatterExecutor>::Format(t.get(), executor);
             else
-                FormatterType<T, FormatterExecutor>::Format(*t, executor);
+                return FormatterType<T, FormatterExecutor>::Format(*t, executor);
+
+            return {};
         }
     };
 
@@ -55,9 +60,11 @@ namespace StreamFormat::FMT
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::shared_ptr<T>& t, FormatterExecutor& executor)
         {
             if (executor.Data.TrueValue)
-                FormatterType<T*, FormatterExecutor>::Format(t.get(), executor);
+                return FormatterType<T*, FormatterExecutor>::Format(t.get(), executor);
             else
-                FormatterType<T, FormatterExecutor>::Format(*t, executor);
+                return FormatterType<T, FormatterExecutor>::Format(*t, executor);
+
+            return {};
         }
     };
 
@@ -65,6 +72,7 @@ namespace StreamFormat::FMT
     template <typename T, typename FormatterExecutor>
     struct FormatterType<std::weak_ptr<T>, FormatterExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::weak_ptr<T>& t, FormatterExecutor& executor) { FormatterType<std::shared_ptr<T>, FormatterExecutor>::Format(t.lock(), executor); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::weak_ptr<T>& t, FormatterExecutor& executor)
+            { return FormatterType<std::shared_ptr<T>, FormatterExecutor>::Format(t.lock(), executor); }
     };
 }

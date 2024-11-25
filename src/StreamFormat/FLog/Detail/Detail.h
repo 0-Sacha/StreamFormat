@@ -42,25 +42,28 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor, typename FormatStr>
     struct FormatterType<StreamFormat::FLog::AddIndentInFormat<FormatStr>, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::AddIndentInFormat<FormatStr>& format, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::FLog::AddIndentInFormat<FormatStr>& format, FormatterExecutor& executor)
         {
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("{K:indent}");
-            executor.WriteType(format.Format);
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("{K:indent}"));
+            return executor.WriteType(format.Format);
         }
     };
 
     template <typename FormatterExecutor, typename CharType>
     struct FormatterType<StreamFormat::FLog::ConcateNameAndSinkName<CharType>, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::ConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::FLog::ConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor)
         {
-            executor.Run(names.LoggerName, FORMAT_SV("sink", names.SinkName));
+            return executor.Run(names.LoggerName, FORMAT_SV("sink", names.SinkName));
         }
     };
 
     template <typename FormatterExecutor, typename CharType>
     struct FormatterType<StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>, FormatterExecutor>
     {
-        static void Format(const StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor) { executor.Run(names.LoggerName, "sink"); }
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::FLog::FuturConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor)
+        {
+            return executor.Run(names.LoggerName, "sink");
+        }
     };
 }

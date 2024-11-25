@@ -59,6 +59,8 @@ namespace StreamFormat::FMT::Context
 
         else if (manip.IsEqualToForward('N'))
             { Executor.Data.NextOverride = SF_TRY(ParseNextOverrideFormatData()); }
+        
+        return {};
     }
 
     template <typename TChar>
@@ -76,6 +78,7 @@ namespace StreamFormat::FMT::Context
                 Executor.Data.Shift.Print.After = SF_TRY(Detail::BufferManip(Format).GetAndForward());
             }
         }
+        return {};
     }
 
     template <typename TChar>
@@ -202,15 +205,16 @@ namespace StreamFormat::FMT::Context
             manip.SkipAllSpaces();
 
             if (access.IsUpperCase())
-                ParseFormatDataBase();
+                { SF_TRY(ParseFormatDataBase()); }
             else if (!access.IsLowerCase())
-                ParseFormatDataSpecial();
+                { SF_TRY(ParseFormatDataSpecial()); }
             else
-                ParseFormatDataCustom();
+                { SF_TRY(ParseFormatDataCustom()); }
 
             Detail::FMTBufferParamsManip(Format).ParamGoTo(',');
-            Detail::BufferTestManip(Format).IsEqualToForward(',');
+            SF_TRY(Detail::BufferTestManip(Format).IsEqualToForward(','));
         }
+        return {};
     }
 
     template <typename TChar>
@@ -276,16 +280,18 @@ namespace StreamFormat::FMT::Context
 
         if (Detail::BufferTestAccess(Format).IsEqualTo(':', '{'))
         {
-            Detail::BufferManip(Format).Forward();
-            ParseFormatData();
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            SF_TRY(ParseFormatData());
         }
 
-        ArgsInterface.RunTypeAtIndex(formatIdx);
+        SF_TRY(ArgsInterface.RunTypeAtIndex(formatIdx));
 
         if (Executor.Data.KeepNewStyle == false)
-            Executor.TextManager.Reload(saveTextProperties);
+            { SF_TRY(Executor.TextManager.Reload(saveTextProperties)); }
 
         Executor.Data = saveFormatData;
+
+        return {};
     }
 
     template <typename TChar>

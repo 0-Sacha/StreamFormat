@@ -116,17 +116,21 @@ namespace StreamFormat::FMT::Context
         while (!Detail::BufferAccess(Format).IsEndOfString())
         {
             const TChar* beginContinousString = Format.CurrentPos;
-            std::size_t       sizeContinousString  = 0;
+            std::size_t sizeContinousString  = 0;
             while (Detail::BufferAccess(Format).IsEndOfString() == false && Detail::BufferTestAccess(Format).IsEqualTo('{') == false)
             {
                 ++sizeContinousString;
-                Detail::BufferManip(Format).Forward();
+                SF_TRY(Detail::BufferManip(Format).Forward());
             }
             SF_TRY(Executor.ExecRawString(std::basic_string_view<TChar>(beginContinousString, sizeContinousString)));
 
             if (Detail::BufferAccess(Format).IsEndOfString() == false && Detail::BufferTestAccess(Format).IsEqualTo('{'))
-                { Parse(); }
+            {
+                SF_TRY(Parse());
+            }
         }
+
+        return {};
     }
 
     template <typename TChar>
@@ -159,6 +163,8 @@ namespace StreamFormat::FMT::Context
             return ArgsInterface.GetIntAt(formatIdx);
         else if constexpr (std::is_convertible_v<T, std::basic_string_view<TChar>>)
             return ArgsInterface.GetStringAt(formatIdx);
+
+        return std::unexpected(FMTResult::Context_ArgumentIndexExpected);
     }
 }
 

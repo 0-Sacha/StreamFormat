@@ -89,8 +89,8 @@ namespace StreamFormat::FMT::Detail
             }
 
             // TODO : Opti with bigger types
-                { *str++ = BufferManip(Buffer).GetAndForward(); }
             while (sizeToCopy-- != 0)
+                { *str++ = SF_TRY(BufferManip(Buffer).GetAndForward()); }
             if (isZeroEnded) { *str = 0; }
 
             return {};

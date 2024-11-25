@@ -51,9 +51,11 @@ namespace StreamFormat::FMT::Context
         template <typename Type, typename... Rest>
         [[nodiscard]] inline std::expected<void, FMTResult> WriteType(Type&& type, Rest&&... rest)
         {
-            FormatterType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Format(std::forward<Type>(type), *this);
+            auto&& formatErr = FormatterType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Format(std::forward<Type>(type), *this);
+            SF_TRY(formatErr);
             if constexpr (sizeof...(rest) > 0)
-                WriteType(std::forward<Rest>(rest)...);
+                { SF_TRY(WriteType(std::forward<Rest>(rest)...)); }
+            return {};
         }
     };
 }
@@ -72,10 +74,11 @@ namespace StreamFormat::FMT::Context
     [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Terminate()
     {
         Detail::BufferOutManip(BufferOut).ComputeGeneratedSize();
-        
+
         // End char not included in buffer manager context to deduce size correctly
-        if (Detail::BufferOutManip(BufferOut).Reserve(1))
-            Detail::BufferOutManip(BufferOut).Pushback('\0');
+        SF_TRY(Detail::BufferOutManip(BufferOut).Pushback('\0'));
+
+        return {};
     }
 
     template <typename TChar>
@@ -85,6 +88,7 @@ namespace StreamFormat::FMT::Context
         auto indent = Data.Specifiers.Get("indent");
         if (indent != nullptr)
             BufferOut.Indent = indent->AsNumber;
+        return {};
     }
 
     template <typename TChar>
@@ -95,15 +99,15 @@ namespace StreamFormat::FMT::Context
 
         Detail::TextProperties::Properties saveTextProperties = TextManager.Save();
         Context::BasicContext<TChar> context(*this, format, argsInterface);
-        context.Run();
-        TextManager.Reload(saveTextProperties);
+        SF_TRY(context.Run());
+        return TextManager.Reload(saveTextProperties);
     }
 
     template <typename TChar>
     template <typename Format, typename... Args>
     [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
     {
-        Run_(Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
+        return Run_(Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
     }
 }
 

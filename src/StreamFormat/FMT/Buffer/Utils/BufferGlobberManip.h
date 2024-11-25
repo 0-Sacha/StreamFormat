@@ -18,23 +18,23 @@ namespace StreamFormat::FMT::Detail
     private:
         [[nodiscard]] static std::expected<const TChar*, FMTResult> BufferInExecGlob_(BufferInfo<TChar>& bufferIn, BufferInfo<TChar>& glob)
         {
-            if (BufferAccess(glob).IsEndOfString()) return bufferIn.CurrentPos;
+            if (BufferAccess(glob).IsEndOfString()) { return bufferIn.CurrentPos; }
 
-            if (BufferAccess(bufferIn).IsEndOfString()) return nullptr;
+            if (BufferAccess(bufferIn).IsEndOfString()) { return nullptr; }
 
             if (BufferTestAccess(glob).IsEqualTo('?'))
             {
-                BufferManip(glob).Forward();
-                BufferManip(bufferIn).Forward();
+                SF_TRY(BufferManip(glob).Forward());
+                SF_TRY(BufferManip(bufferIn).Forward());
                 return BufferInExecGlob_(bufferIn, glob);
             }
             else if (BufferTestAccess(glob).IsEqualTo('*'))
             {
-                BufferManip(glob).Forward();
+                SF_TRY(BufferManip(glob).Forward());
                 const TChar* further = SF_TRY(BufferInExecGlob_(bufferIn, glob));
                 while (BufferAccess(bufferIn).CanMoveForward())
                 {
-                    BufferManip(bufferIn).Forward();
+                    SF_TRY(BufferManip(bufferIn).Forward());
                     const TChar* last = SF_TRY(BufferInExecGlob_(bufferIn, glob));
                     if (last > further || further == nullptr) further = last;
                 }
@@ -42,9 +42,9 @@ namespace StreamFormat::FMT::Detail
             }
             else if (BufferTestAccess(glob).IsEqualTo('['))
             {
-                BufferManip(bufferIn).Forward();
+                SF_TRY(BufferManip(bufferIn).Forward());
                 const TChar* begin = glob.CurrentPos;
-                BufferTestManip(glob).GoToForward(']');
+                SF_TRY(BufferTestManip(glob).GoToForward(']'));
                 const TChar* end = glob.CurrentPos;
 
                 BufferInfoView<TChar> charSet(begin, end - begin);
@@ -84,8 +84,8 @@ namespace StreamFormat::FMT::Detail
 
             if (bufferIn.Get() == glob.Get())
             {
-                BufferManip(glob).Forward();
-                BufferManip(bufferIn).Forward();
+                SF_TRY(BufferManip(glob).Forward());
+                SF_TRY(BufferManip(bufferIn).Forward());
                 return BufferInExecGlob_(bufferIn, glob);
             }
             return nullptr;
@@ -97,6 +97,7 @@ namespace StreamFormat::FMT::Detail
             const TChar* furtherPointMatched = SF_TRY(BufferInExecGlob_(bufferIn, glob));
             if (furtherPointMatched != nullptr)
                 bufferIn.CurrentPos = furtherPointMatched;
+            return {};
         }
     };
 

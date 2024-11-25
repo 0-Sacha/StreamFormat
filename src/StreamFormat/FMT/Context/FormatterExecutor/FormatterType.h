@@ -27,12 +27,12 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>                                                                                                                       \
     struct StreamFormat::FMT::FormatterType<Type, FormatterExecutor>                                                                                            \
     {                                                                                                                                                           \
-        [[nodiscard]] static std::expected<void, FMTResult> Format(const Type& value, FormatterExecutor& executor) { executor.Run(fmt, __VA_ARGS__); } \
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const Type& value, FormatterExecutor& executor) { return executor.Run(fmt, __VA_ARGS__); } \
     };
 
 #define STREAMFORMAT_AUTO_FORMATTER_T(Type, fmt, ...)                                                                                                       \
     template <typename FormatterExecutor>                                                                                                                   \
     struct StreamFormat::FMT::FormatterType<Type, FormatterExecutor>                                                                                        \
     {                                                                                                                                                       \
-        [[nodiscard]] static std::expected<void, FMTResult> Format(const Type&, FormatterExecutor& executor) { executor.Run(fmt, __VA_ARGS__); }   \
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const Type&, FormatterExecutor& executor) { return executor.Run(fmt, __VA_ARGS__); }   \
     };

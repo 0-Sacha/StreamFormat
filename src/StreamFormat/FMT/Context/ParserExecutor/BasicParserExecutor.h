@@ -40,7 +40,7 @@ namespace StreamFormat::FMT::Context
             SF_TRY(Detail::BufferTestManip(BufferIn).IsSameForward(sv.data(), sv.size()));
             return {};
         }
-        [[nodiscard]] std::expected<void, FMTResult> ExecSettings() override {};
+        [[nodiscard]] std::expected<void, FMTResult> ExecSettings() override { return {}; };
 
     public:
         template <typename... Args>
@@ -52,9 +52,11 @@ namespace StreamFormat::FMT::Context
         template <typename Type, typename... Rest>
         [[nodiscard]] inline std::expected<void, FMTResult> ReadType(Type& type, Rest&... rest)
         {
-            ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Parse(type, *this);
+            auto&& parseErr = ParserType<typename Detail::FormatTypeForwardAs<Detail::GetBaseType<Type>>::Type, M_Type>::Parse(type, *this);
+            SF_TRY(parseErr);
             if constexpr (sizeof...(rest) > 0)
-                ReadType(std::forward<Rest>(rest)...);
+                SF_TRY(ReadType(std::forward<Rest>(rest)...));
+            return {};
         }
     };
 }
@@ -72,6 +74,7 @@ namespace StreamFormat::FMT::Context
     template <typename TChar>
     [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::Terminate()
     {
+        return {};
     }
 
     template <typename TChar>
@@ -82,15 +85,15 @@ namespace StreamFormat::FMT::Context
 
         Detail::TextProperties::Properties saveTextProperties = TextManager.Save();
         Context::BasicContext<TChar> context(*this, format, argsInterface);
-        context.Run();
-        TextManager.Reload(saveTextProperties);
+        SF_TRY(context.Run());
+        return TextManager.Reload(saveTextProperties);
     }
 
     template <typename TChar>
     template <typename Format, typename... Args>
     [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
     {
-        Run_(Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
+        return Run_(Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
     }
 }
 

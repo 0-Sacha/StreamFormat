@@ -16,9 +16,10 @@ namespace StreamFormat::FMT
         [[nodiscard]] static std::expected<void, FMTResult> Format(const typename FormatterExecutor::Detail::template FormatSpecifier<typename FormatterExecutor::TChar>& specifier, FormatterExecutor& executor)
         {
             if (specifier.ValueIsText)
-                executor.Run("{ '{}', '{}' }", specifier.Name, specifier.AsText);
+                { SF_TRY(executor.Run("{ '{}', '{}' }", specifier.Name, specifier.AsText)); }
             else
-                executor.Run("{ '{}', '{}' }", specifier.Name, specifier.AsNumber);
+                { SF_TRY(executor.Run("{ '{}', '{}' }", specifier.Name, specifier.AsNumber)); }
+            return {};
         }
     };
 
@@ -40,7 +41,7 @@ namespace StreamFormat::FMT
             if (size == std::numeric_limits<std::size_t>::max())
                 { return std::unexpected(FMTResult::GivenArgs_UnableToDeduceSize); }
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("begin", STDEnumerableUtility::DefaultBegin));
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("begin", STDEnumerableUtility::DefaultBegin)));
 
             std::basic_string_view<typename FormatterExecutor::TChar> join = executor.Data.Specifiers.GetAsText("join", STDEnumerableUtility::DefaultJoin);
 
@@ -51,13 +52,13 @@ namespace StreamFormat::FMT
             while (itbegin < itend)
             {
                 if (first)
-                    first = false;
+                    { first = false; }
                 else
-                    Detail::FMTBufferWriteManip(executor.BufferOut).WriteIndentString(join);
-                executor.WriteType(*itbegin++);
+                    { SF_TRY(Detail::FMTBufferWriteManip(executor.BufferOut).WriteIndentString(join)); }
+                SF_TRY(executor.WriteType(*itbegin++));
             }
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("end", STDEnumerableUtility::DefaultEnd));
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("end", STDEnumerableUtility::DefaultEnd)));
         }
 
         template <typename T, typename FormatterExecutor>
@@ -67,7 +68,8 @@ namespace StreamFormat::FMT
             size  = executor.Data.Specifiers.GetAsNumber("size", size);
             if (size == std::numeric_limits<std::size_t>::max()) size = std::basic_string_view(buffer).size();
 
-            if (executor.Data.Specifiers.Has("array")) return FormatObjectArray(buffer, size, executor);
+            if (executor.Data.Specifiers.Has("array"))
+                return FormatObjectArray(buffer, size, executor);
 
             if (beginIdx > size) return {};
             const T* begin = buffer + beginIdx;
@@ -76,14 +78,18 @@ namespace StreamFormat::FMT
             if (executor.Data.Specifiers.Has("indent"))
                 return Detail::FMTBufferWriteManip(executor.BufferOut).WriteIndentCharPtr(begin, size);
 
-            if (executor.Data.PrefixSuffix) Detail::BufferOutManip(executor.BufferOut).Pushback('\"');
+            if (executor.Data.PrefixSuffix)
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('\"')); }
 
             if (executor.Data.HasSpec == false)
-                Detail::BufferWriteManip(executor.BufferOut).FastWriteCharArray(begin, size);
+                { SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteCharArray(begin, size)); }
             else
-                Detail::FMTBufferWriteManip(executor.BufferOut).WriteCharPtr(begin, size, executor.Data.Shift);
+                { SF_TRY(Detail::FMTBufferWriteManip(executor.BufferOut).WriteCharPtr(begin, size, executor.Data.Shift)); }
 
-            if (executor.Data.PrefixSuffix) Detail::BufferOutManip(executor.BufferOut).Pushback('\"');
+            if (executor.Data.PrefixSuffix)
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('\"')); }
+            
+            return {};
         }
     }
 
@@ -100,17 +106,19 @@ namespace StreamFormat::FMT
             if (executor.Data.PrefixSuffix)
             {
                 if (t == true)
-                    Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("True");
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("True");
                 else
-                    Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("False");
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("False");
             }
             else
             {
                 if (t == true)
-                    Detail::BufferManip(executor.BufferOut).Pushback('1');
+                    return Detail::BufferManip(executor.BufferOut).Pushback('1');
                 else
-                    Detail::BufferManip(executor.BufferOut).Pushback('0');
+                    return Detail::BufferManip(executor.BufferOut).Pushback('0');
             }
+
+            return {};
         }
     };
 
@@ -165,6 +173,8 @@ namespace StreamFormat::FMT
                 { return Detail::Forwarders::FormatString(t, std::numeric_limits<std::size_t>::max(), executor); }
             else
                 { Detail::Forwarders::FormatObjectArray(t, std::numeric_limits<std::size_t>::max(), executor); }
+
+            return {};
         }
     };
 
@@ -183,6 +193,8 @@ namespace StreamFormat::FMT
             {
                 return Detail::Forwarders::FormatObjectArray(t, SIZE, executor);
             }
+            
+            return {};
         }
     };
 }

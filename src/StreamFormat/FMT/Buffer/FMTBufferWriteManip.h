@@ -31,21 +31,24 @@ namespace StreamFormat::FMT::Detail
             shift.Size -= nbDigit;
             if (i < 0) --shift.Size;
 
-            if (shift.Size <= 0) return BufferWriteManip(Buffer).FastWriteInteger(i);
+            if (shift.Size <= 0)
+                { return BufferWriteManip(Buffer).FastWriteInteger(i); }
 
-            if (!shift.Print.BeforeIsADigit()) BufferShiftWriteManip(Buffer).WriteShiftBegin(shift);
+            if (!shift.Print.BeforeIsADigit())
+                { SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftBegin(shift)); }
             if (i < 0)
             {
-                BufferOutManip(Buffer).Pushback('-');
+                SF_TRY(BufferOutManip(Buffer).Pushback('-'));
                 i = -i;
             }
-            if (shift.Print.BeforeIsADigit()) BufferShiftWriteManip(Buffer).WriteShiftRightAll(shift);
+            if (shift.Print.BeforeIsADigit())
+                { SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftRightAll(shift)); }
 
             if (i == 0)
-                BufferOutManip(Buffer).Pushback('0');
+                { SF_TRY(BufferOutManip(Buffer).Pushback('0')); }
             else
             {
-                BufferOutManip(Buffer).Forward(nbDigit);
+                SF_TRY(BufferOutManip(Buffer).Forward(nbDigit));
                 std::int32_t nbDigit_ = nbDigit;
                 while (nbDigit_ > 0)
                 {
@@ -53,12 +56,13 @@ namespace StreamFormat::FMT::Detail
                     i /= 10;
                     nbDigit_--;
                 }
-                BufferOutManip(Buffer).Forward(nbDigit);
+                SF_TRY(BufferOutManip(Buffer).Forward(nbDigit));
             }
 
-            BufferShiftWriteManip(Buffer).WriteShiftEnd(shift);
+            SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftEnd(shift));
 
             shift.Print.Before = oldBefore;
+            return {};
         }
 
     public:
@@ -74,22 +78,25 @@ namespace StreamFormat::FMT::Detail
             shift.Size -= nbDigit + floatPrecision + 1;
             if (i < 0) --shift.Size;
 
-            if (shift.Size <= 0) return BufferWriteManip(Buffer).FastWriteFloat(i, floatPrecision);
+            if (shift.Size <= 0)
+                { return BufferWriteManip(Buffer).FastWriteFloat(i, floatPrecision); }
 
-            if (!shift.Print.BeforeIsADigit()) BufferShiftWriteManip(Buffer).WriteShiftBegin(shift);
+            if (!shift.Print.BeforeIsADigit())
+                { SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftBegin(shift)); }
             if (i < 0)
             {
-                BufferOutManip(Buffer).Pushback('-');
+                SF_TRY(BufferOutManip(Buffer).Pushback('-'));
                 i = -i;
             }
-            if (shift.Print.BeforeIsADigit()) BufferShiftWriteManip(Buffer).WriteShiftRightAll(shift);
+            if (shift.Print.BeforeIsADigit())
+                { SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftRightAll(shift)); }
 
             T k = std::trunc(i);
             if (k == 0)
-                BufferOutManip(Buffer).Pushback('0');
+                { SF_TRY(BufferOutManip(Buffer).Pushback('0')); }
             else
             {
-                BufferOutManip(Buffer).Forward(nbDigit);
+                SF_TRY(BufferOutManip(Buffer).Forward(nbDigit));
                 std::int32_t nbDigit_ = nbDigit;
                 while (nbDigit_ > 0)
                 {
@@ -97,21 +104,22 @@ namespace StreamFormat::FMT::Detail
                     k /= 10;
                     nbDigit_--;
                 }
-                BufferOutManip(Buffer).Forward(nbDigit);
+                SF_TRY(BufferOutManip(Buffer).Forward(nbDigit));
             }
 
-            BufferOutManip(Buffer).Pushback('.');
+            SF_TRY(BufferOutManip(Buffer).Pushback('.'));
             i -= k;
             while (floatPrecision-- != 0)
             {
                 T decimal = std::trunc(i *= 10);
-                BufferOutManip(Buffer).Pushback((char)decimal + '0');
+                SF_TRY(BufferOutManip(Buffer).Pushback((char)decimal + '0'));
                 i -= decimal;
             }
 
-            BufferShiftWriteManip(Buffer).WriteShiftEnd(shift);
+            SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftEnd(shift));
 
             shift.Print.Before = oldBefore;
+            return {};
         }
 
     public:
@@ -136,18 +144,19 @@ namespace StreamFormat::FMT::Detail
 
             if (base_prefix != '\0')
             {
-                BufferOutManip(Buffer).Pushback('0');
-                BufferOutManip(Buffer).Pushback(base_prefix);
+                SF_TRY(BufferOutManip(Buffer).Pushback('0'));
+                SF_TRY(BufferOutManip(Buffer).Pushback(base_prefix));
             }
 
-            manip.Forward(digitCount);
+            SF_TRY(manip.Forward(digitCount));
             std::int32_t k = digitCount + 1;
             while (--k != 0)
             {
                 manip.ForceSetInverse(lut[i & (0b1 << digitSize)]);
                 i = i >> digitSize;
             }
-            manip.Forward(digitCount);
+            SF_TRY(manip.Forward(digitCount));
+            return {};
         }
 
     public:
@@ -203,25 +212,26 @@ namespace StreamFormat::FMT::Detail
                 }
                 const CharStr* const end = str;
 
-                BufferWriteManip(Buffer).FastWriteCharArray(begin, end - begin);
+                SF_TRY(BufferWriteManip(Buffer).FastWriteCharArray(begin, end - begin));
 
                 if (size > 0 && *str == '\n')
                 {
-                    FMTBufferOutManip(Buffer).NewLineIndent();
+                    SF_TRY(FMTBufferOutManip(Buffer).NewLineIndent());
                     ++str;
                     --size;
                 }
             }
+            return {};
         }
         template <typename CharStr>
         [[nodiscard]] inline std::expected<void, FMTResult> WriteIndentCharBound(const CharStr* begin, const CharStr* end)
         {
-            WriteIndentCharPtr(begin, end - begin);
+            return WriteIndentCharPtr(begin, end - begin);
         }
         template <typename CharStr>
         [[nodiscard]] inline std::expected<void, FMTResult> WriteIndentString(std::basic_string_view<CharStr> str)
         {
-            WriteIndentCharPtr(str.data(), str.size());
+            return WriteIndentCharPtr(str.data(), str.size());
         }
 
         template <typename CharStr>
@@ -230,22 +240,23 @@ namespace StreamFormat::FMT::Detail
             if (shift.Size <= 0)
                 return BufferWriteManip(Buffer).FastWriteCharArray(str, size);
             
-            BufferOutManip(Buffer).Reserve(std::max(static_cast<std::size_t>(shift.Size), size));
+            SF_TRY(BufferOutManip(Buffer).Reserve(std::max(static_cast<std::size_t>(shift.Size), size)));
 
             if (static_cast<std::size_t>(shift.Size) > size)
             {
                 shift.Size -= static_cast<std::int32_t>(size);
 
-                BufferShiftWriteManip(Buffer).WriteShiftBegin(shift);
+                SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftBegin(shift));
 
-                BufferWriteManip(Buffer).FastWriteCharArray(str, size);
+                SF_TRY(BufferWriteManip(Buffer).FastWriteCharArray(str, size));
 
-                BufferShiftWriteManip(Buffer).WriteShiftEnd(shift);
+                SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftEnd(shift));
             }
             else
             {
-                BufferWriteManip(Buffer).FastWriteCharArray(str, size);
+                SF_TRY(BufferWriteManip(Buffer).FastWriteCharArray(str, size));
             }
+            return {};
         }
         template <typename CharStr>
         [[nodiscard]] inline std::expected<void, FMTResult> WriteCharBound(const CharStr* begin, const CharStr* end, ShiftInfo& shift)

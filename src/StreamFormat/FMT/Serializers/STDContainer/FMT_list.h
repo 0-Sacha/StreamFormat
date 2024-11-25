@@ -8,6 +8,7 @@ namespace StreamFormat::FMT
     template <typename T, typename FormatterExecutor>
     struct FormatterType<std::list<T>, FormatterExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::list<T>& t, FormatterExecutor& executor) { FormatterType<ForwardAsSTDEnumerable<std::list<T>>, FormatterExecutor>::Format(t, executor); }
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::list<T>& t, FormatterExecutor& executor)
+            { return FormatterType<ForwardAsSTDEnumerable<std::list<T>>, FormatterExecutor>::Format(t, executor); }
     };
 }

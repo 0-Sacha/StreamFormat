@@ -195,65 +195,67 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<StreamFormat::Tester::Detail::TestSuite, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::Detail::TestSuite& t, FormatterExecutor& executor) { executor.BufferOut.FastWriteString(t.Name); }
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::Tester::Detail::TestSuite& t, FormatterExecutor& executor)
+            { return executor.BufferOut.FastWriteString(t.Name); }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<StreamFormat::Tester::Detail::Test, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::Detail::Test& t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::Tester::Detail::Test& t, FormatterExecutor& executor)
         {
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t.Link.Name);
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("::");
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t.Name);
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t.Link.Name));
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("::"));
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteString(t.Name));
+            return {};
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<StreamFormat::Tester::TestStatus, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::TestStatus& status, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::Tester::TestStatus& status, FormatterExecutor& executor)
         {
             switch (status)
             {
                 case StreamFormat::Tester::TestStatus::Ok:
-                    executor.Run("[  {C:green}OK{C}  ]").value();
-                    break;
+                    return executor.Run("[  {C:green}OK{C}  ]");
                 case StreamFormat::Tester::TestStatus::Fail:
-                    executor.Run("[ {C:red}FAIL{C} ]").value();
-                    break;
+                    return executor.Run("[ {C:red}FAIL{C} ]");
                 case StreamFormat::Tester::TestStatus::Crash:
-                    executor.Run("[{C:magenta}Crash{C} ]").value();
-                    break;
+                    return executor.Run("[{C:magenta}Crash{C} ]");
             }
+            return {};
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<StreamFormat::Tester::Detail::TestStatusBank, FormatterExecutor>
     {
-        static void Format(const StreamFormat::Tester::Detail::TestStatusBank& statusBank, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::Tester::Detail::TestStatusBank& statusBank, FormatterExecutor& executor)
         {
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("TestsDone ").value();
-            executor.Run("{:C:white}", statusBank.TestsDone).value();
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("TestsDone "));
+            SF_TRY(executor.Run("{:C:white}", statusBank.TestsDone));
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsOK ").value();
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsOK "));
             if (statusBank.TestsOk == statusBank.TestsDone)
-                executor.Run("{:C:green}", statusBank.TestsOk).value();
+                { SF_TRY(executor.Run("{:C:green}", statusBank.TestsOk)); }
             else
-                executor.Run("{:C:yellow}", statusBank.TestsOk).value();
+                { SF_TRY(executor.Run("{:C:yellow}", statusBank.TestsOk)); }
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsFAIL ").value();
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestsFAIL "));
             if (statusBank.TestsFail == 0)
-                executor.Run("{:C:green}", statusBank.TestsFail).value();
+                { SF_TRY(executor.Run("{:C:green}", statusBank.TestsFail)); }
             else
-                executor.Run("{:C:red}", statusBank.TestsFail).value();
+                { SF_TRY(executor.Run("{:C:red}", statusBank.TestsFail)); }
 
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestCrash ").value();
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral(" | TestCrash "));
             if (statusBank.TestsCrash == 0)
-                executor.Run("{:C:green}", statusBank.TestsCrash).value();
+                { SF_TRY(executor.Run("{:C:green}", statusBank.TestsCrash)); }
             else
-                executor.Run("{:C:magenta}", statusBank.TestsCrash).value();
+                { SF_TRY(executor.Run("{:C:magenta}", statusBank.TestsCrash)); }
+
+            return {};
         }
     };
 }

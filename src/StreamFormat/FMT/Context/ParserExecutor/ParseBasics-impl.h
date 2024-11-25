@@ -83,6 +83,7 @@ namespace StreamFormat::FMT
         {
             // FIXME
             // TODO
+            return std::unexpected(FMTResult::FunctionNotImpl);
         }
     };
 
@@ -93,6 +94,7 @@ namespace StreamFormat::FMT
         {
             // FIXME
             // TODO
+            return std::unexpected(FMTResult::FunctionNotImpl);
         }
     };
 
@@ -103,6 +105,7 @@ namespace StreamFormat::FMT
         {
             // FIXME
             // TODO
+            return std::unexpected(FMTResult::FunctionNotImpl);
         }
     };
 }

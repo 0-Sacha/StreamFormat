@@ -10,7 +10,7 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::array<T, SIZE>& t, FormatterExecutor& executor)
         {
-            FormatterType<ForwardAsSTDEnumerable<std::array<T, SIZE>>, FormatterExecutor>::Format(t, executor);
+            return FormatterType<ForwardAsSTDEnumerable<std::array<T, SIZE>>, FormatterExecutor>::Format(t, executor);
         }
     };
 }

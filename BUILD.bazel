@@ -8,7 +8,7 @@ cc_library(
     hdrs = glob([ "src/**/*.h" ]),
     includes = [ "src/" ],
     copts = select({
-        "@rules_cc//cc/compiler:msvc-cl": ["/std:c++23"],
+        "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
         "//conditions:default": ["-std=c++23"],
     }),
     strip_include_prefix = "src",
@@ -21,9 +21,10 @@ cc_test(
     name = "StreamFormatTests",
     srcs = glob([ "Tests/**/*.h", "Tests/**/*.cpp" ]),
     copts = select({
-        "@rules_cc//cc/compiler:msvc-cl": ["/std:c++23"],
+        "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
         "//conditions:default": ["-std=c++23"],
     }),
     deps = [ ":StreamFormat" ],
+    linkopts = [ "-lpthread" ],
     visibility = ["//visibility:public"],
 )

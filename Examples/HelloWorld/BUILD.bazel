@@ -7,9 +7,10 @@ cc_binary(
     srcs = glob([ "*.h", "*.cpp" ]),
     includes = [ "" ],
     copts = select({
-        "@rules_cc//cc/compiler:msvc-cl": ["/std:c++20"],
-        "//conditions:default": ["-std=c++20"],
+        "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
+        "//conditions:default": ["-std=c++23"],
     }),
+    linkopts = [ "-lpthread" ],
     deps = [ "@streamformat//:StreamFormat" ],
     visibility = ["//visibility:public"],
 )

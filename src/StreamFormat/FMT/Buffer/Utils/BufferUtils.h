@@ -65,7 +65,7 @@ namespace StreamFormat::FMT::Detail
 
                 if (Detail::BufferTestAccess(buffer).IsEqualTo('"')) break;
 
-                Detail::BufferTestManip(buffer).SkipOneOf('\\');
+                SF_TRY(Detail::BufferTestManip(buffer).SkipOneOf('\\'));
                 switch (buffer.Get())
                 {
                     // TODO : Do all others escape char

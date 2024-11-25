@@ -55,10 +55,10 @@ namespace StreamFormat::FMT
     template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatterExecutor>
     struct FormatterType<STDEnumerable<T, CharBegin, CharJoin, CharEnd>, FormatterExecutor>
     {
-        static void Format(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterExecutor& executor)
         {
-            executor.BufferOut.WriteIndentStringView(enumerable.GetStrBegin());
-            executor.BufferOut.AddIndent(enumerable.GetStrBegin().size());
+            SF_TRY(executor.BufferOut.WriteIndentStringView(enumerable.GetStrBegin()));
+            SF_TRY(executor.BufferOut.AddIndent(enumerable.GetStrBegin().size()));
 
             {
                 // TODO: Why ? ...
@@ -67,16 +67,16 @@ namespace StreamFormat::FMT
                 bool first = true;
                 std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
                     if (first)
-                        first = false;
+                        { first = false; }
                     else
-                        executor.BufferOut.WriteIndentStringView(enumerable.GetStrJoin());
+                        { SF_TRY(executor.BufferOut.WriteIndentStringView(enumerable.GetStrJoin())); }
 
-                    executor.WriteType(element);
+                    SF_TRY(executor.WriteType(element));
                 });
             }
 
             executor.BufferOut.RemoveIndent(enumerable.GetStrBegin().size());
-            executor.BufferOut.WriteIndentStringView(enumerable.GetStrEnd());
+            SF_TRY(executor.BufferOut.WriteIndentStringView(enumerable.GetStrEnd()));
         }
     };
 

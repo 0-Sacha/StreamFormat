@@ -13,10 +13,9 @@ namespace StreamFormat::FMT::Detail
     {
     public:
         DynamicBufferOutManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE)
-        {
-            m_Buffer.reset(new CharType[beginSize]);
-            m_BufferSize = beginSize;
-        }
+            : m_BufferSize(beginSize)
+        {}
+
         ~DynamicBufferOutManager() override = default;
         DynamicBufferOutManager(DynamicBufferOutManager&) = delete;
         DynamicBufferOutManager& operator=(DynamicBufferOutManager&) = delete;
@@ -29,15 +28,27 @@ namespace StreamFormat::FMT::Detail
     public:
         CharType*       GetBuffer() override { return m_Buffer.get(); }
         const CharType* GetBuffer() const override { return m_Buffer.get(); }
-        std::size_t     GetBufferSize() const override { return m_BufferSize; }
+        std::size_t     GetBufferSize() const override { if (m_Buffer == nullptr) return 0; return m_BufferSize; }
 
     public:
-        [[nodiscard]] std::expected<void, BufferManagerError> AddSize(const std::size_t count) override { return Resize(count + m_BufferSize); }
-        [[nodiscard]] std::expected<void, BufferManagerError> Resize(const std::size_t targetBufferSize);
+        [[nodiscard]] std::expected<void, FMTResult> BeginContextImpl() final
+        {
+            if (m_Buffer != nullptr)
+                return {};
+
+            CharType* alloc = new CharType[m_BufferSize];
+            if (alloc == nullptr)
+                return std::unexpected(FMTResult::Manager_AllocationFailed);
+            m_Buffer.reset(alloc);
+            return {};
+        }
+
+        [[nodiscard]] std::expected<void, FMTResult> AddSize(const std::size_t count) override { return Resize(count + m_BufferSize); }
+        [[nodiscard]] std::expected<void, FMTResult> Resize(const std::size_t targetBufferSize);
 
     protected:
-        std::unique_ptr<CharType[]> m_Buffer;
-        std::size_t                 m_BufferSize;
+        std::unique_ptr<CharType[]> m_Buffer = nullptr;
+        std::size_t                 m_BufferSize = 0;
     };
 
     template <typename CharType>
@@ -71,24 +82,26 @@ namespace StreamFormat::FMT::Detail
         ShrinkDynamicBufferOutManager& operator=(ShrinkDynamicBufferOutManager&) = delete;
 
     protected:
-        void BeginContextImpl() override { ShrinkIfNeeded(); }
         void ComputeGeneratedSizeImpl(std::size_t totalGeneratedLength) override
         {
+            // WTF
             m_MeanGeneratedSize = (m_MeanGeneratedSize * MEAN_CALCFACT_OLD + totalGeneratedLength * MEAN_CALCFACT_LAST) / (MEAN_CALCFACT_OLD + MEAN_CALCFACT_LAST);
         }
 
     public:
-        void ShrinkIfNeeded()
+        [[nodiscard]] std::expected<void, FMTResult> ShrinkIfNeeded()
         {
-            if (m_BufferSize > static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_OVERFLOW)) Resize(static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_RESIZE));
+            if (m_BufferSize > static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_OVERFLOW))
+                return Resize(static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_RESIZE));
+            return {};
         }
 
     private:
-        std::size_t m_MeanGeneratedSize;
+        std::size_t m_MeanGeneratedSize = 0;
     };
 
     template <typename CharType>
-    [[nodiscard]] std::expected<void, BufferManagerError> DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize)
+    [[nodiscard]] std::expected<void, FMTResult> DynamicBufferOutManager<CharType>::Resize(const std::size_t targetBufferSize)
     {
         std::size_t newBufferSize = targetBufferSize;
 
@@ -101,7 +114,7 @@ namespace StreamFormat::FMT::Detail
 
         CharType* newBuffer = new CharType[newBufferSize];
         if (newBuffer == nullptr)
-            return std::unexpected(BufferManagerError::AllocationFailed);
+            return std::unexpected(FMTResult::Manager_AllocationFailed);
 
         std::memcpy(newBuffer, m_Buffer.get(), std::min(newBufferSize, m_BufferSize));
 

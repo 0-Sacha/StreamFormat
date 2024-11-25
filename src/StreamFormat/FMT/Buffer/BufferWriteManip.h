@@ -61,11 +61,11 @@ namespace StreamFormat::FMT::Detail
         {
             BufferOutManip manip(Buffer);
 
-            if (i == 0) { manip.Pushback('0'); return {}; }
+            if (i == 0) { SF_TRY(manip.Pushback('0')); return {}; }
 
             if constexpr (std::is_signed_v<T>)
             {
-                if (i < 0) { manip.Pushback('-'); i = -i; }
+                if (i < 0) { SF_TRY(manip.Pushback('-')); i = -i; }
             }
 
             std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(i);
@@ -95,7 +95,7 @@ namespace StreamFormat::FMT::Detail
             T k = std::trunc(i);
             i = i - k;
             std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(k);
-            manip.Forward(nbDigit);
+            SF_TRY(manip.Forward(nbDigit));
             std::int32_t nbDigit_ = nbDigit;
             while (nbDigit_ > 0)
             {
@@ -103,13 +103,13 @@ namespace StreamFormat::FMT::Detail
                 k /= 10;
                 nbDigit_--;
             }
-            manip.Forward(nbDigit);
-            manip.Pushback('.');
+            SF_TRY(manip.Forward(nbDigit));
+            SF_TRY(manip.Pushback('.'));
 
             while (floatPrecision-- >= 0)
             {
                 TChar intPart = static_cast<TChar>(std::trunc(i *= 10));
-                manip.Pushback(intPart + '0');
+                SF_TRY(manip.Pushback(intPart + '0'));
                 i -= intPart;
             }
         }
@@ -141,7 +141,8 @@ namespace StreamFormat::FMT::Detail
         [[nodiscard]] inline std::expected<void, FMTResult> FastWriteStringLitteral(CharInput (&str)[SIZE])
         {
             std::size_t size = SIZE;
-            while (str[size - 1] == 0) --size;
+            while (str[size - 1] == 0)
+                { --size; }
             return FastWriteCharArray(str, size);
         }
 
@@ -158,9 +159,10 @@ namespace StreamFormat::FMT::Detail
         template <typename Type, typename... Rest>
         [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(Type&& type, Rest&&... rest)
         {
-            BasicWriteType(type);
+            SF_TRY(BasicWriteType(type));
             if constexpr (sizeof...(rest) > 0)
-                BasicWriteType(std::forward<Rest>(rest)...);
+                SF_TRY(BasicWriteType(std::forward<Rest>(rest)...));
+            return {};
         }
     };
 }

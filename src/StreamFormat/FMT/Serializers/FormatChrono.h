@@ -29,15 +29,17 @@ namespace StreamFormat::FMT::Detail
         if (mode == TimePrintMode::Mod && shift.Size < 0)
             shift.Size = 3;
 
-        if (BufferTestManip(pattern).IsSameForward("ns", 2))
+        if (BufferTestAccess(pattern).IsSame("ns", 2))
         {
+            SF_TRY(BufferManip(pattern).Forward());
             std::uint32_t ns = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 ns = ns % 1000;
             SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ns) % 1000, shift));
         }
-        else if (BufferTestManip(pattern).IsSameForward("us", 2))
+        else if (BufferTestAccess(pattern).IsSame("us", 2))
         {
+            SF_TRY(BufferManip(pattern).Forward());
             std::uint32_t us = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 us = us % 1000;
@@ -45,8 +47,9 @@ namespace StreamFormat::FMT::Detail
                 us = us / 1000;
             SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(us) % 1000, shift));
         }
-        else if (BufferTestManip(pattern).IsSameForward("ms", 2))
+        else if (BufferTestAccess(pattern).IsSame("ms", 2))
         {
+            SF_TRY(BufferManip(pattern).Forward());
             std::uint32_t ms = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 ms = ms % 1000;
@@ -54,8 +57,9 @@ namespace StreamFormat::FMT::Detail
                 ms = ms / 1000000;
             SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(ms) % 1000, shift));
         }
-        else if (BufferTestManip(pattern).IsEqualToForward('s'))
+        else if (BufferTestAccess(pattern).IsEqualTo('s'))
         {
+            SF_TRY(BufferManip(pattern).Forward());
             std::uint32_t sec = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 sec = sec % 60;
@@ -63,15 +67,17 @@ namespace StreamFormat::FMT::Detail
                 sec = sec / 1000000000;
             SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(sec) % 1000, shift));
         }
-        else if (BufferTestManip(pattern).IsEqualToForward('m'))
+        else if (BufferTestAccess(pattern).IsEqualTo('m'))
         {
+            SF_TRY(BufferManip(pattern).Forward());
             std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 min = min % 60;
             SF_TRY(FMTBufferWriteManip(buffer).WriteInteger(static_cast<uint32_t>(min) % 1000, shift));
         }
-        else if (BufferTestManip(pattern).IsEqualToForward('h'))
+        else if (BufferTestAccess(pattern).IsEqualTo('h'))
         {
+            SF_TRY(BufferManip(pattern).Forward());
             std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 min = min % 24;
@@ -119,7 +125,7 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::chrono::time_point<T>& t, FormatterExecutor& executor)
         {
-            Detail::WriteTime(t, Detail::BufferInfoView(executor.Data.Specifiers.GetAsText("pattern", "%h:%m:%s.%ms")), executor.BufferOut);
+            return Detail::WriteTime(t, Detail::BufferInfoView(executor.Data.Specifiers.GetAsText("pattern", "%h:%m:%s.%ms")), executor.BufferOut);
         }
     };
 
@@ -136,20 +142,22 @@ namespace StreamFormat::FMT
                     executor.BufferOut
                 );
             }
-            Detail::BufferWriteManip(executor.BufferOut).FastWriteInteger(t.count());
+            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteInteger(t.count()));
 
             if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::seconds>)
-                Detail::BufferOutManip(executor.BufferOut).Pushback('s');
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('s')); }
             else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::minutes>)
-                Detail::BufferOutManip(executor.BufferOut).Pushback('m');
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('m')); }
             else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::hours>)
-                Detail::BufferOutManip(executor.BufferOut).Pushback('h');
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('h')); }
             else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::milliseconds>)
-                Detail::BufferOutManip(executor.BufferOut).Pushback('m', 's');
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('m', 's')); }
             else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::microseconds>)
-                Detail::BufferOutManip(executor.BufferOut).Pushback('u', 's');
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('u', 's')); }
             else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::nanoseconds>)
-                Detail::BufferOutManip(executor.BufferOut).Pushback('n', 's');
+                { SF_TRY(Detail::BufferOutManip(executor.BufferOut).Pushback('n', 's')); }
+                
+            return {};
         }
     };
 }

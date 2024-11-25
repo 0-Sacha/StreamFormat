@@ -50,9 +50,9 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const Detail::FileLocation& t, FormatterExecutor& executor)
         {
-            executor.WriteType(t.FileName);
-            executor.BufferOut.Pushback(':');
-            executor.WriteType(t.FileLine);
+            SF_TRY(executor.WriteType(t.FileName));
+            SF_TRY(executor.BufferOut.Pushback(':'));
+            return executor.WriteType(t.FileLine);
         }
     };
 
@@ -61,9 +61,9 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const Detail::FunctionProperties& t, FormatterExecutor& executor)
         {
-            executor.WriteType(t.Location);
-            executor.BufferOut.WriteCharArray(" @ ");
-            executor.WriteType(t.FunctionName);
+            SF_TRY(executor.WriteType(t.Location));
+            SF_TRY(executor.BufferOut.WriteCharArray(" @ "));
+            return executor.WriteType(t.FunctionName);
         }
     };
 }

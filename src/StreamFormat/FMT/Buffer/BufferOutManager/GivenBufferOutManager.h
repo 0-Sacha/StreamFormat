@@ -30,9 +30,9 @@ namespace StreamFormat::FMT::Detail
         std::size_t     GetBufferSize() const override { return m_BufferSize; }
 
     public:
-        [[nodiscard]] std::expected<void, BufferManagerError> AddSize(const std::size_t /* count */) override
+        [[nodiscard]] std::expected<void, FMTResult> AddSize(const std::size_t /* count */) override
         {
-            return std::unexpected(BufferManagerError::StaticMemoryManager);
+            return std::unexpected(FMTResult::Manager_StaticMemory);
         }
 
     private:

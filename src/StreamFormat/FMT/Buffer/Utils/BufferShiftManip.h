@@ -23,24 +23,29 @@ namespace StreamFormat::FMT::Detail
                 SF_TRY(BufferOutManip(Buffer).Pushback(shift.Print.Before, shift.Size - shift_));
                 shift.Size = shift_;
             }
+
+            return {};
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftCenterEnd(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::CenterRight || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft)
                 return BufferOutManip(Buffer).Pushback(shift.Print.After, shift.Size);
+            return {};
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftRightAll(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Right)
                 return BufferOutManip(Buffer).Pushback(shift.Print.Before, shift.Size);
+            return {};
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftLeftAll(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Left)
                 return BufferOutManip(Buffer).Pushback(shift.Print.After, shift.Size);
+            return {};
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> WriteShiftBegin(Detail::ShiftInfo& shift)
@@ -70,21 +75,28 @@ namespace StreamFormat::FMT::Detail
             if (shift.Print.BeforeIsADigit() == false)
                 return {};
             if (shift.Type == Detail::ShiftInfo::ShiftType::Right || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft || shift.Type == Detail::ShiftInfo::ShiftType::CenterRight)
+            {
+
                 while (Buffer.Get() == ' ')
                 {
                     SF_TRY(BufferManip(Buffer).Forward());
                     --shift.Size;
                 }
+            }
+            return {};
         }
 
         [[nodiscard]] std::expected<void, FMTResult> SkipShiftEnd(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Left || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft || shift.Type == Detail::ShiftInfo::ShiftType::CenterRight)
+            {
                 while (Buffer.Get() == ' ' && shift.Size > 0)
                 {
                     SF_TRY(BufferManip(Buffer).Forward());
                     --shift.Size;
                 }
+            }
+            return {};
         }
     };
 }

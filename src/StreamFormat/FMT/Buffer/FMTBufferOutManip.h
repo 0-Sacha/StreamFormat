@@ -21,10 +21,18 @@ namespace StreamFormat::FMT::Detail
 
         using BufferOutInfo<CharType>::Manager;
         
-    public:
+    protected:
         FMTBufferOutInfo(BasicBufferOutManager<CharType>& bufferOutManager) noexcept
             : BufferOutInfo<CharType>(bufferOutManager)
         {}
+
+    public:
+        [[nodiscard]] static std::expected<FMTBufferOutInfo<CharType>, FMTResult> Create(BasicBufferOutManager<CharType>& bufferOutManager)
+        {
+            FMTBufferOutInfo<CharType> res(bufferOutManager);
+            SF_TRY(BufferOutInfo<CharType>::Init(res));
+            return res;
+        }
 
     public:
         std::size_t NoStride = 0;
@@ -56,7 +64,9 @@ namespace StreamFormat::FMT::Detail
         [[nodiscard]] constexpr inline std::expected<void, FMTResult> PushbackCheckIndent(const TChar c)
         {
             SF_TRY(BufferOutManip(Buffer).Pushback(c));
-            if (c == '\n') return BufferOutManip(Buffer).Pushback(' ', Buffer.Indent);
+            if (c == '\n')
+                { return BufferOutManip(Buffer).Pushback(' ', Buffer.Indent); }
+            return {};
         }
     };
 

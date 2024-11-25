@@ -10,7 +10,7 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::unordered_set<T>& t, FormatterExecutor& executor)
         {
-            FormatterType<ForwardAsSTDEnumerable<std::unordered_set<T>>, FormatterExecutor>::Format(t, executor);
+            return FormatterType<ForwardAsSTDEnumerable<std::unordered_set<T>>, FormatterExecutor>::Format(t, executor);
         }
     };
 
@@ -19,7 +19,7 @@ namespace StreamFormat::FMT
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::unordered_multiset<T>& t, FormatterExecutor& executor)
         {
-            FormatterType<ForwardAsSTDEnumerable<std::unordered_multiset<T>>, FormatterExecutor>::Format(t, executor);
+            return FormatterType<ForwardAsSTDEnumerable<std::unordered_multiset<T>>, FormatterExecutor>::Format(t, executor);
         }
     };
 }

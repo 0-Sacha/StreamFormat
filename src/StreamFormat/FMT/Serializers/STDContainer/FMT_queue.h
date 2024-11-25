@@ -8,6 +8,9 @@ namespace StreamFormat::FMT
     template <typename T, typename FormatterExecutor>
     struct FormatterType<std::queue<T>, FormatterExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::queue<T>& t, FormatterExecutor& executor) {}
+        [[nodiscard]] static inline std::expected<void, FMTResult> Format(const std::queue<T>& t, FormatterExecutor& executor)
+        {
+            return std::unexpected(FMTResult::FunctionNotImpl);
+        }
     };
 }

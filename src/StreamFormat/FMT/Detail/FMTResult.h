@@ -25,5 +25,8 @@ namespace StreamFormat::FMT
         Context_CannotApplyType,
         
         GivenArgs_UnableToDeduceSize,
+
+        Manager_StaticMemory,
+        Manager_AllocationFailed,
     };
 }

@@ -14,19 +14,19 @@ namespace StreamFormat::FMT::Detail
     [[nodiscard]] std::expected<void, FMTResult> Detail::TextPropertiesManager<TChar>::ApplyColorOnIndex(Context::BasicContext<TChar>& context, std::int32_t index)
     {
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::Color>(
-            index, [this](const Detail::TextProperties::TextColor::Color& data) { this->ReloadColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::Color& data) -> std::expected<void, FMTResult> { this->ReloadColor(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::BasicColorFG>(
-            index, [this](const Detail::TextProperties::TextColor::BasicColorFG& data) { this->AskApplyColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::BasicColorFG& data) -> std::expected<void, FMTResult> { this->AskApplyColor(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::BasicColorBG>(
-            index, [this](const Detail::TextProperties::TextColor::BasicColorBG& data) { this->AskApplyColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::BasicColorBG& data) -> std::expected<void, FMTResult> { this->AskApplyColor(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::ColorCubeFG>(
-            index, [this](const Detail::TextProperties::TextColor::ColorCubeFG& data) { this->AskApplyColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::ColorCubeFG& data) -> std::expected<void, FMTResult> { this->AskApplyColor(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::ColorCubeBG>(
-            index, [this](const Detail::TextProperties::TextColor::ColorCubeBG& data) { this->AskApplyColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::ColorCubeBG& data) -> std::expected<void, FMTResult> { this->AskApplyColor(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::Color24bFG>(
-            index, [this](const Detail::TextProperties::TextColor::Color24bFG& data) { this->AskApplyColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::Color24bFG& data) -> std::expected<void, FMTResult> { this->AskApplyColor(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextColor::Color24bBG>(
-            index, [this](const Detail::TextProperties::TextColor::Color24bBG& data) { this->AskApplyColor(data); }));
+            index, [this](const Detail::TextProperties::TextColor::Color24bBG& data) -> std::expected<void, FMTResult> { this->AskApplyColor(data); return {}; }));
         return {};
     }
 
@@ -34,9 +34,9 @@ namespace StreamFormat::FMT::Detail
     [[nodiscard]] std::expected<void, FMTResult> Detail::TextPropertiesManager<TChar>::ApplyFrontOnIndex(Context::BasicContext<TChar>& context, std::int32_t index)
     {
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextFront::Front>(
-            index, [this](const Detail::TextProperties::TextFront::Front& data) { this->ReloadFront(data); }));
+            index, [this](const Detail::TextProperties::TextFront::Front& data) -> std::expected<void, FMTResult> { this->ReloadFront(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextFront::FrontID>(
-            index, [this](const Detail::TextProperties::TextFront::FrontID& data) { this->AskApplyFront(data); }));
+            index, [this](const Detail::TextProperties::TextFront::FrontID& data) -> std::expected<void, FMTResult> { this->AskApplyFront(data); return {}; }));
         return {};
     }
 
@@ -44,65 +44,68 @@ namespace StreamFormat::FMT::Detail
     [[nodiscard]] std::expected<void, FMTResult> Detail::TextPropertiesManager<TChar>::ApplyStyleOnIndex(Context::BasicContext<TChar>& context, std::int32_t index)
     {
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Style>(
-            index, [this](const Detail::TextProperties::TextStyle::Style& data) { return this->ReloadStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Style& data) -> std::expected<void, FMTResult> { return this->ReloadStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Intensity>(
-            index, [this](const Detail::TextProperties::TextStyle::Intensity& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Intensity& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Italic>(
-            index, [this](const Detail::TextProperties::TextStyle::Italic& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Italic& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Underline>(
-            index, [this](const Detail::TextProperties::TextStyle::Underline& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Underline& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Blink>(
-            index, [this](const Detail::TextProperties::TextStyle::Blink& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Blink& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Inverted>(
-            index, [this](const Detail::TextProperties::TextStyle::Inverted& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Inverted& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Ideogram>(
-            index, [this](const Detail::TextProperties::TextStyle::Ideogram& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Ideogram& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::Script>(
-            index, [this](const Detail::TextProperties::TextStyle::Script& data) { return this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::Script& data) -> std::expected<void, FMTResult> { return this->AskApplyStyle(data); return {}; }));
 
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::UnderlineColor::ColorCube>(
-            index, [this](const Detail::TextProperties::TextStyle::UnderlineColor::ColorCube& data) { this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::UnderlineColor::ColorCube& data) -> std::expected<void, FMTResult> { this->AskApplyStyle(data); return {}; }));
         SF_TRY(context.ArgsInterface.template RunFuncFromTypeAtIndex<Detail::TextProperties::TextStyle::UnderlineColor::Color24b>(
-            index, [this](const Detail::TextProperties::TextStyle::UnderlineColor::Color24b& data) { this->AskApplyStyle(data); }));
+            index, [this](const Detail::TextProperties::TextStyle::UnderlineColor::Color24b& data) -> std::expected<void, FMTResult> { this->AskApplyStyle(data); return {}; }));
         return {};
     }
 
     template <typename TChar>
     [[nodiscard]] std::expected<void, FMTResult> Detail::TextPropertiesManager<TChar>::ParseColor(Context::BasicContext<TChar>& context)
     {
-        if (BufferTestManip(context.Format).IsEqualToForward(':'))
+        if (BufferTestAccess(context.Format).IsEqualTo(':'))
         {
+            SF_TRY(BufferManip(context.Format).Forward());
             BufferTestManip(context.Format).SkipAllSpaces();
-            if (BufferTestManip(context.Format).IsEqualToForward('{'))
+            if (BufferTestAccess(context.Format).IsEqualTo('{'))
             {
+                SF_TRY(BufferManip(context.Format).Forward());
                 std::int32_t idx = SF_TRY(context.GetFormatIndex());
-                ApplyColorOnIndex(context, idx);
-                BufferTestManip(context.Format).IsEqualToForward('}');
+                SF_TRY(ApplyColorOnIndex(context, idx));
+                SF_TRY(BufferTestManip(context.Format).IsEqualToForward('}'));
             }
             else
             {
                 auto colorFg = GetColorCode<TextProperties::TextColor::BasicColorFG>(context.Format);
                 FMTBufferParamsManip(context.Format).ParamGoTo('-', ',');
-                if (BufferTestManip(context.Format).IsEqualToForward('-'))
+                if (BufferTestAccess(context.Format).IsEqualTo('-'))
                 {
+                    SF_TRY(BufferManip(context.Format).Forward());
                     BufferTestManip(context.Format).SkipAllSpaces();
                     auto colorBg = GetColorCode<TextProperties::TextColor::BasicColorBG>(context.Format);
                     if (colorBg.has_value() && colorFg.has_value())
-                        return AskApplyColor(Detail::TextProperties::TextColor::BasicColor{colorFg.value(), colorBg.value()});
+                        { return AskApplyColor(Detail::TextProperties::TextColor::BasicColor{colorFg.value(), colorBg.value()}); }
                     else
-                        return ReloadDefaultColor();
+                        { return ReloadDefaultColor(); }
                 }
                 else
                 {
                     if (colorFg.has_value())
-                        return AskApplyColor(colorFg.value());
+                        { return AskApplyColor(colorFg.value()); }
                     else
-                        return ReloadDefaultColor();
+                        { return ReloadDefaultColor(); }
                 }
             }
         }
         else
-            return ReloadDefaultColor();
+            { return ReloadDefaultColor(); }
         return {};
     }
 
@@ -118,8 +121,9 @@ namespace StreamFormat::FMT::Detail
                 while (l)
                 {
                     BufferTestManip(context.Format).SkipAllSpaces();
-                    if (BufferTestManip(context.Format).IsEqualToForward('{'))
+                    if (BufferTestAccess(context.Format).IsEqualTo('{'))
                     {
+                        SF_TRY(BufferManip(context.Format).Forward());
                         std::int32_t idx = SF_TRY(context.GetFormatIndex());
                         ApplyStyleOnIndex(context, idx);
                         BufferTestManip(context.Format).IsEqualToForward('}');

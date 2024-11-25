@@ -23,9 +23,8 @@ namespace StreamFormat::FMT::Detail
             BufferShiftReadManip shiftManip(Buffer);
             Detail::BufferTestAccess access(Buffer);
             Detail::BufferTestManip manip(Buffer);
-            T res = 0;
 
-            shiftManip.SkipShiftBeginSpace(shift);
+            SF_TRY(shiftManip.SkipShiftBeginSpace(shift));
 
             bool sign = false;
             if constexpr (std::is_signed_v<T>)
@@ -36,6 +35,7 @@ namespace StreamFormat::FMT::Detail
 
             access.IsADigit();
 
+            T res = (T)0;
             while (access.IsADigit())
             {
                 char c = SF_TRY(BufferManip(Buffer).GetAndForward());
@@ -43,9 +43,10 @@ namespace StreamFormat::FMT::Detail
                 --shift.Size;
             }
 
-            shiftManip.SkipShiftEnd(shift);
+            SF_TRY(shiftManip.SkipShiftEnd(shift));
 
             i = sign ? -res : res;
+            return {};
         }
     public:
         template <typename T>
@@ -55,9 +56,9 @@ namespace StreamFormat::FMT::Detail
             Detail::BufferTestAccess access(Buffer);
             Detail::BufferTestManip manip(Buffer);
             
-            shiftManip.SkipShiftBeginSpace(shift);
+            SF_TRY(shiftManip.SkipShiftBeginSpace(shift));
 
-            bool sign = manip.IsEqualToForward('-');
+            bool sign = SF_TRY(manip.IsEqualToForward('-'));
             if (sign) --shift.Size;
 
             T intpart = static_cast<T>(0);
@@ -99,7 +100,7 @@ namespace StreamFormat::FMT::Detail
                 dec /= 10;
             }
 
-            shiftManip.SkipShiftEnd(shift);
+            SF_TRY(shiftManip.SkipShiftEnd(shift));
 
             t = sign ? - intpart - dec : intpart + dec;
             return {};
@@ -116,13 +117,15 @@ namespace StreamFormat::FMT::Detail
             shift.Size -= sizeof(T) * 8;
             if (base_prefix != '\0') shift.Size -= 2;
 
-            shiftManip.SkipShiftBeginSpace(shift);
+            SF_TRY(shiftManip.SkipShiftBeginSpace(shift));
 
             if (base_prefix != '\0')
-                { manip.SkipOneOf('0'); manip.SkipOneOf(base_prefix); }
+            {
+                SF_TRY(manip.SkipOneOf('0'));
+                SF_TRY(manip.SkipOneOf(base_prefix));
+            }
 
-            T res = 0;
-
+            T res = (T)0;
             while (digitLUT(Buffer.Get()) != std::numeric_limits<std::uint8_t>::max())
             {
                 res = res << digitSize;
@@ -130,9 +133,10 @@ namespace StreamFormat::FMT::Detail
                 BufferManip(Buffer).ForceForward();
             }
 
-            shiftManip.SkipShiftEnd(shift);
+            SF_TRY(shiftManip.SkipShiftEnd(shift));
 
             i = res;
+            return {};
         }
 
     protected:
@@ -223,12 +227,12 @@ namespace StreamFormat::FMT::Detail
         template <typename CharStr, std::size_t SIZE>
         [[nodiscard]] inline std::expected<void, FMTResult> ReadCharArray(const CharStr (&str)[SIZE], ShiftInfo shift = ShiftInfo{})
         {
-            ReadCharPtr(str, SIZE, 0, shift);
+            return ReadCharPtr(str, SIZE, 0, shift);
         }
         template <typename CharStr>
         [[nodiscard]] inline std::expected<void, FMTResult> ReadCharBound(const CharStr* begin, const CharStr* end, ShiftInfo shift = ShiftInfo{})
         {
-            ReadCharPtr(begin, end - begin, 0, shift);
+            return ReadCharPtr(begin, end - begin, 0, shift);
         }
     };
 }

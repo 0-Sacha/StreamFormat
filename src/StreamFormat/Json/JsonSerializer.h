@@ -97,7 +97,7 @@ namespace StreamFormat::JSON
         static inline void ParseSTDString(std::string& t, Detail::JsonParser& parser)
         {
             FMT::Detail::DynamicBufferOutManager<char> bufferData;
-            FMT::Detail::BufferOutInfo<char> buffer(bufferData);
+            FMT::Detail::BufferOutInfo<char> buffer = FMT::Detail::BufferOutInfo<char>::Create(bufferData).value();
             FMT::Detail::BufferUtils::ParseEscapedQuotedString(parser.BufferIn, buffer).value();
             FMT::Detail::BufferOutManip(buffer).ComputeGeneratedSize();
             t = bufferData.GetLastGeneratedString();
@@ -329,12 +329,13 @@ namespace StreamFormat::FMT
     template <typename T, typename FormatterExecutor>
     struct FormatterType<JSON::FormatAsJson<T>, FormatterExecutor>
     {
-        static void Format(const JSON::FormatAsJson<T>& json, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const JSON::FormatAsJson<T>& json, FormatterExecutor& executor)
         {
             bool ordered_struct = executor.Data.Specifiers.Has("ordered_struct");
             JSON::Detail::JsonFormatter::FormatSettings settings{.OrderedStruct = ordered_struct, .FloatPrecision = executor.Data.FloatPrecision};
             JSON::Detail::JsonFormatter jsonFormatter(executor.BufferOut, settings);
             JSON::JsonSerializer<T>::Format(json.Value, jsonFormatter);
+            return {};
         }
     };
 #endif
@@ -343,13 +344,14 @@ namespace StreamFormat::FMT
     template <typename T, typename ParserExecutor>
     struct ParserType<JSON::FormatAsJson<T>, ParserExecutor>
     {
-        static inline void Parse(T& json, ParserExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> Parse(T& json, ParserExecutor& executor)
         {
             JSON::Detail::JsonParser jsonParser(*executor.BufferIn.Manager);
             jsonParser.BufferIn.CurrentPos = executor.BufferIn.CurrentPos;
             // TODO:
             // JSON::JsonSerializer<T>::Parse(json.Value, jsonParser);
             executor.BufferIn.CurrentPos = jsonParser.BufferIn.CurrentPos;
+            return {};
         }
     };
 #endif

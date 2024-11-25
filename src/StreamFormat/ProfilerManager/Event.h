@@ -129,6 +129,7 @@ namespace StreamFormat::FMT
     template <typename FormatterExecutor>
     struct FormatterType<StreamFormat::ProfilerManager::EventType, FormatterExecutor>
     {
-        static void Format(const StreamFormat::ProfilerManager::EventType& t, FormatterExecutor& executor) { executor.BufferOut.Pushback(static_cast<char>(t)); }
+        [[nodiscard]] static std::expected<void, FMTResult> Format(const StreamFormat::ProfilerManager::EventType& t, FormatterExecutor& executor)
+            { return executor.BufferOut.Pushback(static_cast<char>(t)); }
     };
 }

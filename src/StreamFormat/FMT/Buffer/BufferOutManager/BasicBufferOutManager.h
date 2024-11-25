@@ -5,12 +5,6 @@
 
 namespace StreamFormat::FMT::Detail
 {
-    enum class BufferManagerError
-    {
-        StaticMemoryManager,
-        AllocationFailed,
-    };
-
     template <typename CharType>
     class BasicBufferOutManager
     {
@@ -21,11 +15,11 @@ namespace StreamFormat::FMT::Detail
         BasicBufferOutManager& operator=(BasicBufferOutManager&) = delete;
 
     protected:
-        virtual void BeginContextImpl() {}
+        [[nodiscard]] virtual std::expected<void, FMTResult> BeginContextImpl() {}
         virtual void ComputeGeneratedSizeImpl(const std::size_t /* totalGeneratedLength */) {}
 
     public:
-        void BeginContext() { BeginContextImpl(); }
+        [[nodiscard]] std::expected<void, FMTResult> BeginContext() { return BeginContextImpl(); }
         void ComputeGeneratedSize(std::size_t totalGeneratedLength)
         {
             ComputeGeneratedSizeImpl(totalGeneratedLength);
@@ -38,7 +32,7 @@ namespace StreamFormat::FMT::Detail
         virtual std::size_t     GetBufferSize() const = 0;
 
     public:
-        [[nodiscard]] virtual std::expected<void, BufferManagerError> AddSize(const std::size_t count) = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> AddSize(const std::size_t count) = 0;
 
     public:
         BufferInfoView<CharType> GetLastGeneratedBufferInfoView() const { return BufferInfoView<CharType>(GetBuffer(), m_LastGeneratedDataSize); }
