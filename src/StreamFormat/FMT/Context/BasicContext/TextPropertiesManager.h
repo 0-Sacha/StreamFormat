@@ -142,6 +142,8 @@ namespace StreamFormat::FMT::Detail
             }
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
                 return ApplyColor(modif.Bg);
+
+            return {};
         }
 
         [[nodiscard]] std::expected<void, FMTResult> AskApplyColor(const Detail::TextProperties::TextColor::ColorCube& modif)
@@ -154,6 +156,8 @@ namespace StreamFormat::FMT::Detail
             }
             if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
                 return ApplyColor(modif.Bg);
+
+            return {};
         }
 
         [[nodiscard]] std::expected<void, FMTResult> AskApplyColor(const Detail::TextProperties::TextColor::Color24b& modif)
@@ -164,7 +168,10 @@ namespace StreamFormat::FMT::Detail
                     return ApplyColor(modif);
                 return ApplyColor(modif.Fg);
             }
-            if (m_CurrentContextProperties.Color.NeedModif(modif.Fg)) return ApplyColor(modif.Bg);
+            if (m_CurrentContextProperties.Color.NeedModif(modif.Fg))
+                return ApplyColor(modif.Bg);
+
+            return {};
         }
 
         [[nodiscard]] std::expected<void, FMTResult> AskApplyColor(const Detail::TextProperties::TextColor::ColorFG& modif) { return ReloadColorFG(modif); }

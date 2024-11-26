@@ -71,7 +71,7 @@ namespace StreamFormat::JSON
         if (file.is_open() == false) throw std::runtime_error("unable to open file");
 
         FMT::Detail::DynamicBufferOutManager<char> BufferOutManager(256);
-        FMT::Detail::BufferOutInfo<char> bufferOut{BufferOutManager};
+        FMT::Detail::BufferOutInfo<char> bufferOut = FMT::Detail::BufferOutInfo<char>::Create(BufferOutManager).value();
         Detail::JsonFormatter formatter(bufferOut, settings);
         JsonSerializer<T>::Format(json, formatter);
 

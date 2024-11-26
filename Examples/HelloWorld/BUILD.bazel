@@ -10,7 +10,10 @@ cc_binary(
         "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
         "//conditions:default": ["-std=c++23"],
     }),
-    linkopts = [ "-lpthread" ],
+    linkopts = select({
+        "@rules_cc//cc/compiler:msvc-cl": [""],
+        "//conditions:default": ["-pthread"],
+    }),
     deps = [ "@streamformat//:StreamFormat" ],
     visibility = ["//visibility:public"],
 )

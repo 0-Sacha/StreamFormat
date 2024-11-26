@@ -19,7 +19,7 @@ namespace StreamFormat::JSON
         static inline void Parse(T&, Detail::JsonParser&)
         {
 #ifdef UNKOWN_TYPE_MESSAGE
-            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::Parse<{}> not impl", typeid(T).name());
+            FMT::FilePrint(std::cerr, "{C:red}JsonSerializer::Parse<{}> not impl", typeid(T).name()).value();
 #endif
 #ifdef UNKOWN_TYPE_THROW
             throw Detail::JsonTypeSerializerNotImpl{};
@@ -60,7 +60,7 @@ namespace StreamFormat::JSON
         static inline void ReadObject(T&, const JsonObject&)
         {
 #ifdef UNKOWN_TYPE_MESSAGE
-            FMT::FilePrint(std::cerr, "{C:red}JsonObjectSerializer::ReadObject<{}> not impl", typeid(T).name());
+            FMT::FilePrint(std::cerr, "{C:red}JsonObjectSerializer::ReadObject<{}> not impl", typeid(T).name()).value();
 #endif
 #ifdef UNKOWN_TYPE_THROW
             throw Detail::JsonTypeSerializerNotImpl{};
@@ -77,7 +77,7 @@ namespace StreamFormat::JSON
         static inline void WriteObject(const T&, JsonObject&)
         {
 #ifdef UNKOWN_TYPE_MESSAGE
-            FMT::FilePrint(std::cerr, "{C:red}JsonObjectSerializer::WriteObject<{}> not impl", typeid(T).name());
+            FMT::FilePrint(std::cerr, "{C:red}JsonObjectSerializer::WriteObject<{}> not impl", typeid(T).name()).value();
 #endif
 #ifdef UNKOWN_TYPE_THROW
             throw Detail::JsonTypeSerializerNotImpl{};
@@ -123,11 +123,11 @@ namespace StreamFormat::JSON
         {
             const char* begin = parser.BufferIn.CurrentPos;
             float tmp = 0;
-            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadFloat(tmp);
+            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadFloat(tmp).value();
             const char* end = parser.BufferIn.CurrentPos;
 
             parser.BufferIn.CurrentPos = begin;
-            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadInteger(t);
+            FMT::Detail::BufferReadManip(parser.BufferIn).FastReadInteger(t).value();
             parser.BufferIn.CurrentPos = end;
         }
 

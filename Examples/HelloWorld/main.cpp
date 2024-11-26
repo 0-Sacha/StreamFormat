@@ -7,6 +7,10 @@
 int main()
 {
     std::cout << StreamFormat::FMT::FormatString("HelloWorld !").value();
+    std::cout << StreamFormat::FMT::FormatString("HelloWorld !").value();
+    std::cout << StreamFormat::FMT::FormatString("HelloWorld !").value();
+    std::cout << StreamFormat::FMT::FormatString("HelloWorld !").value();
+    std::cout << StreamFormat::FMT::FormatString("HelloWorld !").value();
 
     StreamFormat::FLog::DefaultLogger::Core().Info("HelloWorld !");
 

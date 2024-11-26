@@ -25,6 +25,9 @@ cc_test(
         "//conditions:default": ["-std=c++23"],
     }),
     deps = [ ":StreamFormat" ],
-    linkopts = [ "-lpthread" ],
+    linkopts = select({
+        "@rules_cc//cc/compiler:msvc-cl": [""],
+        "//conditions:default": ["-pthread"],
+    }),
     visibility = ["//visibility:public"],
 )

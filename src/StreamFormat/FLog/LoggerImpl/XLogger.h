@@ -87,12 +87,15 @@ namespace StreamFormat::FLog::Detail
     public:
         template <typename Severity, typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        void Log(Severity status, Format&& format, Args&&... args) { Master::template Log(status, format, std::forward<Args>(args)...); }
+        void Log(Severity status, Format&& format, Args&&... args)
+        {
+            Master::template Log<Format, Args...>(status, format, std::forward<Args>(args)...);
+        }
 
         template <typename Severity, typename T>
         void Log(Severity status, T&& t)
         {
-            Master::template Log(status, std::forward<T>(t));
+            Master::template Log<T>(status, std::forward<T>(t));
         }
 
     public:
