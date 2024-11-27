@@ -24,7 +24,8 @@ namespace StreamFormat::FMT::Detail
         ShiftInfo shift;
         shift.Type = Detail::ShiftInfo::ShiftType::Right;
         shift.Print = Detail::ShiftInfo::ShiftPrint('0', ' ');
-        SF_TRY(BufferReadManip(pattern).FastReadInteger(shift.Size));
+        shift.Size = 0;
+        (void)BufferReadManip(pattern).FastReadInteger(shift.Size);
 
         if (mode == TimePrintMode::Mod && shift.Size < 0)
             shift.Size = 3;

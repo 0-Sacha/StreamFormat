@@ -24,21 +24,21 @@ namespace StreamFormat::FMT::Detail
         template <typename FormatterExecutor>
         [[nodiscard]] inline std::expected<void, FMTResult> RunTypeAtIndex(FormatterExecutor&, std::int32_t)
         {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+            return std::unexpected(FMTResult::ArgsInterface_IndexOutOfBounds);
         }
         template <typename TChar>
         [[nodiscard]] inline std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>&, std::int32_t)
         {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+            return std::unexpected(FMTResult::ArgsInterface_CantMatchNamedArgs);
         }
         [[nodiscard]] inline std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t)
         {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+            return std::unexpected(FMTResult::ArgsInterface_IndexOutOfBounds);
         }
         template <typename T>
         [[nodiscard]] inline std::expected<T, FMTResult> GetConvertedTypeAt(std::int32_t)
         {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+            return std::unexpected(FMTResult::ArgsInterface_IndexOutOfBounds);
         }
     };
 

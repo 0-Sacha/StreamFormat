@@ -35,16 +35,20 @@
 #include <expected>
 #include <optional>
 
+namespace StreamFormat::Detail
+{
+    template<typename T>
+    T&& forward_error(T&& t)
+    {
+        return std::forward<T>(t);
+    }
+}
+
 #define SF_TRY(exp) ({ \
         auto __expected = exp; \
         if (not __expected) [[unlikely]] \
-            return std::unexpected(__expected.error()); \
+            return StreamFormat::Detail::forward_error(std::unexpected(__expected.error())); \
         __expected.value(); \
     });
 
-#define SF_TRY_OR(exp, error) ({ \
-        auto __expected = exp; \
-        if (not __expected) [[unlikely]] \
-            return std::unexpected(error); \
-        __expected.value(); \
-    });
+#define SF_FORWARD(exp) SF_TRY(exp)

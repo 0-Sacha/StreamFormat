@@ -217,13 +217,59 @@ namespace StreamFormat::FMT::Context
         return {};
     }
 
+
+    template <typename TChar>
+    [[nodiscard]] std::expected<std::int32_t, FMTResult> BasicContext<TChar>::GetFormatIndex_Number()
+    {
+        std::int32_t index = -1;
+        SF_TRY(Detail::BufferReadManip(Format).FastReadInteger(index));
+
+        if (Detail::BufferTestAccess(Format).IsEqualTo(':') || Detail::BufferTestAccess(Format).IsEqualTo('}'))
+        {
+            if (index >= 0 && index < ArgsInterface.Size())
+                { return index; }
+        }
+
+        return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
+    }
+    template <typename TChar>
+    [[nodiscard]] std::expected<std::int32_t, FMTResult> BasicContext<TChar>::GetFormatIndex_Name()
+    {
+        std::int32_t index = SF_TRY(ArgsInterface.GetIndexOfCurrentNamedArg(Format));
+        if (Detail::BufferTestAccess(Format).IsEqualTo(':') || Detail::BufferTestAccess(Format).IsEqualTo('}'))
+        {
+            if (index >= 0 && index < ArgsInterface.Size())
+                { return index; }
+        }
+
+        return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
+    }
+    template <typename TChar>
+    [[nodiscard]] std::expected<std::int32_t, FMTResult> BasicContext<TChar>::GetFormatIndex_SubIndex()
+    {
+        Detail::BufferTestAccess access(Format);
+        Detail::BufferTestManip manip(Format);
+
+        SF_TRY(Detail::BufferManip(Format).Forward());
+        std::int32_t recIndex = SF_TRY(GetFormatIndex());
+        if (access.IsEqualTo('}') && recIndex >= 0 && recIndex < ArgsInterface.Size())
+        {
+            SF_TRY(Detail::BufferManip(Format).Forward());
+            manip.SkipAllSpaces();
+            if (access.IsEqualTo(':', '}'))
+            {
+                std::int32_t finalRecIndex = (std::int32_t)SF_TRY(ArgsInterface.GetIntAt(recIndex));
+                if (finalRecIndex >= 0 && finalRecIndex < ArgsInterface.Size())
+                    return finalRecIndex;
+            }
+        }
+        return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
+    }
+
     template <typename TChar>
     [[nodiscard]] std::expected<std::int32_t, FMTResult> BasicContext<TChar>::GetFormatIndex()
     {
-        const TChar* mainSubFormat = Format.CurrentPos;
-
         Detail::BufferTestAccess access(Format);
-        Detail::BufferTestManip manip(Format);
 
         // I : if there is no number specified : ':' or '}'
         if (access.IsEqualTo(':') || access.IsEqualTo('}'))
@@ -231,42 +277,22 @@ namespace StreamFormat::FMT::Context
                 { return ValuesIndex++; }
 
         // II: A number(idx)
-        std::int32_t subIndex = -1;
-        if (Detail::BufferReadManip(Format).FastReadInteger(subIndex).has_value())
-            if (access.IsEqualTo(':') || access.IsEqualTo('}'))
-                if (subIndex >= 0 && subIndex < ArgsInterface.Size())
-                    { return subIndex; }
-        Format.CurrentPos = mainSubFormat;
+        if (access.IsADigit())
+        {
+            return SF_FORWARD(GetFormatIndex_Number());
+        }
 
         // III : A name
-        auto currentNamedArg = ArgsInterface.GetIndexOfCurrentNamedArg(Format);
-        if (currentNamedArg.has_value())
+        if (access.IsLowerCase() || access.IsUpperCase())
         {
-            std::int32_t indexOfNamedArg = currentNamedArg.value();
-            if (indexOfNamedArg >= 0 && indexOfNamedArg < ArgsInterface.Size())
-                { return indexOfNamedArg; }
-            Format.CurrentPos = mainSubFormat;
+            return SF_FORWARD(GetFormatIndex_Name());
         }
 
         // VI : { which is a idx to an argument
         if (access.IsEqualTo('{'))
         {
-            SF_TRY(Detail::BufferManip(Format).Forward());
-            std::int32_t recIndex = SF_TRY(GetFormatIndex());
-            if (access.IsEqualTo('}') && recIndex >= 0 && recIndex < ArgsInterface.Size())
-            {
-                SF_TRY(Detail::BufferManip(Format).Forward());
-                manip.SkipAllSpaces();
-                if (access.IsEqualTo(':', '}'))
-                {
-                    std::int32_t finalRecIndex = (std::int32_t)SF_TRY(ArgsInterface.GetIntAt(recIndex));
-                    if (finalRecIndex >= 0 && finalRecIndex < ArgsInterface.Size())
-                        return finalRecIndex;
-                    return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
-                }
-            }
+            return SF_FORWARD(GetFormatIndex_SubIndex());
         }
-        Format.CurrentPos = mainSubFormat;
 
         return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
     }
@@ -305,11 +331,14 @@ namespace StreamFormat::FMT::Context
             return Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
         }
 
-        std::int32_t formatIdx = SF_TRY(GetFormatIndex());
-        if (formatIdx >= 0 && formatIdx < ArgsInterface.Size())
+        auto formatIdx = GetFormatIndex();
+        if (formatIdx.has_value())
         {
-            SF_TRY(ParseVariable(formatIdx));
-            return Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
+            if (formatIdx.value() >= 0 && formatIdx.value() < ArgsInterface.Size())
+            {
+                SF_TRY(ParseVariable(formatIdx.value()));
+                return Detail::FMTBufferParamsManip(Format).ParamGoToForward(); // Skip }
+            }
         }
 
         SF_TRY(Executor.ExecRawString("{"));

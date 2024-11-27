@@ -87,66 +87,84 @@ namespace StreamFormat::FLog::Detail
     public:
         template <typename Severity, typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        void Log(Severity status, Format&& format, Args&&... args)
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(Severity status, Format&& format, Args&&... args)
         {
-            Master::template Log<Format, Args...>(status, format, std::forward<Args>(args)...);
+            return Master::template Log<Format, Args...>(status, format, std::forward<Args>(args)...);
         }
 
         template <typename Severity, typename T>
-        void Log(Severity status, T&& t)
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(Severity status, T&& t)
         {
-            Master::template Log<T>(status, std::forward<T>(t));
+            return Master::template Log<T>(status, std::forward<T>(t));
         }
 
     public:
         /////---------- Logger Severity with array as format ----------/////
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        inline void Trace(Format&& format, Args&&... args) { return Log(LogSeverity::Trace, format, std::forward<Args>(args)...); }
+        inline std::expected<void, FMT::FMTResult> Trace(Format&& format, Args&&... args)
+        {
+            return Log(LogSeverity::Trace, format, std::forward<Args>(args)...);
+        }
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        inline void Debug(Format&& format, Args&&... args) { return Log(LogSeverity::Debug, format, std::forward<Args>(args)...); }
+        inline std::expected<void, FMT::FMTResult> Debug(Format&& format, Args&&... args)
+        {
+            return Log(LogSeverity::Debug, format, std::forward<Args>(args)...);
+        }
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        inline void Info(Format&& format, Args&&... args) { return Log(LogSeverity::Info, format, std::forward<Args>(args)...); }
+        inline std::expected<void, FMT::FMTResult> Info(Format&& format, Args&&... args)
+        {
+            return Log(LogSeverity::Info, format, std::forward<Args>(args)...);
+        }
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        inline void Warn(Format&& format, Args&&... args) { return Log(LogSeverity::Warn, format, std::forward<Args>(args)...); }
+        inline std::expected<void, FMT::FMTResult> Warn(Format&& format, Args&&... args)
+        {
+            return Log(LogSeverity::Warn, format, std::forward<Args>(args)...);
+        }
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        inline void Error(Format&& format, Args&&... args) { return Log(LogSeverity::Error, format, std::forward<Args>(args)...); }
+        inline std::expected<void, FMT::FMTResult> Error(Format&& format, Args&&... args)
+        {
+            return Log(LogSeverity::Error, format, std::forward<Args>(args)...);
+        }
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        inline void Fatal(Format&& format, Args&&... args) { return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...); }
+        inline std::expected<void, FMT::FMTResult> Fatal(Format&& format, Args&&... args)
+        {
+            return Log(LogSeverity::Fatal, format, std::forward<Args>(args)...);
+        }
 
         /////---------- NO-FORMAT Logger Severity ----------/////
         template <typename T>
-        inline void Trace(T&& t)
+        inline std::expected<void, FMT::FMTResult> Trace(T&& t)
         {
             return Log(LogSeverity::Trace, std::forward<T>(t));
         }
         template <typename T>
-        inline void Debug(T&& t)
+        inline std::expected<void, FMT::FMTResult> Debug(T&& t)
         {
             return Log(LogSeverity::Debug, std::forward<T>(t));
         }
         template <typename T>
-        inline void Info(T&& t)
+        inline std::expected<void, FMT::FMTResult> Info(T&& t)
         {
             return Log(LogSeverity::Info, std::forward<T>(t));
         }
         template <typename T>
-        inline void Warn(T&& t)
+        inline std::expected<void, FMT::FMTResult> Warn(T&& t)
         {
             return Log(LogSeverity::Warn, std::forward<T>(t));
         }
         template <typename T>
-        inline void Error(T&& t)
+        inline std::expected<void, FMT::FMTResult> Error(T&& t)
         {
             return Log(LogSeverity::Error, std::forward<T>(t));
         }
         template <typename T>
-        inline void Fatal(T&& t)
+        inline std::expected<void, FMT::FMTResult> Fatal(T&& t)
         {
             return Log(LogSeverity::Fatal, std::forward<T>(t));
         }

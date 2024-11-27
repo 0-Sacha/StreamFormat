@@ -14,6 +14,8 @@ namespace StreamFormat::FMT
         ArgsInterface_Unavaible,
         ArgsInterface_InvalidTypeID,
         ArgsInterface_InvalidConversion,
+        ArgsInterface_CantMatchNamedArgs,
+        ArgsInterface_IndexOutOfBounds,
 
         Specifers_Full,
         Specifers_Invalid,

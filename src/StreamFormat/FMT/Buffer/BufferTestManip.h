@@ -51,7 +51,7 @@ namespace StreamFormat::FMT::Detail
                 isSame = *bufferStr++ == *str++;
                 --size;
             }
-            if (size != 0 && *str != 0)
+            if (size != 0)
                 { return false; }
             return isSame;
         }
@@ -103,7 +103,7 @@ namespace StreamFormat::FMT::Detail
         {
             if (Access().IsSame(str, size))
             {
-                SF_TRY(BufferManip(Buffer).Forward());
+                SF_TRY(BufferManip(Buffer).Forward(size));
                 return true;
             }
             return false;
@@ -113,7 +113,7 @@ namespace StreamFormat::FMT::Detail
         {
             if (Access().IsSame(sv))
             {
-                SF_TRY(BufferManip(Buffer).Forward());
+                SF_TRY(BufferManip(Buffer).Forward(sv.size()));
                 return true;
             }
             return false;

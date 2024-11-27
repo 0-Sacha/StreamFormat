@@ -76,31 +76,35 @@ namespace StreamFormat::FLog::Detail
 
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        void Log(const SeverityValueType& severity, Format&& format, Args&&... args)
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, Format&& format, Args&&... args)
         {
             if (severity < m_Severity) return;
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
-            FMT::Detail::FormatInManager(preFormatBufferOutManager, false, FMT::Detail::BufferInfoView<char>(m_Pattern), FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name),
-                                                  FORMAT_SV("data", FLog::AddIndentInFormat(format)));
+            SF_TRY(FMT::Detail::FormatInManager(preFormatBufferOutManager, false, FMT::Detail::BufferInfoView<char>(m_Pattern), FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name),
+                                                  FORMAT_SV("data", FLog::AddIndentInFormat(format))));
             
-            FMT::Detail::FormatInManager(fullFormatBufferOutManager, true, preFormatBufferOutManager.GetLastGeneratedBufferInfoView(), std::forward<Args>(args)..., FORMAT_SV("color", severity));
+            SF_TRY(FMT::Detail::FormatInManager(fullFormatBufferOutManager, true, preFormatBufferOutManager.GetLastGeneratedBufferInfoView(), std::forward<Args>(args)..., FORMAT_SV("color", severity)));
             m_Stream.write(fullFormatBufferOutManager.GetBuffer(), static_cast<std::streamsize>(fullFormatBufferOutManager.GetLastGeneratedDataSize()));
             m_Stream.flush();
+
+            return {};
         }
 
         template <typename T>
-        void Log(const SeverityValueType& severity, T&& t)
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, T&& t)
         {
             if (severity < m_Severity) return;
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
-            FMT::Detail::FormatInManager(fullFormatBufferOutManager, true, FMT::Detail::BufferInfoView<char>(m_Pattern), FORMAT_SV("data", t), FORMAT_SV("color", severity),
-                                                  FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name));
+            SF_TRY(FMT::Detail::FormatInManager(fullFormatBufferOutManager, true, FMT::Detail::BufferInfoView<char>(m_Pattern), FORMAT_SV("data", t), FORMAT_SV("color", severity),
+                                                  FORMAT_SV("time", logTime), FORMAT_SV("name", m_Name)));
             m_Stream.write(fullFormatBufferOutManager.GetBuffer(), static_cast<std::streamsize>(fullFormatBufferOutManager.GetLastGeneratedDataSize()));
             m_Stream.flush();
+
+            return {};
         }
     };
 }

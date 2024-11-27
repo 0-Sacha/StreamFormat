@@ -62,6 +62,11 @@ namespace StreamFormat::FMT::Context
     public:
         [[nodiscard]] std::expected<void, FMTResult> Run();
 
+    private:
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex_Number();
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex_Name();
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex_SubIndex();
+
     public:
         [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex();
         template <typename T>

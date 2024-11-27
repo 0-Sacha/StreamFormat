@@ -15,7 +15,7 @@ namespace StreamFormat::FMT::Detail
         BasicBufferOutManager& operator=(BasicBufferOutManager&) = delete;
 
     protected:
-        [[nodiscard]] virtual std::expected<void, FMTResult> BeginContextImpl() {}
+        [[nodiscard]] virtual std::expected<void, FMTResult> BeginContextImpl() { return {}; }
         virtual void ComputeGeneratedSizeImpl(const std::size_t /* totalGeneratedLength */) {}
 
     public:

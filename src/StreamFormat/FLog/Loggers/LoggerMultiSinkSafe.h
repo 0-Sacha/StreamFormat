@@ -32,9 +32,16 @@ namespace StreamFormat::FLog::Detail
         ~BasicLoggerMultiSinkSafeImpl() override = default;
 
     public:
+        void Await(const SeverityValueType& severity)
+        {
+            for (auto& sink : m_Sinks)
+                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
+        }
+
+    public:
         template <typename Format = std::string_view, typename... Args>
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        void Log(const SeverityValueType& severity, const Format& format, Args&&... args)
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, const Format& format, Args&&... args)
         {
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
@@ -46,20 +53,20 @@ namespace StreamFormat::FLog::Detail
                     FMT::Detail::DynamicBufferOutManager<CharType> managerPattern(256);
                     FMT::Detail::DynamicBufferOutManager<CharType> managerFormat(256);
                     auto formatPatternStr =
-                        FMT::Detail::FormatInManager(managerPattern, false, std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime),
-                                                           FORMAT_SV("name", FuturConcateNameAndSinkName(m_Name)), FORMAT_SV("data", FLog::AddIndentInFormat(format)));
-                    auto formatFormatStr = FMT::Detail::FormatInManager(managerFormat, false, static_cast<std::string_view>(*formatPatternStr), std::forward<Args>(args)...,
-                                                                              FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity));
-                    sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatFormatStr));
+                        SF_TRY(FMT::Detail::FormatInManager(managerPattern, false, std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime),
+                                                           FORMAT_SV("name", FuturConcateNameAndSinkName(m_Name)), FORMAT_SV("data", FLog::AddIndentInFormat(format))));
+                    auto formatFormatStr = SF_TRY(FMT::Detail::FormatInManager(managerFormat, false, static_cast<std::string_view>(*formatPatternStr), std::forward<Args>(args)...,
+                                                                              FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity)));
+                    SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatFormatStr)));
                 }
             }
-
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
+            
+            Await(severity);
+            return {};
         }
 
         template <typename T>
-        void Log(const SeverityValueType& severity, T&& t)
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, T&& t)
         {
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
@@ -68,14 +75,14 @@ namespace StreamFormat::FLog::Detail
                 if (sink->NeedToLog(severity))
                 {
                     FMT::Detail::DynamicBufferOutManager<CharType> manager(256);
-                    auto formatBuffer = FMT::Detail::FormatInManager(manager, false, std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime),
-                                                                           FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t));
-                    sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatBuffer));
+                    auto formatBuffer = SF_TRY(FMT::Detail::FormatInManager(manager, false, std::string_view(sink->GetPattern(severity)), FORMAT_SV("time", logTime),
+                                                                           FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t)));
+                    SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatBuffer)));
                 }
             }
 
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
+            Await(severity);
+            return {};
         }
     };
 }

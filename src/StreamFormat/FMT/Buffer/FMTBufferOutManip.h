@@ -109,7 +109,9 @@ namespace StreamFormat::FMT::Detail
             TChar* const oldpos = Buffer.CurrentPos;
             auto isSame = SF_TRY(manip.IsSameForward(sv));
             if (isSame && (access.IsEqualTo(':') || access.IsEqualTo('}')))
-                { return true; }
+            {
+                return true;
+            }
             Buffer.CurrentPos = oldpos;
             return false;
         }

@@ -32,35 +32,43 @@ namespace StreamFormat::FLog::Detail
         ~BasicLoggerMultiSinkFastImpl() override = default;
 
     public:
-        template <typename Format = std::string_view, typename... Args>
-        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
-        void Log(const SeverityValueType& severity, const Format& format, Args&&... args)
+        void Await(const SeverityValueType& severity)
         {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
-
-            FMT::Detail::DynamicBufferOutManager<CharType> manager(256);
-            auto formatBuffer = FMT::Detail::FormatInManager(manager, false, format, std::forward<Args>(args)...);
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity))
-                    sink->FormatAndWriteToSink(sink->GetPattern(severity), logTime, m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer));
-
             for (auto& sink : m_Sinks)
                 if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
         }
 
-        template <typename T>
-        void Log(const SeverityValueType& severity, T&& t)
+    public:
+        template <typename Format = std::string_view, typename... Args>
+        requires FMT::Detail::ConvertibleToBufferInfoView<Format>
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, const Format& format, Args&&... args)
         {
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
             FMT::Detail::DynamicBufferOutManager<CharType> manager(256);
-            auto formatBuffer = FMT::Detail::FormatInManager(manager, false, std::forward<T>(t));
+            auto formatBuffer = SF_TRY(FMT::Detail::FormatInManager(manager, false, format, std::forward<Args>(args)...));
             for (auto& sink : m_Sinks)
                 if (sink->NeedToLog(severity))
-                    sink->FormatAndWriteToSink(sink->GetPattern(severity), logTime, m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer));
+                    { SF_TRY(sink->FormatAndWriteToSink(sink->GetPattern(severity), logTime, m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer))); }
 
+            Await(severity);
+            return {};
+        }
+
+        template <typename T>
+        [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, T&& t)
+        {
+            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
+
+            FMT::Detail::DynamicBufferOutManager<CharType> manager(256);
+            auto formatBuffer = SF_TRY(FMT::Detail::FormatInManager(manager, false, std::forward<T>(t)));
             for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
+                if (sink->NeedToLog(severity))
+                    { SF_TRY(sink->FormatAndWriteToSink(sink->GetPattern(severity), logTime, m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer))); }
+
+            Await(severity);
+
+            return {};
         }
     };
 }
