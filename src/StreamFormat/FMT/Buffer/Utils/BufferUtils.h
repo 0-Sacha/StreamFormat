@@ -63,7 +63,8 @@ namespace StreamFormat::FMT::Detail
                 auto view = SF_TRY(Detail::BufferTestManip(buffer).ViewUntil('"', '\\'));
                 SF_TRY(Detail::BufferWriteManip(stringOut).FastWriteString(view));
 
-                if (Detail::BufferTestAccess(buffer).IsEqualTo('"')) break;
+                if (Detail::BufferTestAccess(buffer).IsEqualTo('"'))
+                    { break; }
 
                 SF_TRY(Detail::BufferTestManip(buffer).SkipOneOf('\\'));
                 switch (buffer.Get())
@@ -86,6 +87,8 @@ namespace StreamFormat::FMT::Detail
                 }
             }
             SF_TRY(Detail::BufferTestManip(buffer).SkipOneOf('"'));
+
+            return {};
         }
 
         template <typename CharIn, typename CharOut>
@@ -99,6 +102,7 @@ namespace StreamFormat::FMT::Detail
 
                 if (Detail::BufferAccess(stringIn).IsEndOfString()) break;
 
+                // TODO
                 SF_TRY(Detail::BufferTestManip(stringIn).SkipOneOf('\\'));
                 switch (stringIn.Get())
                 {
@@ -120,6 +124,8 @@ namespace StreamFormat::FMT::Detail
                 }
             }
             SF_TRY(Detail::BufferOutManip(buffer).Pushback('"'));
+
+            return {};
         }
     };
 }

@@ -70,7 +70,7 @@ namespace StreamFormat::FMT::Detail
         BufferInfo<TChar>& Buffer;
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> SkipShiftBeginSpace(Detail::ShiftInfo& shift)
+        [[nodiscard]] std::expected<void, FMTResult> IgnoreShiftBeginSpace(Detail::ShiftInfo& shift)
         {
             if (shift.Print.BeforeIsADigit() == false)
                 return {};
@@ -86,7 +86,7 @@ namespace StreamFormat::FMT::Detail
             return {};
         }
 
-        [[nodiscard]] std::expected<void, FMTResult> SkipShiftEnd(Detail::ShiftInfo& shift)
+        [[nodiscard]] std::expected<void, FMTResult> IgnoreShiftEnd(Detail::ShiftInfo& shift)
         {
             if (shift.Type == Detail::ShiftInfo::ShiftType::Left || shift.Type == Detail::ShiftInfo::ShiftType::CenterLeft || shift.Type == Detail::ShiftInfo::ShiftType::CenterRight)
             {

@@ -74,7 +74,7 @@ namespace StreamFormat::FMT::Detail
     public:
         [[nodiscard]] std::expected<PointerID, FMTResult> GetPointerIDAt(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
         [[nodiscard]] std::expected<PointerID, FMTResult> RunTypeAtIndex(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
-        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>& format) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetIndexOfCurrentNamedArg(BufferInfoView<TChar>&) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
         [[nodiscard]] std::expected<std::basic_string_view<TChar>, FMTResult> GetStringAt(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
         [[nodiscard]] std::expected<std::int64_t, FMTResult> GetIntAt(std::int32_t) override { return std::unexpected(FMTResult::ArgsInterface_Unavaible); }
     };

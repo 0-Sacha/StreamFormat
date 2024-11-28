@@ -182,9 +182,9 @@ namespace StreamFormat::JSON
                 std::string name;
                 JsonStringSerializer::ParseSTDString(name, parser);
 
-                manip.SkipAllBlanks();
+                manip.IgnoreEveryBlanks();
                 manip.SkipOneOf(':').value();
-                manip.SkipAllBlanks();
+                manip.IgnoreEveryBlanks();
 
                 subObjectParsingFunction(t, idx++, std::move(name), parser);
 
@@ -241,7 +241,7 @@ namespace StreamFormat::JSON
 
             while (FMT::Detail::BufferAccess(parser.BufferIn).IsEndOfString() == false)
             {
-                manip.SkipAllBlanks();
+                manip.IgnoreEveryBlanks();
 
                 if (access.IsEqualTo(']')) break;
 

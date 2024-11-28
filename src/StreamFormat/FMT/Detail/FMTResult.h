@@ -10,6 +10,7 @@ namespace StreamFormat::FMT
         Buffer_OutOfBoundAccess,
         Buffer_UnableToReserveMemory,
         Parse_NonValidDigit,
+        Parse_TokenNotExpected,
 
         ArgsInterface_Unavaible,
         ArgsInterface_InvalidTypeID,

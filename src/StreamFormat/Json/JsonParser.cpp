@@ -13,7 +13,7 @@ namespace StreamFormat::JSON::Detail
         FMT::Detail::BufferTestAccess access(parser.BufferIn);
         FMT::Detail::BufferTestManip manip(parser.BufferIn);
 
-        manip.SkipAllBlanks();
+        manip.IgnoreEveryBlanks();
         const char* begin = parser.BufferIn.CurrentPos;
 
         if (parser.IsJsonStringBegin())

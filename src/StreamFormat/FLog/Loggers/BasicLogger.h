@@ -78,7 +78,8 @@ namespace StreamFormat::FLog::Detail
         requires FMT::Detail::ConvertibleToBufferInfoView<Format>
         [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, Format&& format, Args&&... args)
         {
-            if (severity < m_Severity) return;
+            if (severity < m_Severity)
+                return {};
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 
@@ -95,7 +96,8 @@ namespace StreamFormat::FLog::Detail
         template <typename T>
         [[nodiscard]] std::expected<void, FMT::FMTResult> Log(const SeverityValueType& severity, T&& t)
         {
-            if (severity < m_Severity) return;
+            if (severity < m_Severity)
+                return {};
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
 

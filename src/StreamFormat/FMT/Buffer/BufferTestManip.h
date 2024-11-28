@@ -123,23 +123,34 @@ namespace StreamFormat::FMT::Detail
         template <typename... CharToTest>
         [[nodiscard]] inline std::expected<void, FMTResult> SkipOneOf(const CharToTest... ele) noexcept
         {
-            SF_TRY(IsEqualToForward(ele...));
-            return {};
+            if (Access().IsEqualTo(ele...))
+            {
+                SF_TRY(BufferManip(Buffer).Forward());
+                return;
+            }
+            return std::unexpected(FMTResult::Parse_TokenNotExpected);
         }
 
         template <typename... CharToTest>
-        inline void SkipEvery(const CharToTest... ele) noexcept
+        inline void IgnoreOneOf(const CharToTest... ele) noexcept
+        {
+            if (Access().IsEqualTo(ele...) && BufferAccess(Buffer).CanMoveForward())
+                { BufferManip(Buffer).ForceForward(); }
+        }
+
+        template <typename... CharToTest>
+        inline void IgnoreEvery(const CharToTest... ele) noexcept
         {
             while (Access().IsEqualTo(ele...) && BufferAccess(Buffer).CanMoveForward())
                 { BufferManip(Buffer).ForceForward(); }
         }
         
     public:
-        [[nodiscard]] inline std::expected<void, FMTResult> SkipSpace() noexcept { return SkipOneOf(' ', '\t'); }
-        [[nodiscard]] inline std::expected<void, FMTResult> SkipBlank() noexcept { return SkipOneOf(' ', '\t', '\n', '\r', '\v'); }
+        [[nodiscard]] inline void IgnoreOneSpace() noexcept { return IgnoreOneOf(' ', '\t'); }
+        [[nodiscard]] inline void IgnoreOneBlank() noexcept { return IgnoreOneOf(' ', '\t', '\n', '\r', '\v'); }
 
-        inline void SkipAllSpaces() noexcept { SkipEvery(' ', '\t'); }
-        inline void SkipAllBlanks() noexcept { SkipEvery(' ', '\t', '\n', '\r', '\v'); }
+        inline void IgnoreEverySpaces() noexcept { IgnoreEvery(' ', '\t'); }
+        inline void IgnoreEveryBlanks() noexcept { IgnoreEvery(' ', '\t', '\n', '\r', '\v'); }
 
     public:
         template <typename... CharToTest>

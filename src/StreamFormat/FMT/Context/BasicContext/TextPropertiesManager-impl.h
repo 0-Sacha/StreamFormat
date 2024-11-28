@@ -73,13 +73,13 @@ namespace StreamFormat::FMT::Detail
         if (BufferTestAccess(context.Format).IsEqualTo(':'))
         {
             SF_TRY(BufferManip(context.Format).Forward());
-            BufferTestManip(context.Format).SkipAllSpaces();
+            BufferTestManip(context.Format).IgnoreEverySpaces();
             if (BufferTestAccess(context.Format).IsEqualTo('{'))
             {
                 SF_TRY(BufferManip(context.Format).Forward());
                 std::int32_t idx = SF_TRY(context.GetFormatIndex());
                 SF_TRY(ApplyColorOnIndex(context, idx));
-                SF_TRY(BufferTestManip(context.Format).IsEqualToForward('}'));
+                SF_TRY(BufferTestManip(context.Format).SkipOneOf('}'));
             }
             else
             {
@@ -88,7 +88,7 @@ namespace StreamFormat::FMT::Detail
                 if (BufferTestAccess(context.Format).IsEqualTo('-'))
                 {
                     SF_TRY(BufferManip(context.Format).Forward());
-                    BufferTestManip(context.Format).SkipAllSpaces();
+                    BufferTestManip(context.Format).IgnoreEverySpaces();
                     auto colorBg = GetColorCode<TextProperties::TextColor::BasicColorBG>(context.Format);
                     if (colorBg.has_value() && colorFg.has_value())
                         { return AskApplyColor(Detail::TextProperties::TextColor::BasicColor{colorFg.value(), colorBg.value()}); }
@@ -117,31 +117,31 @@ namespace StreamFormat::FMT::Detail
             SF_TRY(BufferManip(context.Format).Forward());
             if (!BufferTestAccess(context.Format).IsEqualTo('}', ','))
             {
-                bool l = true;
-                while (l)
+                bool loop = true;
+                while (loop)
                 {
-                    BufferTestManip(context.Format).SkipAllSpaces();
+                    BufferTestManip(context.Format).IgnoreEverySpaces();
                     if (BufferTestAccess(context.Format).IsEqualTo('{'))
                     {
                         SF_TRY(BufferManip(context.Format).Forward());
                         std::int32_t idx = SF_TRY(context.GetFormatIndex());
                         ApplyStyleOnIndex(context, idx);
-                        BufferTestManip(context.Format).IsEqualToForward('}');
+                        BufferTestManip(context.Format).SkipOneOf('}');
                     }
                     else
                     {
                         ParseStyleNamed(context.Format);
                     }
                     FMTBufferParamsManip(context.Format).ParamGoTo('|', ',');
-                    l = SF_TRY(BufferTestManip(context.Format).IsEqualToForward('|'));
-                    BufferTestManip(context.Format).SkipAllSpaces();
+                    loop = SF_TRY(BufferTestManip(context.Format).IsEqualToForward('|'));
+                    BufferTestManip(context.Format).IgnoreEverySpaces();
                 }
             }
             else
-                return ReloadDefaultStyle();
+                { return ReloadDefaultStyle(); }
         }
         else
-            return ReloadDefaultStyle();
+            { return ReloadDefaultStyle(); }
         return {};
     }
 
@@ -230,7 +230,7 @@ namespace StreamFormat::FMT::Detail
         if (BufferTestAccess(context.Format).IsEqualTo(':'))
         {
             SF_TRY(BufferManip(context.Format).Forward());
-            BufferTestManip(context.Format).SkipAllSpaces();
+            BufferTestManip(context.Format).IgnoreEverySpaces();
 
             Detail::TextProperties::TextFront::FrontID frontID = (std::uint8_t)SF_TRY(BufferUtilsManip(context.Format).GetWordFromList(frontCode));
             return ApplyFront(frontID);

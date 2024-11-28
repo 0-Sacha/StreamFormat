@@ -6,6 +6,8 @@
 
 int main()
 {
+    StreamFormat::FMT::FilePrint(std::cout, "HelloWorld {} !", "ahhh");
+
     StreamFormat::FLog::DefaultLogger::Core().Info("HelloWorld !");
 
     using namespace std::chrono_literals;

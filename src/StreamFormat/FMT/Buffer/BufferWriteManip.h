@@ -112,6 +112,8 @@ namespace StreamFormat::FMT::Detail
                 SF_TRY(manip.Pushback(intPart + '0'));
                 i -= intPart;
             }
+
+            return {};
         }
 
     public:

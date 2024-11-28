@@ -116,6 +116,7 @@ namespace StreamFormat::FMT::Detail
         {
             if (m_CurrentContextProperties.Color.NeedModif(modif))
                 return ApplyColor(modif);
+            return {};
         }
         template <typename T>
         requires Detail::TextPropertiesStyleCanApply<T>
@@ -123,6 +124,7 @@ namespace StreamFormat::FMT::Detail
         {
             if (m_CurrentContextProperties.Style.NeedModif(modif))
                 return ApplyStyle(modif);
+            return {};
         }
         template <typename T>
         requires Detail::TextPropertiesFrontCanApply<T>
@@ -130,6 +132,7 @@ namespace StreamFormat::FMT::Detail
         {
             if (m_CurrentContextProperties.Front.NeedModif(modif))
                 return ApplyFront(modif);
+            return {};
         }
 
         [[nodiscard]] std::expected<void, FMTResult> AskApplyColor(const Detail::TextProperties::TextColor::BasicColor& modif)

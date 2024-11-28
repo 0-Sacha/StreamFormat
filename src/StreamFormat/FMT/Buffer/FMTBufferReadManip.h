@@ -24,7 +24,7 @@ namespace StreamFormat::FMT::Detail
             Detail::BufferTestAccess access(Buffer);
             Detail::BufferTestManip manip(Buffer);
 
-            SF_TRY(shiftManip.SkipShiftBeginSpace(shift));
+            SF_TRY(shiftManip.IgnoreShiftBeginSpace(shift));
 
             bool sign = false;
             if constexpr (std::is_signed_v<T>)
@@ -43,7 +43,7 @@ namespace StreamFormat::FMT::Detail
                 --shift.Size;
             }
 
-            SF_TRY(shiftManip.SkipShiftEnd(shift));
+            SF_TRY(shiftManip.IgnoreShiftEnd(shift));
 
             i = sign ? -res : res;
             return {};
@@ -56,7 +56,7 @@ namespace StreamFormat::FMT::Detail
             Detail::BufferTestAccess access(Buffer);
             Detail::BufferTestManip manip(Buffer);
             
-            SF_TRY(shiftManip.SkipShiftBeginSpace(shift));
+            SF_TRY(shiftManip.IgnoreShiftBeginSpace(shift));
 
             bool sign = SF_TRY(manip.IsEqualToForward('-'));
             if (sign) --shift.Size;
@@ -100,7 +100,7 @@ namespace StreamFormat::FMT::Detail
                 dec /= 10;
             }
 
-            SF_TRY(shiftManip.SkipShiftEnd(shift));
+            SF_TRY(shiftManip.IgnoreShiftEnd(shift));
 
             t = sign ? - intpart - dec : intpart + dec;
             return {};
@@ -117,7 +117,7 @@ namespace StreamFormat::FMT::Detail
             shift.Size -= sizeof(T) * 8;
             if (base_prefix != '\0') shift.Size -= 2;
 
-            SF_TRY(shiftManip.SkipShiftBeginSpace(shift));
+            SF_TRY(shiftManip.IgnoreShiftBeginSpace(shift));
 
             if (base_prefix != '\0')
             {
@@ -133,7 +133,7 @@ namespace StreamFormat::FMT::Detail
                 BufferManip(Buffer).ForceForward();
             }
 
-            SF_TRY(shiftManip.SkipShiftEnd(shift));
+            SF_TRY(shiftManip.IgnoreShiftEnd(shift));
 
             i = res;
             return {};

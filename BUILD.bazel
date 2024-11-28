@@ -22,7 +22,13 @@ cc_test(
     srcs = glob([ "Tests/**/*.h", "Tests/**/*.cpp" ]),
     copts = select({
         "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
-        "//conditions:default": ["-std=c++23"],
+        "//conditions:default": [
+            "-std=c++23",
+            "-Wall", "-Wextra", "-Wpedantic",
+            "-Wshadow",
+            "-Wconversion", "-Wsign-conversion",
+            "-Werror=return-type"
+        ],
     }),
     deps = [ ":StreamFormat" ],
     linkopts = select({

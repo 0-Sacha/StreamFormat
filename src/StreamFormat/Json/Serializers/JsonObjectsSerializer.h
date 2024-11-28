@@ -15,7 +15,7 @@ namespace StreamFormat::JSON
     {
         static inline void Parse(std::unique_ptr<JsonObject>& t, Detail::JsonParser& parser)
         {
-            FMT::Detail::BufferTestManip(parser.BufferIn).SkipAllBlanks();
+            FMT::Detail::BufferTestManip(parser.BufferIn).IgnoreEveryBlanks();
             if (parser.IsJsonStringBegin())
                 t = std::make_unique<JsonStringObject>();
             else if (parser.IsJsonNumberBegin())

@@ -20,19 +20,19 @@ namespace StreamFormat::FMT
         {
             if (!executor.Data.PrefixSuffix)
             {
-                if (Detail::BufferTestManip(executor.BufferIn).IsEqualTo('t', 'T'))
+                if (Detail::BufferTestAccess(executor.BufferIn).IsEqualTo('t', 'T'))
                 {
                     SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
-                    if (Detail::BufferTestManip(executor.BufferIn).IsSame("rue"))
+                    if (Detail::BufferTestAccess(executor.BufferIn).IsSame("rue"))
                     {
                         SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                         t = true;
                     }
                 }
-                else if (Detail::BufferTestManip(executor.BufferIn).IsEqualToForward('f', 'F'))
+                else if (Detail::BufferTestAccess(executor.BufferIn).IsEqualTo('f', 'F'))
                 {
                     SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
-                    if (Detail::BufferTestManip(executor.BufferIn).IsSameForward("alse"))
+                    if (Detail::BufferTestAccess(executor.BufferIn).IsSame("alse"))
                     {
                         SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                         t = false;
@@ -41,12 +41,12 @@ namespace StreamFormat::FMT
             }
             else
             {
-                if (Detail::BufferTestManip(executor.BufferIn).IsEqualTo('1'))
+                if (Detail::BufferTestAccess(executor.BufferIn).IsEqualTo('1'))
                 {
                     SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                     t = true;
                 }
-                else if (Detail::BufferTestManip(executor.BufferIn).IsEqualTo('0'))
+                else if (Detail::BufferTestAccess(executor.BufferIn).IsEqualTo('0'))
                 {
                     SF_TRY(Detail::BufferManip(executor.BufferIn).Forward());
                     t = false;

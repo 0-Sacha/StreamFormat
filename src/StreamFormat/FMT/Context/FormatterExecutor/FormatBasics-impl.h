@@ -58,15 +58,16 @@ namespace StreamFormat::FMT
                 SF_TRY(executor.WriteType(*itbegin++));
             }
 
-            SF_TRY(Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("end", STDEnumerableUtility::DefaultEnd)));
+            return Detail::BufferWriteManip(executor.BufferOut).FastWriteString(executor.Data.Specifiers.GetAsText("end", STDEnumerableUtility::DefaultEnd));
         }
 
         template <typename T, typename FormatterExecutor>
         [[nodiscard]] std::expected<void, FMTResult> FormatString(const T* buffer, std::size_t size, FormatterExecutor& executor)
         {
             std::size_t beginIdx = (std::size_t)executor.Data.Specifiers.GetAsNumber("begin", 0);
-            size  = executor.Data.Specifiers.GetAsNumber("size", size);
-            if (size == std::numeric_limits<std::size_t>::max()) size = std::basic_string_view(buffer).size();
+            size = executor.Data.Specifiers.GetAsNumber("size", size);
+            if (size == std::numeric_limits<std::size_t>::max())
+                { size = std::basic_string_view(buffer).size(); }
 
             if (executor.Data.Specifiers.Has("array"))
                 return FormatObjectArray(buffer, size, executor);

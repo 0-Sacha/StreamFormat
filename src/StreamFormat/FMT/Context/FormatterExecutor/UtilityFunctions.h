@@ -74,6 +74,7 @@ namespace StreamFormat::FMT
 
         std::fwrite(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize(), 1, stream);
         std::fflush(stream);
+        return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
@@ -85,6 +86,7 @@ namespace StreamFormat::FMT
 
         std::fwrite(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize(), 1, stream);
         std::fflush(stream);
+        return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
@@ -96,6 +98,7 @@ namespace StreamFormat::FMT
 
         stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());
         stream.flush();
+        return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
@@ -107,6 +110,7 @@ namespace StreamFormat::FMT
 
         stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());
         stream.flush();
+        return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
@@ -116,6 +120,7 @@ namespace StreamFormat::FMT
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
         SF_TRY(Detail::FormatInManager(bufferOutManager, false, Detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
         str = bufferOutManager.GetLastGeneratedString();
+        return {};
     }
 
     template <typename TChar = char, typename Format, typename... Args>
@@ -154,6 +159,7 @@ namespace StreamFormat::FMT
 
         std::fwrite(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()), 1, stream);
         std::fflush(stream);
+        return {};
     }
 
     template <typename TChar = char, typename T>
@@ -165,6 +171,7 @@ namespace StreamFormat::FMT
 
         std::fwrite(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()), 1, stream);
         std::fflush(stream);
+        return {};
     }
 
     template <typename TChar = char, typename T>
@@ -176,6 +183,7 @@ namespace StreamFormat::FMT
 
         stream.write(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()));
         stream.flush();
+        return {};
     }
 
     template <typename TChar = char, typename T>
@@ -187,6 +195,7 @@ namespace StreamFormat::FMT
 
         stream.write(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()));
         stream.flush();
+        return {};
     }
 
     template <typename TChar = char, typename T>
@@ -196,6 +205,7 @@ namespace StreamFormat::FMT
         Detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
         SF_TRY(Detail::FormatInManager(bufferOutManager, false, std::forward<T>(t)));
         str = bufferOutManager.GetLastGeneratedString();
+        return {};
     }
 
     template <typename TChar = char, typename T>
