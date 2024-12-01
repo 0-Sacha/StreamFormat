@@ -51,8 +51,10 @@ jobs:
         key: bazel
     - name: Install Gcc 14
       run: |
-        sudo add-apt-repository universe
+        sudo apt install software-properties-common
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
+        sudo apt install gcc-13
         sudo apt install gcc-14
     - name: Version
       run: gcc-14 --version
