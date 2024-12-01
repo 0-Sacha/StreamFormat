@@ -49,15 +49,17 @@ jobs:
       with:
         path: "~/.cache/bazel"
         key: bazel
-    - name: Install Gcc 13
+    - name: Install Gcc 14
       run: |
-        sudo apt install gcc-13
+        sudo add-apt-repository universe
+        sudo apt-get update
+        sudo apt install gcc-14
     - name: Version
-      run: gcc-13 --version
+      run: gcc-14 --version
     - name: Building...
-      run: CC=gcc-13 bazelisk build //:StreamFormatTests
+      run: CC=gcc-14 bazelisk build //:StreamFormatTests
     - name: Testing... (W asan)
-      run: CC=gcc-13 bazelisk test --features=asan //:StreamFormatTests
+      run: CC=gcc-14 bazelisk test --features=asan //:StreamFormatTests
 
   ubuntu-latest-clang:
     runs-on: ubuntu-latest
