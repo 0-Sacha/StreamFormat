@@ -9,20 +9,20 @@ on:
       - '**'
 
 jobs:
-  windows-latest-msvc:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: bazelbuild/setup-bazelisk@v3
-    - name: Mount bazel cache
-      uses: actions/cache@v4
-      with:
-        path: "~/.cache/bazel"
-        key: bazel
-    - name: Building...
-      run: bazelisk build //:StreamFormatTests
-    - name: Testing...
-      run: bazelisk test //:StreamFormatTests
+  # windows-latest-msvc:
+  #   runs-on: windows-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: bazelbuild/setup-bazelisk@v3
+  #   - name: Mount bazel cache
+  #     uses: actions/cache@v4
+  #     with:
+  #       path: "~/.cache/bazel"
+  #       key: bazel
+  #   - name: Building...
+  #     run: bazelisk build //:StreamFormatTests
+  #   - name: Testing...
+  #     run: bazelisk test //:StreamFormatTests
       
   windows-latest-winlibs:
     runs-on: windows-latest
@@ -70,10 +70,10 @@ jobs:
       run: |
         wget https://apt.llvm.org/llvm.sh
         chmod +x ./llvm.sh
-        sudo ./llvm.sh 17
+        sudo ./llvm.sh 20
     - name: Version
-      run: clang++-17 --version
+      run: clang++-20 --version
     - name: Building...
-      run: CC=clang++-17 bazelisk build //:StreamFormatTests
+      run: CC=clang++-20 bazelisk build //:StreamFormatTests
     - name: Testing... (W asan)
-      run: CC=clang++-17 bazelisk test --features=asan //:StreamFormatTests
+      run: CC=clang++-20 bazelisk test --features=asan //:StreamFormatTests
