@@ -4,8 +4,8 @@ agents:
 steps:
   - label: ":bazel: Build and Test on gcc (W asan)"
     commands:
-      - CC=gcc bazelisk build --features=asan //:StreamFormatTests
-      - CC=gcc bazelisk test --features=asan //:StreamFormatTests
+      - CC=gcc-14 bazelisk build --features=asan //:StreamFormatTests
+      - CC=gcc-14 bazelisk test --features=asan //:StreamFormatTests
 
   - label: ":bazel: Build and Test on Clang (W asan)"
     commands:
