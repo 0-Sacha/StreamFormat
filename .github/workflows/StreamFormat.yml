@@ -56,6 +56,8 @@ jobs:
         sudo apt-get update
         sudo apt install gcc-13
     - name: Version
+      run: gcc --version
+    - name: Version
       run: gcc-13 --version
     - name: Building...
       run: CC=gcc-13 bazelisk build //:StreamFormatTests
