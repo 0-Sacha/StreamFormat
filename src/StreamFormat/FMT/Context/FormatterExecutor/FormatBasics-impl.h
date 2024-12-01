@@ -114,9 +114,9 @@ namespace StreamFormat::FMT
             else
             {
                 if (t == true)
-                    return Detail::BufferManip(executor.BufferOut).Pushback('1');
+                    return Detail::BufferOutManip(executor.BufferOut).Pushback('1');
                 else
-                    return Detail::BufferManip(executor.BufferOut).Pushback('0');
+                    return Detail::BufferOutManip(executor.BufferOut).Pushback('0');
             }
 
             return {};

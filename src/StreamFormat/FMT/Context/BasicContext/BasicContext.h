@@ -141,7 +141,8 @@ namespace StreamFormat::FMT::Context
     template <typename TChar>
     void BasicContext<TChar>::FormatDataApplyNextOverride()
     {
-        if (Executor.Data.NextOverride.size() == 0) return;
+        if (Executor.Data.NextOverride.size() == 0)
+            { return; }
 
         Detail::BufferInfoView<TChar> overridePos(Executor.Data.NextOverride);
         Detail::BufferInfoView<TChar> formatPos = Format;

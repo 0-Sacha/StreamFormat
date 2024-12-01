@@ -4,9 +4,9 @@
 #include "BaseFMTTests.h"
 
 /*
-PCT_TEST_GROUP(FMT, INDEX);
+SFT_TEST_GROUP(FMT, INDEX);
 
-PCT_TEST_FUNC(INDEX, ReIndexing)
+SFT_TEST_FUNC(INDEX, ReIndexing)
 {
 }
 */

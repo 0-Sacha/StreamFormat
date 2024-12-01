@@ -14,6 +14,12 @@
 
 namespace StreamFormat::FMT::Context
 {
+    enum class EndOfStringCharMode
+    {
+        Forced,
+        Optional
+    };
+
     template <typename CharType>
     class BasicFormatterExecutor : public ContextExecutor<CharType>
     {
@@ -30,6 +36,7 @@ namespace StreamFormat::FMT::Context
 
     public:
         Detail::FMTBufferOutInfo<TChar>& BufferOut;
+        EndOfStringCharMode EndOfStringChar = EndOfStringCharMode::Optional;
 
         using ContextExecutor<CharType>::Data;
         using ContextExecutor<CharType>::TextManager;
@@ -76,7 +83,9 @@ namespace StreamFormat::FMT::Context
         Detail::BufferOutManip(BufferOut).ComputeGeneratedSize();
 
         // End char not included in buffer manager context to deduce size correctly
-        SF_TRY(Detail::BufferOutManip(BufferOut).Pushback('\0'));
+        auto res = Detail::BufferOutManip(BufferOut).Pushback('\0');
+        if (EndOfStringChar == EndOfStringCharMode::Forced)
+            { SF_TRY(res); }
 
         return {};
     }

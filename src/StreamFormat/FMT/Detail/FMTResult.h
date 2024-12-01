@@ -1,5 +1,7 @@
 #pragma once
 
+#include "StreamFormat/Core/Prelude.h"
+
 namespace StreamFormat::FMT
 {
     enum class FMTResult
@@ -32,4 +34,17 @@ namespace StreamFormat::FMT
         Manager_StaticMemory,
         Manager_AllocationFailed,
     };
+}
+
+namespace StreamFormat::Detail
+{
+    template<>
+    inline FMT::FMTResult forward_error<FMT::FMTResult>(FMT::FMTResult t)
+    {
+        if (t == FMT::FMTResult::ArgsInterface_CantMatchNamedArgs)
+            return t;
+        if (t == FMT::FMTResult::Manager_StaticMemory)
+            return t;
+        return t;
+    }
 }

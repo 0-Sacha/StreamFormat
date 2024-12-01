@@ -22,9 +22,9 @@ namespace StreamFormat::FMT::Detail
         template <typename T>
         [[nodiscard]] std::expected<void, FMTResult> WriteInteger(T i, Detail::ShiftInfo shift = Detail::ShiftInfo{})
         {
-            char oldBefore = shift.Print.Before;
-            if (shift.Print.Before >= '0' && shift.Print.Before <= '9')
-                shift.Print.Before = ' ';
+            char oldAfter = shift.Print.After;
+            if (shift.Print.After >= '0' && shift.Print.After <= '9')
+                shift.Print.After = ' ';
 
             std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(i);
 
@@ -61,7 +61,7 @@ namespace StreamFormat::FMT::Detail
 
             SF_TRY(BufferShiftWriteManip(Buffer).WriteShiftEnd(shift));
 
-            shift.Print.Before = oldBefore;
+            shift.Print.After = oldAfter;
             return {};
         }
 

@@ -16,7 +16,7 @@ namespace StreamFormat::FMT
         Detail::BufferInfoView format{formatInput};
         using TChar = typename decltype(format)::TChar;
 
-        Detail::ParserANSITextPropertiesExecutor<std::remove_const_t<TChar>> textPropertiesExecutor;
+        Detail::ParserNOTextPropertiesExecutor<std::remove_const_t<TChar>> textPropertiesExecutor;
         Context::BasicParserExecutor<std::remove_const_t<TChar>> executor(buffer, textPropertiesExecutor);
         SF_TRY(executor.Run(format, std::forward<Args>(args)...));
         return executor.Terminate();

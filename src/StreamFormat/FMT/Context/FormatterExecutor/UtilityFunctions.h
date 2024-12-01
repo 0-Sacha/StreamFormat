@@ -217,3 +217,59 @@ namespace StreamFormat::FMT
         return bufferOutManager.GetLastGeneratedString();
     }
 }
+
+namespace StreamFormat::FMT
+{
+    template <typename FormatterExecutor>
+    struct FormatterType<FMTResult, FormatterExecutor>
+    {
+        [[nodiscard]] static std::expected<void, FMTResult> Format(FMTResult result, FormatterExecutor& executor)
+        {
+            switch(result)
+            {
+                case FMTResult::FunctionNotImpl:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("FunctionNotImpl");
+                case FMTResult::Buffer_NonValid:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Buffer_NonValid");
+                case FMTResult::Buffer_OutOfBoundAccess:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Buffer_OutOfBoundAccess");
+                case FMTResult::Buffer_UnableToReserveMemory:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Buffer_UnableToReserveMemory");
+                case FMTResult::Parse_NonValidDigit:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Parse_NonValidDigit");
+                case FMTResult::Parse_TokenNotExpected:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Parse_TokenNotExpected");
+                case FMTResult::ArgsInterface_Unavaible:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("ArgsInterface_Unavaible");
+                case FMTResult::ArgsInterface_InvalidTypeID:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("ArgsInterface_InvalidTypeID");
+                case FMTResult::ArgsInterface_InvalidConversion:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("ArgsInterface_InvalidConversion");
+                case FMTResult::ArgsInterface_CantMatchNamedArgs:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("ArgsInterface_CantMatchNamedArgs");
+                case FMTResult::ArgsInterface_IndexOutOfBounds:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("ArgsInterface_IndexOutOfBounds");
+                case FMTResult::Specifers_Full:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Specifers_Full");
+                case FMTResult::Specifers_Invalid:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Specifers_Invalid");
+                case FMTResult::Specifers_DoesNotExist:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Specifers_DoesNotExist");
+                case FMTResult::Context_ParsingFormat:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Context_ParsingFormat");
+                case FMTResult::Context_ArgumentIndexResolution:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Context_ArgumentIndexResolution");
+                case FMTResult::Context_ArgumentIndexExpected:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Context_ArgumentIndexExpected");
+                case FMTResult::Context_CannotApplyType:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Context_CannotApplyType");
+                case FMTResult::GivenArgs_UnableToDeduceSize:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("GivenArgs_UnableToDeduceSize");
+                case FMTResult::Manager_StaticMemory:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Manager_StaticMemory");
+                case FMTResult::Manager_AllocationFailed:
+                    return Detail::BufferWriteManip(executor.BufferOut).FastWriteStringLitteral("Manager_AllocationFailed");
+            }
+        }
+    };
+}

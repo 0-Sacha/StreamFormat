@@ -3,9 +3,9 @@
 
 #include "BaseFMTTests.h"
 
-PCT_TEST_GROUP(FMT, TEXT_PROPERTIES);
+SFT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-#define TEST_FMT(fmt_test, expected) PCT_EQ(Escaper(StreamFormat::FMT::FormatString(fmt_test, 0).value()), Escaper(expected))
+#define TEST_FMT(fmt_test, expected) SFT_EQ(Escaper(StreamFormat::FMT::FormatString(fmt_test, 0).value()), Escaper(expected))
 
 static std::string Escaper(const std::string& str)
 {
@@ -24,15 +24,15 @@ static std::string Escaper(const std::string& str)
     return res;
 }
 
-PCT_TEST_GROUP(TEXT_PROPERTIES, ESCAPER_VALIDATING);
-#define TEST_ESCAPER(str, str_res) PCT_EQ(Escaper(str), str_res)
-PCT_TEST_FUNC(ESCAPER_VALIDATING, BasicTest)
+SFT_TEST_GROUP(TEXT_PROPERTIES, ESCAPER_VALIDATING);
+#define TEST_ESCAPER(str, str_res) SFT_EQ(Escaper(str), str_res)
+SFT_TEST_FUNC(ESCAPER_VALIDATING, BasicTest)
 {
     TEST_ESCAPER("\033", "\\e");
     TEST_ESCAPER("\033k", "\\ek");
 }
 
-PCT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
+SFT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
 {
     TEST_FMT("123", "123");
 
@@ -55,7 +55,7 @@ PCT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
     TEST_FMT("{C:+white} 123 ", "\033[97m 123 \033[39m");
 }
 
-PCT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
+SFT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
 {
     TEST_FMT("123", "123");
 
@@ -83,9 +83,9 @@ class TEST_FMT_ContextOut
 };
 STREAMFORMAT_AUTO_FORMATTER_T(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
-#define TEST_FMT_CONTEXT(fmt_test, expected) PCT_EQ(Escaper(StreamFormat::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{}).value()), Escaper(expected))
+#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(Escaper(StreamFormat::FMT::FormatString(fmt_test, TEST_FMT_ContextOut{}).value()), Escaper(expected))
 
-PCT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
+SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 {
     TEST_FMT_CONTEXT("{}", "\033[31m TEST_FMT_ContextOut 0 \033[39m");
 

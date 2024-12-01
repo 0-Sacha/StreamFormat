@@ -95,12 +95,12 @@ namespace StreamFormat::FMT::Context
         Executor.Data.Shift.Size = SF_TRY(FormatReadParameter(-1));
         if (Detail::BufferTestAccess(Format).IsEqualTo(':'))
         {
-            Detail::BufferManip(Format).Forward();
+            SF_TRY(Detail::BufferManip(Format).Forward());
             Executor.Data.Shift.Print.Before = SF_TRY(Detail::BufferManip(Format).GetAndForward());
             Executor.Data.Shift.Print.After  = Executor.Data.Shift.Print.Before;
             if (Detail::BufferTestAccess(Format).IsEqualTo('|'))
             {
-                Detail::BufferManip(Format).Forward();
+                SF_TRY(Detail::BufferManip(Format).Forward());
                 Executor.Data.Shift.Print.After = SF_TRY(Detail::BufferManip(Format).GetAndForward());
             }
         }
@@ -171,7 +171,7 @@ namespace StreamFormat::FMT::Context
             }
             else
             {
-                SF_TRY(manip.SkipOneOf('>'));
+                manip.IgnoreOneOf('>');
                 SF_TRY(ParseFormatDataSpecial_ShiftType(Detail::ShiftInfo::ShiftType::CenterRight));
             }
         }
@@ -240,7 +240,7 @@ namespace StreamFormat::FMT::Context
                 { SF_TRY(ParseFormatDataCustom()); }
 
             Detail::FMTBufferParamsManip(Format).ParamGoTo(',');
-            SF_TRY(Detail::BufferTestManip(Format).SkipOneOf(','));
+            Detail::BufferTestManip(Format).IgnoreOneOf(',');
         }
         return {};
     }
@@ -322,7 +322,14 @@ namespace StreamFormat::FMT::Context
         // VI : { which is a idx to an argument
         if (access.IsEqualTo('{'))
         {
-            return SF_FORWARD(GetFormatIndex_SubIndex());
+            const TChar* oldPos = Format.CurrentPos;
+            std::expected<std::int32_t, FMTResult> res = GetFormatIndex_SubIndex();
+            if (res.has_value() == false && res.error() == FMTResult::Context_ArgumentIndexResolution)
+            {
+                Format.CurrentPos = oldPos;
+                return std::unexpected(FMTResult::Context_ArgumentIndexResolution);
+            }
+            return SF_FORWARD(res);
         }
 
         return std::unexpected(FMTResult::Context_ArgumentIndexResolution);

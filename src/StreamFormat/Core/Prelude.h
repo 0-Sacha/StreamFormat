@@ -38,7 +38,7 @@
 namespace StreamFormat::Detail
 {
     template<typename T>
-    T&& forward_error(T&& t)
+    T forward_error(T t)
     {
         return std::forward<T>(t);
     }
@@ -47,7 +47,7 @@ namespace StreamFormat::Detail
 #define SF_TRY(exp) ({ \
         auto __expected = exp; \
         if (not __expected) [[unlikely]] \
-            return StreamFormat::Detail::forward_error(std::unexpected(__expected.error())); \
+            return std::unexpected(StreamFormat::Detail::forward_error(__expected.error())); \
         __expected.value(); \
     });
 

@@ -2,4 +2,4 @@
 
 #include "StreamFormat/Tester/TestSuite/AllTestSuite.h"
 
-inline PCT_TEST_SUITE(FMT);
+inline SFT_TEST_SUITE(FMT);

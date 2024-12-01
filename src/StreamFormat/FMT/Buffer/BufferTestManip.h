@@ -126,7 +126,7 @@ namespace StreamFormat::FMT::Detail
             if (Access().IsEqualTo(ele...))
             {
                 SF_TRY(BufferManip(Buffer).Forward());
-                return;
+                return {};
             }
             return std::unexpected(FMTResult::Parse_TokenNotExpected);
         }

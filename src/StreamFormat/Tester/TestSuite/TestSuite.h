@@ -271,11 +271,11 @@ namespace StreamFormat::FMT
     }
 
 //-------------------- TestSuite --------------------//
-#define PCT_TEST_SUITE(TestSuiteName, ...) \
+#define SFT_TEST_SUITE(TestSuiteName, ...) \
     StreamFormat::Tester::Detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)(#TestSuiteName, STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__))
-#define PCT_TEST_GROUP(TestSuiteName, GroupName, ...)                                                                                                    \
+#define SFT_TEST_GROUP(TestSuiteName, GroupName, ...)                                                                                                    \
     StreamFormat::Tester::Detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)(#GroupName, STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__), \
                                                                                           &STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName))
 
-#define PCT_TEST_SUITE_DECLARATION(TestSuiteName, ...)            StreamFormat::Tester::Detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)
-#define PCT_TEST_GROUP_DECLARATION(TestSuiteName, GroupName, ...) StreamFormat::Tester::Detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)
+#define SFT_TEST_SUITE_DECLARATION(TestSuiteName, ...)            StreamFormat::Tester::Detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)
+#define SFT_TEST_GROUP_DECLARATION(TestSuiteName, GroupName, ...) StreamFormat::Tester::Detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)
