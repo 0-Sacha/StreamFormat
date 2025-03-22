@@ -1,0 +1,19 @@
+""
+
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "hello",
+    srcs = glob([ "*.h", "*.cpp" ]),
+    includes = [ "" ],
+    copts = select({
+        "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
+        "//conditions:default": ["-std=c++23"],
+    }),
+    linkopts = select({
+        "@rules_cc//cc/compiler:msvc-cl": [""],
+        "//conditions:default": ["-pthread"],
+    }),
+    deps = [ "@streamformat//:stream" ],
+    visibility = ["//visibility:public"],
+)

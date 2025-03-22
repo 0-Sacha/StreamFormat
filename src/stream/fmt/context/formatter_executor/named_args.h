@@ -1,0 +1,110 @@
+#pragma once
+
+#include "formatter_type.h"
+
+namespace stream::fmt
+{
+    /////---------- string_view NamedArgs Do not allocate memory (Best) ----------/////
+    template <typename T, typename CharName = char>
+    struct StringViewNamedArgs
+    {
+    public:
+        template <std::size_t SIZE>
+        StringViewNamedArgs(const CharName (&name)[SIZE], const T& t)
+            : m_Name(name)
+            , value(t)
+        {}
+
+        StringViewNamedArgs(std::basic_string_view<CharName> name, const T& t)
+            : m_Name(name)
+            , value(t)
+        {}
+
+    public:
+        T&                               GetValue() { return value; }
+        const T&                         GetValue() const { return value; }
+        std::basic_string_view<CharName> GetName() const { return m_Name; }
+
+    protected:
+        std::basic_string_view<CharName> m_Name;
+        const T&                         value;
+    };
+
+    template <typename T, typename CharName, typename FormatterExecutor>
+    struct FormatterType<StringViewNamedArgs<T, CharName>, FormatterExecutor>
+    {
+        [[nodiscard]] static inline std::expected<void, FMTResult> format(const StringViewNamedArgs<T, CharName>& t, FormatterExecutor& executor)
+        {
+            return executor.WriteType(t.GetValue());
+        }
+    };
+
+    /////---------- stringNamedArgs Allocate memory (Only if necessary) ----------/////
+    template <typename T, typename CharName = char>
+    struct StringNamedArgs
+    {
+    public:
+        StringNamedArgs(const std::string& str, const T& t)
+            : m_Name(str)
+            , value(t)
+        {}
+
+        StringNamedArgs(std::string&& str, const T& t)
+            : m_Name(std::move(str))
+            , value(t)
+        {}
+
+    public:
+        T&                               GetValue() { return value; }
+        const T&                         GetValue() const { return value; }
+        std::basic_string_view<CharName> GetName() const { return m_Name; }
+
+    protected:
+        std::basic_string<CharName> m_Name;
+        const T&                    value;
+    };
+
+    template <typename T, typename CharName, typename FormatterExecutor>
+    struct FormatterType<StringNamedArgs<T, CharName>, FormatterExecutor>
+    {
+        [[nodiscard]] static inline std::expected<void, FMTResult> format(const StringNamedArgs<T, CharName>& t, FormatterExecutor& executor)
+        {
+            return executor.WriteType(t.GetValue());
+        }
+    };
+
+    namespace Detail
+    {
+        template <typename T>
+        struct IsANamedArgs
+        {
+        public:
+            [[maybe_unused]] inline constexpr static bool value = false;
+        };
+
+        template <typename T, typename CharName>
+        struct IsANamedArgs<StringViewNamedArgs<T, CharName>>
+        {
+            [[maybe_unused]] inline constexpr static bool value = true;
+        };
+
+        template <typename T, typename CharName>
+        struct IsANamedArgs<StringNamedArgs<T, CharName>>
+        {
+            [[maybe_unused]] inline constexpr static bool value = true;
+        };
+
+        template <typename T>
+        inline constexpr bool IsANamedArgsValue = false;
+
+        template <typename T, typename CharName>
+        inline constexpr bool IsANamedArgsValue<StringViewNamedArgs<T, CharName>> = true;
+
+        template <typename T, typename CharName>
+        inline constexpr bool IsANamedArgsValue<StringNamedArgs<T, CharName>> = true;
+    }
+}
+
+#define FORMAT(value)           stream::fmt::StringViewNamedArgs(#value, value)
+#define FORMAT_SV(name, value)  stream::fmt::StringViewNamedArgs(name, value)
+#define FORMAT_STR(name, value) stream::fmt::StringNamedArgs(name, value)

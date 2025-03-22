@@ -1,13 +1,11 @@
 
 # bazel
-MODULE.bazel.lock
-bazel-bin
-bazel-out
-bazel-streamformat
-bazel-StreamFormat
-bazel-examples
-bazel-Examples
-bazel-testlogs
+*.lock
+bazel-*
+
+.coverage
+.codechecker
+compile_commands.json
 
 # VS
 .vs

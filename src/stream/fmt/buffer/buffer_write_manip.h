@@ -1,0 +1,170 @@
+#pragma once
+
+#include "buffer_info.h"
+#include "buffer_manip.h"
+#include "buffer_test_manip.h"
+#include "buffer_out_manip.h"
+
+#include <type_traits>
+#include <cmath>
+
+namespace stream::fmt::detail
+{
+    class BufferWriteUtils
+    {
+    public:
+        template <typename T>
+        static std::int32_t GetNumberOfDigitDec(T value)
+        {
+            if constexpr (std::numeric_limits<T>::is_signed)
+            {
+                if (value < 0) value = -value;
+            }
+            std::int32_t nb = 0;
+            while (true)
+            {
+                if (value < 10)
+                    return nb + 1;
+                else if (value < 100)
+                    return nb + 2;
+                else if (value < 1000)
+                    return nb + 3;
+                else if (value < 10000)
+                    return nb + 4;
+                else
+                {
+                    value /= static_cast<T>(10000);
+                    nb += 4;
+                }
+            }
+        }
+    };
+
+    template <typename TChar>
+    class BufferWriteManip
+    {
+    public:
+        constexpr inline BufferWriteManip(BufferOutInfo<TChar>& buffer) noexcept : Buffer(buffer) {}
+    public:
+        BufferOutInfo<TChar>& Buffer;
+    
+    public:
+        static constexpr TChar BIN[2] = {'0', '1'};
+        static constexpr TChar OCT[8] = {'0', '1', '2', '3', '4', '5', '6', '7'};
+        static constexpr TChar UPPER_HEX[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        static constexpr TChar LOWER_HEX[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    public:
+        template <typename T>
+        requires std::is_integral_v<T>
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteInteger(T i)
+        {
+            BufferOutManip manip(buffer);
+
+            if (i == 0) { SF_TRY(manip.Pushback('0')); return {}; }
+
+            if constexpr (std::is_signed_v<T>)
+            {
+                if (i < 0) { SF_TRY(manip.Pushback('-')); i = -i; }
+            }
+
+            std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(i);
+            SF_TRY(manip.Forward(nbDigit));
+            while (i > 0)
+            {
+                manip.ForceSetInverse(i % 10 + '0');
+                i /= 10;
+            }
+            SF_TRY(manip.Forward(nbDigit));
+
+            return {};
+        }
+
+    public:
+        template <typename T>
+        requires std::is_floating_point_v<T>
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteFloat(T i, std::int32_t floatPrecision = 2)
+        {
+            BufferOutManip manip(buffer);
+
+            if (i == 0)
+                { SF_TRY(manip.Pushback('0')); return {}; }
+            if (i < 0)
+                { SF_TRY(manip.Pushback('-')); i = -i; }
+
+            T k = std::trunc(i);
+            i = i - k;
+            std::int32_t nbDigit = BufferWriteUtils::GetNumberOfDigitDec(k);
+            SF_TRY(manip.Forward(nbDigit));
+            std::int32_t nbDigit_ = nbDigit;
+            while (nbDigit_ > 0)
+            {
+                manip.ForceSetInverse(char(std::fmod(k, 10)) + '0');
+                k /= 10;
+                nbDigit_--;
+            }
+            SF_TRY(manip.Forward(nbDigit));
+            SF_TRY(manip.Pushback('.'));
+
+            while (floatPrecision-- >= 0)
+            {
+                TChar intPart = static_cast<TChar>(std::trunc(i *= 10));
+                SF_TRY(manip.Pushback(intPart + '0'));
+                i -= intPart;
+            }
+
+            return {};
+        }
+
+    public:
+        template <typename CharInput>
+        [[nodiscard]] constexpr std::expected<void, FMTResult> FastWriteCharArray(const CharInput* str, std::size_t size)
+        {
+            auto reserve = BufferOutManip(buffer).Reserve(size);
+            if (reserve.has_value() == false) 
+                return FastWriteCharArray(str, BufferAccess(buffer).GetBufferRemainingSize());
+
+            // TODO: Opti with bigger types
+            while (size-- != 0 && *str != 0)
+                BufferOutManip(buffer).ForcePushback(*str++);
+
+            return {};
+        }
+        template <typename CharInput>
+        [[nodiscard]] inline constexpr std::expected<void, FMTResult> FastWriteString(std::basic_string_view<CharInput> sv)
+        {
+            return FastWriteCharArray(sv.data(), sv.size());
+        }
+        [[nodiscard]] inline std::expected<void, FMTResult> FastWriteString(std::basic_string_view<TChar> sv)
+        {
+            return FastWriteCharArray(sv.data(), sv.size());
+        }
+        template <typename CharInput, std::size_t SIZE>
+        [[nodiscard]] inline std::expected<void, FMTResult> FastWriteStringLitteral(CharInput (&str)[SIZE])
+        {
+            std::size_t size = SIZE;
+            while (str[size - 1] == 0)
+                { --size; }
+            return FastWriteCharArray(str, size);
+        }
+
+    public:
+        template <typename CharInput>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(std::basic_string_view<CharInput> str) { return FastWriteString(str); }
+        template <typename CharInput, std::size_t SIZE>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(CharInput (&str)[SIZE]) { return FastWriteStringLitteral(str); }
+        template <typename T> requires std::is_integral_v<T>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(T t) { return FastWriteInteger(t); }
+        template <typename T> requires std::is_floating_point_v<T>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(T t) { return FastWriteFloat(t); }
+
+        template <typename Type, typename... Rest>
+        [[nodiscard]] inline std::expected<void, FMTResult> BasicWriteType(Type&& type, Rest&&... rest)
+        {
+            SF_TRY(BasicWriteType(type));
+            if constexpr (sizeof...(rest) > 0)
+                SF_TRY(BasicWriteType(std::forward<Rest>(rest)...));
+            return {};
+        }
+    };
+}

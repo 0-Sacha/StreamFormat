@@ -1,4 +1,4 @@
-name: StreamFormat
+name: stream
 
 on:
   push:
@@ -20,9 +20,9 @@ jobs:
   #       path: "~/.cache/bazel"
   #       key: bazel
   #   - name: Building...
-  #     run: bazelisk build //:StreamFormatTests
+  #     run: bazelisk build //:streamTests
   #   - name: Testing...
-  #     run: bazelisk test //:StreamFormatTests
+  #     run: bazelisk test //:streamTests
       
   windows-latest-winlibs:
     runs-on: windows-latest
@@ -35,9 +35,9 @@ jobs:
         path: "~/.cache/bazel"
         key: bazel
     - name: Build Winlibs/clang...
-      run: bazelisk build --config=winlibs-clang //:StreamFormatTests
+      run: bazelisk build --config=winlibs-clang //:streamTests
     - name: Build Winlibs/gcc...
-      run: bazelisk build --config=winlibs-gcc //:StreamFormatTests
+      run: bazelisk build --config=winlibs-gcc //:streamTests
 
   ubuntu-latest-gcc:
     runs-on: ubuntu-latest
@@ -60,9 +60,9 @@ jobs:
     - name: Version
       run: gcc-13 --version
     - name: Building...
-      run: CC=gcc-13 bazelisk build //:StreamFormatTests
+      run: CC=gcc-13 bazelisk build //:streamTests
     - name: Testing... (W asan)
-      run: CC=gcc-13 bazelisk test --features=asan //:StreamFormatTests
+      run: CC=gcc-13 bazelisk test --features=asan //:streamTests
 
   ubuntu-latest-clang:
     runs-on: ubuntu-latest
@@ -82,6 +82,6 @@ jobs:
     - name: Version
       run: clang++-20 --version
     - name: Building...
-      run: CC=clang++-20 bazelisk build //:StreamFormatTests
+      run: CC=clang++-20 bazelisk build //:streamTests
     - name: Testing... (W asan)
-      run: CC=clang++-20 bazelisk test --features=asan //:StreamFormatTests
+      run: CC=clang++-20 bazelisk test --features=asan //:streamTests

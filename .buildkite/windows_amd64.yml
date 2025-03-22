@@ -4,11 +4,11 @@ agents:
 steps:
   # - label: ":bazel: Build And Test MSVC"
   #   commands:
-  #     - bazelisk test //:StreamFormatTests
+  #     - bazelisk test //:streamTests
 
   - label: ":bazel: Build And Test Winlibs/clang"
     commands:
-      - bazelisk build --config=winlibs-clang //:StreamFormatTests
+      - bazelisk build --config=winlibs-clang //:streamTests
   - label: ":bazel: Build And Test Winlibs/gcc"
     commands:
-      - bazelisk build --config=winlibs-gcc //:StreamFormatTests
+      - bazelisk build --config=winlibs-gcc //:streamTests
