@@ -2,10 +2,6 @@ agents:
   queue: "agent-runners-windows-amd64"
 
 steps:
-  # - label: ":bazel: Build And Test MSVC"
-  #   commands:
-  #     - bazelisk test //tests:units
-
   - label: ":bazel: Build And Test Winlibs/clang"
     commands:
       - bazelisk build --config=winlibs-clang //tests:units
