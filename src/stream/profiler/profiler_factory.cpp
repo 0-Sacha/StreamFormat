@@ -5,9 +5,9 @@
 
 namespace stream::profiler
 {
-    void ProfilerFactory::ToJson(Profiler& profiler, std::filesystem::path path)
+    void ProfilerFactory::to_json(Profiler& profiler, std::filesystem::path path)
     {
-        profiler.profiler_duration.Stop();
+        profiler.profiler_duration.stop();
         profiler.events[0] = profiler.profiler_duration.info;
 
         if (path == "") path = std::string(profiler.name) + ".json";

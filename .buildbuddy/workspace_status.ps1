@@ -8,7 +8,7 @@
 # If the script exits with a non-zero code, it's considered as a failure
 # and the output will be discarded.
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "stop"
 
 # Get the repository URL without credentials
 $repo_url = (git config --get remote.origin.url) -replace '//.*?:.*?@', '//'

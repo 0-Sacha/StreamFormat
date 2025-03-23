@@ -25,8 +25,8 @@ namespace stream::profiler
         ~Profiler() {}
 
     public:
-        void                                   add_event(const Event& event) { add_event_info(event.info); }
-        void                                   add_event_info(const EventInfo& eventInfo) { events.push_back(eventInfo); }
+        void                              add_event(const Event& event) { add_event_info(event.info); }
+        void                              add_event_info(const EventInfo& eventInfo) { events.push_back(eventInfo); }
         inline stream::flog::BasicLogger& get_logger() { return logger; }
 
     public:

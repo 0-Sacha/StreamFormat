@@ -93,19 +93,19 @@ namespace stream::fmt::detail
                     if (color_bg.has_value() && color_fg.has_value())
                         { return ask_apply_color(detail::TextProperties::TextColor::BasicColor{color_fg.value(), color_bg.value()}); }
                     else
-                        { return reload_defaultColor(); }
+                        { return reload_default_color(); }
                 }
                 else
                 {
                     if (color_fg.has_value())
                         { return ask_apply_color(color_fg.value()); }
                     else
-                        { return reload_defaultColor(); }
+                        { return reload_default_color(); }
                 }
             }
         }
         else
-            { return reload_defaultColor(); }
+            { return reload_default_color(); }
         return {};
     }
 
@@ -157,7 +157,7 @@ namespace stream::fmt::detail
         };
 
         static constexpr std::pair<std::basic_string_view<TChar>, detail::TextProperties::TextStyle::Italic> styleItalic[] = {
-            {"italic", detail::TextProperties::TextStyle::Italic::Enable},
+            {"italic", detail::TextProperties::TextStyle::Italic::enable},
             {"n-italic", detail::TextProperties::TextStyle::Italic::Disable}
         };
 
@@ -173,7 +173,7 @@ namespace stream::fmt::detail
                                                                                                                    {"n-blink", detail::TextProperties::TextStyle::Blink::Disable}};
 
         static constexpr typename std::pair<std::basic_string_view<TChar>, detail::TextProperties::TextStyle::Inverted> styleInverted[] = {
-            {"inverted", detail::TextProperties::TextStyle::Inverted::Enable},
+            {"inverted", detail::TextProperties::TextStyle::Inverted::enable},
             {"n-inverted", detail::TextProperties::TextStyle::Inverted::Disable},
         };
 

@@ -10,7 +10,7 @@ namespace stream::profiler
         virtual ~EventData() = default;
 
     public:
-        virtual void ToJson(json::detail::JsonFormatter& formatter) const = 0;
+        virtual void to_json(json::detail::JsonFormatter& formatter) const = 0;
         virtual void FromJson(json::detail::JsonParser& parser)           = 0;
     };
 
@@ -20,7 +20,7 @@ namespace stream::profiler
         ~EventDataJsonObject() override = default;
 
     public:
-        void                   ToJson(json::detail::JsonFormatter& formatter) const override { json::JsonSerializer<json::JsonStructObject>::format(data, formatter); }
+        void                   to_json(json::detail::JsonFormatter& formatter) const override { json::JsonSerializer<json::JsonStructObject>::format(data, formatter); }
         void                   FromJson(json::detail::JsonParser& parser) override { json::JsonSerializer<json::JsonStructObject>::parse(data, parser); }
         json::JsonStructObject data;
     };

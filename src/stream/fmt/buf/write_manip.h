@@ -72,8 +72,8 @@ namespace stream::fmt::buf
             SF_TRY(manip.forward(nb_digit));
             while (i > 0)
             {
-                ManipIO(buffer).set(i % 10 + '0');
                 Manip(buffer).backward_force();
+                ManipIO(buffer).set(i % 10 + '0');
                 i /= 10;
             }
             SF_TRY(manip.forward(nb_digit));
@@ -100,8 +100,8 @@ namespace stream::fmt::buf
             std::int32_t nb_digit_ = nb_digit;
             while (nb_digit_ > 0)
             {
-                buffer.set(char(std::fmod(k, 10)) + '0');
                 Manip(buffer).backward_force();
+                buffer.set(char(std::fmod(k, 10)) + '0');
                 k /= 10;
                 nb_digit_--;
             }
@@ -122,13 +122,15 @@ namespace stream::fmt::buf
         template <typename CharInput>
         [[nodiscard]] constexpr std::expected<void, FMTResult> fast_write_char_array(const CharInput* str, std::size_t size)
         {
+            if (size == 0)
+                return {};
+
             auto reserve = ManipIO(buffer).reserve(size);
             if (reserve.has_value() == false) 
                 return fast_write_char_array(str, Access(buffer).get_buffer_remaining_size());
 
-            // TODO: Opti with bigger types
-            while (size-- != 0 && *str != 0)
-                ManipIO(buffer).pushback_force(*str++);
+            std::copy_n(str, size, buffer.current_pos);
+            buffer.current_pos += size;
 
             return {};
         }

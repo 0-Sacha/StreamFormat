@@ -13,7 +13,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const detail::TextProperties::ResetProperties, FormatterExecutor& executor)
         {
-            return executor.TextManager.all_properties_reset();
+            return executor.text_manager.all_properties_reset();
         }
     };
 
@@ -22,7 +22,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const detail::TextProperties::TextColor::reset_color, FormatterExecutor& executor)
         {
-            return executor.TextManager.apply_color_reset();
+            return executor.text_manager.apply_color_reset();
         }
     };
 
@@ -31,7 +31,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const detail::TextProperties::TextStyle::reset_style, FormatterExecutor& executor)
         {
-            return executor.TextManager.apply_style_reset();
+            return executor.text_manager.apply_style_reset();
         }
     };
 
@@ -40,7 +40,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const detail::TextProperties::TextFront::reset_front, FormatterExecutor& executor)
         {
-            return executor.TextManager.apply_front_reset();
+            return executor.text_manager.apply_front_reset();
         }
     };
 
@@ -49,12 +49,12 @@ namespace stream::fmt
     //---------------------------------------//
 
     template <typename T, typename FormatterExecutor>
-    requires detail::TextPropertiesColorIsapply<T>
+    requires detail::text_properties_color_is_apply<T>
     struct FormatterType<T, FormatterExecutor>
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const T& t, FormatterExecutor& executor)
         {
-            return executor.TextManager.ask_apply_color(t);
+            return executor.text_manager.ask_apply_color(t);
         }
     };
 
@@ -64,7 +64,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const T& t, FormatterExecutor& executor)
         {
-            return executor.TextManager.ask_apply_style(t);
+            return executor.text_manager.ask_apply_style(t);
         }
     };
 
@@ -74,7 +74,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const T& t, FormatterExecutor& executor)
         {
-            return executor.TextManager.ask_apply_front(t);
+            return executor.text_manager.ask_apply_front(t);
         }
     };
 }

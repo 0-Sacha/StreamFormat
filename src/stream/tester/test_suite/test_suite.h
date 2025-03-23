@@ -70,22 +70,22 @@ namespace stream::tester::detail
     {
         void Reset()
         {
-            testsDone  = 0;
-            testsOk    = 0;
-            testsFail  = 0;
+            tests_done  = 0;
+            tests_ok    = 0;
+            tests_failed  = 0;
             testsCrash = 0;
         }
 
         void AddTestStatus(TestStatus status)
         {
-            testsDone++;
+            tests_done++;
             switch (status)
             {
                 case TestStatus::Ok:
-                    testsOk++;
+                    tests_ok++;
                     break;
                 case TestStatus::Fail:
-                    testsFail++;
+                    tests_failed++;
                     break;
                 case TestStatus::Crash:
                     testsCrash++;
@@ -93,21 +93,21 @@ namespace stream::tester::detail
             }
         }
 
-        void Add(TestStatusBank status)
+        void add(TestStatusBank status)
         {
-            testsDone += status.testsDone;
-            testsOk += status.testsOk;
-            testsFail += status.testsFail;
+            tests_done += status.tests_done;
+            tests_ok += status.tests_ok;
+            tests_failed += status.tests_failed;
             testsCrash += status.testsCrash;
         }
 
-        bool IsAllOk() { return testsDone == testsOk && testsCrash == 0 && testsFail == 0; }
+        bool is_all_ok() { return tests_done == tests_ok && testsCrash == 0 && tests_failed == 0; }
 
-        std::uint32_t ErrorStatus() { return testsDone - testsOk; }
+        std::uint32_t ErrorStatus() { return tests_done - tests_ok; }
 
-        std::uint32_t testsDone  = 0;
-        std::uint32_t testsOk    = 0;
-        std::uint32_t testsFail  = 0;
+        std::uint32_t tests_done  = 0;
+        std::uint32_t tests_ok    = 0;
+        std::uint32_t tests_failed  = 0;
         std::uint32_t testsCrash = 0;
     };
 
@@ -115,15 +115,15 @@ namespace stream::tester::detail
 }
 namespace stream::tester
 {
-    struct PerformanceTestData
+    struct performance_testData
     {
-        bool          Enable    = false;
-        std::uint32_t NbSamples = 10;
+        bool          enable    = false;
+        std::uint32_t nb_samples = 10;
     };
 
-    struct ConcurenceSpecificationData
+    struct ConcurrencySpecificationData
     {
-        bool Enable = false;
+        bool enable = false;
     };
 
     class TestSuitesManager
@@ -133,19 +133,19 @@ namespace stream::tester
         static inline std::unordered_map<std::string_view, detail::TestSuite*> test_suites;
 
     public:
-        static inline bool                        verbose                 = false;
-        static inline bool                        PrintTime               = false;
-        static inline PerformanceTestData         PerformanceTest         = PerformanceTestData{};
-        static inline ConcurenceSpecificationData ConcurenceSpecification = ConcurenceSpecificationData{};
+        static inline bool                         verbose                 = false;
+        static inline bool                         print_time               = false;
+        static inline performance_testData         performance_test         = performance_testData{};
+        static inline ConcurrencySpecificationData concurrency_specification = ConcurrencySpecificationData{};
     };
 }
 namespace stream::tester::detail
 {
     struct TestSuiteData
     {
-        bool Redirect_stdout = false;
-        bool Redirect_stdin  = false;
-        bool Redirect_stderr = false;
+        bool redirect_stdout = false;
+        bool redirect_stdin  = false;
+        bool redirect_stderr = false;
     };
 
     class TestSuite
@@ -181,8 +181,8 @@ namespace stream::tester::detail
         void init_logger();
 
     private:
-        std::string                get_full_name();
-        std::string                get_corrected_size_name();
+        std::string         get_full_name();
+        std::string         get_corrected_size_name();
         profiler::Profiler& get_profiler();
 
     public:
@@ -232,28 +232,28 @@ namespace stream::fmt
     template <typename FormatterExecutor>
     struct FormatterType<stream::tester::detail::TestStatusBank, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::TestStatusBank& statusBank, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::TestStatusBank& status_bank, FormatterExecutor& executor)
         {
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("testsDone "));
-            SF_TRY(executor.run("{:C:white}", statusBank.testsDone));
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("tests_done "));
+            SF_TRY(executor.run("{:C:white}", status_bank.tests_done));
 
             SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsOK "));
-            if (statusBank.testsOk == statusBank.testsDone)
-                { SF_TRY(executor.run("{:C:green}", statusBank.testsOk)); }
+            if (status_bank.tests_ok == status_bank.tests_done)
+                { SF_TRY(executor.run("{:C:green}", status_bank.tests_ok)); }
             else
-                { SF_TRY(executor.run("{:C:yellow}", statusBank.testsOk)); }
+                { SF_TRY(executor.run("{:C:yellow}", status_bank.tests_ok)); }
 
             SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsFAIL "));
-            if (statusBank.testsFail == 0)
-                { SF_TRY(executor.run("{:C:green}", statusBank.testsFail)); }
+            if (status_bank.tests_failed == 0)
+                { SF_TRY(executor.run("{:C:green}", status_bank.tests_failed)); }
             else
-                { SF_TRY(executor.run("{:C:red}", statusBank.testsFail)); }
+                { SF_TRY(executor.run("{:C:red}", status_bank.tests_failed)); }
 
             SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | TestCrash "));
-            if (statusBank.testsCrash == 0)
-                { SF_TRY(executor.run("{:C:green}", statusBank.testsCrash)); }
+            if (status_bank.testsCrash == 0)
+                { SF_TRY(executor.run("{:C:green}", status_bank.testsCrash)); }
             else
-                { SF_TRY(executor.run("{:C:magenta}", statusBank.testsCrash)); }
+                { SF_TRY(executor.run("{:C:magenta}", status_bank.testsCrash)); }
 
             return {};
         }

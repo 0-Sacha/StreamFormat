@@ -36,7 +36,7 @@ namespace stream::fmt::detail
             return std::unexpected(FMTResult::ArgsInterface_IndexOutOfBounds);
         }
         template <typename T>
-        [[nodiscard]] inline std::expected<T, FMTResult> GetConvertedTypeAt(std::int32_t)
+        [[nodiscard]] inline std::expected<T, FMTResult> get_converted_type_at(std::int32_t)
         {
             return std::unexpected(FMTResult::ArgsInterface_IndexOutOfBounds);
         }
@@ -73,15 +73,15 @@ namespace stream::fmt::detail
 
     public:
         template <typename TChar>
-        [[nodiscard]] inline std::expected<std::int32_t, FMTResult> get_index_of_current_named_arg(buf::StreamView<TChar>& format, std::int32_t beginSearchIndex)
+        [[nodiscard]] inline std::expected<std::int32_t, FMTResult> get_index_of_current_named_arg(buf::StreamView<TChar>& format, std::int32_t begin_search_index)
         {
             if constexpr (detail::IsANamedArgs<detail::get_base_type<TypeWithoutRef>>::value)
             {
-                bool currentIsANamedArg = SF_TRY(buf::FMTParamsManip(format).next_is_named_args(m_Value.get_name()));
-                if (currentIsANamedArg)
-                    return beginSearchIndex;
+                bool current_is_a_named_arg = SF_TRY(buf::FMTParamsManip(format).next_is_named_args(m_Value.get_name()));
+                if (current_is_a_named_arg)
+                    return begin_search_index;
             }
-            return ParserArgs<Rest...>::get_index_of_current_named_arg(format, beginSearchIndex + 1);
+            return ParserArgs<Rest...>::get_index_of_current_named_arg(format, begin_search_index + 1);
         }
 
     public:
@@ -93,7 +93,7 @@ namespace stream::fmt::detail
 
     public:
         template <typename T>
-        [[nodiscard]] inline std::expected<T, FMTResult> GetConvertedTypeAt(std::int32_t idx)
+        [[nodiscard]] inline std::expected<T, FMTResult> get_converted_type_at(std::int32_t idx)
         {
             if (idx == 0)
             {
@@ -102,7 +102,7 @@ namespace stream::fmt::detail
                 else
                     { return std::unexpected(FMTResult::ArgsInterface_InvalidConversion); }
             }
-            return ParserArgs<Rest...>::template GetConvertedTypeAt<T>(idx - 1);
+            return ParserArgs<Rest...>::template get_converted_type_at<T>(idx - 1);
         }
     };
 
@@ -144,11 +144,11 @@ namespace stream::fmt::detail
     public:
         [[nodiscard]] std::expected<typename std::basic_string_view<TChar>, FMTResult> get_string_at(std::int32_t idx) override
         {
-            return args_interface.template GetConvertedTypeAt<typename std::basic_string_view<TChar>>(idx);
+            return args_interface.template get_converted_type_at<typename std::basic_string_view<TChar>>(idx);
         }
         [[nodiscard]] std::expected<std::int64_t, FMTResult> get_int_at(std::int32_t idx) override
         {
-            return args_interface.template GetConvertedTypeAt<std::int64_t>(idx);
+            return args_interface.template get_converted_type_at<std::int64_t>(idx);
         }
 
     protected:

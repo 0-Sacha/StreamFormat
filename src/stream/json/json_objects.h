@@ -171,8 +171,8 @@ namespace stream::json
         std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
 
     public:
-        void        Add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({name, std::move(object)}); }
-        void        Add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({std::move(name), std::move(object)}); }
+        void        add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({name, std::move(object)}); }
+        void        add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({std::move(name), std::move(object)}); }
         JsonObject& get(const std::string_view subObject) override
         {
             try
@@ -205,7 +205,7 @@ namespace stream::json
         std::vector<std::unique_ptr<JsonObject>> Objects;
 
     public:
-        void        Add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
+        void        add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
         JsonObject& get(const std::size_t index) override { return *Objects[index]; }
 
     public:

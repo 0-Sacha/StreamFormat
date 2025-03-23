@@ -33,7 +33,7 @@ namespace stream::json
     template <>
     struct JsonSerializer<profiler::EventData>
     {
-        static inline void format(const profiler::EventData& t, detail::JsonFormatter& formatter) { t.ToJson(formatter); }
+        static inline void format(const profiler::EventData& t, detail::JsonFormatter& formatter) { t.to_json(formatter); }
 
         static inline void parse(profiler::EventData& t, detail::JsonParser& parser) { t.FromJson(parser); }
     };

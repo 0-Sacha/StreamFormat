@@ -19,7 +19,7 @@ namespace stream::profiler
 
     public:
         void start() { trigger(); }
-        void Stop() { info.Duration = profiler::get_microseconds() - info.TimeOfEvent; }
+        void stop() { info.Duration = profiler::get_microseconds() - info.TimeOfEvent; }
     };
 
     class SampleEvent : public Event

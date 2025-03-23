@@ -32,7 +32,7 @@ namespace stream::fmt::detail
 
     enum class TextProperties::TextStyle::Italic : std::uint8_t
     {
-        Enable  = 3,
+        enable  = 3,
         Disable = 23
     };
 
@@ -54,7 +54,7 @@ namespace stream::fmt::detail
 
     enum class TextProperties::TextStyle::Inverted : std::uint8_t
     {
-        Enable  = 7,
+        enable  = 7,
         Disable = 27
     };
 
@@ -264,7 +264,7 @@ namespace stream::fmt::detail::OLD
         Intensity_Dim    = static_cast<std::uint8_t>(TextProperties::TextStyle::Intensity::Dim),
         Intensity_Normal = static_cast<std::uint8_t>(TextProperties::TextStyle::Intensity::Normal),
 
-        Italic_Enable  = static_cast<std::uint8_t>(TextProperties::TextStyle::Italic::Enable),
+        Italic_Enable  = static_cast<std::uint8_t>(TextProperties::TextStyle::Italic::enable),
         Italic_Disable = static_cast<std::uint8_t>(TextProperties::TextStyle::Italic::Disable),
 
         Underline_Underlined      = static_cast<std::uint8_t>(TextProperties::TextStyle::Underline::Underlined),
@@ -276,7 +276,7 @@ namespace stream::fmt::detail::OLD
         Blink_FastBlink = static_cast<std::uint8_t>(TextProperties::TextStyle::Blink::FastBlink),
         Blink_Disable   = static_cast<std::uint8_t>(TextProperties::TextStyle::Blink::Disable),
 
-        Inverted_Enable  = static_cast<std::uint8_t>(TextProperties::TextStyle::Inverted::Enable),
+        Inverted_Enable  = static_cast<std::uint8_t>(TextProperties::TextStyle::Inverted::enable),
         Inverted_Disable = static_cast<std::uint8_t>(TextProperties::TextStyle::Inverted::Disable),
 
         Ideogram_Underlined       = static_cast<std::uint8_t>(TextProperties::TextStyle::Ideogram::Underlined),

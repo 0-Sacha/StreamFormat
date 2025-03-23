@@ -49,11 +49,11 @@ namespace stream::flog::detail
         virtual ~BasicLoggerImpl() = default;
 
     public:
-        void SetSeverity(const SeverityValueType& severity) { m_Severity = severity; }
+        void set_severity(const SeverityValueType& severity) { m_Severity = severity; }
         void set_name(const std::string& name) { name_ = name; }
         void set_name(std::string&& name) { name_ = std::move(name); }
         void SetRealPattern(std::string_view pattern) { m_Pattern = pattern; }
-        void SetRealPatternStrmv(std::string&& pattern) { m_Pattern = std::move(pattern); }
+        void set_real_pattern_strmv(std::string&& pattern) { m_Pattern = std::move(pattern); }
         void SetPattern(std::string_view pattern)
         {
             m_Pattern = "{color}";

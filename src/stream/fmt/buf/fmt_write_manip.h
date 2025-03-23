@@ -101,8 +101,8 @@ namespace stream::fmt::buf
                 std::int32_t nb_digit_ = nb_digit;
                 while (nb_digit_ > 0)
                 {
-                    buffer.set(char(std::fmod(i, 10)) + '0');
                     Manip(buffer).backward_force();
+                    buffer.set(char(std::fmod(i, 10)) + '0');
                     k /= 10;
                     nb_digit_--;
                 }
@@ -154,8 +154,8 @@ namespace stream::fmt::buf
             std::int32_t k = digit_count + 1;
             while (--k != 0)
             {
-                buffer.set(lut[i & (0b1 << digitSize)]);
                 Manip(buffer).backward_force();
+                buffer.set(lut[i & (0b1 << digitSize)]);
                 i = i >> digitSize;
             }
             SF_TRY(manip.forward(digit_count));

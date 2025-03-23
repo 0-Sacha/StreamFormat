@@ -5,7 +5,7 @@ namespace stream::profiler
 {
     ScopeProfile::~ScopeProfile()
     {
-        Stop();
+        stop();
 
         double millis = info.Duration / 1000;
         double sec    = millis / 1000;

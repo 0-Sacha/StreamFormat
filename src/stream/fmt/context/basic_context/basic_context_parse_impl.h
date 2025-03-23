@@ -60,17 +60,17 @@ namespace stream::fmt::context
         if (access.is_equal_to('C'))
         {
             SF_TRY(buf::Manip(fmtstream).forward());
-            SF_TRY(executor.TextManager.parse_color(*this));
+            SF_TRY(executor.text_manager.parse_color(*this));
         }
         else if (access.is_equal_to('S'))
         {
             SF_TRY(buf::Manip(fmtstream).forward());
-            SF_TRY(executor.TextManager.parse_style(*this));
+            SF_TRY(executor.text_manager.parse_style(*this));
         }
         else if (access.is_equal_to('F'))
         {
             SF_TRY(buf::Manip(fmtstream).forward());
-            SF_TRY(executor.TextManager.parse_front(*this));
+            SF_TRY(executor.text_manager.parse_front(*this));
         }
 
         else if (access.is_equal_to('K'))
@@ -340,7 +340,7 @@ namespace stream::fmt::context
     {
         detail::FormatData<TChar> saveFormatData = executor.data;
         executor.data = detail::FormatData<TChar>{};
-        detail::TextProperties::Properties saveTextProperties = executor.TextManager.save();
+        detail::TextProperties::Properties saveTextProperties = executor.text_manager.save();
 
         if (buf::TestAccess(fmtstream).is_equal_to(':', '{'))
         {
@@ -351,7 +351,7 @@ namespace stream::fmt::context
         SF_TRY(args_interface.run_type_at(formatIdx));
 
         if (executor.data.keep_new_style == false)
-            { SF_TRY(executor.TextManager.reload(saveTextProperties)); }
+            { SF_TRY(executor.text_manager.reload(saveTextProperties)); }
 
         executor.data = saveFormatData;
 

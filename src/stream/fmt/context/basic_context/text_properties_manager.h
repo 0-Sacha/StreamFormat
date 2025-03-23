@@ -70,11 +70,11 @@ namespace stream::fmt::detail
     public:
         [[nodiscard]] std::expected<void, FMTResult> reload_default()
         {
-            SF_TRY(reload_defaultColor());
+            SF_TRY(reload_default_color());
             SF_TRY(reload_default_style());
             return reload_default_front();
         }
-        [[nodiscard]] std::expected<void, FMTResult> reload_defaultColor()
+        [[nodiscard]] std::expected<void, FMTResult> reload_default_color()
         {
             SF_TRY(reload_default_color_fg());
             return reload_default_color_bg();

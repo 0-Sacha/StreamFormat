@@ -32,7 +32,7 @@ namespace stream::fmt::context
         buf::StreamView<TChar>& istream;
 
         using context_executor<CharType>::data;
-        using context_executor<CharType>::TextManager;
+        using context_executor<CharType>::text_manager;
 
     protected:
         [[nodiscard]] std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar> sv) override
@@ -83,10 +83,10 @@ namespace stream::fmt::context
     {
         auto args_interface = detail::ParserArgsInterface<TChar, BasicParserExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
 
-        detail::TextProperties::Properties saveTextProperties = TextManager.save();
+        detail::TextProperties::Properties saveTextProperties = text_manager.save();
         context::BasicContext<TChar> context(*this, format, args_interface);
         SF_TRY(context.run());
-        return TextManager.reload(saveTextProperties);
+        return text_manager.reload(saveTextProperties);
     }
 
     template <typename TChar>

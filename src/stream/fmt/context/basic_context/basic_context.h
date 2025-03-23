@@ -25,7 +25,7 @@ namespace stream::fmt::context
     public:
         context_executor(detail::ITextPropertiesExecutor& text_properties_executor)
             : data{}
-            , TextManager{text_properties_executor}
+            , text_manager{text_properties_executor}
         {}
         virtual ~context_executor() = default;
         
@@ -35,7 +35,7 @@ namespace stream::fmt::context
 
     public:
         detail::FormatData<TChar> data;
-        detail::TextPropertiesManager<TChar> TextManager;
+        detail::TextPropertiesManager<TChar> text_manager;
     };
 
     template <typename CharType>

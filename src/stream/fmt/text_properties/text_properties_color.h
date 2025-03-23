@@ -536,7 +536,7 @@ namespace stream::fmt::detail
     };
 
     template <typename T>
-    struct TextPropertiesColorIsapplyType
+    struct TextPropertiesColorIsApplyType
     {
         using BaseType              = get_base_type<T>;
         static constexpr bool value = std::is_same_v<BaseType, TextProperties::TextColor::Color> || std::is_same_v<BaseType, TextProperties::TextColor::reset_color> ||
@@ -548,5 +548,5 @@ namespace stream::fmt::detail
     };
 
     template <typename T>
-    concept TextPropertiesColorIsapply = TextPropertiesColorIsapplyType<T>::value;
+    concept text_properties_color_is_apply = TextPropertiesColorIsApplyType<T>::value;
 }
