@@ -64,7 +64,7 @@ namespace stream::json {
             intermediate.parse("tid", t.tid);
             std::uint64_t time_of_event = 0;
             intermediate.parse("ts", time_of_event);
-            t.time_of_event = std::chrono::microseconds(time_of_event);
+            t.time_of_event        = std::chrono::microseconds(time_of_event);
             std::uint64_t duration = 0;
             intermediate.parse("dur", t.duration);
             t.duration = std::chrono::microseconds(duration);
