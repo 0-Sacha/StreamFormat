@@ -9,12 +9,14 @@ namespace stream::profiler {
         std::chrono::milliseconds const millis  = std::chrono::duration_cast<std::chrono::milliseconds>(info.duration);
         std::chrono::seconds const      seconds = std::chrono::duration_cast<std::chrono::seconds>(info.duration);
 
+        // NOLINTBEGIN(readability-magic-numbers)
         if (seconds.count() > 1.5)
             profiler_.get_logger().trace("{} : {} seconds", info.name, seconds.count());
         else if (millis.count() > 5.0)
             profiler_.get_logger().trace("{} : {} ms", info.name, millis.count());
         else
             profiler_.get_logger().trace("{} : {} us", info.name, us.count());
+        // NOLINTEND(readability-magic-numbers)
 
         profiler_.add_event(*this);
     }
@@ -24,6 +26,7 @@ namespace stream::profiler {
         profiler_.add_event(created);
     }
 
+    // NOLINTBEGIN(readability-magic-numbers)
     ObjectTracker::ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category) : profiler_(profiler), name_(std::move(name)), category_(std::move(category)) {
         Event created(name_, category_, EventType::Objectcreated);
         created.info.id = 10;
@@ -41,6 +44,7 @@ namespace stream::profiler {
         snapshot.info.id = 10;
         profiler_.add_event(snapshot);
     }
+    // NOLINTEND(readability-magic-numbers)
 
     void EventCounter::snapshot() {
         idx_++;

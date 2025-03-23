@@ -2,6 +2,7 @@
 
 #include "stream/fmt/context/basic_context/basic_args_interface.hxx"
 #include "stream/fmt/detail/prelude.hxx"
+#include "stream/fmt/context/formatter_executor/named_args.hxx"
 
 namespace stream::fmt::detail {
     /****************************/

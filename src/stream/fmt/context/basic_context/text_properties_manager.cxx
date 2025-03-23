@@ -53,6 +53,7 @@ namespace stream::fmt::detail {
         return {};
     }
 
+    // NOLINTBEGIN(readability-function-cognitive-complexity)
     [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_style(const TextProperties::TextStyle::Style& target) {
         if (target.intensity != current_context_properties_.style.intensity) {
             SF_TRY(apply_style(target.intensity));
@@ -119,6 +120,7 @@ namespace stream::fmt::detail {
         }
         return {};
     }
+    // NOLINTEND(readability-function-cognitive-complexity)
 
     [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_front(const TextProperties::TextFront::Front& target) {
         if (current_context_properties_.front == target) return {};
