@@ -1,0 +1,35 @@
+name: Tests Windows
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  windows-latest-msvc:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: bazelbuild/setup-bazelisk@v3
+    - uses: actions/cache@v4
+      with:
+        path: "~/.cache/bazel"
+        key: bazel
+    - name: Building...
+      run: bazelisk build //tests:units
+    - name: Testing...
+      run: bazelisk test //tests:units
+
+  windows-latest-winlibs:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: bazelbuild/setup-bazelisk@v3
+    - uses: actions/cache@v4
+      with:
+        path: "~/.cache/bazel"
+        key: bazel
+    - name: Build winlibs/clang...
+      run: bazelisk build --config=winlibs-clang //tests:units
+    - name: Build winlibs/gcc...
+      run: bazelisk build --config=winlibs-gcc //tests:units
