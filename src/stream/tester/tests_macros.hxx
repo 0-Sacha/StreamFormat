@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/flog.h"
+#include "stream/flog.hxx"
 
 #define STREAMFORMAT_TEST_TRACE(...) stream::Test::TestCore::get_logger().trace(__VA_ARGS__)
 #define STREAMFORMAT_TEST_INFO(...) stream::Test::TestCore::get_logger().info(__VA_ARGS__)

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stream/core/prelude.h"
-#include "stream/flog.h"
+#include "stream/core/prelude.hxx"
+#include "stream/flog.hxx"
 
-#include "all_events.h"
-#include "event.h"
-#include "profiler_event_creator.h"
+#include "all_events.hxx"
+#include "event.hxx"
+#include "profiler_event_creator.hxx"
 
 namespace stream::profiler {
     class Profiler {

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "stream/fmt/buf/stream.h"
-#include "stream/fmt/buf/manip_io.h"
-#include "stream/fmt/buf/test_manip.h"
-#include "stream/fmt/buf/write_manip.h"
-#include "stream/fmt/buf/read_manip.h"
+#include "stream/fmt/buf/stream.hxx"
+#include "stream/fmt/buf/manip_io.hxx"
+#include "stream/fmt/buf/test_manip.hxx"
+#include "stream/fmt/buf/write_manip.hxx"
+#include "stream/fmt/buf/read_manip.hxx"
 
-#include "stream/fmt/buf/streamio_manager/dynamic_streamio_manager.h"
-#include "stream/fmt/buf/streamio_manager/given_streamio_manager.h"
-#include "stream/fmt/buf/streamio_manager/static_streamio_manager.h"
+#include "stream/fmt/buf/streamio_manager/dynamic_streamio_manager.hxx"
+#include "stream/fmt/buf/streamio_manager/given_streamio_manager.hxx"
+#include "stream/fmt/buf/streamio_manager/static_streamio_manager.hxx"
 
 namespace stream::fmt::buf {
     template <typename TChar>

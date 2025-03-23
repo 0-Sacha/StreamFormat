@@ -1,6 +1,6 @@
 #pragma once
 
-#include "logger_multi_sink.h"
+#include "logger_multi_sink.hxx"
 
 namespace stream::flog::detail {
     template <typename Severity, typename CharType>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "parser_text_properties_executor.h"
+#include "parser_text_properties_executor.hxx"
 
 namespace stream::fmt::detail {
     template <typename TChar>

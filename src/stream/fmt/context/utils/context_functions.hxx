@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/fmt/detail/specifiers.h"
+#include "stream/fmt/detail/specifiers.hxx"
 
 namespace stream::fmt::detail {
     template <typename FormatterExecutor>

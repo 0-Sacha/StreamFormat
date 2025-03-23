@@ -1,12 +1,12 @@
 #pragma once
 
-#include "json_formatter.h"
-#include "json_parser.h"
+#include "json_formatter.hxx"
+#include "json_parser.hxx"
 
-#include "stream/fmt.h"
-#include "stream/fmt/buf/read_manip.h"
-#include "stream/fmt/buf/write_manip.h"
-#include "stream/fmt/buf/utils/buffer_utils.h"
+#include "stream/fmt.hxx"
+#include "stream/fmt/buf/read_manip.hxx"
+#include "stream/fmt/buf/write_manip.hxx"
+#include "stream/fmt/buf/utils/buffer_utils.hxx"
 
 #include <functional>
 #include <string>
@@ -292,7 +292,7 @@ namespace stream::json {
     };
 }  // namespace stream::json
 
-#include "stream/fmt.h"
+#include "stream/fmt.hxx"
 namespace stream::fmt {
 #ifdef STREAMFORMAT_FORMATTER_DECLARED
     template <typename T, typename FormatterExecutor>

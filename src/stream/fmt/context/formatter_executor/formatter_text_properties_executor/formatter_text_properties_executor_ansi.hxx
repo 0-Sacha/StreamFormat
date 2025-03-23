@@ -1,7 +1,7 @@
 #pragma once
 
-#include "formatter_text_properties_executor.h"
-#include "stream/fmt/detail/indent_handlers.h"
+#include "formatter_text_properties_executor.hxx"
+#include "stream/fmt/detail/indent_handlers.hxx"
 
 namespace stream::fmt::detail {
     template <typename TChar>

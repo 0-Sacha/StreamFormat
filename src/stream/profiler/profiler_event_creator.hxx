@@ -1,6 +1,6 @@
 #pragma once
 
-#include "all_events.h"
+#include "all_events.hxx"
 
 namespace stream::profiler {
     class Profiler;

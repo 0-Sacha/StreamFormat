@@ -1,9 +1,9 @@
 #pragma once
 
-#include "detail.h"
-#include "event_data.h"
-#include "stream/core/prelude.h"
-#include "stream/fmt.h"
+#include "detail.hxx"
+#include "event_data.hxx"
+#include "stream/core/prelude.hxx"
+#include "stream/fmt.hxx"
 
 #include <memory>
 #include <string>
@@ -13,7 +13,7 @@
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
 
 namespace stream::profiler {
-    int GetPid();
+    int get_pid();
 
     enum class EventType : char {
         Unknow = '.',
@@ -55,7 +55,7 @@ namespace stream::profiler {
               id(0),
               time_of_event(profiler::get_nanoseconds()),
               duration(0),
-              pid(GetPid()),
+              pid(get_pid()),
               tid(std::hash<std::thread::id>{}(std::this_thread::get_id())),
               data(nullptr) {}
 
@@ -66,7 +66,7 @@ namespace stream::profiler {
               id(0),
               time_of_event(profiler::get_nanoseconds()),
               duration(0),
-              pid(GetPid()),
+              pid(get_pid()),
               tid(std::hash<std::thread::id>{}(std::this_thread::get_id())),
               data(data) {}
 
@@ -77,7 +77,7 @@ namespace stream::profiler {
               id(0),
               time_of_event(profiler::get_nanoseconds()),
               duration(0),
-              pid(GetPid()),
+              pid(get_pid()),
               tid(std::hash<std::thread::id>{}(std::this_thread::get_id())),
               data(data) {}
 

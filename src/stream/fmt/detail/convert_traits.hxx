@@ -1,6 +1,6 @@
 #pragma once
 
-#include "prelude.h"
+#include "prelude.hxx"
 
 namespace stream::fmt::detail {
     template <typename T>

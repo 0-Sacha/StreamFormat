@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../json_objects.h"
-#include "../json_serializer.h"
+#include "../json_objects.hxx"
+#include "../json_serializer.hxx"
 
-#include "std_serializers/json_unordered_map.h"
-#include "std_serializers/json_vector.h"
+#include "std_serializers/json_unordered_map.hxx"
+#include "std_serializers/json_vector.hxx"
 
 #include <map>
 

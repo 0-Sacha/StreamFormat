@@ -1,12 +1,12 @@
 #pragma once
 
-#include "basic_formatter_executor.h"
+#include "basic_formatter_executor.hxx"
 
-#include "stream/fmt/buf/streamio_manager/dynamic_streamio_manager.h"
-#include "stream/fmt/buf/streamio_manager/given_streamio_manager.h"
-#include "stream/fmt/buf/streamio_manager/static_streamio_manager.h"
+#include "stream/fmt/buf/streamio_manager/dynamic_streamio_manager.hxx"
+#include "stream/fmt/buf/streamio_manager/given_streamio_manager.hxx"
+#include "stream/fmt/buf/streamio_manager/static_streamio_manager.hxx"
 
-#include "formatter_text_properties_executor/formatter_text_properties_executor_ansi.h"
+#include "formatter_text_properties_executor/formatter_text_properties_executor_ansi.hxx"
 
 #include <memory>
 

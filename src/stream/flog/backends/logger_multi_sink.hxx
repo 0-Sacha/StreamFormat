@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/flog/detail/detail.h"
-#include "stream/flog/sinks/logger_sink.h"
+#include "stream/flog/detail/detail.hxx"
+#include "stream/flog/sinks/logger_sink.hxx"
 
 namespace stream::flog::detail {
     template <typename Severity, typename CharType>

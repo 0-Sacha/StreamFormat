@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/fmt/detail/prelude.h"
-#include "stream/fmt/buf/fmt_manip_io.h"
+#include "stream/fmt/detail/prelude.hxx"
+#include "stream/fmt/buf/fmt_manip_io.hxx"
 
 namespace stream::fmt::detail {
     template <typename TChar>

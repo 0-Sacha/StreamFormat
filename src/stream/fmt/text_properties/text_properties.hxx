@@ -1,8 +1,8 @@
 #pragma once
 
-#include "text_properties_color.h"
-#include "text_properties_front.h"
-#include "text_properties_style.h"
+#include "text_properties_color.hxx"
+#include "text_properties_front.hxx"
+#include "text_properties_style.hxx"
 
 namespace stream::fmt::detail {
     struct TextProperties::Properties {

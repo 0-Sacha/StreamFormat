@@ -1,6 +1,6 @@
 #pragma once
 
-#include "event.h"
+#include "event.hxx"
 
 namespace stream::profiler {
     class DurationEvent : public Event {

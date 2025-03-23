@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stream/fmt/context/basic_context/text_properties_executor.h"
-#include "stream/fmt/detail/prelude.h"
-#include "stream/fmt/context/parser_executor/basic_parser_executor.h"
+#include "stream/fmt/context/basic_context/text_properties_executor.hxx"
+#include "stream/fmt/detail/prelude.hxx"
+#include "stream/fmt/context/parser_executor/basic_parser_executor.hxx"
 
 namespace stream::fmt::detail {
     template <typename TChar>

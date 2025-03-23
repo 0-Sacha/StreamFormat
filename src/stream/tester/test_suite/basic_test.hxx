@@ -1,8 +1,8 @@
 #pragma once
 
-#include "test_suite.h"
+#include "test_suite.hxx"
 
-#include "stream/core/prelude.h"
+#include "stream/core/prelude.hxx"
 
 namespace stream::tester::detail {
     struct TestFunction : public Test {

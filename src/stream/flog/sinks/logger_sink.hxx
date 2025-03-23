@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/flog/detail/detail.h"
+#include "stream/flog/detail/detail.hxx"
 
 #include <future>
 

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "basic_parser_executor.h"
+#include "basic_parser_executor.hxx"
 
-#include "stream/fmt/buf/streamio_manager/given_streamio_manager.h"
-#include "stream/fmt/buf/streamio_manager/static_streamio_manager.h"
+#include "stream/fmt/buf/streamio_manager/given_streamio_manager.hxx"
+#include "stream/fmt/buf/streamio_manager/static_streamio_manager.hxx"
 
-#include "parser_text_properties_executor/parser_text_properties_executor_ansi.h"
+#include "parser_text_properties_executor/parser_text_properties_executor_ansi.hxx"
 
 namespace stream::fmt {
     template <typename Buffer, typename Format, typename... Args>

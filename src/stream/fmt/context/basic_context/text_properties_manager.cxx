@@ -1,4 +1,4 @@
-#include "text_properties_manager.h"
+#include "text_properties_manager.hxx"
 
 namespace stream::fmt::detail {
     [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_fg(const TextProperties::TextColor::ColorFG& target) {

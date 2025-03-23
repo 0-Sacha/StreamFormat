@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/fmt/detail/prelude.h"
-#include "stream/fmt/text_properties/text_properties.h"
+#include "stream/fmt/detail/prelude.hxx"
+#include "stream/fmt/text_properties/text_properties.hxx"
 
 namespace stream::fmt::detail {
     class ITextPropertiesExecutor {

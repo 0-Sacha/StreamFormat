@@ -2,7 +2,7 @@
 
 #include <tuple>
 #include <utility>
-#include "stream/fmt/context/formatter_executor/formatter_type.h"
+#include "stream/fmt/context/formatter_executor/formatter_type.hxx"
 
 namespace stream::fmt::tuple_detail {
     template <std::uint32_t N, typename... Args>

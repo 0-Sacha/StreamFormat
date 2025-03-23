@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stream/fmt/buf/stream.h"
+#include "stream/fmt/buf/stream.hxx"
 
-#include "json_objects.h"
+#include "json_objects.hxx"
 
 namespace stream::json::detail {
     class JsonParser {

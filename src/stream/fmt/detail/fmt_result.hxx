@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/core/prelude.h"
+#include "stream/core/prelude.hxx"
 
 namespace stream::fmt {
     enum class FMTResult {

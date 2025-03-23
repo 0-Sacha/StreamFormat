@@ -1,8 +1,8 @@
 #pragma once
 
-#include "json_objects.h"
-#include "stream/fmt/buf/streamio.h"
-#include "stream/fmt/buf/manip_io.h"
+#include "json_objects.hxx"
+#include "stream/fmt/buf/streamio.hxx"
+#include "stream/fmt/buf/manip_io.hxx"
 
 namespace stream::json::detail {
     class JsonFormatter {

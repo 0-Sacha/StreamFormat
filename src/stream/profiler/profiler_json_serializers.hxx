@@ -1,7 +1,7 @@
 #pragma once
 
-#include "profiler_factory.h"
-#include "stream/json.h"
+#include "profiler_factory.hxx"
+#include "stream/json.hxx"
 
 namespace stream::json {
     template <>
@@ -49,8 +49,8 @@ namespace stream::json {
             intermediate.format("ph", t.type);
             intermediate.format("pid", t.pid);
             intermediate.format("tid", t.tid);
-            intermediate.format("ts", t.time_of_event);
-            intermediate.format("dur", t.duration);
+            intermediate.format("ts", t.time_of_event.count());
+            intermediate.format("dur", t.duration.count());
             intermediate.format("id", t.id);
             if (t.data != nullptr) intermediate.format("args", *t.data);
         }
@@ -62,8 +62,12 @@ namespace stream::json {
             intermediate.parse("ph", t.type);
             intermediate.parse("pid", t.pid);
             intermediate.parse("tid", t.tid);
-            intermediate.parse("ts", t.time_of_event);
+            std::uint64_t time_of_event = 0;
+            intermediate.parse("ts", time_of_event);
+            t.time_of_event = std::chrono::microseconds(time_of_event);
+            std::uint64_t duration = 0;
             intermediate.parse("dur", t.duration);
+            t.duration = std::chrono::microseconds(duration);
             intermediate.parse("id", t.id);
             intermediate.parse("args", *t.data);
         }

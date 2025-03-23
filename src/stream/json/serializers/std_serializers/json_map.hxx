@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/json/json_serializer.h"
+#include "stream/json/json_serializer.hxx"
 
 #include <map>
 

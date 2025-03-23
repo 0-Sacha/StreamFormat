@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/flog.h"
+#include "stream/flog.hxx"
 
 namespace stream::tester {
     class CopyMoveCheck {

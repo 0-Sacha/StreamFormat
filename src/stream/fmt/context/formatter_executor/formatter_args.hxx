@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "stream/fmt/context/basic_context/basic_args_interface.h"
-#include "stream/fmt/detail/prelude.h"
+#include "stream/fmt/context/basic_context/basic_args_interface.hxx"
+#include "stream/fmt/detail/prelude.hxx"
 
-#include "formatter_type.h"
+#include "formatter_type.hxx"
 
 namespace stream::fmt::detail {
     /****************************/

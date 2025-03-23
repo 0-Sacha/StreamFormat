@@ -1,10 +1,10 @@
 #pragma once
 
-#include "stream/fmt/buf/stream.h"
-#include "stream/fmt/buf/utils/buffer_shift_manip.h"
-#include "stream/fmt/buf/manip.h"
-#include "stream/fmt/buf/test_manip.h"
-#include "stream/fmt/buf/read_manip.h"
+#include "stream/fmt/buf/stream.hxx"
+#include "stream/fmt/buf/utils/buffer_shift_manip.hxx"
+#include "stream/fmt/buf/manip.hxx"
+#include "stream/fmt/buf/test_manip.hxx"
+#include "stream/fmt/buf/read_manip.hxx"
 
 namespace stream::fmt::buf {
     template <typename TChar>

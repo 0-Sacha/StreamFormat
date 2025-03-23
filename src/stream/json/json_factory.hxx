@@ -1,12 +1,12 @@
 #pragma once
 
-#include "json_formatter_impl.h"
-#include "json_formatter.h"
-#include "json_objects.h"
-#include "json_parser.h"
-#include "json_serializer.h"
-#include "serializers/json_objects_serializer.h"
-#include "serializers/serializers.h"
+#include "json_formatter_impl.hxx"
+#include "json_formatter.hxx"
+#include "json_objects.hxx"
+#include "json_parser.hxx"
+#include "json_serializer.hxx"
+#include "serializers/json_objects_serializer.hxx"
+#include "serializers/serializers.hxx"
 
 #include <filesystem>
 #include <memory>
@@ -21,7 +21,7 @@ namespace stream::json {
     };
 }  // namespace stream::json
 
-#include "stream/fmt.h"
+#include "stream/fmt.hxx"
 namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<json::JsonObject, FormatterExecutor> {
@@ -33,8 +33,8 @@ namespace stream::fmt {
 
 #include <fstream>
 #include <utility>
-#include "stream//fmt/buf/streamio_manager/dynamic_streamio_manager.h"
-#include "serializers/json_objects_serializer.h"
+#include "stream//fmt/buf/streamio_manager/dynamic_streamio_manager.hxx"
+#include "serializers/json_objects_serializer.hxx"
 namespace stream::json {
     template <typename T>
     T JsonFactory::FromPath(const std::filesystem::path& path) {

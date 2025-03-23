@@ -1,10 +1,10 @@
 #pragma once
 
-#include "stream/flog.h"
-#include "stream/fmt.h"
-#include "stream/profiler.h"
+#include "stream/flog.hxx"
+#include "stream/fmt.hxx"
+#include "stream/profiler.hxx"
 
-#include "stream/fmt/serializers/compilation_data.h"
+#include "stream/fmt/serializers/compilation_data.hxx"
 
 #include <concepts>
 #include <string>

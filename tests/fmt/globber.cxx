@@ -1,8 +1,8 @@
-#include "base_fmt_tests.h"
+#include "base_fmt_tests.hxx"
 
-#include "stream/fmt/context/parser_executor/utility_functions.h"
+#include "stream/fmt/context/parser_executor/utility_functions.hxx"
 
-#include "stream/fmt/buf/utils/buffer_globber_manip.h"
+#include "stream/fmt/buf/utils/buffer_globber_manip.hxx"
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)

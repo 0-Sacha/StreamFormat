@@ -1,8 +1,8 @@
 #pragma once
 
-#include "basic_formatter_executor.h"
+#include "basic_formatter_executor.hxx"
 
-#include "stream/fmt/buf/fmt_write_manip.h"
+#include "stream/fmt/buf/fmt_write_manip.hxx"
 
 namespace stream::fmt {
     //---------------------------------------------//

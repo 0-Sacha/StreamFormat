@@ -4,8 +4,8 @@ load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 cc_library(
     name = "stream",
-    srcs = glob([ "src/**/*.h", "src/**/*.cpp" ]),
-    hdrs = glob([ "src/**/*.h" ]),
+    srcs = glob([ "src/**/*.cxx" ]),
+    hdrs = glob([ "src/**/*.hxx" ]),
     includes = [ "src/" ],
     copts = select({
         "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],

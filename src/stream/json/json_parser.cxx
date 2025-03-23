@@ -1,10 +1,10 @@
-#include "detail.h"
+#include "detail.hxx"
 
 #include <string_view>
 #include <unordered_map>
 #include <vector>
 
-#include "json_serializer.h"
+#include "json_serializer.hxx"
 
 namespace stream::json::detail {
     void JsonParser::Intermediate::parse(detail::JsonParser& parser) {

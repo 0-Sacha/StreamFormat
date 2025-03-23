@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stream/fmt/buf/test_manip.h"
-#include "stream/fmt/buf/write_manip.h"
-#include "stream/fmt/buf/read_manip.h"
-#include "stream/fmt/buf/fmt_write_manip.h"
+#include "stream/fmt/buf/test_manip.hxx"
+#include "stream/fmt/buf/write_manip.hxx"
+#include "stream/fmt/buf/read_manip.hxx"
+#include "stream/fmt/buf/fmt_write_manip.hxx"
 
-#include "stream/fmt/context/formatter_executor/basic_formatter_executor.h"
+#include "stream/fmt/context/formatter_executor/basic_formatter_executor.hxx"
 
 #include <chrono>
 

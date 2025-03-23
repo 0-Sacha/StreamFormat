@@ -1,9 +1,9 @@
 #pragma once
 
-#include "stream.h"
-#include "manip.h"
-#include "test_manip.h"
-#include "manip_io.h"
+#include "stream.hxx"
+#include "manip.hxx"
+#include "test_manip.hxx"
+#include "manip_io.hxx"
 
 #include <type_traits>
 #include <cmath>

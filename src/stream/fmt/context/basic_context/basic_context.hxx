@@ -1,18 +1,18 @@
 #pragma once
 
-#include "stream/fmt/detail/convert_traits.h"
-#include "stream/fmt/detail/prelude.h"
-#include "stream/fmt/detail/specifiers.h"
+#include "stream/fmt/detail/convert_traits.hxx"
+#include "stream/fmt/detail/prelude.hxx"
+#include "stream/fmt/detail/specifiers.hxx"
 
-#include "stream/fmt/buf/stream.h"
-#include "stream/fmt/buf/manip.h"
-#include "stream/fmt/buf/test_manip.h"
-#include "stream/fmt/buf/read_manip.h"
+#include "stream/fmt/buf/stream.hxx"
+#include "stream/fmt/buf/manip.hxx"
+#include "stream/fmt/buf/test_manip.hxx"
+#include "stream/fmt/buf/read_manip.hxx"
 
-#include "basic_args_interface.h"
+#include "basic_args_interface.hxx"
 
-#include "text_properties_executor.h"
-#include "text_properties_manager.h"
+#include "text_properties_executor.hxx"
+#include "text_properties_manager.hxx"
 
 namespace stream::fmt::context {
     template <typename TChar>
@@ -147,4 +147,4 @@ namespace stream::fmt::context {
     }
 }  // namespace stream::fmt::context
 
-#include "basic_context_parse_impl.h"
+#include "basic_context_parse_impl.hxx"

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stream/core/prelude.h"
-#include "types_traits.h"
-#include "fmt_result.h"
+#include "stream/core/prelude.hxx"
+#include "types_traits.hxx"
+#include "fmt_result.hxx"
 
 #define UNKOWN_TYPE_MESSAGE
 

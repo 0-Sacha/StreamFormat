@@ -1,7 +1,7 @@
-#include "stream/fmt.h"
-#include "stream/tester/test_suite/all_test_suite.h"
+#include "stream/fmt.hxx"
+#include "stream/tester/test_suite/all_test_suite.hxx"
 
-#include "base_fmt_tests.h"
+#include "base_fmt_tests.hxx"
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)

@@ -4,7 +4,7 @@ load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 cc_binary(
     name = "hello",
-    srcs = [ "main.cpp" ],
+    srcs = [ "main.cxx" ],
     includes = [ "" ],
     copts = select({
         "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],

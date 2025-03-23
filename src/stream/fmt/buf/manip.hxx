@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream.h"
+#include "stream.hxx"
 
 namespace stream::fmt::buf {
     template <typename TChar>

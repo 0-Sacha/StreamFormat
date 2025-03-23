@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stream.h"
-#include "manip_io.h"
-#include "test_manip.h"
+#include "stream.hxx"
+#include "manip_io.hxx"
+#include "test_manip.hxx"
 
 namespace stream::fmt::buf {
     template <typename CharType>

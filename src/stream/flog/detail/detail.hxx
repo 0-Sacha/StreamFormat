@@ -1,9 +1,9 @@
 #pragma once
 
-#include "stream/fmt.h"
+#include "stream/fmt.hxx"
 
-#include "stream/fmt/buf/manip.h"
-#include "stream/fmt/buf/write_manip.h"
+#include "stream/fmt/buf/manip.hxx"
+#include "stream/fmt/buf/write_manip.hxx"
 
 namespace stream::flog {
     template <typename FormatStr>

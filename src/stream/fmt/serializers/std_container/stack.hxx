@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stack>
-#include "stream/fmt/context/formatter_executor/formatter_type.h"
+#include "stream/fmt/context/formatter_executor/formatter_type.hxx"
 
 namespace stream::fmt {
     /*

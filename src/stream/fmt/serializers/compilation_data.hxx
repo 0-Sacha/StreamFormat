@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/core/prelude.h"
-#include "stream/flog.h"
+#include "stream/core/prelude.hxx"
+#include "stream/flog.hxx"
 
 namespace stream::fmt::detail {
     struct FileLocation {

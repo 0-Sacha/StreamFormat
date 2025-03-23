@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stream/fmt/detail/convert_traits.h"
-#include "stream/fmt/detail/prelude.h"
-#include "stream/fmt/buf/stream.h"
+#include "stream/fmt/detail/convert_traits.hxx"
+#include "stream/fmt/detail/prelude.hxx"
+#include "stream/fmt/buf/stream.hxx"
 
 #include <any>
 #include <functional>

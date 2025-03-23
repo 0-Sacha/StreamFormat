@@ -1,2 +1,2 @@
-#include "basic_test.h"
-#include "test_suite.h"
+#include "basic_test.hxx"
+#include "test_suite.hxx"

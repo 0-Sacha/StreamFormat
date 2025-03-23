@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/fmt/buf/stream.h"
-#include "stream/fmt/buf/manip_io.h"
+#include "stream/fmt/buf/stream.hxx"
+#include "stream/fmt/buf/manip_io.hxx"
 
 namespace stream::fmt::buf {
     template <typename TChar>

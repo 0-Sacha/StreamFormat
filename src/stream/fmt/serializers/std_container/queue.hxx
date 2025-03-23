@@ -1,7 +1,7 @@
 #pragma once
 
 #include <queue>
-#include "stream/fmt/context/formatter_executor/formatter_type.h"
+#include "stream/fmt/context/formatter_executor/formatter_type.hxx"
 
 namespace stream::fmt {
     template <typename T, typename FormatterExecutor>

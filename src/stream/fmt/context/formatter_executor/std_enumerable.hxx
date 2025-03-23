@@ -1,8 +1,8 @@
 #pragma once
 
-#include "formatter_type.h"
-#include "stream/fmt/context/utils/context_functions.h"
-#include "stream/fmt/detail/prelude.h"
+#include "formatter_type.hxx"
+#include "stream/fmt/context/utils/context_functions.hxx"
+#include "stream/fmt/detail/prelude.hxx"
 
 #include <algorithm>
 #include <utility>

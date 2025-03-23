@@ -1,6 +1,6 @@
 #pragma once
 
-#include "flog/frontends/xlogger.h"
+#include "flog/frontends/xlogger.hxx"
 
 #ifndef STREAMFORMAT_BASE_LOGGER_NAME
 #undef STREAMFORMAT_BASE_LOGGER_NAME

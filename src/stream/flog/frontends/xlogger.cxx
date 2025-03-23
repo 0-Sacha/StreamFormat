@@ -1,4 +1,4 @@
-#include "xlogger.h"
+#include "xlogger.hxx"
 
 namespace stream::flog {
     template class detail::XLogger<detail::BasicLoggerImpl<LogSeverity>>;

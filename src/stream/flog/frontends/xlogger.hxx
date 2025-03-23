@@ -1,10 +1,10 @@
 #pragma once
 
-#include "stream/flog/detail/detail.h"
-#include "stream/flog/backends/basic_logger.h"
-#include "stream/flog/backends/logger_multi_sink_fast.h"
-#include "stream/flog/backends/logger_multi_sink_safe.h"
-#include "stream/flog/sinks/file_sink.h"
+#include "stream/flog/detail/detail.hxx"
+#include "stream/flog/backends/basic_logger.hxx"
+#include "stream/flog/backends/logger_multi_sink_fast.hxx"
+#include "stream/flog/backends/logger_multi_sink_safe.hxx"
+#include "stream/flog/sinks/file_sink.hxx"
 
 namespace stream::flog {
     struct LogSeverity {

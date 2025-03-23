@@ -1,16 +1,16 @@
 #pragma once
 
-#include "stream/fmt/context/basic_context/basic_context.h"
+#include "stream/fmt/context/basic_context/basic_context.hxx"
 
-#include "stream/fmt/buf/fmt_manip_io.h"
-#include "stream/fmt/buf/write_manip.h"
+#include "stream/fmt/buf/fmt_manip_io.hxx"
+#include "stream/fmt/buf/write_manip.hxx"
 
-#include "formatter_type.h"
-#include "index_args.h"
-#include "named_args.h"
-#include "std_enumerable.h"
+#include "formatter_type.hxx"
+#include "index_args.hxx"
+#include "named_args.hxx"
+#include "std_enumerable.hxx"
 
-#include "formatter_args.h"
+#include "formatter_args.hxx"
 
 namespace stream::fmt::context {
     enum class EndOfStringCharMode {
@@ -110,5 +110,5 @@ namespace stream::fmt::context {
     }
 }  // namespace stream::fmt::context
 
-#include "format_basics_impl.h"
-#include "format_text_properties_impl.h"
+#include "format_basics_impl.hxx"
+#include "format_text_properties_impl.hxx"

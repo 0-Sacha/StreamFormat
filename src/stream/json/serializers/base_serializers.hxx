@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../json_objects.h"
-#include "../json_serializer.h"
+#include "../json_objects.hxx"
+#include "../json_serializer.hxx"
 
 #include <utility>
 

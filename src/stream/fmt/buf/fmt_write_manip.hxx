@@ -1,10 +1,10 @@
 #pragma once
 
-#include "stream.h"
-#include "fmt_manip_io.h"
-#include "utils/buffer_shift_manip.h"
-#include "manip_io.h"
-#include "write_manip.h"
+#include "stream.hxx"
+#include "fmt_manip_io.hxx"
+#include "utils/buffer_shift_manip.hxx"
+#include "manip_io.hxx"
+#include "write_manip.hxx"
 
 #include <type_traits>
 

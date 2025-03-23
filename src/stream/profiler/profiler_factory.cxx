@@ -1,5 +1,5 @@
-#include "profiler_factory.h"
-#include "profiler_json_serializers.h"
+#include "profiler_factory.hxx"
+#include "profiler_json_serializers.hxx"
 
 #include <fstream>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "profiler.h"
+#include "profiler.hxx"
 
 #include <filesystem>
 

@@ -1,6 +1,6 @@
 
-#include "stream/tester/test_suite/all_test_suite.h"
-#include "stream/default_logger.h"
+#include "stream/tester/test_suite/all_test_suite.hxx"
+#include "stream/default_logger.hxx"
 
 int main() {
     stream::tester::TestSuitesManager::verbose = false;

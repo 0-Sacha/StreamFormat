@@ -1,7 +1,7 @@
 #pragma once
 
-#include "detail.h"
-#include "stream/fmt.h"
+#include "detail.hxx"
+#include "stream/fmt.hxx"
 
 #include <concepts>
 #include <memory>

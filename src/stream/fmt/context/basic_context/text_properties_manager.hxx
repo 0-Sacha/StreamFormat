@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stream/fmt/detail/prelude.h"
-#include "text_properties_executor.h"
-#include "basic_args_interface.h"
-#include "stream/fmt/buf/stream.h"
-#include "stream/fmt/buf/test_manip.h"
-#include "stream/fmt/buf/utils/buffer_utils.h"
+#include "stream/fmt/detail/prelude.hxx"
+#include "text_properties_executor.hxx"
+#include "basic_args_interface.hxx"
+#include "stream/fmt/buf/stream.hxx"
+#include "stream/fmt/buf/test_manip.hxx"
+#include "stream/fmt/buf/utils/buffer_utils.hxx"
 
 namespace stream::fmt::detail {
     class TextPropertiesapplyManager {
@@ -207,4 +207,4 @@ namespace stream::fmt::detail {
     }
 }  // namespace stream::fmt::detail
 
-#include "text_properties_manager_impl.h"
+#include "text_properties_manager_impl.hxx"

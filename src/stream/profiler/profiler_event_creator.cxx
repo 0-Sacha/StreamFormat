@@ -1,5 +1,5 @@
-#include "profiler_event_creator.h"
-#include "profiler.h"
+#include "profiler_event_creator.hxx"
+#include "profiler.hxx"
 
 namespace stream::profiler {
     ScopeProfile::~ScopeProfile() {
@@ -14,7 +14,7 @@ namespace stream::profiler {
         else if (millis.count() > 5.0)
             profiler_.get_logger().trace("{} : {} ms", info.name, millis.count());
         else
-            profiler_.get_logger().trace("{} : {} us", info.name, us);
+            profiler_.get_logger().trace("{} : {} us", info.name, us.count());
 
         profiler_.add_event(*this);
     }

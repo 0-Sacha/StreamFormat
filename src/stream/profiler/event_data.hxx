@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/json.h"
+#include "stream/json.hxx"
 
 namespace stream::profiler {
     class EventData {

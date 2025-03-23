@@ -1,8 +1,8 @@
-#include "test_suite.h"
+#include "test_suite.hxx"
 
 #include <algorithm>
 
-#include "stream/profiler.h"
+#include "stream/profiler.hxx"
 
 namespace stream::tester {
     bool TestSuitesManager::exec_all_test_suites() {

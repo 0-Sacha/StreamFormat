@@ -1,12 +1,12 @@
 #pragma once
 
-#include "text_properties_manager.h"
+#include "text_properties_manager.hxx"
 
-#include "stream/fmt/buf/manip.h"
-#include "stream/fmt/buf/manip_io.h"
-#include "stream/fmt/buf/test_manip.h"
-#include "stream/fmt/buf/fmt_manip_io.h"
-#include "stream/fmt/buf/utils/buffer_utils.h"
+#include "stream/fmt/buf/manip.hxx"
+#include "stream/fmt/buf/manip_io.hxx"
+#include "stream/fmt/buf/test_manip.hxx"
+#include "stream/fmt/buf/fmt_manip_io.hxx"
+#include "stream/fmt/buf/utils/buffer_utils.hxx"
 
 namespace stream::fmt::detail {
     template <typename TChar>

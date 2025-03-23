@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base_text_properties.h"
+#include "base_text_properties.hxx"
 
 namespace stream::fmt::detail {
     struct TextProperties::TextColor {

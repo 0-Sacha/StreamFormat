@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/flog/detail/detail.h"
-#include "stream/fmt/serializers/format_chrono.h"
+#include "stream/flog/detail/detail.hxx"
+#include "stream/fmt/serializers/format_chrono.hxx"
 
 #include <chrono>
 #include <iostream>

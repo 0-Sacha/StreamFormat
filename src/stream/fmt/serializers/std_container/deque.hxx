@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/fmt/context/formatter_executor/formatter_type.h"
-#include "stream/fmt/context/formatter_executor/std_enumerable.h"
+#include "stream/fmt/context/formatter_executor/formatter_type.hxx"
+#include "stream/fmt/context/formatter_executor/std_enumerable.hxx"
 
 #include <deque>
 

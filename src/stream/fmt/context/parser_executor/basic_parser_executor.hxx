@@ -1,16 +1,16 @@
 #pragma once
 
-#include "stream/fmt/buf/stream.h"
-#include "stream/fmt/buf/manip.h"
-#include "stream/fmt/buf/test_manip.h"
+#include "stream/fmt/buf/stream.hxx"
+#include "stream/fmt/buf/manip.hxx"
+#include "stream/fmt/buf/test_manip.hxx"
 
-#include "stream/fmt/context/basic_context/basic_context.h"
+#include "stream/fmt/context/basic_context/basic_context.hxx"
 
-#include "parser_type.h"
+#include "parser_type.hxx"
 
-#include "parser_args.h"
+#include "parser_args.hxx"
 
-#include "parser_text_properties_executor/parser_text_properties_executor.h"
+#include "parser_text_properties_executor/parser_text_properties_executor.hxx"
 
 namespace stream::fmt::context {
     template <typename CharType>
@@ -89,5 +89,5 @@ namespace stream::fmt::context {
     }
 }  // namespace stream::fmt::context
 
-#include "parse_basics_impl.h"
-#include "parse_text_properties_impl.h"
+#include "parse_basics_impl.hxx"
+#include "parse_text_properties_impl.hxx"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basic_streamio_manager.h"
+#include "basic_streamio_manager.hxx"
 
 namespace stream::fmt::buf {
     template <typename CharType, std::size_t Count>

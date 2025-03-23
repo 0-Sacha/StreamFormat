@@ -1,6 +1,6 @@
 #pragma once
 
-#include "formatter_type.h"
+#include "formatter_type.hxx"
 
 namespace stream::fmt {
     template <typename T, typename FormatterExecutor>

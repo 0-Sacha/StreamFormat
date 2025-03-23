@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/fmt/detail/prelude.h"
+#include "stream/fmt/detail/prelude.hxx"
 
 #define STREAMFORMAT_FORMATTER_DECLARED
 namespace stream::fmt {

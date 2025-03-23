@@ -1,7 +1,7 @@
 #pragma once
 
-#include "basic_parser_executor.h"
-#include "stream/fmt/buf/fmt_read_manip.h"
+#include "basic_parser_executor.hxx"
+#include "stream/fmt/buf/fmt_read_manip.hxx"
 
 namespace stream::fmt {
     //----------------------------------------------//

@@ -1,4 +1,4 @@
 #pragma once
 
-#include "profiler/profiler.h"
-#include "profiler/profiler_factory.h"
+#include "profiler/profiler.hxx"
+#include "profiler/profiler_factory.hxx"

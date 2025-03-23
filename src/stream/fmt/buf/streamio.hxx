@@ -1,9 +1,9 @@
 #pragma once
 
-#include "stream.h"
-#include "manip.h"
+#include "stream.hxx"
+#include "manip.hxx"
 
-#include "streamio_manager/basic_streamio_manager.h"
+#include "streamio_manager/basic_streamio_manager.hxx"
 
 namespace stream::fmt::buf {
     template <typename CharType>

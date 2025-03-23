@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stream/fmt/detail/prelude.h"
+#include "stream/fmt/detail/prelude.hxx"
 
 namespace stream::fmt::buf {
     template <typename CharType>

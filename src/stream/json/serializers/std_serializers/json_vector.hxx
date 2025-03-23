@@ -1,7 +1,7 @@
 #pragma once
 
-#include "stream/json/json_objects.h"
-#include "stream/json/json_serializer.h"
+#include "stream/json/json_objects.hxx"
+#include "stream/json/json_serializer.hxx"
 
 #include <vector>
 
