@@ -2,10 +2,8 @@
 
 #include "stream/core/prelude.h"
 
-namespace stream::fmt
-{
-    enum class FMTResult
-    {
+namespace stream::fmt {
+    enum class FMTResult {
         FunctionNotImpl,
 
         Buffer_NonValid,
@@ -28,23 +26,19 @@ namespace stream::fmt
         Context_ArgumentIndexResolution,
         Context_ArgumentIndexExpected,
         Context_CannotapplyType,
-        
+
         GivenArgs_UnableToDeduceSize,
 
         Manager_StaticMemory,
         Manager_AllocationFailed,
     };
-}
+}  // namespace stream::fmt
 
-namespace stream::detail
-{
-    template<>
-    inline fmt::FMTResult forward_error<fmt::FMTResult>(fmt::FMTResult t)
-    {
-        if (t == fmt::FMTResult::ArgsInterface_CantMatchNamedArgs)
-            return t;
-        if (t == fmt::FMTResult::Manager_StaticMemory)
-            return t;
+namespace stream::detail {
+    template <>
+    inline fmt::FMTResult forward_error<fmt::FMTResult>(fmt::FMTResult t) {
+        if (t == fmt::FMTResult::ArgsInterface_CantMatchNamedArgs) return t;
+        if (t == fmt::FMTResult::Manager_StaticMemory) return t;
         return t;
     }
-}
+}  // namespace stream::detail

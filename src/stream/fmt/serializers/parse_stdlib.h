@@ -6,7 +6,6 @@
 #include <string>
 #include <string_view>
 
-namespace stream::fmt
-{
+namespace stream::fmt {
     // TODO:
 }

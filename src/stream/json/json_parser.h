@@ -4,26 +4,32 @@
 
 #include "json_objects.h"
 
-namespace stream::json::detail
-{
-    class JsonParser
-    {
+namespace stream::json::detail {
+    class JsonParser {
     public:
-        JsonParser()
-            : istream()
-        {}
+        JsonParser() : istream() {}
 
-        JsonParser(fmt::buf::StreamView<char>& input)
-            : istream(input)
-        {}
+        JsonParser(fmt::buf::StreamView<char>& input) : istream(input) {}
 
     public:
-        inline bool is_json_string_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('"'); }
-        inline bool is_json_number_begin() const { return fmt::buf::TestAccess<const char>(istream).is_a_digit() || fmt::buf::TestAccess<const char>(istream).is_equal_to('+', '-', '.'); }
-        inline bool is_json_boolean_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('t', 'f'); }
-        inline bool is_json_struct_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('{'); }
-        inline bool is_json_array_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('['); }
-        inline bool is_json_null_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('n'); }
+        inline bool is_json_string_begin() const {
+            return fmt::buf::TestAccess<const char>(istream).is_equal_to('"');
+        }
+        inline bool is_json_number_begin() const {
+            return fmt::buf::TestAccess<const char>(istream).is_a_digit() || fmt::buf::TestAccess<const char>(istream).is_equal_to('+', '-', '.');
+        }
+        inline bool is_json_boolean_begin() const {
+            return fmt::buf::TestAccess<const char>(istream).is_equal_to('t', 'f');
+        }
+        inline bool is_json_struct_begin() const {
+            return fmt::buf::TestAccess<const char>(istream).is_equal_to('{');
+        }
+        inline bool is_json_array_begin() const {
+            return fmt::buf::TestAccess<const char>(istream).is_equal_to('[');
+        }
+        inline bool is_json_null_begin() const {
+            return fmt::buf::TestAccess<const char>(istream).is_equal_to('n');
+        }
 
     public:
         fmt::buf::Stream<const char> istream;
@@ -40,26 +46,22 @@ namespace stream::json::detail
         StructIntermediate get_struct_intermediate();
         ArrayIntermediate  get_array_intermediate();
     };
-}
+}  // namespace stream::json::detail
 
-namespace stream::json::detail
-{
-    struct JsonParser::Intermediate
-    {
+namespace stream::json::detail {
+    struct JsonParser::Intermediate {
         std::string_view data;
 
         void parse(detail::JsonParser& parser);
 
         template <typename T>
-        void parse(T& t)
-        {
+        void parse(T& t) {
             JsonParser parser;
             parser.parse(t);
         }
     };
 
-    struct JsonParser::StructIntermediate
-    {
+    struct JsonParser::StructIntermediate {
     public:
         friend JsonParser;
 
@@ -70,15 +72,13 @@ namespace stream::json::detail
 
     public:
         template <typename T>
-        void parse(const std::string& name, T& t)
-        {
+        void parse(const std::string& name, T& t) {
             if (Objects.contains(name) == false) throw detail::JsonGivenTypeError{};
             Objects[name].parse(t);
         }
     };
 
-    struct JsonParser::ArrayIntermediate
-    {
+    struct JsonParser::ArrayIntermediate {
     public:
         friend JsonParser;
 
@@ -89,23 +89,20 @@ namespace stream::json::detail
 
     public:
         template <typename T>
-        void parse(const std::size_t idx, T& t)
-        {
+        void parse(const std::size_t idx, T& t) {
             if (idx >= Objects.size()) throw detail::JsonGivenTypeError{};
             Objects[idx].parse(t);
         }
     };
 
-    inline JsonParser::StructIntermediate JsonParser::get_struct_intermediate()
-    {
+    inline JsonParser::StructIntermediate JsonParser::get_struct_intermediate() {
         JsonParser::StructIntermediate res;
         res.parse(*this);
         return res;
     }
-    inline JsonParser::ArrayIntermediate JsonParser::get_array_intermediate()
-    {
+    inline JsonParser::ArrayIntermediate JsonParser::get_array_intermediate() {
         JsonParser::ArrayIntermediate res;
         res.parse(*this);
         return res;
     }
-}
+}  // namespace stream::json::detail

@@ -19,11 +19,10 @@
 #define STREAMFORMAT_DEBUGBREAK() std::raise(SIGINT)
 #endif
 #include <iostream>
-#define STREAMFORMAT_ASSERT(x)                                  \
-    if (!(x))                                                  \
-    {                                                          \
+#define STREAMFORMAT_ASSERT(x)                               \
+    if (!(x)) {                                              \
         std::cerr << "ASSERT FAILED! : " << #x << std::endl; \
-        STREAMFORMAT_DEBUGBREAK();                              \
+        STREAMFORMAT_DEBUGBREAK();                           \
     }
 #else
 #define STREAMFORMAT_ASSERT(x)
@@ -35,20 +34,19 @@
 #include <expected>
 #include <optional>
 
-namespace stream::detail
-{
-    template<typename T>
-    T forward_error(T t)
-    {
+namespace stream::detail {
+    template <typename T>
+    T forward_error(T t) {
         return std::forward<T>(t);
     }
-}
+}  // namespace stream::detail
 
-#define SF_TRY(exp) ({ \
-        auto __expected = exp; \
-        if (not __expected) [[unlikely]] \
+#define SF_TRY(exp)                                                                    \
+    ({                                                                                 \
+        auto __expected = exp;                                                         \
+        if (not __expected) [[unlikely]]                                               \
             return std::unexpected(stream::detail::forward_error(__expected.error())); \
-        __expected.value(); \
+        __expected.value();                                                            \
     });
 
 #define SF_FORWARD(exp) SF_TRY(exp)

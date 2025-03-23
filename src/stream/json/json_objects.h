@@ -9,19 +9,15 @@
 #include <unordered_map>
 #include <vector>
 
-namespace stream::json::detail
-{
+namespace stream::json::detail {
     class JsonParser;
     class JsonFormatter;
-}
+}  // namespace stream::json::detail
 
-namespace stream::json
-{
-    struct JsonObject
-    {
+namespace stream::json {
+    struct JsonObject {
     public:
-        enum class ObjectType
-        {
+        enum class ObjectType {
             String,
             Number,
             Boolean,
@@ -33,9 +29,7 @@ namespace stream::json
 
     public:
         JsonObject() {}
-        JsonObject(ObjectType type)
-            : m_Type(type)
-        {}
+        JsonObject(ObjectType type) : m_Type(type) {}
 
         virtual ~JsonObject() = default;
 
@@ -43,144 +37,145 @@ namespace stream::json
         ObjectType m_Type = ObjectType::Undefined;
 
     public:
-        ObjectType GetType() { return m_Type; }
+        ObjectType GetType() {
+            return m_Type;
+        }
 
-        JsonObject& operator[](const std::size_t index) { return get(index); }
-        JsonObject& operator[](const std::string_view subObject) { return get(subObject); }
+        JsonObject& operator[](const std::size_t index) {
+            return get(index);
+        }
+        JsonObject& operator[](const std::string_view subObject) {
+            return get(subObject);
+        }
 
-        virtual JsonObject& get(const std::size_t) { throw detail::JsonIndexingError{}; }
-        virtual JsonObject& get(const std::string_view) { throw detail::JsonIndexingError{}; }
+        virtual JsonObject& get(const std::size_t) {
+            throw detail::JsonIndexingError{};
+        }
+        virtual JsonObject& get(const std::string_view) {
+            throw detail::JsonIndexingError{};
+        }
 
     public:
         template <typename T>
-        requires std::is_base_of_v<JsonObject, T> T& As()
-        {
+            requires std::is_base_of_v<JsonObject, T>
+        T& As() {
             T* t = dynamic_cast<T*>(this);
             if (t == nullptr) throw detail::JsonCastError{};
             return *t;
         }
 
         template <typename T>
-        requires std::is_base_of_v<JsonObject, T>
-        const T& As() const
-        {
+            requires std::is_base_of_v<JsonObject, T>
+        const T& As() const {
             const T* t = dynamic_cast<const T*>(this);
             if (t == nullptr) throw detail::JsonCastError{};
             return *t;
         }
 
         template <typename T>
-        T Read()
-        {
+        T Read() {
             T value;
             JsonObjectSerializer<T>::ReadObject(value, *this);
             return value;
         }
 
         template <typename T>
-        void Write(const T& t)
-        {
+        void Write(const T& t) {
             JsonObjectSerializer<T>::WriteObject(t, *this);
         }
 
-        std::string ToString() { return fmt::format_string(*this).value(); }
+        std::string ToString() {
+            return fmt::format_string(*this).value();
+        }
 
     public:
         virtual void ParserExecute(detail::JsonParser& parser)                = 0;
         virtual void FormatterExecute(detail::JsonFormatter& formatter) const = 0;
     };
 
-    struct JsonStringObject final : public JsonObject
-    {
-        JsonStringObject()
-            : JsonObject(ObjectType::String)
-        {}
-        JsonStringObject(const std::string_view value)
-            : JsonObject(ObjectType::String)
-            , String(value)
-        {}
-        JsonStringObject(std::string&& value)
-            : JsonObject(ObjectType::String)
-            , String(std::move(value))
-        {}
+    struct JsonStringObject final : public JsonObject {
+        JsonStringObject() : JsonObject(ObjectType::String) {}
+        JsonStringObject(const std::string_view value) : JsonObject(ObjectType::String), String(value) {}
+        JsonStringObject(std::string&& value) : JsonObject(ObjectType::String), String(std::move(value)) {}
         ~JsonStringObject() override = default;
 
     public:
         std::string String;
 
     public:
-        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonStringObject>(); }
-        static std::unique_ptr<JsonObject> create(const std::string_view value) { return std::make_unique<JsonStringObject>(value); }
-        static std::unique_ptr<JsonObject> create(std::string&& value) { return std::make_unique<JsonStringObject>(std::move(value)); }
+        static std::unique_ptr<JsonObject> create() {
+            return std::make_unique<JsonStringObject>();
+        }
+        static std::unique_ptr<JsonObject> create(const std::string_view value) {
+            return std::make_unique<JsonStringObject>(value);
+        }
+        static std::unique_ptr<JsonObject> create(std::string&& value) {
+            return std::make_unique<JsonStringObject>(std::move(value));
+        }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
         void FormatterExecute(detail::JsonFormatter& formatter) const override;
     };
 
-    struct JsonNumberObject final : public JsonObject
-    {
-        JsonNumberObject(double value = 0.0)
-            : JsonObject(ObjectType::Number)
-            , Number(value)
-        {}
+    struct JsonNumberObject final : public JsonObject {
+        JsonNumberObject(double value = 0.0) : JsonObject(ObjectType::Number), Number(value) {}
         ~JsonNumberObject() override = default;
 
     public:
         double Number;
 
     public:
-        static std::unique_ptr<JsonObject> create(double value = 0.0) { return std::make_unique<JsonNumberObject>(value); }
+        static std::unique_ptr<JsonObject> create(double value = 0.0) {
+            return std::make_unique<JsonNumberObject>(value);
+        }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
         void FormatterExecute(detail::JsonFormatter& formatter) const override;
     };
 
-    struct JsonBooleanObject final : public JsonObject
-    {
-        JsonBooleanObject(bool value = false)
-            : JsonObject(ObjectType::Boolean)
-            , Boolean(value)
-        {}
+    struct JsonBooleanObject final : public JsonObject {
+        JsonBooleanObject(bool value = false) : JsonObject(ObjectType::Boolean), Boolean(value) {}
         ~JsonBooleanObject() override = default;
 
     public:
         bool Boolean;
 
     public:
-        static std::unique_ptr<JsonObject> create(bool value = false) { return std::make_unique<JsonBooleanObject>(value); }
+        static std::unique_ptr<JsonObject> create(bool value = false) {
+            return std::make_unique<JsonBooleanObject>(value);
+        }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
         void FormatterExecute(detail::JsonFormatter& formatter) const override;
     };
 
-    struct JsonStructObject final : public JsonObject
-    {
+    struct JsonStructObject final : public JsonObject {
     public:
-        JsonStructObject()
-            : JsonObject(ObjectType::Struct)
-        {}
+        JsonStructObject() : JsonObject(ObjectType::Struct) {}
         ~JsonStructObject() override = default;
 
     public:
-        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonStructObject>(); }
+        static std::unique_ptr<JsonObject> create() {
+            return std::make_unique<JsonStructObject>();
+        }
 
     public:
         std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
 
     public:
-        void        add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({name, std::move(object)}); }
-        void        add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({std::move(name), std::move(object)}); }
-        JsonObject& get(const std::string_view subObject) override
-        {
-            try
-            {
+        void add(const std::string& name, std::unique_ptr<JsonObject>&& object) {
+            Objects.insert({name, std::move(object)});
+        }
+        void add(std::string&& name, std::unique_ptr<JsonObject>&& object) {
+            Objects.insert({std::move(name), std::move(object)});
+        }
+        JsonObject& get(const std::string_view subObject) override {
+            try {
                 return *Objects.at(std::string(subObject));
-            }
-            catch (...)
-            {
+            } catch (...) {
                 throw detail::JsonIndexingError{};
             }
         }
@@ -190,42 +185,44 @@ namespace stream::json
         void FormatterExecute(detail::JsonFormatter& formatter) const override;
     };
 
-    struct JsonArrayObject final : public JsonObject
-    {
+    struct JsonArrayObject final : public JsonObject {
     public:
-        JsonArrayObject()
-            : JsonObject(ObjectType::Array)
-        {}
+        JsonArrayObject() : JsonObject(ObjectType::Array) {}
         ~JsonArrayObject() override = default;
 
     public:
-        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonArrayObject>(); }
+        static std::unique_ptr<JsonObject> create() {
+            return std::make_unique<JsonArrayObject>();
+        }
 
     public:
         std::vector<std::unique_ptr<JsonObject>> Objects;
 
     public:
-        void        add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
-        JsonObject& get(const std::size_t index) override { return *Objects[index]; }
+        void add(std::unique_ptr<JsonObject>&& object) {
+            Objects.emplace_back(std::move(object));
+        }
+        JsonObject& get(const std::size_t index) override {
+            return *Objects[index];
+        }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
         void FormatterExecute(detail::JsonFormatter& formatter) const override;
     };
 
-    struct JsonNullObject final : public JsonObject
-    {
+    struct JsonNullObject final : public JsonObject {
     public:
-        JsonNullObject()
-            : JsonObject(ObjectType::Null)
-        {}
+        JsonNullObject() : JsonObject(ObjectType::Null) {}
         ~JsonNullObject() override = default;
 
     public:
-        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonNullObject>(); }
+        static std::unique_ptr<JsonObject> create() {
+            return std::make_unique<JsonNullObject>();
+        }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
         void FormatterExecute(detail::JsonFormatter& formatter) const override;
     };
-}
+}  // namespace stream::json

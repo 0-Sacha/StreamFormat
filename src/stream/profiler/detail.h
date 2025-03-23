@@ -2,10 +2,8 @@
 
 #include <chrono>
 
-namespace stream::profiler
-{
-    inline double get_microseconds()
-    {
-        return (double)std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()).time_since_epoch().count() / 1000;
+namespace stream::profiler {
+    inline std::chrono::nanoseconds get_nanoseconds() {
+        return std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now()).time_since_epoch();
     }
-};
+};  // namespace stream::profiler

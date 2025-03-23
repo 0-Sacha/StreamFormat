@@ -7,18 +7,16 @@
 
 #include "parser_text_properties_executor/parser_text_properties_executor_ansi.h"
 
-namespace stream::fmt
-{
+namespace stream::fmt {
     template <typename Buffer, typename Format, typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> parse(Buffer&& buffer_input, Format&& format_input, Args&&... args)
-    {
+    [[nodiscard]] std::expected<void, FMTResult> parse(Buffer&& buffer_input, Format&& format_input, Args&&... args) {
         buf::StreamView buffer{buffer_input};
         buf::StreamView format{format_input};
         using TChar = typename decltype(format)::TChar;
 
         detail::ParserNOTextPropertiesExecutor<std::remove_const_t<TChar>> text_properties_executor;
-        context::BasicParserExecutor<std::remove_const_t<TChar>> executor(buffer, text_properties_executor);
+        context::BasicParserExecutor<std::remove_const_t<TChar>>           executor(buffer, text_properties_executor);
         SF_TRY(executor.run(format, std::forward<Args>(args)...));
         return executor.terminate();
     }
-}
+}  // namespace stream::fmt

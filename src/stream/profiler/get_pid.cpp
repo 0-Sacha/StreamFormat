@@ -9,10 +9,8 @@
 #include <process.h>
 #endif
 
-namespace stream::profiler
-{
-    int GetPid()
-    {
+namespace stream::profiler {
+    int get_pid() {
 #ifdef STREAMFORMAT_PLATFORM_LINUX
         return getpid();
 #endif
@@ -22,4 +20,4 @@ namespace stream::profiler
 #endif
         return 0;
     }
-}
+}  // namespace stream::profiler

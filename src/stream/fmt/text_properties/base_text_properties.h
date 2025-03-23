@@ -4,13 +4,9 @@
 
 // According to : https://en.wikipedia.org/wiki/ANSI_escape_code
 
-namespace stream::fmt::detail
-{
-    struct TextProperties
-    {
-        struct ResetProperties
-        {
-        };
+namespace stream::fmt::detail {
+    struct TextProperties {
+        struct ResetProperties {};
 
         struct TextColor;
         struct TextStyle;
@@ -18,4 +14,4 @@ namespace stream::fmt::detail
 
         struct Properties;
     };
-}
+}  // namespace stream::fmt::detail

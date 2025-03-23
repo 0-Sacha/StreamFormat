@@ -3,26 +3,23 @@
 #include "stream/flog.h"
 
 #define STREAMFORMAT_TEST_TRACE(...) stream::Test::TestCore::get_logger().trace(__VA_ARGS__)
-#define STREAMFORMAT_TEST_INFO(...)  stream::Test::TestCore::get_logger().info(__VA_ARGS__)
-#define STREAMFORMAT_TEST_WARN(...)  stream::Test::TestCore::get_logger().warn(__VA_ARGS__)
+#define STREAMFORMAT_TEST_INFO(...) stream::Test::TestCore::get_logger().info(__VA_ARGS__)
+#define STREAMFORMAT_TEST_WARN(...) stream::Test::TestCore::get_logger().warn(__VA_ARGS__)
 #define STREAMFORMAT_TEST_ERROR(...) stream::Test::TestCore::get_logger().error(__VA_ARGS__)
 #define STREAMFORMAT_TEST_FATAL(...) stream::Test::TestCore::get_logger().fatal(__VA_ARGS__)
-#define STREAMFORMAT_TEST_OK(...)    stream::Test::TestCore::get_logger().ok(__VA_ARGS__)
-#define STREAMFORMAT_TEST_FAIL(...)  stream::Test::TestCore::get_logger().fail(__VA_ARGS__)
+#define STREAMFORMAT_TEST_OK(...) stream::Test::TestCore::get_logger().ok(__VA_ARGS__)
+#define STREAMFORMAT_TEST_FAIL(...) stream::Test::TestCore::get_logger().fail(__VA_ARGS__)
 #define STREAMFORMAT_TEST_BASIC(...) stream::Test::TestCore::get_logger().basic(__VA_ARGS__)
 
-namespace stream::Test
-{
-    class TestCore
-    {
+namespace stream::test {
+    class TestCore {
     public:
-        static flog::BasicLogger& get_logger()
-        {
-            static flog::BasicLogger instance("stream-Test", "{name} {color} -> {data}");
-            return instance;
+        static flog::BasicLogger& get_logger() {
+            static flog::BasicLogger g_instance("stream-Test", "{name} {color} -> {data}");
+            return g_instance;
         }
     };
-}
+}  // namespace stream::test
 
 // Assert log if false
 #define STREAMFORMAT_TEST_ASSERT(x) \
@@ -30,23 +27,23 @@ namespace stream::Test
 
 // Check if false
 #define STREAMFORMAT_TEST_TEST(x)                         \
-    if (x)                                               \
+    if (x)                                                \
         STREAMFORMAT_TEST_OK("TEST OK : {:C:green}", #x); \
-    else                                                 \
+    else                                                  \
         STREAMFORMAT_TEST_FAIL("TEST FAIL : {:C:red}", #x)
 
 // Check if equal with file printed
 #define STREAMFORMAT_TEST_EQ(x, y)                         \
-    if (x == y)                                           \
+    if (x == y)                                            \
         STREAMFORMAT_TEST_OK("{C:green}{} == {}", #x, #y); \
-    else                                                  \
+    else                                                   \
         STREAMFORMAT_TEST_FAIL("{C:red}{} == {}", #x, #y)
 
 // Check if not equal with file printed
 #define STREAMFORMAT_TEST_NEQ(x, y)                        \
-    if (x != y)                                           \
+    if (x != y)                                            \
         STREAMFORMAT_TEST_OK("{C:green}{} != {}", #x, #y); \
-    else                                                  \
+    else                                                   \
         STREAMFORMAT_TEST_FAIL("{C:red}{} != {}", #x, #y)
 
 #define STREAMFORMAT_TEST_FN(fn, resExpected)                                                   \
@@ -70,11 +67,11 @@ namespace stream::Test
 
 #ifdef STREAMFORMAT_SFTM_ENABLE
 
-#define SFTM_ASSERT(x)                   STREAMFORMAT_TEST_ASSERT(x)
-#define SFTM_TEST(x)                     STREAMFORMAT_TEST_TEST(x)
-#define SFTM_EQ(x, y)                    STREAMFORMAT_TEST_EQ(x, y)
-#define SFTM_NEQ(x, y)                   STREAMFORMAT_TEST_NEQ(x, y)
-#define SFTM_FN(fn, resExpected)         STREAMFORMAT_TEST_FN(fn, resExpected)
+#define SFTM_ASSERT(x) STREAMFORMAT_TEST_ASSERT(x)
+#define SFTM_TEST(x) STREAMFORMAT_TEST_TEST(x)
+#define SFTM_EQ(x, y) STREAMFORMAT_TEST_EQ(x, y)
+#define SFTM_NEQ(x, y) STREAMFORMAT_TEST_NEQ(x, y)
+#define SFTM_FN(fn, resExpected) STREAMFORMAT_TEST_FN(fn, resExpected)
 #define SFTM_FNFMT(fn, resExpected, ...) STREAMFORMAT_TEST_FNFMT(fn, resExpected, __VA_ARGS__)
 
 #endif /* STREAMFORMAT_SFTM_ENABLE */

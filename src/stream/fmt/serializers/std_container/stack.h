@@ -3,8 +3,7 @@
 #include <stack>
 #include "stream/fmt/context/formatter_executor/formatter_type.h"
 
-namespace stream::fmt
-{
+namespace stream::fmt {
     /*
         template <typename T, typename FormatterExecutor>
         struct FormatterType<std::stack<T>, FormatterExecutor>

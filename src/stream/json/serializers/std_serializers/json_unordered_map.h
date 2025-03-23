@@ -5,22 +5,20 @@
 
 #include <unordered_map>
 
-namespace stream::json
-{
+namespace stream::json {
     template <typename K, typename T>
-    struct JsonSerializer<std::unordered_map<K, T>>
-    {
+    struct JsonSerializer<std::unordered_map<K, T>> {
         using KeyType             = K;
         using StructSubObjectType = T;
 
-        static inline void parse(std::unordered_map<K, T>& t, detail::JsonParser& parser) { JsonStructSerializer::LoadAllSubObjects<std::unordered_map<K, T>>(t, parser); }
-        static inline void AddStructSubObject(std::unordered_map<K, T>& t, std::size_t, std::string&& name, StructSubObjectType&& subObject)
-        {
+        static inline void parse(std::unordered_map<K, T>& t, detail::JsonParser& parser) {
+            JsonStructSerializer::LoadAllSubObjects<std::unordered_map<K, T>>(t, parser);
+        }
+        static inline void add_struct_sub_object(std::unordered_map<K, T>& t, std::size_t, std::string&& name, StructSubObjectType&& subObject) {
             t.insert({std::move(name), std::move(subObject)});
         }
 
-        static inline void format(const std::unordered_map<K, T>& t, detail::JsonFormatter& formatter)
-        {
+        static inline void format(const std::unordered_map<K, T>& t, detail::JsonFormatter& formatter) {
             JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
@@ -30,22 +28,18 @@ namespace stream::json
     };
 
     template <typename K, typename T>
-    struct JsonSerializer<std::unordered_multimap<K, T>>
-    {
+    struct JsonSerializer<std::unordered_multimap<K, T>> {
         using KeyType             = K;
         using StructSubObjectType = T;
 
-        static inline void parse(std::unordered_multimap<K, T>& t, detail::JsonParser& parser)
-        {
+        static inline void parse(std::unordered_multimap<K, T>& t, detail::JsonParser& parser) {
             JsonStructSerializer::LoadAllSubObjects<std::unordered_multimap<K, T>>(t, parser);
         }
-        static inline void AddStructSubObject(std::unordered_multimap<K, T>& t, std::size_t, std::string&& name, StructSubObjectType&& subObject)
-        {
+        static inline void add_struct_sub_object(std::unordered_multimap<K, T>& t, std::size_t, std::string&& name, StructSubObjectType&& subObject) {
             t.insert({std::move(name), std::move(subObject)});
         }
 
-        static inline void format(const std::unordered_multimap<K, T>& t, detail::JsonFormatter& formatter)
-        {
+        static inline void format(const std::unordered_multimap<K, T>& t, detail::JsonFormatter& formatter) {
             JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
             for (const auto& [name, object] : t)
@@ -53,4 +47,4 @@ namespace stream::json
             JsonStructSerializer::FormatEnd(formatter);
         }
     };
-}
+}  // namespace stream::json

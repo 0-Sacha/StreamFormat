@@ -5,9 +5,6 @@
 #include "backends/logger_multi_sink_safe.h"
 
 // TODO:
-namespace stream::flog
-{
-    class LoggerFactory
-    {
-    };
-}
+namespace stream::flog {
+    class LoggerFactory {};
+}  // namespace stream::flog

@@ -3,10 +3,8 @@
 #include "stream/fmt/detail/prelude.h"
 #include "stream/fmt/text_properties/text_properties.h"
 
-namespace stream::fmt::detail
-{
-    class ITextPropertiesExecutor
-    {
+namespace stream::fmt::detail {
+    class ITextPropertiesExecutor {
     public:
         virtual ~ITextPropertiesExecutor() = default;
 
@@ -45,4 +43,4 @@ namespace stream::fmt::detail
         [[nodiscard]] virtual std::expected<void, FMTResult> execute_style(const TextProperties::TextStyle::Ideogram& t)                  = 0;
         [[nodiscard]] virtual std::expected<void, FMTResult> execute_style(const TextProperties::TextStyle::Script& t)                    = 0;
     };
-}
+}  // namespace stream::fmt::detail

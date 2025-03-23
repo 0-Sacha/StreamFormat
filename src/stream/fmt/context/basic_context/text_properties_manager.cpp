@@ -1,13 +1,9 @@
 #include "text_properties_manager.h"
 
-namespace stream::fmt::detail
-{
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_fg(const TextProperties::TextColor::ColorFG& target)
-    {
-        if (target.type != current_context_properties_.color.fg.type)
-        {
-            switch (target.type)
-            {
+namespace stream::fmt::detail {
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_fg(const TextProperties::TextColor::ColorFG& target) {
+        if (target.type != current_context_properties_.color.fg.type) {
+            switch (target.type) {
                 case TextProperties::TextColor::ColorType::BasicColor:
                     return apply_color(target.data.basic_color);
                 case TextProperties::TextColor::ColorType::ColorCube:
@@ -15,34 +11,25 @@ namespace stream::fmt::detail
                 case TextProperties::TextColor::ColorType::Color24b:
                     return apply_color(target.data.color24b);
             }
-        }
-        else
-        {
-            switch (target.type)
-            {
+        } else {
+            switch (target.type) {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    if (current_context_properties_.color.fg.data.basic_color != target.data.basic_color)
-                        return apply_color(target.data.basic_color);
+                    if (current_context_properties_.color.fg.data.basic_color != target.data.basic_color) return apply_color(target.data.basic_color);
                     break;
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    if (current_context_properties_.color.fg.data.color_cube != target.data.color_cube)
-                        return apply_color(target.data.color_cube);
+                    if (current_context_properties_.color.fg.data.color_cube != target.data.color_cube) return apply_color(target.data.color_cube);
                     break;
                 case TextProperties::TextColor::ColorType::Color24b:
-                    if (current_context_properties_.color.fg.data.color24b != target.data.color24b)
-                        return apply_color(target.data.color24b);
+                    if (current_context_properties_.color.fg.data.color24b != target.data.color24b) return apply_color(target.data.color24b);
                     break;
             }
         }
         return {};
     }
 
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_bg(const TextProperties::TextColor::ColorBG& target)
-    {
-        if (target.type != current_context_properties_.color.bg.type)
-        {
-            switch (target.type)
-            {
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_bg(const TextProperties::TextColor::ColorBG& target) {
+        if (target.type != current_context_properties_.color.bg.type) {
+            switch (target.type) {
                 case TextProperties::TextColor::ColorType::BasicColor:
                     return apply_color(target.data.basic_color);
                 case TextProperties::TextColor::ColorType::ColorCube:
@@ -50,71 +37,55 @@ namespace stream::fmt::detail
                 case TextProperties::TextColor::ColorType::Color24b:
                     return apply_color(target.data.color24b);
             }
-        }
-        else
-        {
-            switch (target.type)
-            {
+        } else {
+            switch (target.type) {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    if (current_context_properties_.color.bg.data.basic_color != target.data.basic_color)
-                        return apply_color(target.data.basic_color);
+                    if (current_context_properties_.color.bg.data.basic_color != target.data.basic_color) return apply_color(target.data.basic_color);
                     break;
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    if (current_context_properties_.color.bg.data.color_cube != target.data.color_cube)
-                        return apply_color(target.data.color_cube);
+                    if (current_context_properties_.color.bg.data.color_cube != target.data.color_cube) return apply_color(target.data.color_cube);
                     break;
                 case TextProperties::TextColor::ColorType::Color24b:
-                    if (current_context_properties_.color.bg.data.color24b != target.data.color24b)
-                        return apply_color(target.data.color24b);
+                    if (current_context_properties_.color.bg.data.color24b != target.data.color24b) return apply_color(target.data.color24b);
                     break;
             }
         }
         return {};
     }
 
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_style(const TextProperties::TextStyle::Style& target)
-    {
-        if (target.intensity != current_context_properties_.style.intensity)
-        {
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_style(const TextProperties::TextStyle::Style& target) {
+        if (target.intensity != current_context_properties_.style.intensity) {
             SF_TRY(apply_style(target.intensity));
             current_context_properties_.style.intensity = target.intensity;
         }
-        if (target.italic != current_context_properties_.style.italic)
-        {
+        if (target.italic != current_context_properties_.style.italic) {
             SF_TRY(apply_style(target.italic));
             current_context_properties_.style.italic = target.italic;
         }
-        if (target.blink != current_context_properties_.style.blink)
-        {
+        if (target.blink != current_context_properties_.style.blink) {
             SF_TRY(apply_style(target.blink));
             current_context_properties_.style.blink = target.blink;
         }
-        if (target.inverted != current_context_properties_.style.inverted)
-        {
+        if (target.inverted != current_context_properties_.style.inverted) {
             SF_TRY(apply_style(target.inverted));
             current_context_properties_.style.inverted = target.inverted;
         }
-        if (target.ideogram != current_context_properties_.style.ideogram)
-        {
+        if (target.ideogram != current_context_properties_.style.ideogram) {
             SF_TRY(apply_style(target.ideogram));
             current_context_properties_.style.ideogram = target.ideogram;
         }
-        if (target.script != current_context_properties_.style.script)
-        {
+        if (target.script != current_context_properties_.style.script) {
             SF_TRY(apply_style(target.script));
             current_context_properties_.style.script = target.script;
         }
 
-        if (target.underline != current_context_properties_.style.underline)
-        {
+        if (target.underline != current_context_properties_.style.underline) {
             SF_TRY(apply_style(target.underline));
             current_context_properties_.style.underline = target.underline;
         }
 
-        if (target.underline_color.type != current_context_properties_.style.underline_color.type)
-        {
-            switch (target.underline_color.type)
-            {
+        if (target.underline_color.type != current_context_properties_.style.underline_color.type) {
+            switch (target.underline_color.type) {
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Default:
                     SF_TRY(apply_style(TextProperties::TextStyle::UnderlineColor::ColorCube{TextProperties::TextStyle::UnderlineColor::ColorCube::Default}));
                     break;
@@ -128,23 +99,18 @@ namespace stream::fmt::detail
                     break;
             }
             current_context_properties_.style.underline_color.type = target.underline_color.type;
-        }
-        else
-        {
-            switch (target.underline_color.type)
-            {
+        } else {
+            switch (target.underline_color.type) {
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Default:
                     break;
                 case TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube:
-                    if (current_context_properties_.style.underline_color.data.color_cube != target.underline_color.data.color_cube)
-                    {
+                    if (current_context_properties_.style.underline_color.data.color_cube != target.underline_color.data.color_cube) {
                         SF_TRY(apply_style(target.underline_color.data.color_cube));
                         current_context_properties_.style.underline_color.data.color_cube = target.underline_color.data.color_cube;
                     }
                     break;
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Color24b:
-                    if (current_context_properties_.style.underline_color.data.color24b != target.underline_color.data.color24b)
-                    {
+                    if (current_context_properties_.style.underline_color.data.color24b != target.underline_color.data.color24b) {
                         SF_TRY(apply_style(target.underline_color.data.color24b));
                         current_context_properties_.style.underline_color.data.color24b = target.underline_color.data.color24b;
                     }
@@ -154,13 +120,11 @@ namespace stream::fmt::detail
         return {};
     }
 
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_front(const TextProperties::TextFront::Front& target)
-    {
-        if (current_context_properties_.front == target)
-            return {};
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_front(const TextProperties::TextFront::Front& target) {
+        if (current_context_properties_.front == target) return {};
 
         SF_TRY(apply_front(target.CurrentID));
         current_context_properties_.front = target;
         return {};
     }
-}
+}  // namespace stream::fmt::detail

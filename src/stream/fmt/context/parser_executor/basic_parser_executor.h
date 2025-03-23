@@ -12,13 +12,12 @@
 
 #include "parser_text_properties_executor/parser_text_properties_executor.h"
 
-namespace stream::fmt::context
-{
+namespace stream::fmt::context {
     template <typename CharType>
-    class BasicParserExecutor : public context_executor<CharType>
-    {
+    class BasicParserExecutor : public context_executor<CharType> {
     public:
         using TChar = CharType;
+
     private:
         using M_Type = BasicParserExecutor<TChar>;
 
@@ -35,12 +34,13 @@ namespace stream::fmt::context
         using context_executor<CharType>::text_manager;
 
     protected:
-        [[nodiscard]] std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar> sv) override
-        {
+        [[nodiscard]] std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar> sv) override {
             SF_TRY(buf::TestManip(istream).is_same_forward(sv.data(), sv.size()));
             return {};
         }
-        [[nodiscard]] std::expected<void, FMTResult> exec_settings() override { return {}; };
+        [[nodiscard]] std::expected<void, FMTResult> exec_settings() override {
+            return {};
+        };
 
     public:
         template <typename... Args>
@@ -50,52 +50,44 @@ namespace stream::fmt::context
 
     public:
         template <typename Type, typename... Rest>
-        [[nodiscard]] inline std::expected<void, FMTResult> read_type(Type& type, Rest&... rest)
-        {
+        [[nodiscard]] inline std::expected<void, FMTResult> read_type(Type& type, Rest&... rest) {
             auto&& parseErr = ParserType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::parse(type, *this);
             SF_TRY(parseErr);
-            if constexpr (sizeof...(rest) > 0)
-                SF_TRY(read_type(std::forward<Rest>(rest)...));
+            if constexpr (sizeof...(rest) > 0) SF_TRY(read_type(std::forward<Rest>(rest)...));
             return {};
         }
     };
-}
+}  // namespace stream::fmt::context
 
-namespace stream::fmt::context
-{
+namespace stream::fmt::context {
     template <typename TChar>
     BasicParserExecutor<TChar>::BasicParserExecutor(buf::StreamView<TChar>& istream_, detail::ITextPropertiesExecutor& text_properties_executor_)
-        : context_executor<TChar>(text_properties_executor_)
-        , istream{istream_}
-    {
+        : context_executor<TChar>(text_properties_executor_), istream{istream_} {
         text_properties_executor_.link_to_executor(this);
     }
 
     template <typename TChar>
-    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::terminate()
-    {
+    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::terminate() {
         return {};
     }
 
     template <typename TChar>
     template <typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::run_(buf::StreamView<TChar> format, Args&&... args)
-    {
+    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::run_(buf::StreamView<TChar> format, Args&&... args) {
         auto args_interface = detail::ParserArgsInterface<TChar, BasicParserExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
 
         detail::TextProperties::Properties saveTextProperties = text_manager.save();
-        context::BasicContext<TChar> context(*this, format, args_interface);
+        context::BasicContext<TChar>       context(*this, format, args_interface);
         SF_TRY(context.run());
         return text_manager.reload(saveTextProperties);
     }
 
     template <typename TChar>
     template <typename Format, typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::run(Format&& format_input, Args&&... args)
-    {
+    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::run(Format&& format_input, Args&&... args) {
         return run_(buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
-}
+}  // namespace stream::fmt::context
 
 #include "parse_basics_impl.h"
 #include "parse_text_properties_impl.h"

@@ -3,17 +3,16 @@
 
 #include "base_fmt_tests.h"
 
+// NOLINTBEGIN(misc-const-correctness)
+// NOLINTBEGIN(readability-magic-numbers)
 SFT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-#define TEST_FMT(fmt_test, expected) SFT_EQ(Escaper(stream::fmt::format_string(fmt_test, 0).value()), Escaper(expected))
+#define TEST_FMT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, 0).value()), escaper(expected))
 
-static std::string Escaper(const std::string& str)
-{
+static std::string escaper(const std::string& str) {
     std::string res;
-    for (char c : str)
-    {
-        if (c != '\033')
-        {
+    for (char const c : str) {
+        if (c != '\033') {
             res.push_back(c);
             continue;
         }
@@ -25,15 +24,13 @@ static std::string Escaper(const std::string& str)
 }
 
 SFT_TEST_GROUP(TEXT_PROPERTIES, ESCAPER_VALIDATING);
-#define TEST_ESCAPER(str, str_res) SFT_EQ(Escaper(str), str_res)
-SFT_TEST_FUNC(ESCAPER_VALIDATING, BasicTest)
-{
+#define TEST_ESCAPER(str, str_res) SFT_EQ(escaper(str), str_res)
+SFT_TEST_FUNC(ESCAPER_VALIDATING, BasicTest) {
     TEST_ESCAPER("\033", "\\e");
     TEST_ESCAPER("\033k", "\\ek");
 }
 
-SFT_TEST_FUNC(TEXT_PROPERTIES, basic_color)
-{
+SFT_TEST_FUNC(TEXT_PROPERTIES, basic_color) {
     TEST_FMT("123", "123");
 
     TEST_FMT("{C:black} 123 ", "\033[30m 123 \033[39m");
@@ -55,8 +52,7 @@ SFT_TEST_FUNC(TEXT_PROPERTIES, basic_color)
     TEST_FMT("{C:+white} 123 ", "\033[97m 123 \033[39m");
 }
 
-SFT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
-{
+SFT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor) {
     TEST_FMT("123", "123");
 
     TEST_FMT("{C:black} 1 {C:white} 23 ", "\033[30m 1 \033[37m 23 \033[39m");
@@ -78,15 +74,12 @@ SFT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor)
     TEST_FMT("{C:+white} 1 {C:+cyan} 23 ", "\033[97m 1 \033[96m 23 \033[39m");
 }
 
-class TEST_FMT_ContextOut
-{
-};
-STREAMFORMAT_AUTO_FORMATTER_T(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
+class TestFmtContextOut {};
+STREAMFORMAT_AUTO_FORMATTER_T(TestFmtContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
-#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(Escaper(stream::fmt::format_string(fmt_test, TEST_FMT_ContextOut{}).value()), Escaper(expected))
+#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, TestFmtContextOut{}).value()), escaper(expected))
 
-SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
-{
+SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut) {
     TEST_FMT_CONTEXT("{}", "\033[31m TEST_FMT_ContextOut 0 \033[39m");
 
     TEST_FMT_CONTEXT("{} 123 ", "\033[31m TEST_FMT_ContextOut 0 \033[39m 123 ");
@@ -96,3 +89,5 @@ SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 
     TEST_FMT_CONTEXT("{C:+red}{} 123 ", "\033[91m\033[31m TEST_FMT_ContextOut 0 \033[91m 123 \033[39m");
 }
+// NOLINTEND(readability-magic-numbers)
+// NOLINTEND(misc-const-correctness)

@@ -3,13 +3,10 @@
 #include "stream/fmt/detail/prelude.h"
 
 #define STREAMFORMAT_PARSER_DECLARED
-namespace stream::fmt
-{
+namespace stream::fmt {
     template <typename T, typename ParserExecutor = context::BasicParserExecutor<char>>
-    struct ParserType
-    {
-        static inline bool parse(T&, ParserExecutor&)
-        {
+    struct ParserType {
+        static inline bool parse(T&, ParserExecutor&) {
 #ifdef UNKOWN_TYPE_MESSAGE
             // FIXME
             STREAMFORMAT_DEBUGBREAK();
@@ -25,11 +22,12 @@ namespace stream::fmt
         }
     };
 
-}
+}  // namespace stream::fmt
 
-#define STREAMFORMAT_AUTO_PARSER(type, fmt, ...)                                                                         \
-    template <typename ParserExecutor>                                                                                   \
-    struct stream::fmt::ParserType<Type, ParserExecutor>                                                            \
-    {                                                                                                                   \
-        static bool parse(Type& value, ParserExecutor& executor) { return executor.run(fmt, __VA_ARGS__); } \
+#define STREAMFORMAT_AUTO_PARSER(type, fmt, ...)                   \
+    template <typename ParserExecutor>                             \
+    struct stream::fmt::ParserType<Type, ParserExecutor> {         \
+        static bool parse(Type& value, ParserExecutor& executor) { \
+            return executor.run(fmt, __VA_ARGS__);                 \
+        }                                                          \
     };

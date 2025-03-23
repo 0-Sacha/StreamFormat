@@ -14,50 +14,40 @@
 #include "text_properties_executor.h"
 #include "text_properties_manager.h"
 
-namespace stream::fmt::context
-{
+namespace stream::fmt::context {
     template <typename TChar>
     class BasicContext;
 
     template <typename TChar>
-    class context_executor
-    {
+    class context_executor {
     public:
-        context_executor(detail::ITextPropertiesExecutor& text_properties_executor)
-            : data{}
-            , text_manager{text_properties_executor}
-        {}
+        context_executor(detail::ITextPropertiesExecutor& text_properties_executor) : data{}, text_manager{text_properties_executor} {}
         virtual ~context_executor() = default;
-        
+
     public:
-        [[nodiscard]] virtual std::expected<void, FMTResult> exec_settings() = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> exec_settings()                                = 0;
         [[nodiscard]] virtual std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar>) = 0;
 
     public:
-        detail::FormatData<TChar> data;
+        detail::FormatData<TChar>            data;
         detail::TextPropertiesManager<TChar> text_manager;
     };
 
     template <typename CharType>
-    class BasicContext
-    {
+    class BasicContext {
     public:
         using TChar = CharType;
 
     public:
-        BasicContext(
-            context_executor<TChar>& executor,
-            buf::StreamView<TChar> fmtstream,
-            detail::BasicArgsInterface<TChar>& args_interface
-        );
+        BasicContext(context_executor<TChar>& executor, buf::StreamView<TChar> fmtstream, detail::BasicArgsInterface<TChar>& args_interface);
         virtual ~BasicContext() = default;
-        
+
     public:
         context_executor<TChar>& executor;
 
-        buf::StreamView<TChar> fmtstream;     
+        buf::StreamView<TChar>             fmtstream;
         detail::BasicArgsInterface<TChar>& args_interface;
-        std::int32_t values_index;
+        std::int32_t                       values_index;
 
     public:
         [[nodiscard]] std::expected<void, FMTResult> run();
@@ -89,48 +79,33 @@ namespace stream::fmt::context
 
     public:
         template <typename Func, typename... Args>
-        inline void ExecNextFormatData(Func&& func, Args&&... args)
-        {
-            if (executor.data.next_override.size() == 0)
-                return func(std::forward<Args>(args)...);
+        inline void ExecNextFormatData(Func&& func, Args&&... args) {
+            if (executor.data.next_override.size() == 0) return func(std::forward<Args>(args)...);
             detail::FormatData<TChar> format_data_copy = executor.data;
             formatdata_apply_next_override();
             func(std::forward<Args>(args)...);
             executor.data = format_data_copy;
         }
     };
-}
+}  // namespace stream::fmt::context
 
-namespace stream::fmt::context
-{
+namespace stream::fmt::context {
     template <typename TChar>
-    BasicContext<TChar>::BasicContext(
-            context_executor<TChar>& executor,
-            buf::StreamView<TChar> format,
-            detail::BasicArgsInterface<TChar>& args_interface
-        )
-        : executor(executor)
-        , fmtstream{format}
-        , args_interface{args_interface}
-        , values_index{0}
-    {}
+    BasicContext<TChar>::BasicContext(context_executor<TChar>& executor, buf::StreamView<TChar> format, detail::BasicArgsInterface<TChar>& args_interface)
+        : executor(executor), fmtstream{format}, args_interface{args_interface}, values_index{0} {}
 
     template <typename TChar>
-    [[nodiscard]] std::expected<void, FMTResult> BasicContext<TChar>::run()
-    {
-        while (!buf::Access(fmtstream).is_end_of_string())
-        {
+    [[nodiscard]] std::expected<void, FMTResult> BasicContext<TChar>::run() {
+        while (!buf::Access(fmtstream).is_end_of_string()) {
             const TChar* begin_continuous_string = fmtstream.current_pos;
-            std::size_t size_continuous_string  = 0;
-            while (buf::Access(fmtstream).is_end_of_string() == false && buf::TestAccess(fmtstream).is_equal_to('{') == false)
-            {
+            std::size_t  size_continuous_string  = 0;
+            while (buf::Access(fmtstream).is_end_of_string() == false && buf::TestAccess(fmtstream).is_equal_to('{') == false) {
                 ++size_continuous_string;
                 SF_TRY(buf::Manip(fmtstream).forward());
             }
             SF_TRY(executor.exec_raw_string(std::basic_string_view<TChar>(begin_continuous_string, size_continuous_string)));
 
-            if (buf::Access(fmtstream).is_end_of_string() == false && buf::TestAccess(fmtstream).is_equal_to('{'))
-            {
+            if (buf::Access(fmtstream).is_end_of_string() == false && buf::TestAccess(fmtstream).is_equal_to('{')) {
                 SF_TRY(parse());
             }
         }
@@ -139,24 +114,22 @@ namespace stream::fmt::context
     }
 
     template <typename TChar>
-    void BasicContext<TChar>::formatdata_apply_next_override()
-    {
-        if (executor.data.next_override.size() == 0)
-            { return; }
+    void BasicContext<TChar>::formatdata_apply_next_override() {
+        if (executor.data.next_override.size() == 0) {
+            return;
+        }
 
         buf::StreamView<TChar> overridePos(executor.data.next_override);
         buf::StreamView<TChar> format_pos = fmtstream;
-        fmtstream = overridePos;
+        fmtstream                         = overridePos;
         parse_format_data();
         fmtstream = format_pos;
     }
 
     template <typename TChar>
     template <typename T>
-    [[nodiscard]] std::expected<T, FMTResult> BasicContext<TChar>::format_read_parameter(const T& default_value)
-    {
-        if (!buf::TestAccess(fmtstream).is_equal_to('{'))
-        {
+    [[nodiscard]] std::expected<T, FMTResult> BasicContext<TChar>::format_read_parameter(const T& default_value) {
+        if (!buf::TestAccess(fmtstream).is_equal_to('{')) {
             T t;
             SF_TRY(buf::ReadManip(fmtstream).fast_read_integer(t));
             return t;
@@ -172,6 +145,6 @@ namespace stream::fmt::context
 
         return std::unexpected(FMTResult::Context_ArgumentIndexExpected);
     }
-}
+}  // namespace stream::fmt::context
 
 #include "basic_context_parse_impl.h"

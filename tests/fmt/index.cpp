@@ -3,6 +3,8 @@
 
 #include "base_fmt_tests.h"
 
+// NOLINTBEGIN(misc-const-correctness)
+// NOLINTBEGIN(readability-magic-numbers)
 /*
 SFT_TEST_GROUP(FMT, INDEX);
 
@@ -10,3 +12,5 @@ SFT_TEST_FUNC(INDEX, ReIndexing)
 {
 }
 */
+// NOLINTEND(readability-magic-numbers)
+// NOLINTEND(misc-const-correctness)

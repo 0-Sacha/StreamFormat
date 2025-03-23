@@ -10,65 +10,54 @@
 
 #include <memory>
 
-namespace stream::fmt
-{
+namespace stream::fmt {
     /////---------- Impl with as Format ----------//////
-    namespace detail
-    {
+    namespace detail {
         template <typename TChar, typename... Args>
-        requires(IsCharType<TChar>::value)
-        [[nodiscard]] std::expected<void, FMTResult> format_in_manager(
-            buf::BasicStreamIOManager<TChar>& ostream_manager,
-            bool newline,
-            buf::StreamView<TChar> format,
-            Args&&... args
-        )
-        {
+            requires(IsCharType<TChar>::value)
+        [[nodiscard]] std::expected<void, FMTResult> format_in_manager(buf::BasicStreamIOManager<TChar>& ostream_manager, bool newline, buf::StreamView<TChar> format,
+                                                                       Args&&... args) {
             using TCharResolved = std::remove_const_t<TChar>;
 
             detail::FormatterTextPropertiesExecutorANSI<TCharResolved> text_properties_executor;
-            buf::FMTStreamIO<TCharResolved> ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
-            context::BasicFormatterExecutor<TCharResolved> executor(ostream, text_properties_executor);
+            buf::FMTStreamIO<TCharResolved>                            ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
+            context::BasicFormatterExecutor<TCharResolved>             executor(ostream, text_properties_executor);
             SF_TRY(executor.run(format, std::forward<Args>(args)...));
             if (newline) SF_TRY(buf::ManipIO(ostream).pushback('\n'));
             return executor.terminate();
         }
 
         template <typename TChar, typename T>
-        requires(IsCharType<TChar>::value)
-        [[nodiscard]] std::expected<void, FMTResult> format_in_manager(buf::BasicStreamIOManager<TChar>& ostream_manager, bool newline, T&& t)
-        {
+            requires(IsCharType<TChar>::value)
+        [[nodiscard]] std::expected<void, FMTResult> format_in_manager(buf::BasicStreamIOManager<TChar>& ostream_manager, bool newline, T&& t) {
             using TCharResolved = std::remove_const_t<TChar>;
 
             detail::FormatterTextPropertiesExecutorANSI<TCharResolved> text_properties_executor;
-            buf::FMTStreamIO<TCharResolved> ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
-            context::BasicFormatterExecutor<TCharResolved> executor(ostream, text_properties_executor);
+            buf::FMTStreamIO<TCharResolved>                            ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
+            context::BasicFormatterExecutor<TCharResolved>             executor(ostream, text_properties_executor);
             SF_TRY(executor.write_type(std::forward<T>(t)));
             if (newline) SF_TRY(buf::ManipIO(ostream).pushback('\n'));
             return executor.terminate();
         }
-    }
+    }  // namespace detail
 
     template <typename TChar, typename Format, std::size_t BUFFER_SIZE, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar (&buffer)[BUFFER_SIZE], Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar (&buffer)[BUFFER_SIZE], Format&& format_input, Args&&... args) {
         buf::GivenStreamIOManager<TChar> ostream_manager(buffer);
         return detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar* const buffer, const std::size_t buffer_size, Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar* const buffer, const std::size_t buffer_size, Format&& format_input, Args&&... args) {
         buf::GivenStreamIOManager<TChar> ostream_manager(buffer, buffer_size);
         return detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
         SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
@@ -78,9 +67,8 @@ namespace stream::fmt
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
         SF_TRY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
@@ -90,9 +78,8 @@ namespace stream::fmt
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
         SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
@@ -102,9 +89,8 @@ namespace stream::fmt
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
         SF_TRY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
@@ -114,9 +100,8 @@ namespace stream::fmt
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
         SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
         str = ostream_manager.get_last_generated_string_view();
@@ -124,9 +109,8 @@ namespace stream::fmt
     }
 
     template <typename TChar = char, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
-    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(Format&& format_input, Args&&... args)
-    {
+        requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
         SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
         return std::basic_string<TChar>{ostream_manager.get_last_generated_string_view()};
@@ -135,25 +119,22 @@ namespace stream::fmt
     /////---------- NO-FORMAT Impl except for string which are formatted to avoid {} ----------//////
 
     template <typename TChar, size_t BUFFER_SIZE, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar (&buffer)[BUFFER_SIZE], T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar (&buffer)[BUFFER_SIZE], T&& t) {
         buf::GivenStreamIOManager<TChar> ostream_manager(buffer, BUFFER_SIZE);
         return detail::format_in_manager(ostream_manager, false, std::forward<T>(t));
     }
 
     template <typename TChar, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar* const buffer, const std::size_t buffer_size, T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar* const buffer, const std::size_t buffer_size, T&& t) {
         buf::GivenStreamIOManager<TChar> ostream_manager(buffer, buffer_size);
         return detail::format_in_manager(ostream_manager, false, std::forward<T>(t));
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
         SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
 
@@ -163,9 +144,8 @@ namespace stream::fmt
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
         SF_TRY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
 
@@ -175,9 +155,8 @@ namespace stream::fmt
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
         SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
 
@@ -187,9 +166,8 @@ namespace stream::fmt
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
         SF_TRY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
 
@@ -199,9 +177,8 @@ namespace stream::fmt
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
         SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
         str = ostream_manager.get_last_generated_string_view();
@@ -209,24 +186,19 @@ namespace stream::fmt
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::value)
-    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(T&& t)
-    {
+        requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
         SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
         return std::string{ostream_manager.get_last_generated_string_view()};
     }
-}
+}  // namespace stream::fmt
 
-namespace stream::fmt
-{
+namespace stream::fmt {
     template <typename FormatterExecutor>
-    struct FormatterType<FMTResult, FormatterExecutor>
-    {
-        [[nodiscard]] static std::expected<void, FMTResult> format(FMTResult result, FormatterExecutor& executor)
-        {
-            switch(result)
-            {
+    struct FormatterType<FMTResult, FormatterExecutor> {
+        [[nodiscard]] static std::expected<void, FMTResult> format(FMTResult result, FormatterExecutor& executor) {
+            switch (result) {
                 case FMTResult::FunctionNotImpl:
                     return buf::WriteManip(executor.ostream).fast_write_string_literal("FunctionNotImpl");
                 case FMTResult::Buffer_NonValid:
@@ -272,4 +244,4 @@ namespace stream::fmt
             }
         }
     };
-}
+}  // namespace stream::fmt

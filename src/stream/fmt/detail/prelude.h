@@ -24,8 +24,7 @@
 //        End writing all writer and reader (string / char pt)
 //
 
-namespace stream::fmt::context
-{
+namespace stream::fmt::context {
     template <typename TChar>
     class BasicContext;
 
@@ -36,4 +35,4 @@ namespace stream::fmt::context
 
     template <typename TChar>
     class BasicParserExecutor;
-}
+}  // namespace stream::fmt::context
