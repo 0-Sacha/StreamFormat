@@ -14,9 +14,9 @@ namespace stream::fmt {
         [[nodiscard]] static std::expected<void, FMTResult> format(const typename FormatterExecutor::detail::template FormatSpecifier<typename FormatterExecutor::TChar>& specifier,
                                                                    FormatterExecutor& executor) {
             if (specifier.ValueIsText) {
-                SF_TRY(executor.run("{ '{}', '{}' }", specifier.name, specifier.as_text));
+                SF_VERIFY(executor.run("{ '{}', '{}' }", specifier.name, specifier.as_text));
             } else {
-                SF_TRY(executor.run("{ '{}', '{}' }", specifier.name, specifier.as_number));
+                SF_VERIFY(executor.run("{ '{}', '{}' }", specifier.name, specifier.as_number));
             }
             return {};
         }
@@ -39,7 +39,7 @@ namespace stream::fmt {
                 return std::unexpected(FMTResult::GivenArgs_UnableToDeduceSize);
             }
 
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(executor.data.specifiers.get_as_text("begin", STDEnumerableUtility::DefaultBegin)));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string(executor.data.specifiers.get_as_text("begin", STDEnumerableUtility::DefaultBegin)));
 
             std::basic_string_view<typename FormatterExecutor::TChar> join = executor.data.specifiers.get_as_text("join", STDEnumerableUtility::DefaultJoin);
 
@@ -51,9 +51,9 @@ namespace stream::fmt {
                 if (first) {
                     first = false;
                 } else {
-                    SF_TRY(buf::FMTWriteManip(executor.ostream).write_indent_string(join));
+                    SF_VERIFY(buf::FMTWriteManip(executor.ostream).write_indent_string(join));
                 }
-                SF_TRY(executor.write_type(*itbegin++));
+                SF_VERIFY(executor.write_type(*itbegin++));
             }
 
             return buf::WriteManip(executor.ostream).fast_write_string(executor.data.specifiers.get_as_text("end", STDEnumerableUtility::DefaultEnd));
@@ -76,17 +76,17 @@ namespace stream::fmt {
             if (executor.data.specifiers.has("indent")) return buf::FMTWriteManip(executor.ostream).write_indent_char_ptr(begin, size);
 
             if (executor.data.prefix_suffix) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('\"'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('\"'));
             }
 
             if (executor.data.has_spec == false) {
-                SF_TRY(buf::WriteManip(executor.ostream).fast_write_char_array(begin, size));
+                SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_char_array(begin, size));
             } else {
-                SF_TRY(buf::FMTWriteManip(executor.ostream).write_char_ptr(begin, size, executor.data.shift));
+                SF_VERIFY(buf::FMTWriteManip(executor.ostream).write_char_ptr(begin, size, executor.data.shift));
             }
 
             if (executor.data.prefix_suffix) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('\"'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('\"'));
             }
 
             return {};

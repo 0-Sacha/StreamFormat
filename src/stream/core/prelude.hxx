@@ -49,4 +49,9 @@ namespace stream::detail {
         __expected.value();                                                            \
     });
 
-#define SF_FORWARD(exp) SF_TRY(exp)
+#define SF_VERIFY(exp)                                                                 \
+    {                                                                                  \
+        auto __expected = exp;                                                         \
+        if (not __expected) [[unlikely]]                                               \
+            return std::unexpected(stream::detail::forward_error(__expected.error())); \
+    }

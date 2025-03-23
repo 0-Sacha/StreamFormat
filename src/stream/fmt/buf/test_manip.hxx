@@ -29,10 +29,10 @@ namespace stream::fmt::buf {
         }
 
     public:
-        constexpr inline bool IsLowerCase() const noexcept {
+        constexpr inline bool is_lower_case() const noexcept {
             return buffer.get() >= 'a' && buffer.get() <= 'z';
         }
-        constexpr inline bool IsUpperCase() const noexcept {
+        constexpr inline bool is_upper_case() const noexcept {
             return buffer.get() >= 'A' && buffer.get() <= 'Z';
         }
         constexpr inline bool is_a_digit() const noexcept {
@@ -82,7 +82,7 @@ namespace stream::fmt::buf {
         template <typename... CharToTest>
         [[nodiscard]] constexpr inline std::expected<bool, FMTResult> is_equal_to_forward(const CharToTest... ele) noexcept {
             if (access().is_equal_to(ele...)) {
-                SF_TRY(Manip(buffer).forward());
+                SF_VERIFY(Manip(buffer).forward());
                 return true;
             }
             return false;
@@ -90,7 +90,7 @@ namespace stream::fmt::buf {
         template <typename... CharToTest>
         [[nodiscard]] constexpr inline std::expected<bool, FMTResult> is_not_equal_forward(const CharToTest... ele) noexcept {
             if (access().is_not_equal_to(ele...)) {
-                SF_TRY(Manip(buffer).forward());
+                SF_VERIFY(Manip(buffer).forward());
                 return true;
             }
             return false;
@@ -100,7 +100,7 @@ namespace stream::fmt::buf {
         template <typename CharToTest>
         [[nodiscard]] constexpr std::expected<bool, FMTResult> is_same_forward(const CharToTest* str, std::size_t size) noexcept {
             if (access().is_same(str, size)) {
-                SF_TRY(Manip(buffer).forward(size));
+                SF_VERIFY(Manip(buffer).forward(size));
                 return true;
             }
             return false;
@@ -108,7 +108,7 @@ namespace stream::fmt::buf {
         template <typename CharToTest>
         [[nodiscard]] constexpr inline std::expected<bool, FMTResult> is_same_forward(std::basic_string_view<CharToTest> sv) noexcept {
             if (access().is_same(sv)) {
-                SF_TRY(Manip(buffer).forward(sv.size()));
+                SF_VERIFY(Manip(buffer).forward(sv.size()));
                 return true;
             }
             return false;
@@ -118,7 +118,7 @@ namespace stream::fmt::buf {
         template <typename... CharToTest>
         [[nodiscard]] inline std::expected<void, FMTResult> skip_one_of(const CharToTest... ele) noexcept {
             if (access().is_equal_to(ele...)) {
-                SF_TRY(Manip(buffer).forward());
+                SF_VERIFY(Manip(buffer).forward());
                 return {};
             }
             return std::unexpected(FMTResult::Parse_TokenNotExpected);
@@ -169,7 +169,7 @@ namespace stream::fmt::buf {
         template <typename Func>
         [[nodiscard]] std::expected<std::basic_string_view<TConstChar>, FMTResult> ViewExec(Func&& func) {
             TChar* begin = buffer.current_pos;
-            SF_TRY(func());
+            SF_VERIFY(func());
             TChar* end = buffer.current_pos;
             return std::basic_string_view<TConstChar>(begin, end - begin);
         }

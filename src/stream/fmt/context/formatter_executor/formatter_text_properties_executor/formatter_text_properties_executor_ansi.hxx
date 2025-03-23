@@ -68,7 +68,7 @@ namespace stream::fmt::detail {
         }
         [[nodiscard]] std::expected<void, FMTResult> execute_front(const detail::TextProperties::TextFront::FrontID& t) override {
             NoStrideFunction no_stride(*buffer);
-            return buf::WriteManip(*buffer).basic_write_type("\033[", t.ID, "m");
+            return buf::WriteManip(*buffer).basic_write_type("\033[", t.id, "m");
         }
 
     public:

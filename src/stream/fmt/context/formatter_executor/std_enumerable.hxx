@@ -57,8 +57,8 @@ namespace stream::fmt {
     template <typename T, typename CharBegin, typename CharJoin, typename CharEnd, typename FormatterExecutor>
     struct FormatterType<STDEnumerable<T, CharBegin, CharJoin, CharEnd>, FormatterExecutor> {
         [[nodiscard]] static std::expected<void, FMTResult> format(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterExecutor& executor) {
-            SF_TRY(executor.ostream.write_indent_string_view(enumerable.get_str_begin()));
-            SF_TRY(executor.ostream.add_indent(enumerable.get_str_begin().size()));
+            SF_VERIFY(executor.ostream.write_indent_string_view(enumerable.get_str_begin()));
+            SF_VERIFY(executor.ostream.add_indent(enumerable.get_str_begin().size()));
 
             {
                 // TODO: Why ? ...
@@ -69,15 +69,15 @@ namespace stream::fmt {
                     if (first) {
                         first = false;
                     } else {
-                        SF_TRY(executor.ostream.write_indent_string_view(enumerable.get_str_join()));
+                        SF_VERIFY(executor.ostream.write_indent_string_view(enumerable.get_str_join()));
                     }
 
-                    SF_TRY(executor.write_type(element));
+                    SF_VERIFY(executor.write_type(element));
                 });
             }
 
             executor.ostream.remove_indent(enumerable.get_str_begin().size());
-            SF_TRY(executor.ostream.write_indent_string_view(enumerable.get_str_end()));
+            SF_VERIFY(executor.ostream.write_indent_string_view(enumerable.get_str_end()));
         }
     };
 

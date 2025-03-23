@@ -48,69 +48,69 @@ namespace stream::fmt::buf {
     namespace utils {
         template <typename CharIn, typename CharOut>
         [[nodiscard]] static std::expected<void, FMTResult> parse_escaped_quoted_string(buf::Stream<CharIn>& buffer, buf::StreamIO<CharOut>& stringOut) {
-            SF_TRY(buf::TestManip(buffer).skip_one_of('"'));
+            SF_VERIFY(buf::TestManip(buffer).skip_one_of('"'));
             while (buf::Access(buffer).is_end_of_string() == false) {
                 auto view = SF_TRY(buf::TestManip(buffer).view_until('"', '\\'));
-                SF_TRY(buf::WriteManip(stringOut).fast_write_string(view));
+                SF_VERIFY(buf::WriteManip(stringOut).fast_write_string(view));
 
                 if (buf::TestAccess(buffer).is_equal_to('"')) {
                     break;
                 }
 
-                SF_TRY(buf::TestManip(buffer).skip_one_of('\\'));
+                SF_VERIFY(buf::TestManip(buffer).skip_one_of('\\'));
                 switch (buffer.get()) {
                     // TODO : Do all others escape char
                     case '"':
-                        SF_TRY(buf::ManipIO(stringOut).pushback('"'));
+                        SF_VERIFY(buf::ManipIO(stringOut).pushback('"'));
                         break;
                     case 't':
-                        SF_TRY(buf::ManipIO(stringOut).pushback('\t'));
+                        SF_VERIFY(buf::ManipIO(stringOut).pushback('\t'));
                         break;
                     case 'r':
-                        SF_TRY(buf::ManipIO(stringOut).pushback('\r'));
+                        SF_VERIFY(buf::ManipIO(stringOut).pushback('\r'));
                         break;
                     case 'n':
-                        SF_TRY(buf::ManipIO(stringOut).pushback('\n'));
+                        SF_VERIFY(buf::ManipIO(stringOut).pushback('\n'));
                         break;
                     default:
                         break;
                 }
             }
-            SF_TRY(buf::TestManip(buffer).skip_one_of('"'));
+            SF_VERIFY(buf::TestManip(buffer).skip_one_of('"'));
 
             return {};
         }
 
         template <typename CharIn, typename CharOut>
         [[nodiscard]] static std::expected<void, FMTResult> format_escaped_quoted_string(buf::StreamIO<CharOut>& buffer, buf::Stream<CharIn>& string_in) {
-            SF_TRY(buf::ManipIO(buffer).pushback('"'));
+            SF_VERIFY(buf::ManipIO(buffer).pushback('"'));
             while (buf::Access(string_in).is_end_of_string() == false) {
                 auto view = SF_TRY(buf::TestManip(string_in).view_until('\\'));
-                SF_TRY(buf::WriteManip(buffer).fast_write_string(view));
+                SF_VERIFY(buf::WriteManip(buffer).fast_write_string(view));
 
                 if (buf::Access(string_in).is_end_of_string()) break;
 
                 // TODO
-                SF_TRY(buf::TestManip(string_in).skip_one_of('\\'));
+                SF_VERIFY(buf::TestManip(string_in).skip_one_of('\\'));
                 switch (string_in.get()) {
                     // TODO : Do all others escape char
                     case '"':
-                        SF_TRY(buf::ManipIO(buffer).pushback('"'));
+                        SF_VERIFY(buf::ManipIO(buffer).pushback('"'));
                         break;
                     case 't':
-                        SF_TRY(buf::ManipIO(buffer).pushback('\t'));
+                        SF_VERIFY(buf::ManipIO(buffer).pushback('\t'));
                         break;
                     case 'r':
-                        SF_TRY(buf::ManipIO(buffer).pushback('\r'));
+                        SF_VERIFY(buf::ManipIO(buffer).pushback('\r'));
                         break;
                     case 'n':
-                        SF_TRY(buf::ManipIO(buffer).pushback('\n'));
+                        SF_VERIFY(buf::ManipIO(buffer).pushback('\n'));
                         break;
                     default:
                         break;
                 }
             }
-            SF_TRY(buf::ManipIO(buffer).pushback('"'));
+            SF_VERIFY(buf::ManipIO(buffer).pushback('"'));
 
             return {};
         }

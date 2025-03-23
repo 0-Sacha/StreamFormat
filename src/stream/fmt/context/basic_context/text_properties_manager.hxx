@@ -37,8 +37,8 @@ namespace stream::fmt::detail {
         }
 
         [[nodiscard]] std::expected<void, FMTResult> all_properties_reset() {
-            SF_TRY(apply_color_reset());
-            SF_TRY(apply_style_reset());
+            SF_VERIFY(apply_color_reset());
+            SF_VERIFY(apply_style_reset());
             return apply_front_reset();
         }
         [[nodiscard]] std::expected<void, FMTResult> apply_color_reset() {
@@ -61,12 +61,12 @@ namespace stream::fmt::detail {
 
     public:
         [[nodiscard]] std::expected<void, FMTResult> reload_default() {
-            SF_TRY(reload_default_color());
-            SF_TRY(reload_default_style());
+            SF_VERIFY(reload_default_color());
+            SF_VERIFY(reload_default_style());
             return reload_default_front();
         }
         [[nodiscard]] std::expected<void, FMTResult> reload_default_color() {
-            SF_TRY(reload_default_color_fg());
+            SF_VERIFY(reload_default_color_fg());
             return reload_default_color_bg();
         }
         [[nodiscard]] std::expected<void, FMTResult> reload_default_color_fg() {
@@ -83,12 +83,12 @@ namespace stream::fmt::detail {
         }
 
         [[nodiscard]] std::expected<void, FMTResult> reload(const detail::TextProperties::Properties& target) {
-            SF_TRY(reload_color(target.color));
-            SF_TRY(reload_style(target.style));
+            SF_VERIFY(reload_color(target.color));
+            SF_VERIFY(reload_style(target.style));
             return reload_front(target.front);
         }
         [[nodiscard]] std::expected<void, FMTResult> reload_color(const detail::TextProperties::TextColor::Color& target) {
-            SF_TRY(reload_color_fg(target.fg));
+            SF_VERIFY(reload_color_fg(target.fg));
             return reload_color_bg(target.bg);
         }
 
@@ -202,7 +202,6 @@ namespace stream::fmt::detail {
         bool         bright = SF_TRY(buf::TestManip(format).is_equal_to_forward('+'));
         std::uint8_t step   = static_cast<std::uint8_t>(bright ? T::BaseBStep : T::BaseStep);
         std::uint8_t code   = (std::uint8_t)SF_TRY(buf::UtilsManip(format).get_word_from_list(colorCode));
-        ;
         return static_cast<T>(code + step);
     }
 }  // namespace stream::fmt::detail

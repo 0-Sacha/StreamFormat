@@ -51,7 +51,7 @@ namespace stream::fmt::detail {
         template <typename T>
         [[nodiscard]] std::expected<void, FMTResult> run_func_from_type_at(std::int32_t idx, std::function<std::expected<void, FMTResult>(const T&)> func) {
             const T* value = SF_TRY(get_type_at<T>(idx));
-            SF_TRY(func(*value));
+            SF_VERIFY(func(*value));
             return {};
         }
     };

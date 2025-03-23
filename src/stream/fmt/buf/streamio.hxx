@@ -22,7 +22,7 @@ namespace stream::fmt::buf {
 
     protected:
         [[nodiscard]] static std::expected<void, FMTResult> init(StreamIO<CharType>& in) {
-            SF_TRY(in.Manager.BeginContext());
+            SF_VERIFY(in.Manager.BeginContext());
             Manip(in).reload(in.Manager.get_buffer(), in.Manager.get_buffer_size());
             return {};
         }
@@ -30,7 +30,7 @@ namespace stream::fmt::buf {
     public:
         [[nodiscard]] static std::expected<StreamIO<CharType>, FMTResult> create(BasicStreamIOManager<CharType>& ostream_manager) {
             StreamIO<CharType> res(ostream_manager);
-            SF_TRY(init(res));
+            SF_VERIFY(init(res));
             return res;
         }
 

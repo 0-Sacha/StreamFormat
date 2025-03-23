@@ -24,7 +24,7 @@ namespace stream::fmt::buf {
     public:
         [[nodiscard]] static std::expected<FMTStreamIO<CharType>, FMTResult> create(BasicStreamIOManager<CharType>& ostream_manager) {
             FMTStreamIO<CharType> res(ostream_manager);
-            SF_TRY(StreamIO<CharType>::init(res));
+            SF_VERIFY(StreamIO<CharType>::init(res));
             return res;
         }
 
@@ -58,12 +58,12 @@ namespace stream::fmt::buf {
 
     public:
         [[nodiscard]] constexpr inline std::expected<void, FMTResult> new_line_indent() {
-            SF_TRY(ManipIO(buffer).pushback('\n'));
+            SF_VERIFY(ManipIO(buffer).pushback('\n'));
             return ManipIO(buffer).pushback(' ', buffer.indent);
         }
 
         [[nodiscard]] constexpr inline std::expected<void, FMTResult> pushback_check_indent(const TChar c) {
-            SF_TRY(ManipIO(buffer).pushback(c));
+            SF_VERIFY(ManipIO(buffer).pushback(c));
             if (c == '\n') {
                 return ManipIO(buffer).pushback(' ', buffer.indent);
             }
@@ -102,9 +102,11 @@ namespace stream::fmt::buf {
             TestAccess access(buffer);
             TestManip  manip(buffer);
 
-            TChar* const oldpos  = buffer.current_pos;
-            auto         is_same = SF_TRY(manip.is_same_forward(sv));
-            if (is_same && (access.is_equal_to(':') || access.is_equal_to('}'))) {
+            TChar* const oldpos = buffer.current_pos;
+
+            auto is_same = manip.is_same_forward(sv);
+            if (is_same.has_value() == false) return std::unexpected(is_same.error());
+            if (is_same.value() && (access.is_equal_to(':') || access.is_equal_to('}'))) {
                 return true;
             }
             buffer.current_pos = oldpos;

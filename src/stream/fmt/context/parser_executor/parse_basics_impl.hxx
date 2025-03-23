@@ -17,24 +17,24 @@ namespace stream::fmt {
         [[nodiscard]] static std::expected<void, FMTResult> parse(bool& t, ParserExecutor& executor) {
             if (!executor.data.prefix_suffix) {
                 if (buf::TestAccess(executor.istream).is_equal_to('t', 'T')) {
-                    SF_TRY(buf::Manip(executor.istream).forward());
+                    SF_VERIFY(buf::Manip(executor.istream).forward());
                     if (buf::TestAccess(executor.istream).is_same("rue")) {
-                        SF_TRY(buf::Manip(executor.istream).forward());
+                        SF_VERIFY(buf::Manip(executor.istream).forward(3));
                         t = true;
                     }
                 } else if (buf::TestAccess(executor.istream).is_equal_to('f', 'F')) {
-                    SF_TRY(buf::Manip(executor.istream).forward());
+                    SF_VERIFY(buf::Manip(executor.istream).forward());
                     if (buf::TestAccess(executor.istream).is_same("alse")) {
-                        SF_TRY(buf::Manip(executor.istream).forward());
+                        SF_VERIFY(buf::Manip(executor.istream).forward(4));
                         t = false;
                     }
                 }
             } else {
                 if (buf::TestAccess(executor.istream).is_equal_to('1')) {
-                    SF_TRY(buf::Manip(executor.istream).forward());
+                    SF_VERIFY(buf::Manip(executor.istream).forward());
                     t = true;
                 } else if (buf::TestAccess(executor.istream).is_equal_to('0')) {
-                    SF_TRY(buf::Manip(executor.istream).forward());
+                    SF_VERIFY(buf::Manip(executor.istream).forward());
                     t = false;
                 }
             }

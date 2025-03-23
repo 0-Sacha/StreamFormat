@@ -42,12 +42,15 @@ namespace stream::flog::detail {
                 if (sink->need_to_log(severity)) {
                     fmt::buf::DynamicStreamIOManager<CharType> manager_pattern(256);
                     fmt::buf::DynamicStreamIOManager<CharType> manager_format(256);
-                    auto                                       format_pattern_str =
-                        SF_TRY(fmt::detail::format_in_manager(manager_pattern, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
-                                                              FORMAT_SV("name", FutureConcatNameAndSinkName(name_)), FORMAT_SV("data", flog::AddIndentInFormat(format))));
-                    auto format_format_str = SF_TRY(fmt::detail::format_in_manager(manager_format, false, static_cast<std::string_view>(*format_pattern_str),
-                                                                                   std::forward<Args>(args)..., FORMAT_SV("sink", sink->get_name()), FORMAT_SV("color", severity)));
-                    SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*format_format_str)));
+
+                    auto format_pattern_str =
+                        fmt::detail::format_in_manager(manager_pattern, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
+                                                       FORMAT_SV("name", FutureConcatNameAndSinkName(name_)), FORMAT_SV("data", flog::AddIndentInFormat(format)));
+                    if (format_pattern_str.has_value() == false) return std::unexpected(format_pattern_str.error());
+                    auto format_format_str = fmt::detail::format_in_manager(manager_format, false, static_cast<std::string_view>(*format_pattern_str.value()),
+                                                                            std::forward<Args>(args)..., FORMAT_SV("sink", sink->get_name()), FORMAT_SV("color", severity));
+                    if (format_format_str.has_value() == false) return std::unexpected(format_format_str.error());
+                    SF_VERIFY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*format_format_str.value())));
                 }
             }
 
@@ -62,9 +65,10 @@ namespace stream::flog::detail {
             for (auto& sink : sinks_) {
                 if (sink->need_to_log(severity)) {
                     fmt::buf::DynamicStreamIOManager<CharType> manager(256);
-                    auto formatBuffer = SF_TRY(fmt::detail::format_in_manager(manager, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
-                                                                              FORMAT_SV("name", ConcatNameAndSinkName(name_, sink->get_name())), FORMAT_SV("data", t)));
-                    SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatBuffer)));
+                    auto format_buffer = fmt::detail::format_in_manager(manager, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
+                                                                        FORMAT_SV("name", ConcatNameAndSinkName(name_, sink->get_name())), FORMAT_SV("data", t));
+                    if (format_buffer.has_value() == false) return std::unexpected(format_buffer.error());
+                    SF_VERIFY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*format_buffer.value())));
                 }
             }
 

@@ -17,7 +17,7 @@ namespace stream::fmt::buf {
             if (shift.type == detail::ShiftInfo::ShiftType::CenterRight || shift.type == detail::ShiftInfo::ShiftType::CenterLeft) {
                 std::int32_t shift_ = shift.size / 2;
                 if (shift.type == detail::ShiftInfo::ShiftType::CenterLeft) shift_ = (shift.size + 1) / 2;
-                SF_TRY(ManipIO(buffer).pushback(shift.print.before, shift.size - shift_));
+                SF_VERIFY(ManipIO(buffer).pushback(shift.print.before, shift.size - shift_));
                 shift.size = shift_;
             }
 
@@ -41,12 +41,12 @@ namespace stream::fmt::buf {
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> write_shift_begin(detail::ShiftInfo& shift) {
-            SF_TRY(WriteShiftCenterBegin(shift));
+            SF_VERIFY(WriteShiftCenterBegin(shift));
             return write_shift_right_all(shift);
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> write_shift_end(detail::ShiftInfo& shift) {
-            SF_TRY(WriteShiftLeftAll(shift));
+            SF_VERIFY(WriteShiftLeftAll(shift));
             return WriteShiftCenterEnd(shift);
         }
     };
@@ -65,7 +65,7 @@ namespace stream::fmt::buf {
             if (shift.type == detail::ShiftInfo::ShiftType::Right || shift.type == detail::ShiftInfo::ShiftType::CenterLeft ||
                 shift.type == detail::ShiftInfo::ShiftType::CenterRight) {
                 while (buffer.get() == ' ') {
-                    SF_TRY(Manip(buffer).forward());
+                    SF_VERIFY(Manip(buffer).forward());
                     --shift.size;
                 }
             }
@@ -76,7 +76,7 @@ namespace stream::fmt::buf {
             if (shift.type == detail::ShiftInfo::ShiftType::Left || shift.type == detail::ShiftInfo::ShiftType::CenterLeft ||
                 shift.type == detail::ShiftInfo::ShiftType::CenterRight) {
                 while (buffer.get() == ' ' && shift.size > 0) {
-                    SF_TRY(Manip(buffer).forward());
+                    SF_VERIFY(Manip(buffer).forward());
                     --shift.size;
                 }
             }

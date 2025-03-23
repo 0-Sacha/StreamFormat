@@ -16,7 +16,7 @@ namespace stream::fmt {
 
         detail::ParserNOTextPropertiesExecutor<std::remove_const_t<TChar>> text_properties_executor;
         context::BasicParserExecutor<std::remove_const_t<TChar>>           executor(buffer, text_properties_executor);
-        SF_TRY(executor.run(format, std::forward<Args>(args)...));
+        SF_VERIFY(executor.run(format, std::forward<Args>(args)...));
         return executor.terminate();
     }
 }  // namespace stream::fmt

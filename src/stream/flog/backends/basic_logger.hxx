@@ -85,11 +85,11 @@ namespace stream::flog::detail {
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
 
-            SF_TRY(fmt::detail::format_in_manager(preFormatStreamIOManager, false, fmt::buf::StreamView<char>(m_Pattern), FORMAT_SV("time", logTime), FORMAT_SV("name", name_),
-                                                  FORMAT_SV("data", flog::AddIndentInFormat(format))));
+            SF_VERIFY(fmt::detail::format_in_manager(preFormatStreamIOManager, false, fmt::buf::StreamView<char>(m_Pattern), FORMAT_SV("time", logTime), FORMAT_SV("name", name_),
+                                                     FORMAT_SV("data", flog::AddIndentInFormat(format))));
 
-            SF_TRY(fmt::detail::format_in_manager(fullFormatStreamIOManager, true, preFormatStreamIOManager.get_last_generated_buffer_info_view(), std::forward<Args>(args)...,
-                                                  FORMAT_SV("color", severity)));
+            SF_VERIFY(fmt::detail::format_in_manager(fullFormatStreamIOManager, true, preFormatStreamIOManager.get_last_generated_buffer_info_view(), std::forward<Args>(args)...,
+                                                     FORMAT_SV("color", severity)));
             m_Stream.write(fullFormatStreamIOManager.get_buffer(), static_cast<std::streamsize>(fullFormatStreamIOManager.get_last_generated_data_size()));
             m_Stream.flush();
 
@@ -102,8 +102,8 @@ namespace stream::flog::detail {
 
             std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
 
-            SF_TRY(fmt::detail::format_in_manager(fullFormatStreamIOManager, true, fmt::buf::StreamView<char>(m_Pattern), FORMAT_SV("data", t), FORMAT_SV("color", severity),
-                                                  FORMAT_SV("time", logTime), FORMAT_SV("name", name_)));
+            SF_VERIFY(fmt::detail::format_in_manager(fullFormatStreamIOManager, true, fmt::buf::StreamView<char>(m_Pattern), FORMAT_SV("data", t), FORMAT_SV("color", severity),
+                                                     FORMAT_SV("time", logTime), FORMAT_SV("name", name_)));
             m_Stream.write(fullFormatStreamIOManager.get_buffer(), static_cast<std::streamsize>(fullFormatStreamIOManager.get_last_generated_data_size()));
             m_Stream.flush();
 

@@ -53,12 +53,12 @@ namespace stream::fmt::context {
         [[nodiscard]] std::expected<void, FMTResult> run();
 
     private:
-        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex_Number();
-        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex_Name();
-        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex_SubIndex();
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> get_format_index_number();
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> get_format_index_name();
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> get_format_index_sub_index();
 
     public:
-        [[nodiscard]] std::expected<std::int32_t, FMTResult> GetFormatIndex();
+        [[nodiscard]] std::expected<std::int32_t, FMTResult> get_format_index();
         template <typename T>
         [[nodiscard]] std::expected<T, FMTResult> format_read_parameter(const T& default_value);
 
@@ -70,11 +70,11 @@ namespace stream::fmt::context {
 
         [[nodiscard]] std::expected<void, FMTResult> parse_format_data_base();
         [[nodiscard]] std::expected<void, FMTResult> parse_format_dataSpecial();
-        [[nodiscard]] std::expected<void, FMTResult> parse_format_dataSpecial_ShiftType(const detail::ShiftInfo::ShiftType type);
+        [[nodiscard]] std::expected<void, FMTResult> parse_format_data_special_shift_type(const detail::ShiftInfo::ShiftType type);
         [[nodiscard]] std::expected<void, FMTResult> parse_format_dataCustom();
         [[nodiscard]] std::expected<void, FMTResult> parse_format_data();
 
-        [[nodiscard]] std::expected<void, FMTResult> ParseVariable(std::int32_t formatIdx);
+        [[nodiscard]] std::expected<void, FMTResult> parse_variable(std::int32_t formatIdx);
         [[nodiscard]] std::expected<void, FMTResult> parse();
 
     public:
@@ -101,12 +101,12 @@ namespace stream::fmt::context {
             std::size_t  size_continuous_string  = 0;
             while (buf::Access(fmtstream).is_end_of_string() == false && buf::TestAccess(fmtstream).is_equal_to('{') == false) {
                 ++size_continuous_string;
-                SF_TRY(buf::Manip(fmtstream).forward());
+                SF_VERIFY(buf::Manip(fmtstream).forward());
             }
-            SF_TRY(executor.exec_raw_string(std::basic_string_view<TChar>(begin_continuous_string, size_continuous_string)));
+            SF_VERIFY(executor.exec_raw_string(std::basic_string_view<TChar>(begin_continuous_string, size_continuous_string)));
 
             if (buf::Access(fmtstream).is_end_of_string() == false && buf::TestAccess(fmtstream).is_equal_to('{')) {
-                SF_TRY(parse());
+                SF_VERIFY(parse());
             }
         }
 
@@ -131,13 +131,13 @@ namespace stream::fmt::context {
     [[nodiscard]] std::expected<T, FMTResult> BasicContext<TChar>::format_read_parameter(const T& default_value) {
         if (!buf::TestAccess(fmtstream).is_equal_to('{')) {
             T t;
-            SF_TRY(buf::ReadManip(fmtstream).fast_read_integer(t));
+            SF_VERIFY(buf::ReadManip(fmtstream).fast_read_integer(t));
             return t;
         }
 
         // SubIndex
-        SF_TRY(buf::TestManip(fmtstream).skip_one_of('}'));
-        std::int32_t formatIdx = SF_TRY(GetFormatIndex());
+        SF_VERIFY(buf::TestManip(fmtstream).skip_one_of('}'));
+        std::int32_t formatIdx = SF_TRY(get_format_index());
         if constexpr (std::is_convertible_v<T, int64_t>)
             return args_interface.get_int_at(formatIdx);
         else if constexpr (std::is_convertible_v<T, std::basic_string_view<TChar>>)

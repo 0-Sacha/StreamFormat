@@ -23,29 +23,31 @@ namespace stream::fmt::buf {
             }
 
             if (TestAccess(glob).is_equal_to('?')) {
-                SF_TRY(Manip(glob).forward());
-                SF_TRY(Manip(istream).forward());
+                SF_VERIFY(Manip(glob).forward());
+                SF_VERIFY(Manip(istream).forward());
                 return buffer_exec_glob_(istream, glob);
             } else if (TestAccess(glob).is_equal_to('*')) {
-                SF_TRY(Manip(glob).forward());
+                SF_VERIFY(Manip(glob).forward());
                 const TChar* further = SF_TRY(buffer_exec_glob_(istream, glob));
                 while (Access(istream).can_move_forward()) {
-                    SF_TRY(Manip(istream).forward());
+                    SF_VERIFY(Manip(istream).forward());
                     const TChar* last = SF_TRY(buffer_exec_glob_(istream, glob));
                     if (last > further || further == nullptr) further = last;
                 }
                 return further;
             } else if (TestAccess(glob).is_equal_to('[')) {
-                SF_TRY(Manip(istream).forward());
+                SF_VERIFY(Manip(istream).forward());
                 const TChar* begin = glob.current_pos;
-                SF_TRY(TestManip(glob).go_to_forward(']'));
+                SF_VERIFY(TestManip(glob).go_to_forward(']'));
                 const TChar* end = glob.current_pos;
 
                 StreamView<TChar> charSet(begin, end - begin);
 
-                bool  is_inverted = SF_TRY(TestManip(glob).is_equal_to_forward('!'));
-                TChar toMatch     = SF_TRY(Manip(istream).get_and_forward());
-                bool  found       = false;
+                bool  is_inverted = TestAccess(glob).is_equal_to('!');
+                TChar toMatch     = istream.get();
+                SF_VERIFY(Manip(glob).forward());
+                SF_VERIFY(Manip(istream).forward());
+                bool found = false;
 
                 while (found == false && Access(charSet).can_move_forward()) {
                     if (TestAccess(charSet).is_equal_to(toMatch)) {
@@ -73,8 +75,8 @@ namespace stream::fmt::buf {
             }
 
             if (istream.get() == glob.get()) {
-                SF_TRY(Manip(glob).forward());
-                SF_TRY(Manip(istream).forward());
+                SF_VERIFY(Manip(glob).forward());
+                SF_VERIFY(Manip(istream).forward());
                 return buffer_exec_glob_(istream, glob);
             }
             return nullptr;
@@ -98,17 +100,17 @@ namespace stream::fmt::buf {
         Stream<TChar>& buffer;
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtrGlobber(std::basic_string_view<TChar> globPattern, TChar* str, std::size_t sizeToCopy) {
+        [[nodiscard]] std::expected<void, FMTResult> fast_read_char_ptrGlobber(std::basic_string_view<TChar> globPattern, TChar* str, std::size_t size_to_copy) {
             Stream<TChar> globber(globPattern);
             const TChar*  begin = buffer.current_pos;
             Globber<TChar>::buffer_exec_glob(*this, globber);
             const TChar* end = buffer.current_pos;
 
             Stream<TChar> subContext(begin, end);
-            return ReadManip(subContext).FastReadCharPtr(str, sizeToCopy);
+            return ReadManip(subContext).fast_read_char_ptr(str, size_to_copy);
         }
 
-        [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtrRegex(std::basic_string_view<TChar> regexPattern, TChar* str, std::size_t sizeToCopy) {
+        [[nodiscard]] std::expected<void, FMTResult> fast_read_char_ptrRegex(std::basic_string_view<TChar> regexPattern, TChar* str, std::size_t size_to_copy) {
             return std::unexpected(FMTResult::FunctionNotImpl);
         }
     };

@@ -35,7 +35,7 @@ namespace stream::fmt::context {
 
     protected:
         [[nodiscard]] std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar> sv) override {
-            SF_TRY(buf::TestManip(istream).is_same_forward(sv.data(), sv.size()));
+            SF_VERIFY(buf::TestManip(istream).is_same_forward(sv.data(), sv.size()));
             return {};
         }
         [[nodiscard]] std::expected<void, FMTResult> exec_settings() override {
@@ -52,8 +52,8 @@ namespace stream::fmt::context {
         template <typename Type, typename... Rest>
         [[nodiscard]] inline std::expected<void, FMTResult> read_type(Type& type, Rest&... rest) {
             auto&& parseErr = ParserType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::parse(type, *this);
-            SF_TRY(parseErr);
-            if constexpr (sizeof...(rest) > 0) SF_TRY(read_type(std::forward<Rest>(rest)...));
+            SF_VERIFY(parseErr);
+            if constexpr (sizeof...(rest) > 0) SF_VERIFY(read_type(std::forward<Rest>(rest)...));
             return {};
         }
     };
@@ -78,7 +78,7 @@ namespace stream::fmt::context {
 
         detail::TextProperties::Properties saveTextProperties = text_manager.save();
         context::BasicContext<TChar>       context(*this, format, args_interface);
-        SF_TRY(context.run());
+        SF_VERIFY(context.run());
         return text_manager.reload(saveTextProperties);
     }
 

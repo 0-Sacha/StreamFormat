@@ -22,8 +22,8 @@ namespace stream::fmt {
             detail::FormatterTextPropertiesExecutorANSI<TCharResolved> text_properties_executor;
             buf::FMTStreamIO<TCharResolved>                            ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
             context::BasicFormatterExecutor<TCharResolved>             executor(ostream, text_properties_executor);
-            SF_TRY(executor.run(format, std::forward<Args>(args)...));
-            if (newline) SF_TRY(buf::ManipIO(ostream).pushback('\n'));
+            SF_VERIFY(executor.run(format, std::forward<Args>(args)...));
+            if (newline) SF_VERIFY(buf::ManipIO(ostream).pushback('\n'));
             return executor.terminate();
         }
 
@@ -35,8 +35,8 @@ namespace stream::fmt {
             detail::FormatterTextPropertiesExecutorANSI<TCharResolved> text_properties_executor;
             buf::FMTStreamIO<TCharResolved>                            ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
             context::BasicFormatterExecutor<TCharResolved>             executor(ostream, text_properties_executor);
-            SF_TRY(executor.write_type(std::forward<T>(t)));
-            if (newline) SF_TRY(buf::ManipIO(ostream).pushback('\n'));
+            SF_VERIFY(executor.write_type(std::forward<T>(t)));
+            if (newline) SF_VERIFY(buf::ManipIO(ostream).pushback('\n'));
             return executor.terminate();
         }
     }  // namespace detail
@@ -59,7 +59,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
     [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
         std::fwrite(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size(), 1, stream);
         std::fflush(stream);
@@ -70,7 +70,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
     [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
-        SF_TRY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
         std::fwrite(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size(), 1, stream);
         std::fflush(stream);
@@ -81,7 +81,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
     [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
         stream.write(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size());
         stream.flush();
@@ -92,7 +92,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
     [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
-        SF_TRY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
         stream.write(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size());
         stream.flush();
@@ -103,7 +103,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
     [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
         str = ostream_manager.get_last_generated_string_view();
         return {};
     }
@@ -112,7 +112,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
     [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(Format&& format_input, Args&&... args) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(256);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
         return std::basic_string<TChar>{ostream_manager.get_last_generated_string_view()};
     }
 
@@ -136,7 +136,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value)
     [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
 
         std::fwrite(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()), 1, stream);
         std::fflush(stream);
@@ -147,7 +147,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value)
     [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
-        SF_TRY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
 
         std::fwrite(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()), 1, stream);
         std::fflush(stream);
@@ -158,7 +158,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value)
     [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
 
         stream.write(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()));
         stream.flush();
@@ -169,7 +169,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value)
     [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
-        SF_TRY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
 
         stream.write(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()));
         stream.flush();
@@ -180,7 +180,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value)
     [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
         str = ostream_manager.get_last_generated_string_view();
         return {};
     }
@@ -189,7 +189,7 @@ namespace stream::fmt {
         requires(detail::IsCharType<TChar>::value)
     [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(T&& t) {
         buf::DynamicStreamIOManager<TChar> ostream_manager(32);
-        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
+        SF_VERIFY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
         return std::string{ostream_manager.get_last_generated_string_view()};
     }
 }  // namespace stream::fmt

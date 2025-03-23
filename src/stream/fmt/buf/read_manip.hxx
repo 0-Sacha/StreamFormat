@@ -3,6 +3,8 @@
 #include "stream/fmt/buf/stream.hxx"
 #include "stream/fmt/buf/manip.hxx"
 
+#include <algorithm>
+
 namespace stream::fmt::buf {
     template <typename TChar>
     class ReadManip {
@@ -26,8 +28,8 @@ namespace stream::fmt::buf {
 
             T value = static_cast<T>(0);
             while (TestAccess(buffer).is_a_digit()) {
-                char c = SF_TRY(Manip(buffer).get_and_forward());
-                value  = value * static_cast<T>(10) + static_cast<T>(c - static_cast<TChar>('0'));
+                value = value * static_cast<T>(10) + static_cast<T>(buffer.get() - static_cast<TChar>('0'));
+                SF_VERIFY(Manip(buffer).forward());
             }
 
             t = sign ? -value : value;
@@ -45,9 +47,9 @@ namespace stream::fmt::buf {
             bool sign = SF_TRY(manip.is_equal_to_forward('-'));
 
             if (access.is_a_digit()) {
-                SF_TRY(fast_read_integer<T>(intpart));
+                SF_VERIFY(fast_read_integer<T>(intpart));
             } else if (access.is_equal_to('.')) {
-                SF_TRY(buf::Manip(buffer).forward());
+                SF_VERIFY(buf::Manip(buffer).forward());
             } else {
                 return std::unexpected(FMTResult::Parse_NonValidDigit);
             }
@@ -77,28 +79,27 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharPtr>
-        [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtr(const CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true) {
-            if (Access(buffer).can_move_forward(sizeToCopy) == false) {
-                return ReadManip(buffer).FastReadCharPtr(str, Access(buffer).get_buffer_remaining_size(), isZeroEnded);
+        [[nodiscard]] std::expected<void, FMTResult> fast_read_char_ptr(const CharPtr* str, std::size_t size_to_copy, bool is_zero_ended = true) {
+            if (Access(buffer).can_move_forward(size_to_copy) == false) {
+                return ReadManip(buffer).fast_read_char_ptr(str, Access(buffer).get_buffer_remaining_size(), is_zero_ended);
             }
 
-            // TODO : Opti with bigger types
-            while (sizeToCopy-- != 0) {
-                *str++ = SF_TRY(Manip(buffer).get_and_forward());
-            }
-            if (isZeroEnded) {
+            std::copy_n(str, size_to_copy, buffer.current_pos);
+            buffer.current_pos += size_to_copy;
+
+            if (is_zero_ended) {
                 *str = 0;
             }
 
             return {};
         }
         template <typename CharStr, std::size_t SIZE>
-        [[nodiscard]] inline std::expected<void, FMTResult> FastReadCharArray(const CharStr (&str)[SIZE], bool isZeroEnded = true) {
-            return FastReadCharPtr(str, SIZE);
+        [[nodiscard]] inline std::expected<void, FMTResult> fast_read_char_array(const CharStr (&str)[SIZE], bool is_zero_ended = true) {
+            return fast_read_char_ptr(str, SIZE);
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> FastReadCharBound(const CharStr* begin, const CharStr* end, bool isZeroEnded = true) {
-            return FastReadCharPtr(begin, end - begin - (isZeroEnded ? 1 : 0), isZeroEnded);
+        [[nodiscard]] inline std::expected<void, FMTResult> fast_read_char_bound(const CharStr* begin, const CharStr* end, bool is_zero_ended = true) {
+            return fast_read_char_ptr(begin, end - begin - (is_zero_ended ? 1 : 0), is_zero_ended);
         }
     };
 }  // namespace stream::fmt::buf

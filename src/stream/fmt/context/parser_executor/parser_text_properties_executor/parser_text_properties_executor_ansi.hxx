@@ -66,7 +66,7 @@ namespace stream::fmt::detail {
         }
         [[nodiscard]] std::expected<void, FMTResult> execute_front(const detail::TextProperties::TextFront::FrontID&) override {
             return std::unexpected(FMTResult::FunctionNotImpl);
-            /*ReadManip(buffer).BasicReadType('\033', '[', t.ID, 'm');*/
+            /*ReadManip(buffer).BasicReadType('\033', '[', t.id, 'm');*/
         }
 
     public:

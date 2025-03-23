@@ -169,9 +169,9 @@ namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<stream::tester::detail::Test, FormatterExecutor> {
         [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::Test& t, FormatterExecutor& executor) {
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.link.name));
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("::"));
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.name));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string(t.link.name));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string_literal("::"));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string(t.name));
             return {};
         }
     };
@@ -194,28 +194,28 @@ namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<stream::tester::detail::TestStatusBank, FormatterExecutor> {
         [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::TestStatusBank& status_bank, FormatterExecutor& executor) {
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("tests_done "));
-            SF_TRY(executor.run("{:C:white}", status_bank.tests_done));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string_literal("tests_done "));
+            SF_VERIFY(executor.run("{:C:white}", status_bank.tests_done));
 
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsOK "));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsOK "));
             if (status_bank.tests_ok == status_bank.tests_done) {
-                SF_TRY(executor.run("{:C:green}", status_bank.tests_ok));
+                SF_VERIFY(executor.run("{:C:green}", status_bank.tests_ok));
             } else {
-                SF_TRY(executor.run("{:C:yellow}", status_bank.tests_ok));
+                SF_VERIFY(executor.run("{:C:yellow}", status_bank.tests_ok));
             }
 
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsFAIL "));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsFAIL "));
             if (status_bank.tests_failed == 0) {
-                SF_TRY(executor.run("{:C:green}", status_bank.tests_failed));
+                SF_VERIFY(executor.run("{:C:green}", status_bank.tests_failed));
             } else {
-                SF_TRY(executor.run("{:C:red}", status_bank.tests_failed));
+                SF_VERIFY(executor.run("{:C:red}", status_bank.tests_failed));
             }
 
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | TestCrash "));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | TestCrash "));
             if (status_bank.tests_crash == 0) {
-                SF_TRY(executor.run("{:C:green}", status_bank.tests_crash));
+                SF_VERIFY(executor.run("{:C:green}", status_bank.tests_crash));
             } else {
-                SF_TRY(executor.run("{:C:magenta}", status_bank.tests_crash));
+                SF_VERIFY(executor.run("{:C:magenta}", status_bank.tests_crash));
             }
 
             return {};

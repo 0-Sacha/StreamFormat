@@ -55,25 +55,25 @@ namespace stream::fmt::buf {
             ManipIO manip(buffer);
 
             if (i == 0) {
-                SF_TRY(manip.pushback('0'));
+                SF_VERIFY(manip.pushback('0'));
                 return {};
             }
 
             if constexpr (std::is_signed_v<T>) {
                 if (i < 0) {
-                    SF_TRY(manip.pushback('-'));
+                    SF_VERIFY(manip.pushback('-'));
                     i = -i;
                 }
             }
 
             std::int32_t nb_digit = WriteUtils::get_number_of_digit_dec(i);
-            SF_TRY(manip.forward(nb_digit));
+            SF_VERIFY(manip.forward(nb_digit));
             while (i > 0) {
                 Manip(buffer).backward_force();
                 ManipIO(buffer).set(i % 10 + '0');
                 i /= 10;
             }
-            SF_TRY(manip.forward(nb_digit));
+            SF_VERIFY(manip.forward(nb_digit));
 
             return {};
         }
@@ -85,18 +85,18 @@ namespace stream::fmt::buf {
             ManipIO manip(buffer);
 
             if (i == 0) {
-                SF_TRY(manip.pushback('0'));
+                SF_VERIFY(manip.pushback('0'));
                 return {};
             }
             if (i < 0) {
-                SF_TRY(manip.pushback('-'));
+                SF_VERIFY(manip.pushback('-'));
                 i = -i;
             }
 
             T k                   = std::trunc(i);
             i                     = i - k;
             std::int32_t nb_digit = WriteUtils::get_number_of_digit_dec(k);
-            SF_TRY(manip.forward(nb_digit));
+            SF_VERIFY(manip.forward(nb_digit));
             std::int32_t nb_digit_ = nb_digit;
             while (nb_digit_ > 0) {
                 Manip(buffer).backward_force();
@@ -104,12 +104,12 @@ namespace stream::fmt::buf {
                 k /= 10;
                 nb_digit_--;
             }
-            SF_TRY(manip.forward(nb_digit));
-            SF_TRY(manip.pushback('.'));
+            SF_VERIFY(manip.forward(nb_digit));
+            SF_VERIFY(manip.pushback('.'));
 
             while (float_precision-- >= 0) {
                 TChar intPart = static_cast<TChar>(std::trunc(i *= 10));
-                SF_TRY(manip.pushback(intPart + '0'));
+                SF_VERIFY(manip.pushback(intPart + '0'));
                 i -= intPart;
             }
 
@@ -167,8 +167,8 @@ namespace stream::fmt::buf {
 
         template <typename Type, typename... Rest>
         [[nodiscard]] inline std::expected<void, FMTResult> basic_write_type(Type&& type, Rest&&... rest) {
-            SF_TRY(basic_write_type(type));
-            if constexpr (sizeof...(rest) > 0) SF_TRY(basic_write_type(std::forward<Rest>(rest)...));
+            SF_VERIFY(basic_write_type(type));
+            if constexpr (sizeof...(rest) > 0) SF_VERIFY(basic_write_type(std::forward<Rest>(rest)...));
             return {};
         }
     };

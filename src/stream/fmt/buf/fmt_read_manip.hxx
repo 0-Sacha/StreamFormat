@@ -21,7 +21,7 @@ namespace stream::fmt::buf {
             ShiftReadManip shift_manip(buffer);
             buf::TestManip manip(buffer);
 
-            SF_TRY(shift_manip.ignore_shift_begin_space(shift));
+            SF_VERIFY(shift_manip.ignore_shift_begin_space(shift));
 
             bool sign = false;
             if constexpr (std::is_signed_v<T>) {
@@ -38,7 +38,7 @@ namespace stream::fmt::buf {
                 --shift.size;
             }
 
-            SF_TRY(shift_manip.ignore_shift_end(shift));
+            SF_VERIFY(shift_manip.ignore_shift_end(shift));
 
             i = sign ? -res : res;
             return {};
@@ -51,7 +51,7 @@ namespace stream::fmt::buf {
             buf::TestAccess access(buffer);
             buf::TestManip  manip(buffer);
 
-            SF_TRY(shift_manip.ignore_shift_begin_space(shift));
+            SF_VERIFY(shift_manip.ignore_shift_begin_space(shift));
 
             bool sign = SF_TRY(manip.is_equal_to_forward('-'));
             if (sign) --shift.size;
@@ -59,12 +59,12 @@ namespace stream::fmt::buf {
             T intpart = static_cast<T>(0);
             if (access.is_a_digit()) {
                 while (access.is_a_digit()) {
-                    char c  = SF_TRY(Manip(buffer).get_and_forward());
-                    intpart = intpart * 10 + (c - '0');
+                    intpart = intpart * 10 + (buffer.get() - '0');
+                    SF_VERIFY(Manip(buffer).forward());
                     --shift.size;
                 }
             } else if (access.is_equal_to('.')) {
-                SF_TRY(buf::Manip(buffer).forward());
+                SF_VERIFY(buf::Manip(buffer).forward());
             } else {
                 return std::unexpected(FMTResult::Parse_NonValidDigit);
             }
@@ -90,7 +90,7 @@ namespace stream::fmt::buf {
                 dec /= 10;
             }
 
-            SF_TRY(shift_manip.ignore_shift_end(shift));
+            SF_VERIFY(shift_manip.ignore_shift_end(shift));
 
             t = sign ? -intpart - dec : intpart + dec;
             return {};
@@ -107,11 +107,11 @@ namespace stream::fmt::buf {
             shift.size -= sizeof(T) * 8;
             if (base_prefix != '\0') shift.size -= 2;
 
-            SF_TRY(shift_manip.ignore_shift_begin_space(shift));
+            SF_VERIFY(shift_manip.ignore_shift_begin_space(shift));
 
             if (base_prefix != '\0') {
-                SF_TRY(manip.skip_one_of('0'));
-                SF_TRY(manip.skip_one_of(base_prefix));
+                SF_VERIFY(manip.skip_one_of('0'));
+                SF_VERIFY(manip.skip_one_of(base_prefix));
             }
 
             T res = (T)0;
@@ -121,7 +121,7 @@ namespace stream::fmt::buf {
                 Manip(buffer).forward_force();
             }
 
-            SF_TRY(shift_manip.ignore_shift_end(shift));
+            SF_VERIFY(shift_manip.ignore_shift_end(shift));
 
             i = res;
             return {};

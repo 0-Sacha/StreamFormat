@@ -55,9 +55,9 @@ namespace stream::fmt::context {
         template <typename Type, typename... Rest>
         [[nodiscard]] inline std::expected<void, FMTResult> write_type(Type&& type, Rest&&... rest) {
             auto&& formatErr = FormatterType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::format(std::forward<Type>(type), *this);
-            SF_TRY(formatErr);
+            SF_VERIFY(formatErr);
             if constexpr (sizeof...(rest) > 0) {
-                SF_TRY(write_type(std::forward<Rest>(rest)...));
+                SF_VERIFY(write_type(std::forward<Rest>(rest)...));
             }
             return {};
         }
@@ -78,7 +78,7 @@ namespace stream::fmt::context {
         // End char not included in buffer manager context to deduce size correctly
         auto res = buf::ManipIO(ostream).pushback('\0');
         if (EndOfStringChar == EndOfStringCharMode::Forced) {
-            SF_TRY(res);
+            SF_VERIFY(res);
         }
 
         return {};
@@ -99,7 +99,7 @@ namespace stream::fmt::context {
 
         detail::TextProperties::Properties saveTextProperties = text_manager.save();
         context::BasicContext<TChar>       context(*this, format, args_interface);
-        SF_TRY(context.run());
+        SF_VERIFY(context.run());
         return text_manager.reload(saveTextProperties);
     }
 

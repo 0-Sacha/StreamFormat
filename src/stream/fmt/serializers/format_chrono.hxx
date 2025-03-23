@@ -28,44 +28,44 @@ namespace stream::fmt::detail {
         if (mode == TimePrintMode::Mod && shift.size < 0) shift.size = 3;
 
         if (buf::TestAccess(pattern).is_same("ns", 2)) {
-            SF_TRY(buf::Manip(pattern).forward());
+            SF_VERIFY(buf::Manip(pattern).forward(2));
             std::uint32_t ns = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::nanoseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod) ns = ns % 1000;
-            SF_TRY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(ns) % 1000, shift));
+            SF_VERIFY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(ns) % 1000, shift));
         } else if (buf::TestAccess(pattern).is_same("us", 2)) {
-            SF_TRY(buf::Manip(pattern).forward());
+            SF_VERIFY(buf::Manip(pattern).forward(2));
             std::uint32_t us = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::microseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 us = us % 1000;
             else if (mode == TimePrintMode::Sub)
                 us = us / 1000;
-            SF_TRY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(us) % 1000, shift));
+            SF_VERIFY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(us) % 1000, shift));
         } else if (buf::TestAccess(pattern).is_same("ms", 2)) {
-            SF_TRY(buf::Manip(pattern).forward());
+            SF_VERIFY(buf::Manip(pattern).forward(2));
             std::uint32_t ms = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::milliseconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 ms = ms % 1000;
             else if (mode == TimePrintMode::Sub)
                 ms = ms / 1000000;
-            SF_TRY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(ms) % 1000, shift));
+            SF_VERIFY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(ms) % 1000, shift));
         } else if (buf::TestAccess(pattern).is_equal_to('s')) {
-            SF_TRY(buf::Manip(pattern).forward());
+            SF_VERIFY(buf::Manip(pattern).forward());
             std::uint32_t sec = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::seconds>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod)
                 sec = sec % 60;
             else if (mode == TimePrintMode::Sub)
                 sec = sec / 1000000000;
-            SF_TRY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(sec) % 1000, shift));
+            SF_VERIFY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(sec) % 1000, shift));
         } else if (buf::TestAccess(pattern).is_equal_to('m')) {
-            SF_TRY(buf::Manip(pattern).forward());
+            SF_VERIFY(buf::Manip(pattern).forward());
             std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::minutes>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod) min = min % 60;
-            SF_TRY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(min) % 1000, shift));
+            SF_VERIFY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(min) % 1000, shift));
         } else if (buf::TestAccess(pattern).is_equal_to('h')) {
-            SF_TRY(buf::Manip(pattern).forward());
+            SF_VERIFY(buf::Manip(pattern).forward());
             std::uint32_t min = static_cast<std::uint32_t>(std::chrono::time_point_cast<std::chrono::hours>(value).time_since_epoch().count());
             if (mode == TimePrintMode::Mod) min = min % 24;
-            SF_TRY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(min) % 1000, shift));
+            SF_VERIFY(buf::FMTWriteManip(buffer).write_integer(static_cast<uint32_t>(min) % 1000, shift));
         }
 
         return {};
@@ -77,7 +77,7 @@ namespace stream::fmt::detail {
             buf::FMTParamsManip(pattern).param_go_to('%', '#', '/');
             return {};
         }));
-        SF_TRY(buf::WriteManip(buffer).fast_write_string(view));
+        SF_VERIFY(buf::WriteManip(buffer).fast_write_string(view));
 
         while (!buf::Access(pattern).is_end_of_string()) {
             TimePrintMode mode;
@@ -88,14 +88,14 @@ namespace stream::fmt::detail {
             else if (buf::TestAccess(pattern).is_equal_to('/'))
                 mode = TimePrintMode::Sub;
 
-            SF_TRY(buf::Manip(pattern).forward());
-            SF_TRY(write_sub_time_(value, pattern, buffer, mode));
+            SF_VERIFY(buf::Manip(pattern).forward());
+            SF_VERIFY(write_sub_time_(value, pattern, buffer, mode));
 
             auto view = SF_TRY(buf::TestManip(pattern).ViewExec([&] -> std::expected<void, FMTResult> {
                 buf::FMTParamsManip(pattern).param_go_to('%', '#', '/');
                 return {};
             }));
-            SF_TRY(buf::WriteManip(buffer).fast_write_string(view));
+            SF_VERIFY(buf::WriteManip(buffer).fast_write_string(view));
         }
 
         return {};
@@ -117,20 +117,20 @@ namespace stream::fmt {
                 return detail::WriteTime(std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::duration<Rep, Period>>(t),
                                          buf::StreamView(executor.data.specifiers.get_as_text("pattern", "%h:%m:%s.%ms")), executor.ostream);
             }
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_integer(t.count()));
+            SF_VERIFY(buf::WriteManip(executor.ostream).fast_write_integer(t.count()));
 
             if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::seconds>) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('s'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('s'));
             } else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::minutes>) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('m'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('m'));
             } else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::hours>) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('h'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('h'));
             } else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::milliseconds>) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('m', 's'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('m', 's'));
             } else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::microseconds>) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('u', 's'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('u', 's'));
             } else if constexpr (std::is_same_v<std::chrono::duration<Rep, Period>, std::chrono::nanoseconds>) {
-                SF_TRY(buf::ManipIO(executor.ostream).pushback('n', 's'));
+                SF_VERIFY(buf::ManipIO(executor.ostream).pushback('n', 's'));
             }
 
             return {};

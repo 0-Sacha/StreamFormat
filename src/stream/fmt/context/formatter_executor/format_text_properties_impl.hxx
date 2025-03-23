@@ -29,8 +29,8 @@ namespace stream::fmt {
     };
 
     template <typename FormatterExecutor>
-    struct FormatterType<detail::TextProperties::TextFront::reset_front, FormatterExecutor> {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const detail::TextProperties::TextFront::reset_front, FormatterExecutor& executor) {
+    struct FormatterType<detail::TextProperties::TextFront::ResetFront, FormatterExecutor> {
+        [[nodiscard]] static std::expected<void, FMTResult> format(const detail::TextProperties::TextFront::ResetFront, FormatterExecutor& executor) {
             return executor.text_manager.apply_front_reset();
         }
     };

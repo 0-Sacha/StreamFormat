@@ -23,7 +23,7 @@ namespace stream::fmt::buf {
     public:
         [[nodiscard]] std::expected<void, FMTResult> add_size(const std::size_t count) noexcept {
             std::size_t currentSize = Access(buffer).get_buffer_current_size();
-            SF_TRY(buffer.Manager.add_size(count))
+            SF_VERIFY(buffer.Manager.add_size(count))
             Manip(buffer).reload(buffer.Manager.get_buffer(), buffer.Manager.get_buffer_size());
             buffer.current_pos = buffer.Manager.get_buffer() + currentSize;
             return {};
@@ -35,7 +35,7 @@ namespace stream::fmt::buf {
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> forward(const std::size_t count = 1) noexcept {
-            SF_TRY(reserve(count));
+            SF_VERIFY(reserve(count));
             buffer.current_pos += count;
             return {};
         }
@@ -46,7 +46,7 @@ namespace stream::fmt::buf {
         }
 
         [[nodiscard]] inline std::expected<void, FMTResult> pushback(const TChar c) noexcept {
-            SF_TRY(reserve(1));
+            SF_VERIFY(reserve(1));
             *buffer.current_pos++ = c;
             return {};
         }
@@ -56,7 +56,7 @@ namespace stream::fmt::buf {
 
     public:
         [[nodiscard]] inline std::expected<void, FMTResult> pushback(const TChar c, auto count) noexcept {
-            SF_TRY(reserve(count))
+            SF_VERIFY(reserve(count))
             while (count-- > 0)
                 pushback_force(c);
             return {};
@@ -72,7 +72,7 @@ namespace stream::fmt::buf {
     public:
         template <typename... CharToPush>
         [[nodiscard]] inline std::expected<void, FMTResult> pushback_seq(const CharToPush... ele) noexcept {
-            SF_TRY(reserve(sizeof...(ele)))
+            SF_VERIFY(reserve(sizeof...(ele)))
             pushback_seq_impl(ele...);
             return {};
         }

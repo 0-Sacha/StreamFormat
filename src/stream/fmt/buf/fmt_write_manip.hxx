@@ -33,20 +33,20 @@ namespace stream::fmt::buf {
             }
 
             if (!shift.print.before_is_a_digit()) {
-                SF_TRY(ShiftWriteManip(buffer).write_shift_begin(shift));
+                SF_VERIFY(ShiftWriteManip(buffer).write_shift_begin(shift));
             }
             if (i < 0) {
-                SF_TRY(ManipIO(buffer).pushback('-'));
+                SF_VERIFY(ManipIO(buffer).pushback('-'));
                 i = -i;
             }
             if (shift.print.before_is_a_digit()) {
-                SF_TRY(ShiftWriteManip(buffer).write_shift_right_all(shift));
+                SF_VERIFY(ShiftWriteManip(buffer).write_shift_right_all(shift));
             }
 
             if (i == 0) {
-                SF_TRY(ManipIO(buffer).pushback('0'));
+                SF_VERIFY(ManipIO(buffer).pushback('0'));
             } else {
-                SF_TRY(ManipIO(buffer).forward(nb_digit));
+                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
                 std::int32_t nb_digit_ = nb_digit;
                 while (nb_digit_ > 0) {
                     Manip(buffer).backward_force();
@@ -54,10 +54,10 @@ namespace stream::fmt::buf {
                     i /= 10;
                     nb_digit_--;
                 }
-                SF_TRY(ManipIO(buffer).forward(nb_digit));
+                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
             }
 
-            SF_TRY(ShiftWriteManip(buffer).write_shift_end(shift));
+            SF_VERIFY(ShiftWriteManip(buffer).write_shift_end(shift));
 
             shift.print.after = old_after;
             return {};
@@ -79,21 +79,21 @@ namespace stream::fmt::buf {
             }
 
             if (!shift.print.before_is_a_digit()) {
-                SF_TRY(ShiftWriteManip(buffer).write_shift_begin(shift));
+                SF_VERIFY(ShiftWriteManip(buffer).write_shift_begin(shift));
             }
             if (i < 0) {
-                SF_TRY(ManipIO(buffer).pushback('-'));
+                SF_VERIFY(ManipIO(buffer).pushback('-'));
                 i = -i;
             }
             if (shift.print.before_is_a_digit()) {
-                SF_TRY(ShiftWriteManip(buffer).write_shift_right_all(shift));
+                SF_VERIFY(ShiftWriteManip(buffer).write_shift_right_all(shift));
             }
 
             T k = std::trunc(i);
             if (k == 0) {
-                SF_TRY(ManipIO(buffer).pushback('0'));
+                SF_VERIFY(ManipIO(buffer).pushback('0'));
             } else {
-                SF_TRY(ManipIO(buffer).forward(nb_digit));
+                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
                 std::int32_t nb_digit_ = nb_digit;
                 while (nb_digit_ > 0) {
                     Manip(buffer).backward_force();
@@ -101,18 +101,18 @@ namespace stream::fmt::buf {
                     k /= 10;
                     nb_digit_--;
                 }
-                SF_TRY(ManipIO(buffer).forward(nb_digit));
+                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
             }
 
-            SF_TRY(ManipIO(buffer).pushback('.'));
+            SF_VERIFY(ManipIO(buffer).pushback('.'));
             i -= k;
             while (float_precision-- != 0) {
                 T decimal = std::trunc(i *= 10);
-                SF_TRY(ManipIO(buffer).pushback((char)decimal + '0'));
+                SF_VERIFY(ManipIO(buffer).pushback((char)decimal + '0'));
                 i -= decimal;
             }
 
-            SF_TRY(ShiftWriteManip(buffer).write_shift_end(shift));
+            SF_VERIFY(ShiftWriteManip(buffer).write_shift_end(shift));
 
             shift.print.before = old_before;
             return {};
@@ -138,18 +138,18 @@ namespace stream::fmt::buf {
             }
 
             if (base_prefix != '\0') {
-                SF_TRY(ManipIO(buffer).pushback('0'));
-                SF_TRY(ManipIO(buffer).pushback(base_prefix));
+                SF_VERIFY(ManipIO(buffer).pushback('0'));
+                SF_VERIFY(ManipIO(buffer).pushback(base_prefix));
             }
 
-            SF_TRY(manip.forward(digit_count));
+            SF_VERIFY(manip.forward(digit_count));
             std::int32_t k = digit_count + 1;
             while (--k != 0) {
                 Manip(buffer).backward_force();
                 buffer.set(lut[i & (0b1 << digitSize)]);
                 i = i >> digitSize;
             }
-            SF_TRY(manip.forward(digit_count));
+            SF_VERIFY(manip.forward(digit_count));
             return {};
         }
 
@@ -196,10 +196,10 @@ namespace stream::fmt::buf {
                 }
                 const CharStr* const end = str;
 
-                SF_TRY(WriteManip(buffer).fast_write_char_array(begin, end - begin));
+                SF_VERIFY(WriteManip(buffer).fast_write_char_array(begin, end - begin));
 
                 if (size > 0 && *str == '\n') {
-                    SF_TRY(FMTManipIO(buffer).new_line_indent());
+                    SF_VERIFY(FMTManipIO(buffer).new_line_indent());
                     ++str;
                     --size;
                 }
@@ -219,18 +219,18 @@ namespace stream::fmt::buf {
         [[nodiscard]] inline std::expected<void, FMTResult> write_char_ptr(const CharStr* str, std::size_t size, detail::ShiftInfo& shift) {
             if (shift.size <= 0) return WriteManip(buffer).fast_write_char_array(str, size);
 
-            SF_TRY(ManipIO(buffer).reserve(std::max(static_cast<std::size_t>(shift.size), size)));
+            SF_VERIFY(ManipIO(buffer).reserve(std::max(static_cast<std::size_t>(shift.size), size)));
 
             if (static_cast<std::size_t>(shift.size) > size) {
                 shift.size -= static_cast<std::int32_t>(size);
 
-                SF_TRY(ShiftWriteManip(buffer).write_shift_begin(shift));
+                SF_VERIFY(ShiftWriteManip(buffer).write_shift_begin(shift));
 
-                SF_TRY(WriteManip(buffer).fast_write_char_array(str, size));
+                SF_VERIFY(WriteManip(buffer).fast_write_char_array(str, size));
 
-                SF_TRY(ShiftWriteManip(buffer).write_shift_end(shift));
+                SF_VERIFY(ShiftWriteManip(buffer).write_shift_end(shift));
             } else {
-                SF_TRY(WriteManip(buffer).fast_write_char_array(str, size));
+                SF_VERIFY(WriteManip(buffer).fast_write_char_array(str, size));
             }
             return {};
         }

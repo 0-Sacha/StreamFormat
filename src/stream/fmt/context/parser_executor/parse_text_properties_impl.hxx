@@ -29,8 +29,8 @@ namespace stream::fmt {
     };
 
     template <typename ParserExecutor>
-    struct ParserType<detail::TextProperties::TextFront::reset_front, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextFront::reset_front, ParserExecutor& executor) {
+    struct ParserType<detail::TextProperties::TextFront::ResetFront, ParserExecutor> {
+        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextFront::ResetFront, ParserExecutor& executor) {
             return executor.text_manager.apply_front_reset();
         }
     };

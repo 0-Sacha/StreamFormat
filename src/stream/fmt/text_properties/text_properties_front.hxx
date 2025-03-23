@@ -4,7 +4,7 @@
 
 namespace stream::fmt::detail {
     struct TextProperties::TextFront {
-        struct reset_front {};
+        struct ResetFront {};
 
         struct FrontID;
         struct Front;
@@ -17,17 +17,17 @@ namespace stream::fmt::detail {
         static inline constexpr std::uint8_t MaxFrontID     = 19;
 
     public:
-        std::uint8_t ID;
+        std::uint8_t id;
 
-        constexpr FrontID() : ID(DefaultFrontID) {}
-        constexpr FrontID(std::uint8_t id) : ID(id) {}
+        constexpr FrontID() : id(DefaultFrontID) {}
+        constexpr FrontID(std::uint8_t id_) : id(id_) {}
 
     public:
         constexpr bool operator==(const TextProperties::TextFront::FrontID& other) const {
-            return ID == other.ID;
+            return id == other.id;
         }
-        constexpr bool IsValid() const {
-            return ID > MinFrontID && ID < MaxFrontID;
+        constexpr bool is_valid() const {
+            return id > MinFrontID && id < MaxFrontID;
         }
     };
 
@@ -35,41 +35,41 @@ namespace stream::fmt::detail {
 
     struct TextProperties::TextFront::Front {
     public:
-        constexpr Front(const TextProperties::TextFront::FrontID frontId = TextProperties::TextFront::FrontID::DefaultFrontID)
-            : CurrentID(frontId.IsValid() ? frontId : TextProperties::TextFront::FrontID::DefaultFrontID) {}
+        constexpr Front(const TextProperties::TextFront::FrontID front_id = TextProperties::TextFront::FrontID::DefaultFrontID)
+            : current_id(front_id.is_valid() ? front_id : TextProperties::TextFront::FrontID::DefaultFrontID) {}
 
     public:
-        FrontID CurrentID;
+        FrontID current_id;
 
     public:
         void modify_reset() {
             *this = Front{};
         }
 
-        void apply(const TextProperties::TextFront::reset_front&) {
+        void apply(const TextProperties::TextFront::ResetFront&) {
             modify_reset();
         }
         void apply(const TextProperties::TextFront::Front& given) {
             *this = given;
         }
         void apply(const TextProperties::TextFront::FrontID& given) {
-            CurrentID = given;
+            current_id = given;
         }
 
     public:
-        bool need_modif(const TextProperties::TextFront::reset_front&) {
+        bool need_modif(const TextProperties::TextFront::ResetFront&) {
             return true;
         }
         bool need_modif(const TextProperties::TextFront::Front& given) {
             return *this != given;
         }
         bool need_modif(const TextProperties::TextFront::FrontID& given) {
-            return CurrentID != given;
+            return current_id != given;
         }
     };
 
     inline bool operator==(const TextProperties::TextFront::Front& lhs, const TextProperties::TextFront::Front& rhs) {
-        return lhs.CurrentID == rhs.CurrentID;
+        return lhs.current_id == rhs.current_id;
     }
 
     template <typename T>
@@ -78,7 +78,7 @@ namespace stream::fmt::detail {
     template <typename T>
     struct TextPropertiesFrontIsapplyType {
         using BaseType              = get_base_type<T>;
-        static constexpr bool value = std::is_same_v<BaseType, TextProperties::TextFront::reset_front> || std::is_same_v<BaseType, TextProperties::TextFront::Front> ||
+        static constexpr bool value = std::is_same_v<BaseType, TextProperties::TextFront::ResetFront> || std::is_same_v<BaseType, TextProperties::TextFront::Front> ||
                                       std::is_same_v<BaseType, TextProperties::TextFront::FrontID>;
     };
 
