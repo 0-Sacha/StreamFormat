@@ -2,8 +2,8 @@
 
 #include "stream/fmt/context/basic_context/basic_context.h"
 
-#include "stream/fmt/buffer/fmt_buffer_out_manip.h"
-#include "stream/fmt/buffer/buffer_write_manip.h"
+#include "stream/fmt/buf/fmt_manip_io.h"
+#include "stream/fmt/buf/write_manip.h"
 
 #include "formatter_type.h"
 #include "index_args.h"
@@ -21,7 +21,7 @@ namespace stream::fmt::context
     };
 
     template <typename CharType>
-    class BasicFormatterExecutor : public ContextExecutor<CharType>
+    class BasicFormatterExecutor : public context_executor<CharType>
     {
     public:
         using TChar = CharType;
@@ -29,39 +29,39 @@ namespace stream::fmt::context
         using M_Type = BasicFormatterExecutor<TChar>;
 
     public:
-        BasicFormatterExecutor(detail::FMTBufferOutInfo<TChar>& bufferOut, detail::ITextPropertiesExecutor& textPropertiesExecutor);
+        BasicFormatterExecutor(buf::FMTStreamIO<TChar>& ostream, detail::ITextPropertiesExecutor& text_properties_executor);
         ~BasicFormatterExecutor() override = default;
 
-        [[nodiscard]] std::expected<void, FMTResult> Terminate();
+        [[nodiscard]] std::expected<void, FMTResult> terminate();
 
     public:
-        detail::FMTBufferOutInfo<TChar>& BufferOut;
+        buf::FMTStreamIO<TChar>& ostream;
         EndOfStringCharMode EndOfStringChar = EndOfStringCharMode::Optional;
 
-        using ContextExecutor<CharType>::Data;
-        using ContextExecutor<CharType>::TextManager;
+        using context_executor<CharType>::data;
+        using context_executor<CharType>::TextManager;
     
     protected:
-        [[nodiscard]] std::expected<void, FMTResult> ExecRawString(std::basic_string_view<TChar> sv) override
+        [[nodiscard]] std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar> sv) override
         {
-            return detail::BufferWriteManip(BufferOut).FastWriteString(sv);
+            return buf::WriteManip(ostream).fast_write_string(sv);
         }
-        [[nodiscard]] std::expected<void, FMTResult> ExecSettings() override;
+        [[nodiscard]] std::expected<void, FMTResult> exec_settings() override;
 
     public:
         template <typename... Args>
-        [[nodiscard]] std::expected<void, FMTResult> Run_(detail::BufferInfoView<TChar> format, Args&&... args);
+        [[nodiscard]] std::expected<void, FMTResult> run_(buf::StreamView<TChar> format, Args&&... args);
         template <typename Format, typename... Args>
-        [[nodiscard]] std::expected<void, FMTResult> Run(Format&& format, Args&&... args);
+        [[nodiscard]] std::expected<void, FMTResult> run(Format&& format, Args&&... args);
 
     public:
         template <typename Type, typename... Rest>
-        [[nodiscard]] inline std::expected<void, FMTResult> WriteType(Type&& type, Rest&&... rest)
+        [[nodiscard]] inline std::expected<void, FMTResult> write_type(Type&& type, Rest&&... rest)
         {
-            auto&& formatErr = FormatterType<typename detail::FormatTypeForwardAs<detail::GetBaseType<Type>>::Type, M_Type>::format(std::forward<Type>(type), *this);
+            auto&& formatErr = FormatterType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::format(std::forward<Type>(type), *this);
             SF_TRY(formatErr);
             if constexpr (sizeof...(rest) > 0)
-                { SF_TRY(WriteType(std::forward<Rest>(rest)...)); }
+                { SF_TRY(write_type(std::forward<Rest>(rest)...)); }
             return {};
         }
     };
@@ -70,20 +70,20 @@ namespace stream::fmt::context
 namespace stream::fmt::context
 {
     template <typename TChar>
-    BasicFormatterExecutor<TChar>::BasicFormatterExecutor(detail::FMTBufferOutInfo<TChar>& bufferOut, detail::ITextPropertiesExecutor& textPropertiesExecutor)
-        : ContextExecutor<TChar>(textPropertiesExecutor)
-        , BufferOut(bufferOut)
+    BasicFormatterExecutor<TChar>::BasicFormatterExecutor(buf::FMTStreamIO<TChar>& ostream_, detail::ITextPropertiesExecutor& text_properties_executor_)
+        : context_executor<TChar>(text_properties_executor_)
+        , ostream(ostream_)
     {
-        textPropertiesExecutor.link_to_executor(this);
+        text_properties_executor_.link_to_executor(this);
     }
 
     template <typename TChar>
-    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Terminate()
+    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::terminate()
     {
-        detail::BufferOutManip(BufferOut).ComputeGeneratedSize();
+        buf::ManipIO(ostream).compute_generated_size();
 
         // End char not included in buffer manager context to deduce size correctly
-        auto res = detail::BufferOutManip(BufferOut).Pushback('\0');
+        auto res = buf::ManipIO(ostream).pushback('\0');
         if (EndOfStringChar == EndOfStringCharMode::Forced)
             { SF_TRY(res); }
 
@@ -91,34 +91,34 @@ namespace stream::fmt::context
     }
 
     template <typename TChar>
-    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::ExecSettings()
+    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::exec_settings()
     {
-        // Indent
-        auto indent = Data.Specifiers.Get("indent");
+        // indent
+        auto indent = data.specifiers.get("indent");
         if (indent != nullptr)
-            BufferOut.Indent = indent->AsNumber;
+            ostream.indent = indent->as_number;
         return {};
     }
 
     template <typename TChar>
     template <typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Run_(detail::BufferInfoView<TChar> format, Args&&... args)
+    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::run_(buf::StreamView<TChar> format, Args&&... args)
     {
-        auto argsInterface = detail::FormatterArgsInterface<TChar, BasicFormatterExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
+        auto args_interface = detail::FormatterArgsInterface<TChar, BasicFormatterExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
 
-        detail::TextProperties::Properties saveTextProperties = TextManager.Save();
-        Context::BasicContext<TChar> context(*this, format, argsInterface);
-        SF_TRY(context.Run());
-        return TextManager.Reload(saveTextProperties);
+        detail::TextProperties::Properties saveTextProperties = TextManager.save();
+        context::BasicContext<TChar> context(*this, format, args_interface);
+        SF_TRY(context.run());
+        return TextManager.reload(saveTextProperties);
     }
 
     template <typename TChar>
     template <typename Format, typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::Run(Format&& formatInput, Args&&... args)
+    [[nodiscard]] std::expected<void, FMTResult> BasicFormatterExecutor<TChar>::run(Format&& format_input, Args&&... args)
     {
-        return Run_(detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
+        return run_(buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
 }
 
-#include "FormatBasics-impl.h"
-#include "FormatTextProperties-impl.h"
+#include "format_basics_impl.h"
+#include "format_text_properties_impl.h"

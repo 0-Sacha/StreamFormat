@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../JsonObjects.h"
-#include "../JsonSerializer.h"
+#include "../json_objects.h"
+#include "../json_serializer.h"
 
 #include <utility>
 
-namespace stream::JSON
+namespace stream::json
 {
     template <typename T>
     requires (std::is_integral_v<T> && !std::is_floating_point_v<T>)
@@ -31,7 +31,7 @@ namespace stream::JSON
 
         static inline void parse(T (&t)[SIZE], detail::JsonParser& parser)
         {
-            if constexpr (fmt::detail::IsCharType<T>::Value)
+            if constexpr (fmt::detail::IsCharType<T>::value)
             {
                 // TODO
             }
@@ -43,7 +43,7 @@ namespace stream::JSON
 
         static inline void format(const T (&t)[SIZE], detail::JsonFormatter& formatter)
         {
-            if constexpr (fmt::detail::IsCharType<T>::Value)
+            if constexpr (fmt::detail::IsCharType<T>::value)
             {
                 // TODO
             }

@@ -9,7 +9,7 @@
 #include <process.h>
 #endif
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     int GetPid()
     {

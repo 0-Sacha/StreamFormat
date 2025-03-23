@@ -1,11 +1,11 @@
 #include "stream/fmt.h"
-#include "stream/Tester/TestSuite/AllTestSuite.h"
+#include "stream/tester/test_suite/all_test_suite.h"
 
-#include "BaseFMTTests.h"
+#include "base_fmt_tests.h"
 
 SFT_TEST_GROUP(FMT, SHIFT);
 
-#define TEST_FMT(fmt_test, expected, ...) SFT_EQ(stream::fmt::FormatString(fmt_test, __VA_ARGS__), expected)
+#define TEST_FMT(fmt_test, expected, ...) SFT_EQ(stream::fmt::format_string(fmt_test, __VA_ARGS__), expected)
 
 SFT_TEST_GROUP(SHIFT, NUMBER_SHIFT);
 SFT_TEST_GROUP(NUMBER_SHIFT, ONE_DIGIT);

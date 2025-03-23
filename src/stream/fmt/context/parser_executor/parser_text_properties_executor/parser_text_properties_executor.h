@@ -2,7 +2,7 @@
 
 #include "stream/fmt/context/basic_context/text_properties_executor.h"
 #include "stream/fmt/detail/prelude.h"
-#include "stream/fmt/context/ParserExecutor/BasicParserExecutor.h"
+#include "stream/fmt/context/parser_executor/basic_parser_executor.h"
 
 namespace stream::fmt::detail
 {
@@ -15,11 +15,11 @@ namespace stream::fmt::detail
 
         void link_to_executor(void* executor) override
         {
-            Buffer = &reinterpret_cast<Context::BasicParserExecutor<TChar>*>(executor)->BufferIn;
+            buffer = &reinterpret_cast<context::BasicParserExecutor<TChar>*>(executor)->istream;
         }
 
     protected:
-        BufferInfoView<TChar>* Buffer{nullptr};
+        buf::StreamView<TChar>* buffer{nullptr};
     };
 }
 
@@ -32,7 +32,7 @@ namespace stream::fmt::detail
         ParserNOTextPropertiesExecutor() = default;
         ~ParserNOTextPropertiesExecutor() override = default;
 
-        using IParserTextPropertiesExecutor<TChar>::Buffer;
+        using IParserTextPropertiesExecutor<TChar>::buffer;
 
     public:
         [[nodiscard]] std::expected<void, FMTResult> all_properties_reset() override { return {}; }
@@ -51,10 +51,10 @@ namespace stream::fmt::detail
 
     public:
         [[nodiscard]] std::expected<void, FMTResult> reset_front() override { return {}; }
-        [[nodiscard]] std::expected<void, FMTResult> ExecuteFront(const detail::TextProperties::TextFront::FrontID&) override { return {}; }
+        [[nodiscard]] std::expected<void, FMTResult> execute_front(const detail::TextProperties::TextFront::FrontID&) override { return {}; }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> ResetStyle() override { return {}; }
+        [[nodiscard]] std::expected<void, FMTResult> reset_style() override { return {}; }
         [[nodiscard]] std::expected<void, FMTResult> execute_style(const detail::TextProperties::TextStyle::Intensity&) override { return {}; }
         [[nodiscard]] std::expected<void, FMTResult> execute_style(const detail::TextProperties::TextStyle::Italic&) override { return {}; }
         [[nodiscard]] std::expected<void, FMTResult> execute_style(const detail::TextProperties::TextStyle::Underline&) override { return {}; }

@@ -1,32 +1,32 @@
 #pragma once
 
-#include "stream/fmt/buffer/buffer_info.h"
+#include "stream/fmt/buf/stream.h"
 
-#include "JsonObjects.h"
+#include "json_objects.h"
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     class JsonParser
     {
     public:
         JsonParser()
-            : BufferIn()
+            : istream()
         {}
 
-        JsonParser(fmt::detail::BufferInfoView<char>& input)
-            : BufferIn(input)
+        JsonParser(fmt::buf::StreamView<char>& input)
+            : istream(input)
         {}
 
     public:
-        inline bool IsJsonStringBegin() const { return fmt::detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('"'); }
-        inline bool IsJsonNumberBegin() const { return fmt::detail::BufferTestAccess<const char>(BufferIn).IsADigit() || fmt::detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('+', '-', '.'); }
-        inline bool IsJsonBooleanBegin() const { return fmt::detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('t', 'f'); }
-        inline bool IsJsonStructBegin() const { return fmt::detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('{'); }
-        inline bool IsJsonArrayBegin() const { return fmt::detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('['); }
-        inline bool IsJsonNullBegin() const { return fmt::detail::BufferTestAccess<const char>(BufferIn).IsEqualTo('n'); }
+        inline bool is_json_string_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('"'); }
+        inline bool is_json_number_begin() const { return fmt::buf::TestAccess<const char>(istream).is_a_digit() || fmt::buf::TestAccess<const char>(istream).is_equal_to('+', '-', '.'); }
+        inline bool is_json_boolean_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('t', 'f'); }
+        inline bool is_json_struct_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('{'); }
+        inline bool is_json_array_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('['); }
+        inline bool is_json_null_begin() const { return fmt::buf::TestAccess<const char>(istream).is_equal_to('n'); }
 
     public:
-        fmt::detail::BufferInfo<const char> BufferIn;
+        fmt::buf::Stream<const char> istream;
 
     public:
         struct Intermediate;
@@ -37,16 +37,16 @@ namespace stream::JSON::detail
 
         struct StructIntermediate;
         struct ArrayIntermediate;
-        StructIntermediate GetStructIntermediate();
-        ArrayIntermediate  GetArrayIntermediate();
+        StructIntermediate get_struct_intermediate();
+        ArrayIntermediate  get_array_intermediate();
     };
 }
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     struct JsonParser::Intermediate
     {
-        std::string_view Data;
+        std::string_view data;
 
         void parse(detail::JsonParser& parser);
 
@@ -96,13 +96,13 @@ namespace stream::JSON::detail
         }
     };
 
-    inline JsonParser::StructIntermediate JsonParser::GetStructIntermediate()
+    inline JsonParser::StructIntermediate JsonParser::get_struct_intermediate()
     {
         JsonParser::StructIntermediate res;
         res.parse(*this);
         return res;
     }
-    inline JsonParser::ArrayIntermediate JsonParser::GetArrayIntermediate()
+    inline JsonParser::ArrayIntermediate JsonParser::get_array_intermediate()
     {
         JsonParser::ArrayIntermediate res;
         res.parse(*this);

@@ -1,5 +1,5 @@
 #pragma once
 
-#include "BaseSerializers.h"
-#include "JsonObjectsSerializer.h"
-#include "STDSerializers/BasicSTDSerializers.h"
+#include "base_serializers.h"
+#include "json_objects_serializer.h"
+#include "std_serializers/basic_std_serializers.h"

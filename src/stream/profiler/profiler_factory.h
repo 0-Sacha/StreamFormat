@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Profiler.h"
+#include "profiler.h"
 
 #include <filesystem>
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     class ProfilerFactory
     {

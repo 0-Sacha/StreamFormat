@@ -2,15 +2,15 @@
 
 #include "stream/flog.h"
 #include "stream/fmt.h"
-#include "stream/ProfilerManager.h"
+#include "stream/profiler.h"
 
-#include "stream/fmt/serializers/CompilationData.h"
+#include "stream/fmt/serializers/compilation_data.h"
 
 #include <concepts>
 #include <string>
 #include <unordered_map>
 
-namespace stream::Tester
+namespace stream::tester
 {
     class TestFailure
     {
@@ -24,16 +24,16 @@ namespace stream::Tester
     };
 }
 
-namespace stream::Tester::detail
+namespace stream::tester::detail
 {
     class TestSuite;
     class Test
     {
     public:
         Test(std::string&& name, TestSuite& link, const fmt::detail::FileLocation& location)
-            : Name(std::move(name))
+            : name(std::move(name))
             , Link(link)
-            , Location(location)
+            , location(location)
             , LastStatus(TestStatus::Ok)
         {}
 
@@ -43,7 +43,7 @@ namespace stream::Tester::detail
         virtual TestStatus RunImpl() = 0;
 
     public:
-        TestStatus Run()
+        TestStatus run()
         {
             try
             {
@@ -60,9 +60,9 @@ namespace stream::Tester::detail
         }
 
     public:
-        std::string               Name;
+        std::string               name;
         TestSuite&                Link;
-        fmt::detail::FileLocation Location;
+        fmt::detail::FileLocation location;
         TestStatus                LastStatus;
     };
 
@@ -70,50 +70,50 @@ namespace stream::Tester::detail
     {
         void Reset()
         {
-            TestsDone  = 0;
-            TestsOk    = 0;
-            TestsFail  = 0;
-            TestsCrash = 0;
+            testsDone  = 0;
+            testsOk    = 0;
+            testsFail  = 0;
+            testsCrash = 0;
         }
 
         void AddTestStatus(TestStatus status)
         {
-            TestsDone++;
+            testsDone++;
             switch (status)
             {
                 case TestStatus::Ok:
-                    TestsOk++;
+                    testsOk++;
                     break;
                 case TestStatus::Fail:
-                    TestsFail++;
+                    testsFail++;
                     break;
                 case TestStatus::Crash:
-                    TestsCrash++;
+                    testsCrash++;
                     break;
             }
         }
 
         void Add(TestStatusBank status)
         {
-            TestsDone += status.TestsDone;
-            TestsOk += status.TestsOk;
-            TestsFail += status.TestsFail;
-            TestsCrash += status.TestsCrash;
+            testsDone += status.testsDone;
+            testsOk += status.testsOk;
+            testsFail += status.testsFail;
+            testsCrash += status.testsCrash;
         }
 
-        bool IsAllOk() { return TestsDone == TestsOk && TestsCrash == 0 && TestsFail == 0; }
+        bool IsAllOk() { return testsDone == testsOk && testsCrash == 0 && testsFail == 0; }
 
-        std::uint32_t ErrorStatus() { return TestsDone - TestsOk; }
+        std::uint32_t ErrorStatus() { return testsDone - testsOk; }
 
-        std::uint32_t TestsDone  = 0;
-        std::uint32_t TestsOk    = 0;
-        std::uint32_t TestsFail  = 0;
-        std::uint32_t TestsCrash = 0;
+        std::uint32_t testsDone  = 0;
+        std::uint32_t testsOk    = 0;
+        std::uint32_t testsFail  = 0;
+        std::uint32_t testsCrash = 0;
     };
 
     class TestSuite;
 }
-namespace stream::Tester
+namespace stream::tester
 {
     struct PerformanceTestData
     {
@@ -129,17 +129,17 @@ namespace stream::Tester
     class TestSuitesManager
     {
     public:
-        static bool                                                            ExecAllTestSuites();
-        static inline std::unordered_map<std::string_view, detail::TestSuite*> TestSuites;
+        static bool                                                            exec_all_test_suites();
+        static inline std::unordered_map<std::string_view, detail::TestSuite*> test_suites;
 
     public:
-        static inline bool                        Verbose                 = false;
+        static inline bool                        verbose                 = false;
         static inline bool                        PrintTime               = false;
         static inline PerformanceTestData         PerformanceTest         = PerformanceTestData{};
         static inline ConcurenceSpecificationData ConcurenceSpecification = ConcurenceSpecificationData{};
     };
 }
-namespace stream::Tester::detail
+namespace stream::tester::detail
 {
     struct TestSuiteData
     {
@@ -152,108 +152,108 @@ namespace stream::Tester::detail
     {
     public:
         TestSuite(std::string&& name, TestSuiteData extra = TestSuiteData{}, TestSuite* parent = nullptr)
-            : Name(std::move(name))
-            , Tests()
-            , Extra(extra)
-            , Logger()
-            , TestLogger()
-            , Profiler(nullptr)
-            , Parent(parent)
+            : name(std::move(name))
+            , tests()
+            , extra(extra)
+            , logger()
+            , test_logger()
+            , profiler(nullptr)
+            , parent(parent)
         {
             if (parent == nullptr)
-                TestSuitesManager::TestSuites.insert({Name, this});
+                TestSuitesManager::test_suites.insert({name, this});
             else
-                Parent->TestSuitesLinked.insert({Name, this});
+                parent->test_suites_linked.insert({name, this});
         }
 
-        std::string                                      Name;
-        std::unordered_map<std::string_view, Test*>      Tests;
-        std::unordered_map<std::string_view, TestSuite*> TestSuitesLinked;
+        std::string                                      name;
+        std::unordered_map<std::string_view, Test*>      tests;
+        std::unordered_map<std::string_view, TestSuite*> test_suites_linked;
 
-        TestSuiteData              Extra;
-        flog::BasicLogger          Logger;
-        flog::BasicLogger          TestLogger;
-        ProfilerManager::Profiler* Profiler;
+        TestSuiteData              extra;
+        flog::BasicLogger          logger;
+        flog::BasicLogger          test_logger;
+        profiler::Profiler*        profiler;
 
-        TestSuite* Parent;
+        TestSuite* parent;
 
     public:
-        void InitLogger();
+        void init_logger();
 
     private:
-        std::string                GetFullName();
-        std::string                GetCorrectedSizeName();
-        ProfilerManager::Profiler& GetProfiler();
+        std::string                get_full_name();
+        std::string                get_corrected_size_name();
+        profiler::Profiler& get_profiler();
 
     public:
-        TestStatusBank ExecAllTests();
+        TestStatusBank exec_all_tests();
     };
 }
 
 namespace stream::fmt
 {
     template <typename FormatterExecutor>
-    struct FormatterType<stream::Tester::detail::TestSuite, FormatterExecutor>
+    struct FormatterType<stream::tester::detail::TestSuite, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::Tester::detail::TestSuite& t, FormatterExecutor& executor)
-            { return executor.buffer_out.FastWriteString(t.Name); }
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::TestSuite& t, FormatterExecutor& executor)
+            { return executor.ostream.fast_write_string(t.name); }
     };
 
     template <typename FormatterExecutor>
-    struct FormatterType<stream::Tester::detail::Test, FormatterExecutor>
+    struct FormatterType<stream::tester::detail::Test, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::Tester::detail::Test& t, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::Test& t, FormatterExecutor& executor)
         {
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteString(t.Link.Name));
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("::"));
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteString(t.Name));
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.Link.name));
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("::"));
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.name));
             return {};
         }
     };
 
     template <typename FormatterExecutor>
-    struct FormatterType<stream::Tester::TestStatus, FormatterExecutor>
+    struct FormatterType<stream::tester::TestStatus, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::Tester::TestStatus& status, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::TestStatus& status, FormatterExecutor& executor)
         {
             switch (status)
             {
-                case stream::Tester::TestStatus::Ok:
-                    return executor.Run("[  {C:green}OK{C}  ]");
-                case stream::Tester::TestStatus::Fail:
-                    return executor.Run("[ {C:red}FAIL{C} ]");
-                case stream::Tester::TestStatus::Crash:
-                    return executor.Run("[{C:magenta}Crash{C} ]");
+                case stream::tester::TestStatus::Ok:
+                    return executor.run("[  {C:green}OK{C}  ]");
+                case stream::tester::TestStatus::Fail:
+                    return executor.run("[ {C:red}FAIL{C} ]");
+                case stream::tester::TestStatus::Crash:
+                    return executor.run("[{C:magenta}Crash{C} ]");
             }
             return {};
         }
     };
 
     template <typename FormatterExecutor>
-    struct FormatterType<stream::Tester::detail::TestStatusBank, FormatterExecutor>
+    struct FormatterType<stream::tester::detail::TestStatusBank, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::Tester::detail::TestStatusBank& statusBank, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::TestStatusBank& statusBank, FormatterExecutor& executor)
         {
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("TestsDone "));
-            SF_TRY(executor.Run("{:C:white}", statusBank.TestsDone));
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("testsDone "));
+            SF_TRY(executor.run("{:C:white}", statusBank.testsDone));
 
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral(" | TestsOK "));
-            if (statusBank.TestsOk == statusBank.TestsDone)
-                { SF_TRY(executor.Run("{:C:green}", statusBank.TestsOk)); }
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsOK "));
+            if (statusBank.testsOk == statusBank.testsDone)
+                { SF_TRY(executor.run("{:C:green}", statusBank.testsOk)); }
             else
-                { SF_TRY(executor.Run("{:C:yellow}", statusBank.TestsOk)); }
+                { SF_TRY(executor.run("{:C:yellow}", statusBank.testsOk)); }
 
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral(" | TestsFAIL "));
-            if (statusBank.TestsFail == 0)
-                { SF_TRY(executor.Run("{:C:green}", statusBank.TestsFail)); }
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsFAIL "));
+            if (statusBank.testsFail == 0)
+                { SF_TRY(executor.run("{:C:green}", statusBank.testsFail)); }
             else
-                { SF_TRY(executor.Run("{:C:red}", statusBank.TestsFail)); }
+                { SF_TRY(executor.run("{:C:red}", statusBank.testsFail)); }
 
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral(" | TestCrash "));
-            if (statusBank.TestsCrash == 0)
-                { SF_TRY(executor.Run("{:C:green}", statusBank.TestsCrash)); }
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | TestCrash "));
+            if (statusBank.testsCrash == 0)
+                { SF_TRY(executor.run("{:C:green}", statusBank.testsCrash)); }
             else
-                { SF_TRY(executor.Run("{:C:magenta}", statusBank.TestsCrash)); }
+                { SF_TRY(executor.run("{:C:magenta}", statusBank.testsCrash)); }
 
             return {};
         }
@@ -265,17 +265,17 @@ namespace stream::fmt
 #define STREAMFORMAT_TESTINTERNAL_FUNC_NAME(TestSuiteName, TestName)      TestSuite_##TestSuiteName##TestName
 #define STREAMFORMAT_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName) TestSuite_##TestSuiteName##TestName##_ExecMethod
 #define STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(...) \
-    stream::Tester::detail::TestSuiteData    \
+    stream::tester::detail::TestSuiteData    \
     {                                             \
         __VA_ARGS__                               \
     }
 
 //-------------------- TestSuite --------------------//
 #define SFT_TEST_SUITE(TestSuiteName, ...) \
-    stream::Tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)(#TestSuiteName, STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__))
+    stream::tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)(#TestSuiteName, STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__))
 #define SFT_TEST_GROUP(TestSuiteName, GroupName, ...)                                                                                                    \
-    stream::Tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)(#GroupName, STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__), \
+    stream::tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)(#GroupName, STREAMFORMAT_TESTINTERNAL_SUITE_EXTRA(__VA_ARGS__), \
                                                                                           &STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName))
 
-#define SFT_TEST_SUITE_DECLARATION(TestSuiteName, ...)            stream::Tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)
-#define SFT_TEST_GROUP_DECLARATION(TestSuiteName, GroupName, ...) stream::Tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)
+#define SFT_TEST_SUITE_DECLARATION(TestSuiteName, ...)            stream::tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName)
+#define SFT_TEST_GROUP_DECLARATION(TestSuiteName, GroupName, ...) stream::tester::detail::TestSuite STREAMFORMAT_TESTINTERNAL_SUITE_NAME(GroupName)

@@ -9,13 +9,13 @@
 #include <unordered_map>
 #include <vector>
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     class JsonParser;
     class JsonFormatter;
 }
 
-namespace stream::JSON
+namespace stream::json
 {
     struct JsonObject
     {
@@ -45,11 +45,11 @@ namespace stream::JSON
     public:
         ObjectType GetType() { return m_Type; }
 
-        JsonObject& operator[](const std::size_t index) { return Get(index); }
-        JsonObject& operator[](const std::string_view subObject) { return Get(subObject); }
+        JsonObject& operator[](const std::size_t index) { return get(index); }
+        JsonObject& operator[](const std::string_view subObject) { return get(subObject); }
 
-        virtual JsonObject& Get(const std::size_t) { throw detail::JsonIndexingError{}; }
-        virtual JsonObject& Get(const std::string_view) { throw detail::JsonIndexingError{}; }
+        virtual JsonObject& get(const std::size_t) { throw detail::JsonIndexingError{}; }
+        virtual JsonObject& get(const std::string_view) { throw detail::JsonIndexingError{}; }
 
     public:
         template <typename T>
@@ -83,7 +83,7 @@ namespace stream::JSON
             JsonObjectSerializer<T>::WriteObject(t, *this);
         }
 
-        std::string ToString() { return fmt::FormatString(*this).value(); }
+        std::string ToString() { return fmt::format_string(*this).value(); }
 
     public:
         virtual void ParserExecute(detail::JsonParser& parser)                = 0;
@@ -109,9 +109,9 @@ namespace stream::JSON
         std::string String;
 
     public:
-        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStringObject>(); }
-        static std::unique_ptr<JsonObject> Create(const std::string_view value) { return std::make_unique<JsonStringObject>(value); }
-        static std::unique_ptr<JsonObject> Create(std::string&& value) { return std::make_unique<JsonStringObject>(std::move(value)); }
+        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonStringObject>(); }
+        static std::unique_ptr<JsonObject> create(const std::string_view value) { return std::make_unique<JsonStringObject>(value); }
+        static std::unique_ptr<JsonObject> create(std::string&& value) { return std::make_unique<JsonStringObject>(std::move(value)); }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
@@ -130,7 +130,7 @@ namespace stream::JSON
         double Number;
 
     public:
-        static std::unique_ptr<JsonObject> Create(double value = 0.0) { return std::make_unique<JsonNumberObject>(value); }
+        static std::unique_ptr<JsonObject> create(double value = 0.0) { return std::make_unique<JsonNumberObject>(value); }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
@@ -149,7 +149,7 @@ namespace stream::JSON
         bool Boolean;
 
     public:
-        static std::unique_ptr<JsonObject> Create(bool value = false) { return std::make_unique<JsonBooleanObject>(value); }
+        static std::unique_ptr<JsonObject> create(bool value = false) { return std::make_unique<JsonBooleanObject>(value); }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
@@ -165,7 +165,7 @@ namespace stream::JSON
         ~JsonStructObject() override = default;
 
     public:
-        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonStructObject>(); }
+        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonStructObject>(); }
 
     public:
         std::unordered_map<std::string, std::unique_ptr<JsonObject>> Objects;
@@ -173,7 +173,7 @@ namespace stream::JSON
     public:
         void        Add(const std::string& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({name, std::move(object)}); }
         void        Add(std::string&& name, std::unique_ptr<JsonObject>&& object) { Objects.insert({std::move(name), std::move(object)}); }
-        JsonObject& Get(const std::string_view subObject) override
+        JsonObject& get(const std::string_view subObject) override
         {
             try
             {
@@ -199,14 +199,14 @@ namespace stream::JSON
         ~JsonArrayObject() override = default;
 
     public:
-        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonArrayObject>(); }
+        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonArrayObject>(); }
 
     public:
         std::vector<std::unique_ptr<JsonObject>> Objects;
 
     public:
         void        Add(std::unique_ptr<JsonObject>&& object) { Objects.emplace_back(std::move(object)); }
-        JsonObject& Get(const std::size_t index) override { return *Objects[index]; }
+        JsonObject& get(const std::size_t index) override { return *Objects[index]; }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;
@@ -222,7 +222,7 @@ namespace stream::JSON
         ~JsonNullObject() override = default;
 
     public:
-        static std::unique_ptr<JsonObject> Create() { return std::make_unique<JsonNullObject>(); }
+        static std::unique_ptr<JsonObject> create() { return std::make_unique<JsonNullObject>(); }
 
     public:
         void ParserExecute(detail::JsonParser& parser) override;

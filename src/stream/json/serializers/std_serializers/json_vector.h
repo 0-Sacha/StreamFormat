@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stream/Json/JsonObjects.h"
-#include "stream/Json/JsonSerializer.h"
+#include "stream/json/json_objects.h"
+#include "stream/json/json_serializer.h"
 
 #include <vector>
 
-namespace stream::JSON
+namespace stream::json
 {
     template <typename T>
     struct JsonSerializer<std::vector<T>>

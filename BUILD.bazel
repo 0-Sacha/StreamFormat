@@ -16,24 +16,3 @@ cc_library(
     linkstatic = True,
     visibility = ["//visibility:public"],
 )
-
-cc_test(
-    name = "streamTests",
-    srcs = glob([ "Tests/**/*.h", "Tests/**/*.cpp" ]),
-    copts = select({
-        "@rules_cc//cc/compiler:msvc-cl": ["/std:latest"],
-        "//conditions:default": [
-            "-std=c++23",
-            "-Wall", "-Wextra", "-Wpedantic",
-            "-Wshadow",
-            "-Wconversion", "-Wsign-conversion",
-            "-Werror=return-type"
-        ],
-    }),
-    deps = [ ":stream" ],
-    linkopts = select({
-        "@rules_cc//cc/compiler:msvc-cl": [""],
-        "//conditions:default": ["-pthread"],
-    }),
-    visibility = ["//visibility:public"],
-)

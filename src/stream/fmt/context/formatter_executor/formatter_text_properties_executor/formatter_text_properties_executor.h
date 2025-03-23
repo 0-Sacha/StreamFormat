@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stream/fmt/context/basic_context/text_properties_executor.h"
-#include "stream/fmt/buffer/fmt_buffer_out_manip.h"
+#include "stream/fmt/buf/fmt_manip_io.h"
 #include "stream/fmt/context/formatter_executor/basic_formatter_executor.h"
 
 namespace stream::fmt::detail
@@ -14,11 +14,11 @@ namespace stream::fmt::detail
 
         void link_to_executor(void* executor) override
         {
-            Buffer = &reinterpret_cast<Context::BasicFormatterExecutor<TChar>*>(executor)->BufferOut;
+            buffer = &reinterpret_cast<context::BasicFormatterExecutor<TChar>*>(executor)->ostream;
         }
 
     protected:
-        detail::FMTBufferOutInfo<TChar>* Buffer{nullptr};
+        buf::FMTStreamIO<TChar>* buffer{nullptr};
     };
 }
 
@@ -48,10 +48,10 @@ namespace stream::fmt::detail
 
     public:
         [[nodiscard]] std::expected<void, FMTResult> reset_front() override {}
-        [[nodiscard]] std::expected<void, FMTResult> ExecuteFront(const detail::TextProperties::TextFront::FrontID&) override {}
+        [[nodiscard]] std::expected<void, FMTResult> execute_front(const detail::TextProperties::TextFront::FrontID&) override {}
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> ResetStyle() override {}
+        [[nodiscard]] std::expected<void, FMTResult> reset_style() override {}
         [[nodiscard]] std::expected<void, FMTResult> execute_style(const detail::TextProperties::TextStyle::Intensity&) override {}
         [[nodiscard]] std::expected<void, FMTResult> execute_style(const detail::TextProperties::TextStyle::Italic&) override {}
         [[nodiscard]] std::expected<void, FMTResult> execute_style(const detail::TextProperties::TextStyle::Underline&) override {}

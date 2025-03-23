@@ -11,22 +11,22 @@ namespace stream::fmt
     public:
         template <std::size_t SIZE>
         StringViewNamedArgs(const CharName (&name)[SIZE], const T& t)
-            : m_Name(name)
+            : name_(name)
             , value(t)
         {}
 
         StringViewNamedArgs(std::basic_string_view<CharName> name, const T& t)
-            : m_Name(name)
+            : name_(name)
             , value(t)
         {}
 
     public:
-        T&                               GetValue() { return value; }
-        const T&                         GetValue() const { return value; }
-        std::basic_string_view<CharName> GetName() const { return m_Name; }
+        T&                               get_value() { return value; }
+        const T&                         get_value() const { return value; }
+        std::basic_string_view<CharName> get_name() const { return name_; }
 
     protected:
-        std::basic_string_view<CharName> m_Name;
+        std::basic_string_view<CharName> name_;
         const T&                         value;
     };
 
@@ -35,7 +35,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const StringViewNamedArgs<T, CharName>& t, FormatterExecutor& executor)
         {
-            return executor.WriteType(t.GetValue());
+            return executor.write_type(t.get_value());
         }
     };
 
@@ -45,22 +45,22 @@ namespace stream::fmt
     {
     public:
         StringNamedArgs(const std::string& str, const T& t)
-            : m_Name(str)
+            : name_(str)
             , value(t)
         {}
 
         StringNamedArgs(std::string&& str, const T& t)
-            : m_Name(std::move(str))
+            : name_(std::move(str))
             , value(t)
         {}
 
     public:
-        T&                               GetValue() { return value; }
-        const T&                         GetValue() const { return value; }
-        std::basic_string_view<CharName> GetName() const { return m_Name; }
+        T&                               get_value() { return value; }
+        const T&                         get_value() const { return value; }
+        std::basic_string_view<CharName> get_name() const { return name_; }
 
     protected:
-        std::basic_string<CharName> m_Name;
+        std::basic_string<CharName> name_;
         const T&                    value;
     };
 
@@ -69,11 +69,11 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const StringNamedArgs<T, CharName>& t, FormatterExecutor& executor)
         {
-            return executor.WriteType(t.GetValue());
+            return executor.write_type(t.get_value());
         }
     };
 
-    namespace Detail
+    namespace detail
     {
         template <typename T>
         struct IsANamedArgs

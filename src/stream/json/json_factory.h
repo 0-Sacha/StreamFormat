@@ -1,17 +1,17 @@
 #pragma once
 
-#include "JsonFormatter-inl.h"
-#include "JsonFormatter.h"
-#include "JsonObjects.h"
-#include "JsonParser.h"
-#include "JsonSerializer.h"
-#include "serializers/JsonObjectsSerializer.h"
-#include "serializers/Serializers.h"
+#include "json_formatter_impl.h"
+#include "json_formatter.h"
+#include "json_objects.h"
+#include "json_parser.h"
+#include "json_serializer.h"
+#include "serializers/json_objects_serializer.h"
+#include "serializers/serializers.h"
 
 #include <filesystem>
 #include <memory>
 
-namespace stream::JSON
+namespace stream::json
 {
     class JsonFactory
     {
@@ -27,18 +27,18 @@ namespace stream::JSON
 namespace stream::fmt
 {
     template <typename FormatterExecutor>
-    struct FormatterType<JSON::JsonObject, FormatterExecutor>
+    struct FormatterType<json::JsonObject, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const JSON::JsonObject& object, FormatterExecutor& executor)
-            { return executor.WriteType(JSON::FormatAsJson<JSON::JsonObject>(object)); }
+        [[nodiscard]] static std::expected<void, FMTResult> format(const json::JsonObject& object, FormatterExecutor& executor)
+            { return executor.write_type(json::FormatAsJson<json::JsonObject>(object)); }
     };
 }
 
 #include <fstream>
 #include <utility>
-#include "stream//fmt/buffer/buffer_out_manager/dynamic_buffer_out_manager.h"
-#include "serializers/JsonObjectsSerializer.h"
-namespace stream::JSON
+#include "stream//fmt/buf/streamio_manager/dynamic_streamio_manager.h"
+#include "serializers/json_objects_serializer.h"
+namespace stream::json
 {
     template <typename T>
     T JsonFactory::FromPath(const std::filesystem::path& path)
@@ -56,7 +56,7 @@ namespace stream::JSON
         file.read(buffer.data(), size);
         file.close();
 
-        fmt::detail::BufferInfoView<char> input(buffer.data(), buffer.size());
+        fmt::buf::StreamView<char> input(buffer.data(), buffer.size());
         detail::JsonParser parser(input);
         T res;
         JsonSerializer<T>::parse(res, parser);
@@ -70,12 +70,12 @@ namespace stream::JSON
 
         if (file.is_open() == false) throw std::runtime_error("unable to open file");
 
-        fmt::detail::DynamicBufferOutManager<char> BufferOutManager(256);
-        fmt::detail::BufferOutInfo<char> bufferOut = fmt::detail::BufferOutInfo<char>::Create(BufferOutManager).value();
-        detail::JsonFormatter formatter(bufferOut, settings);
+        fmt::buf::DynamicStreamIOManager<char> StreamIOManager(256);
+        fmt::buf::StreamIO<char> ostream = fmt::buf::StreamIO<char>::create(StreamIOManager).value();
+        detail::JsonFormatter formatter(ostream, settings);
         JsonSerializer<T>::format(json, formatter);
 
-        file.write(BufferOutManager.GetBuffer(), static_cast<std::streamsize>(BufferOutManager.GetLastGeneratedDataSize()));
+        file.write(StreamIOManager.get_buffer(), static_cast<std::streamsize>(StreamIOManager.get_last_generated_data_size()));
         file.flush();
         file.close();
     }

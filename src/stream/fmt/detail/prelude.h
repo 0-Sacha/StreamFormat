@@ -12,7 +12,7 @@
 //
 //        Macro PackSave ; PackSave (foreshadowing for constexpr)
 //
-//        TOKENIZER bufferIn
+//        TOKENIZER istream
 //
 //        GLOBBER
 //

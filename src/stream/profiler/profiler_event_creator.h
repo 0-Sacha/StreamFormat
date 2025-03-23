@@ -1,8 +1,8 @@
 #pragma once
 
-#include "AllEvents.h"
+#include "all_events.h"
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     class Profiler;
 
@@ -11,22 +11,22 @@ namespace stream::ProfilerManager
     public:
         ScopeProfile(Profiler& profiler, const std::string& name, const std::string& category = "ScopeProfiler")
             : DurationEvent(name, category)
-            , m_Profiler(profiler)
+            , profiler_(profiler)
         {
-            Start();
+            start();
         }
 
         ScopeProfile(Profiler& profiler, std::string&& name, std::string&& category = "ScopeProfiler")
             : DurationEvent(std::move(name), std::move(category))
-            , m_Profiler(profiler)
+            , profiler_(profiler)
         {
-            Start();
+            start();
         }
 
         ~ScopeProfile() override;
 
     private:
-        Profiler& m_Profiler;
+        Profiler& profiler_;
     };
 
     class ObjectTracker
@@ -37,38 +37,38 @@ namespace stream::ProfilerManager
         virtual ~ObjectTracker();
 
     public:
-        void Snapshot();
+        void snapshot();
 
     private:
-        Profiler&   m_Profiler;
-        std::string m_Name;
-        std::string m_Category;
+        Profiler&   profiler_;
+        std::string name_;
+        std::string category_;
     };
 
     class EventCounter
     {
     public:
         EventCounter(Profiler& profiler, const std::string& name, const std::string& category = "EventCounter")
-            : m_Profiler(profiler)
-            , m_Name(name)
-            , m_Category(category)
-            , m_Idx(0)
+            : profiler_(profiler)
+            , name_(name)
+            , category_(category)
+            , idx_(0)
         {}
 
         EventCounter(Profiler& profiler, std::string&& name, std::string&& category = "EventCounter")
-            : m_Profiler(profiler)
-            , m_Name(std::move(name))
-            , m_Category(std::move(category))
-            , m_Idx(0)
+            : profiler_(profiler)
+            , name_(std::move(name))
+            , category_(std::move(category))
+            , idx_(0)
         {}
 
     public:
-        void Snapshot();
+        void snapshot();
 
     private:
-        Profiler&     m_Profiler;
-        std::string   m_Name;
-        std::string   m_Category;
-        std::uint64_t m_Idx;
+        Profiler&     profiler_;
+        std::string   name_;
+        std::string   category_;
+        std::uint64_t idx_;
     };
 }

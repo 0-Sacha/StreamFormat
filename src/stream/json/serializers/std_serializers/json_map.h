@@ -1,10 +1,10 @@
 #pragma once
 
-#include "stream/Json/JsonSerializer.h"
+#include "stream/json/json_serializer.h"
 
 #include <map>
 
-namespace stream::JSON
+namespace stream::json
 {
     template <typename K, typename T>
     struct JsonSerializer<std::map<K, T>>

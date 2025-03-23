@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LoggerMultiSinks.h"
+#include "logger_multi_sink.h"
 
 namespace stream::flog::detail
 {
@@ -9,14 +9,14 @@ namespace stream::flog::detail
     {
     public:
         using Base = BasicLoggerMultiSinkImpl<Severity, CharType>;
-        using Base::SetName;
-        using Base::GetName;
-        using Base::GetSinks;
-        using Base::AddSink;
-        using Base::m_Name;
-        using Base::m_Sinks;
+        using Base::set_name;
+        using Base::get_name;
+        using Base::get_sinks;
+        using Base::add_sink;
+        using Base::name_;
+        using Base::sinks_;
 
-        using Base::m_StartTime;
+        using Base::start_time_;
 
         using typename Base::SeverityValueType;
 
@@ -32,41 +32,41 @@ namespace stream::flog::detail
         ~BasicLoggerMultiSinkFastImpl() override = default;
 
     public:
-        void Await(const SeverityValueType& severity)
+        void await(const SeverityValueType& severity)
         {
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
+            for (auto& sink : sinks_)
+                if (sink->need_to_log(severity)) sink->wait_until_finished_to_write();
         }
 
     public:
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, const Format& format, Args&&... args)
         {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
+            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
 
-            fmt::detail::DynamicBufferOutManager<CharType> manager(256);
-            auto formatBuffer = SF_TRY(fmt::detail::FormatInManager(manager, false, format, std::forward<Args>(args)...));
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity))
-                    { SF_TRY(sink->FormatAndWriteToSink(sink->get_pattern(severity), logTime, m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer))); }
+            fmt::buf::DynamicStreamIOManager<CharType> manager(256);
+            auto formatBuffer = SF_TRY(fmt::detail::format_in_manager(manager, false, format, std::forward<Args>(args)...));
+            for (auto& sink : sinks_)
+                if (sink->need_to_log(severity))
+                    { SF_TRY(sink->format_and_write_to_sink(sink->get_pattern(severity), logTime, name_, static_cast<std::basic_string_view<CharType>>(*formatBuffer))); }
 
-            Await(severity);
+            await(severity);
             return {};
         }
 
         template <typename T>
         [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, T&& t)
         {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
+            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
 
-            fmt::detail::DynamicBufferOutManager<CharType> manager(256);
-            auto formatBuffer = SF_TRY(fmt::detail::FormatInManager(manager, false, std::forward<T>(t)));
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity))
-                    { SF_TRY(sink->FormatAndWriteToSink(sink->get_pattern(severity), logTime, m_Name, static_cast<std::basic_string_view<CharType>>(*formatBuffer))); }
+            fmt::buf::DynamicStreamIOManager<CharType> manager(256);
+            auto formatBuffer = SF_TRY(fmt::detail::format_in_manager(manager, false, std::forward<T>(t)));
+            for (auto& sink : sinks_)
+                if (sink->need_to_log(severity))
+                    { SF_TRY(sink->format_and_write_to_sink(sink->get_pattern(severity), logTime, name_, static_cast<std::basic_string_view<CharType>>(*formatBuffer))); }
 
-            Await(severity);
+            await(severity);
 
             return {};
         }

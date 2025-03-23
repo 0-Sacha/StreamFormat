@@ -1,8 +1,8 @@
-#include "JsonFormatter.h"
+#include "json_formatter.h"
 
-#include "JsonSerializer.h"
+#include "json_serializer.h"
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     inline JsonFormatter::StructIntermediate::StructIntermediate(JsonFormatter& formatter)
         : Formatter(formatter)

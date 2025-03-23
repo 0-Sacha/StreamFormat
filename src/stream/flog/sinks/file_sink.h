@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LoggerSink.h"
+#include "logger_sink.h"
 
 #include <filesystem>
 #include <fstream>

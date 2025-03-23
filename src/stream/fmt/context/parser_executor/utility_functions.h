@@ -1,24 +1,24 @@
 #pragma once
 
-#include "BasicParserExecutor.h"
+#include "basic_parser_executor.h"
 
-#include "stream/fmt/buffer/buffer_out_manager/given_buffer_out_manager.h"
-#include "stream/fmt/buffer/buffer_out_manager/static_buffer_out_manager.h"
+#include "stream/fmt/buf/streamio_manager/given_streamio_manager.h"
+#include "stream/fmt/buf/streamio_manager/static_streamio_manager.h"
 
-#include "ParserTextPropertiesExecutor/ParserANSITextPropertiesExecutor.h"
+#include "parser_text_properties_executor/parser_text_properties_executor_ansi.h"
 
 namespace stream::fmt
 {
     template <typename Buffer, typename Format, typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> parse(Buffer&& bufferInput, Format&& formatInput, Args&&... args)
+    [[nodiscard]] std::expected<void, FMTResult> parse(Buffer&& buffer_input, Format&& format_input, Args&&... args)
     {
-        detail::BufferInfoView buffer{bufferInput};
-        detail::BufferInfoView format{formatInput};
+        buf::StreamView buffer{buffer_input};
+        buf::StreamView format{format_input};
         using TChar = typename decltype(format)::TChar;
 
-        detail::ParserNOTextPropertiesExecutor<std::remove_const_t<TChar>> textPropertiesExecutor;
-        Context::BasicParserExecutor<std::remove_const_t<TChar>> executor(buffer, textPropertiesExecutor);
-        SF_TRY(executor.Run(format, std::forward<Args>(args)...));
-        return executor.Terminate();
+        detail::ParserNOTextPropertiesExecutor<std::remove_const_t<TChar>> text_properties_executor;
+        context::BasicParserExecutor<std::remove_const_t<TChar>> executor(buffer, text_properties_executor);
+        SF_TRY(executor.run(format, std::forward<Args>(args)...));
+        return executor.terminate();
     }
 }

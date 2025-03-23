@@ -11,7 +11,7 @@ namespace stream::fmt
         [[nodiscard]] static std::expected<void, FMTResult> format(const T&, FormatterExecutor& executor)
         {
 #ifdef UNKOWN_TYPE_MESSAGE
-            executor.Run("({C:red}FMT unknow type: {})", typeid(T).name());
+            executor.run("({C:red}FMT unknow type: {})", typeid(T).name());
 #endif
 #ifdef UNKOWN_TYPE_FAIL
             static_assert(false);
@@ -24,16 +24,16 @@ namespace stream::fmt
     };
 }
 
-#define STREAMFORMAT_AUTO_FORMATTER(Type, fmt, ...)                                                                                                             \
+#define STREAMFORMAT_AUTO_FORMATTER(Type, formatstr, ...)                                                                                                             \
     template <typename FormatterExecutor>                                                                                                                       \
     struct stream::fmt::FormatterType<Type, FormatterExecutor>                                                                                            \
     {                                                                                                                                                           \
-        [[nodiscard]] static std::expected<void, FMTResult> format(const Type& value, FormatterExecutor& executor) { return executor.Run(fmt, __VA_ARGS__); }   \
+        [[nodiscard]] static std::expected<void, FMTResult> format(const Type&, FormatterExecutor& executor) { return executor.run(formatstr, __VA_ARGS__); }   \
     };
 
-#define STREAMFORMAT_AUTO_FORMATTER_T(Type, fmt, ...)                                                                                                   \
+#define STREAMFORMAT_AUTO_FORMATTER_T(Type, formatstr, ...)                                                                                                   \
     template <typename FormatterExecutor>                                                                                                               \
     struct stream::fmt::FormatterType<Type, FormatterExecutor>                                                                                    \
     {                                                                                                                                                   \
-        [[nodiscard]] static std::expected<void, FMTResult> format(const Type&, FormatterExecutor& executor) { return executor.Run(fmt, __VA_ARGS__); } \
+        [[nodiscard]] static std::expected<void, FMTResult> format(const Type&, FormatterExecutor& executor) { return executor.run(formatstr, __VA_ARGS__); } \
     };

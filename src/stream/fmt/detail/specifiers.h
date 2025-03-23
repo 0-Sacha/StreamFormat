@@ -37,32 +37,32 @@ namespace stream::fmt::detail
         {
         public:
             constexpr ShiftPrint()
-                : Before(' ')
-                , After(' ')
+                : before(' ')
+                , after(' ')
             {}
 
             constexpr ShiftPrint(char c)
-                : Before(c)
-                , After(c)
+                : before(c)
+                , after(c)
             {}
 
             constexpr ShiftPrint(char before, char after)
-                : Before(before)
-                , After(after)
+                : before(before)
+                , after(after)
             {}
 
         public:
-            char Before;
-            char After;
+            char before;
+            char after;
 
         public:
-            constexpr bool BeforeIsADigit() const { return Before >= '0' && Before <= '9'; }
+            constexpr bool before_is_a_digit() const { return before >= '0' && before <= '9'; }
         };
 
     public:
-        ShiftType       Type  = ShiftType::Default;     // <  - >  - ^
-        ShiftPrint      Print = ShiftPrint{};           // 0 - ' ' - * .....
-        std::int32_t    Size  = -1;                     // <? - >? - ^?
+        ShiftType       type  = ShiftType::Default;     // <  - >  - ^
+        ShiftPrint      print = ShiftPrint{};           // 0 - ' ' - * .....
+        std::int32_t    size  = -1;                     // <? - >? - ^?
     };
 }
 
@@ -72,133 +72,133 @@ namespace stream::fmt::detail
     struct FormatSpecifier
     {
         FormatSpecifier()
-            : Name(nullptr, 0)
-            , AsText(nullptr, 0)
-            , AsNumber(0)
-            , HasText(false)
-            , HasNumber(false)
+            : name(nullptr, 0)
+            , as_text(nullptr, 0)
+            , as_number(0)
+            , has_text(false)
+            , has_number(false)
         {}
 
         FormatSpecifier(std::basic_string_view<TChar> name)
-            : Name(name)
-            , AsText(nullptr, 0)
-            , AsNumber(0)
-            , HasText(false)
-            , HasNumber(false)
+            : name(name)
+            , as_text(nullptr, 0)
+            , as_number(0)
+            , has_text(false)
+            , has_number(false)
         {}
 
         FormatSpecifier(std::basic_string_view<TChar> name, std::basic_string_view<TChar> value)
-            : Name(name)
-            , AsText(value)
-            , AsNumber(0)
-            , HasText(true)
-            , HasNumber(false)
+            : name(name)
+            , as_text(value)
+            , as_number(0)
+            , has_text(true)
+            , has_number(false)
         {}
 
         FormatSpecifier(std::basic_string_view<TChar> name, const std::int32_t value)
-            : Name(name)
-            , AsText(nullptr, 0)
-            , AsNumber(value)
-            , HasText(false)
-            , HasNumber(true)
+            : name(name)
+            , as_text(nullptr, 0)
+            , as_number(value)
+            , has_text(false)
+            , has_number(true)
         {}
 
-        FormatSpecifier(std::basic_string_view<TChar> name, const std::int32_t valueAsNumber, std::basic_string_view<TChar> valueAsText)
-            : Name(name)
-            , AsText(valueAsText)
-            , AsNumber(valueAsNumber)
-            , HasText(true)
-            , HasNumber(true)
+        FormatSpecifier(std::basic_string_view<TChar> name, const std::int32_t value_as_number, std::basic_string_view<TChar> value_as_text)
+            : name(name)
+            , as_text(value_as_text)
+            , as_number(value_as_number)
+            , has_text(true)
+            , has_number(true)
         {}
 
-        std::basic_string_view<TChar>  Name = "";
-        std::basic_string_view<TChar>  AsText = "";
-        std::int32_t                        AsNumber = 0;
-        bool                                HasText = false;
-        bool                                HasNumber = false;
+        std::basic_string_view<TChar>  name = "";
+        std::basic_string_view<TChar>  as_text = "";
+        std::int32_t                        as_number = 0;
+        bool                                has_text = false;
+        bool                                has_number = false;
     };
 
     template <typename TChar, std::size_t SIZE>
     struct FormatSpecifierList
     {
     public:
-        std::uint8_t                                    SpecifierCount = 0;
-        std::array<FormatSpecifier<TChar>, SIZE>   Specifier{};
+        std::uint8_t                                    specifier_count = 0;
+        std::array<FormatSpecifier<TChar>, SIZE>   specifiers{};
 
         struct Constraint
         {
-            bool HasText = false;
-            bool HasNumber = false;
+            bool has_text = false;
+            bool has_number = false;
         };
 
     public:
         static inline constexpr std::uint8_t NotFound() { return (std::numeric_limits<std::uint8_t>::max)(); }
 
-        FormatSpecifier<TChar>* Get(std::basic_string_view<TChar> name, const Constraint& constraint = Constraint{})
+        FormatSpecifier<TChar>* get(std::basic_string_view<TChar> name, const Constraint& constraint = Constraint{})
         {
-            STREAMFORMAT_ASSERT(SpecifierCount <= SIZE);
-            for (std::uint8_t i = 0; i < SpecifierCount; ++i)
-                if (Specifier[i].Name == name)
+            STREAMFORMAT_ASSERT(specifier_count <= SIZE);
+            for (std::uint8_t i = 0; i < specifier_count; ++i)
+                if (specifiers[i].name == name)
                 {
-                    bool textContraintsatisfied = !constraint.HasText || Specifier[i].HasText;
-                    bool numberContraintsatisfied = !constraint.HasNumber || Specifier[i].HasNumber;
-                    if (textContraintsatisfied && numberContraintsatisfied)
-                        return &Specifier[i];
+                    bool text_contraint_satisfied = !constraint.has_text || specifiers[i].has_text;
+                    bool number_contraint_satisfied = !constraint.has_number || specifiers[i].has_number;
+                    if (text_contraint_satisfied && number_contraint_satisfied)
+                        return &specifiers[i];
                 }
             return nullptr;
         }
 
-        const FormatSpecifier<TChar>* Get(std::basic_string_view<TChar> name, const Constraint& constraint = Constraint{}) const
+        const FormatSpecifier<TChar>* get(std::basic_string_view<TChar> name, const Constraint& constraint = Constraint{}) const
         {
-            STREAMFORMAT_ASSERT(SpecifierCount <= SIZE);
-            for (std::uint8_t i = 0; i < SpecifierCount; ++i)
-                if (Specifier[i].Name == name)
+            STREAMFORMAT_ASSERT(specifier_count <= SIZE);
+            for (std::uint8_t i = 0; i < specifier_count; ++i)
+                if (specifiers[i].name == name)
                 {
-                    bool textContraintsatisfied = !constraint.HasText || Specifier[i].HasText;
-                    bool numberContraintsatisfied = !constraint.HasNumber || Specifier[i].HasNumber;
-                    if (textContraintsatisfied && numberContraintsatisfied)
-                        return &Specifier[i];
+                    bool text_contraint_satisfied = !constraint.has_text || specifiers[i].has_text;
+                    bool number_contraint_satisfied = !constraint.has_number || specifiers[i].has_number;
+                    if (text_contraint_satisfied && number_contraint_satisfied)
+                        return &specifiers[i];
                 }
             return nullptr;
         }
 
-        bool Has(std::basic_string_view<TChar> name) const { return Get(name) != nullptr; }
+        bool has(std::basic_string_view<TChar> name) const { return get(name) != nullptr; }
 
-        std::int32_t GetAsNumber(std::basic_string_view<TChar> name, std::int32_t defaultValue) const
+        std::int32_t get_as_number(std::basic_string_view<TChar> name, std::int32_t default_value) const
         {
-            const FormatSpecifier<TChar>* get = Get(name, Constraint{.HasNumber = true});
-            if (get == nullptr || !get->HasNumber)
-                return defaultValue;
-            return get->AsNumber;
+            const FormatSpecifier<TChar>* getptr = get(name, Constraint{.has_number = true});
+            if (getptr == nullptr || !getptr->has_number)
+                return default_value;
+            return getptr->as_number;
         }
 
-        std::basic_string_view<TChar> GetAsText(std::basic_string_view<TChar> name, std::basic_string_view<TChar> defaultValue) const
+        std::basic_string_view<TChar> get_as_text(std::basic_string_view<TChar> name, std::basic_string_view<TChar> default_value) const
         {
-            const FormatSpecifier<TChar>* get = Get(name, Constraint{.HasText = true});
-            if (get == nullptr || !get->HasText)
-                return defaultValue;
-            return get->AsText;
+            const FormatSpecifier<TChar>* getptr = get(name, Constraint{.has_text = true});
+            if (getptr == nullptr || !getptr->has_text)
+                return default_value;
+            return getptr->as_text;
         }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> Pushback(const FormatSpecifier<TChar>& specifier)
+        [[nodiscard]] std::expected<void, FMTResult> pushback(const FormatSpecifier<TChar>& specifier)
         {
-            if (SpecifierCount >= SIZE)
-                return std::unexpected(FMTResult::Specifers_Full);
-            Specifier[SpecifierCount++] = specifier;
+            if (specifier_count >= SIZE)
+                return std::unexpected(FMTResult::Specifiers_Full);
+            specifiers[specifier_count++] = specifier;
             return {};
         }
 
-        [[nodiscard]] std::expected<void, FMTResult> Concat(const FormatSpecifier<TChar>& specifier)
+        [[nodiscard]] std::expected<void, FMTResult> concat(const FormatSpecifier<TChar>& specifier)
         {
-            FormatSpecifier<TChar>* local = Get(specifier.Name);
+            FormatSpecifier<TChar>* local = get(specifier.name);
             if (local == nullptr)
-                return Pushback(specifier);
+                return pushback(specifier);
 
-            if (specifier.HasText)
-                { local->HasText = true; local->AsText  = specifier.AsText; }
-            if (specifier.HasNumber)
-                { local->HasNumber = true; local->AsNumber  = specifier.AsNumber; }
+            if (specifier.has_text)
+                { local->has_text = true; local->as_text  = specifier.as_text; }
+            if (specifier.has_number)
+                { local->has_number = true; local->as_number  = specifier.as_number; }
             return {};
         }
     };
@@ -207,41 +207,41 @@ namespace stream::fmt::detail
     struct FormatData
     {
     public:
-        bool HasSpec = false;
-        bool KeepNewStyle = false; // W
+        bool has_spec = false;
+        bool keep_new_style = false; // W
 
-        bool PrefixSuffix = false; // #
-        IntegerPrintBase IntegerPrint = IntegerPrintBase::Dec; // B  - X  - O  - D
-        std::int32_t FloatPrecision = -1; // .
-        ShiftInfo Shift;
+        bool prefix_suffix = false; // #
+        IntegerPrintBase integer_print = IntegerPrintBase::Dec; // b  - X  - O  - D
+        std::int32_t float_precision = -1; // .
+        ShiftInfo shift;
 
-        FormatSpecifierList<TChar, 10> Specifiers;
+        FormatSpecifierList<TChar, 10> specifiers;
 
-        std::basic_string_view<TChar> NextOverride = std::basic_string_view<TChar>(nullptr, 0);
+        std::basic_string_view<TChar> next_override = std::basic_string_view<TChar>(nullptr, 0);
 
     public:
-        void Apply(const FormatData& given) { *this = given; }
+        void apply(const FormatData& given) { *this = given; }
 
-        void Apply(const IntegerPrintBase& given) { IntegerPrint = given; }
-        void Apply(const ShiftInfo& given) { Shift = given; }
-        void Apply(const FormatSpecifier<TChar>& given) { Specifiers.Concat(given); }
+        void apply(const IntegerPrintBase& given) { integer_print = given; }
+        void apply(const ShiftInfo& given) { shift = given; }
+        void apply(const FormatSpecifier<TChar>& given) { specifiers.concat(given); }
 
         template <typename T>
-        bool TestApply(const T* given)
+        bool testapply(const T* given)
             requires requires(const T& value, FormatData& data)
             {
-                data.Apply(value);
+                data.apply(value);
             }
         {
             if (given == nullptr) return false;
-            Apply(*given);
+            apply(*given);
             return true;
         }
     };
 
     template <typename T, typename TChar>
-    concept FormatDataCanApply = requires(const T& value, FormatData<TChar>& data)
+    concept format_data_can_apply = requires(const T& value, FormatData<TChar>& data)
     {
-        data.Apply(value);
+        data.apply(value);
     };
 }

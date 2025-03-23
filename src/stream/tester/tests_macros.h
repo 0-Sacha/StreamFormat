@@ -2,21 +2,21 @@
 
 #include "stream/flog.h"
 
-#define STREAMFORMAT_TEST_TRACE(...) stream::Test::TestCore::GetLogger().trace(__VA_ARGS__)
-#define STREAMFORMAT_TEST_INFO(...)  stream::Test::TestCore::GetLogger().info(__VA_ARGS__)
-#define STREAMFORMAT_TEST_WARN(...)  stream::Test::TestCore::GetLogger().warn(__VA_ARGS__)
-#define STREAMFORMAT_TEST_ERROR(...) stream::Test::TestCore::GetLogger().error(__VA_ARGS__)
-#define STREAMFORMAT_TEST_FATAL(...) stream::Test::TestCore::GetLogger().fatal(__VA_ARGS__)
-#define STREAMFORMAT_TEST_OK(...)    stream::Test::TestCore::GetLogger().Ok(__VA_ARGS__)
-#define STREAMFORMAT_TEST_FAIL(...)  stream::Test::TestCore::GetLogger().Fail(__VA_ARGS__)
-#define STREAMFORMAT_TEST_BASIC(...) stream::Test::TestCore::GetLogger().Basic(__VA_ARGS__)
+#define STREAMFORMAT_TEST_TRACE(...) stream::Test::TestCore::get_logger().trace(__VA_ARGS__)
+#define STREAMFORMAT_TEST_INFO(...)  stream::Test::TestCore::get_logger().info(__VA_ARGS__)
+#define STREAMFORMAT_TEST_WARN(...)  stream::Test::TestCore::get_logger().warn(__VA_ARGS__)
+#define STREAMFORMAT_TEST_ERROR(...) stream::Test::TestCore::get_logger().error(__VA_ARGS__)
+#define STREAMFORMAT_TEST_FATAL(...) stream::Test::TestCore::get_logger().fatal(__VA_ARGS__)
+#define STREAMFORMAT_TEST_OK(...)    stream::Test::TestCore::get_logger().Ok(__VA_ARGS__)
+#define STREAMFORMAT_TEST_FAIL(...)  stream::Test::TestCore::get_logger().Fail(__VA_ARGS__)
+#define STREAMFORMAT_TEST_BASIC(...) stream::Test::TestCore::get_logger().Basic(__VA_ARGS__)
 
 namespace stream::Test
 {
     class TestCore
     {
     public:
-        static flog::BasicLogger& GetLogger()
+        static flog::BasicLogger& get_logger()
         {
             static flog::BasicLogger instance("stream-Test", "{name} {color} -> {data}");
             return instance;

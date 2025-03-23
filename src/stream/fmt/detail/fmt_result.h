@@ -20,14 +20,14 @@ namespace stream::fmt
         ArgsInterface_CantMatchNamedArgs,
         ArgsInterface_IndexOutOfBounds,
 
-        Specifers_Full,
-        Specifers_Invalid,
-        Specifers_DoesNotExist,
+        Specifiers_Full,
+        Specifiers_Invalid,
+        Specifiers_DoesNotExist,
 
         Context_ParsingFormat,
         Context_ArgumentIndexResolution,
         Context_ArgumentIndexExpected,
-        Context_CannotApplyType,
+        Context_CannotapplyType,
         
         GivenArgs_UnableToDeduceSize,
 

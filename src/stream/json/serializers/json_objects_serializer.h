@@ -1,32 +1,32 @@
 #pragma once
 
-#include "../JsonObjects.h"
-#include "../JsonSerializer.h"
+#include "../json_objects.h"
+#include "../json_serializer.h"
 
-#include "STDSerializers/JSON_unordered_map.h"
-#include "STDSerializers/JSON_vector.h"
+#include "std_serializers/json_unordered_map.h"
+#include "std_serializers/json_vector.h"
 
 #include <map>
 
-namespace stream::JSON
+namespace stream::json
 {
     template <>
     struct JsonSerializer<std::unique_ptr<JsonObject>>
     {
         static inline void parse(std::unique_ptr<JsonObject>& t, detail::JsonParser& parser)
         {
-            fmt::detail::BufferTestManip(parser.BufferIn).IgnoreEveryBlanks();
-            if (parser.IsJsonStringBegin())
+            fmt::buf::TestManip(parser.istream).IgnoreEveryBlanks();
+            if (parser.is_json_string_begin())
                 t = std::make_unique<JsonStringObject>();
-            else if (parser.IsJsonNumberBegin())
+            else if (parser.is_json_number_begin())
                 t = std::make_unique<JsonNumberObject>();
-            else if (parser.IsJsonBooleanBegin())
+            else if (parser.is_json_boolean_begin())
                 t = std::make_unique<JsonBooleanObject>();
-            else if (parser.IsJsonStructBegin())
+            else if (parser.is_json_struct_begin())
                 t = std::make_unique<JsonStructObject>();
-            else if (parser.IsJsonArrayBegin())
+            else if (parser.is_json_array_begin())
                 t = std::make_unique<JsonArrayObject>();
-            else if (parser.IsJsonNullBegin())
+            else if (parser.is_json_null_begin())
                 t = std::make_unique<JsonNullObject>();
 
             t->ParserExecute(parser);
@@ -83,7 +83,7 @@ namespace stream::JSON
         static inline void parse(JsonStructObject& t, detail::JsonParser& parser) { parser.parse(t.Objects); }
         static inline void format(const JsonStructObject& t, detail::JsonFormatter& formatter)
         {
-            if (formatter.Settings.OrderedStruct == false)
+            if (formatter.settings.ordered_struct == false)
             {
                 formatter.format(t.Objects);
                 return;

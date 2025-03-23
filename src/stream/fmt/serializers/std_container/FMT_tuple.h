@@ -7,10 +7,10 @@
 namespace stream::fmt::TupleDetail
 {
     template <std::uint32_t N, typename... Args>
-    using NthTypeOf = typename std::tuple_element<N, std::tuple<Args...>>::type;
+    using NthTypeOf = typename std::tuple_element<N, std::tuple<Args...>>::Type;
 
     template <std::uint32_t N, typename... Args>
-    constexpr NthTypeOf<N, Args...>& Get(Args&&... args)
+    constexpr NthTypeOf<N, Args...>& get(Args&&... args)
     {
         std::tuple<Args...> tuple(args...);
         return std::get<N>(tuple);
@@ -25,15 +25,15 @@ namespace stream::fmt::TupleDetail
     template <typename T, typename FormatterExecutor>
     [[nodiscard]] static inline std::expected<void, FMTResult> TupleFormatRec(FormatterExecutor& executor, const T& t)
     {
-        return executor.WriteType(t);
+        return executor.write_type(t);
     }
 
     template <typename T, typename FormatterExecutor, typename... Args>
     [[nodiscard]] static inline std::expected<void, FMTResult> TupleFormatRec(FormatterExecutor& executor, const T& t, Args&&... args)
     {
-        SF_TRY(executor.WriteType(t));
-        SF_TRY(executor.buffer_out.Pushback(','));
-        SF_TRY(executor.buffer_out.Pushback(' '));
+        SF_TRY(executor.write_type(t));
+        SF_TRY(executor.ostream.pushback(','));
+        SF_TRY(executor.ostream.pushback(' '));
         return TupleFormatRec(context, args...);
     }
 }
@@ -45,7 +45,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const std::tuple<T...>& t, FormatterExecutor& executor)
         {
-            SF_TRY(executor.buffer_out.Pushback('<'));
+            SF_TRY(executor.ostream.pushback('<'));
             std::expected<void, FMTResult> err = {};
             std::apply([&context, &err](auto&&... args)
                 {
@@ -53,7 +53,7 @@ namespace stream::fmt
                     if (not res)
                         { err = res.error(); }
                 }, t);
-            SF_TRY(executor.buffer_out.Pushback('>'));
+            SF_TRY(executor.ostream.pushback('>'));
         }
     };
 
@@ -62,11 +62,11 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const std::pair<T1, T2>& t, FormatterExecutor& executor)
         {
-            SF_TRY(executor.buffer_out.Pushback('<'));
-            SF_TRY(executor.WriteType(t.first));
-            SF_TRY(executor.buffer_out.Pushback(':'));
-            SF_TRY(executor.WriteType(t.second));
-            SF_TRY(executor.buffer_out.Pushback('>'));
+            SF_TRY(executor.ostream.pushback('<'));
+            SF_TRY(executor.write_type(t.first));
+            SF_TRY(executor.ostream.pushback(':'));
+            SF_TRY(executor.write_type(t.second));
+            SF_TRY(executor.ostream.pushback('>'));
 
             return {};
         }

@@ -49,16 +49,16 @@ namespace stream::fmt::detail
         FrontID CurrentID;
 
     public:
-        void ModifyReset() { *this = Front{}; }
+        void modify_reset() { *this = Front{}; }
 
-        void Apply(const TextProperties::TextFront::reset_front&) { ModifyReset(); }
-        void Apply(const TextProperties::TextFront::Front& given) { *this = given; }
-        void Apply(const TextProperties::TextFront::FrontID& given) { CurrentID = given; }
+        void apply(const TextProperties::TextFront::reset_front&) { modify_reset(); }
+        void apply(const TextProperties::TextFront::Front& given) { *this = given; }
+        void apply(const TextProperties::TextFront::FrontID& given) { CurrentID = given; }
 
     public:
-        bool NeedModif(const TextProperties::TextFront::reset_front&) { return true; }
-        bool NeedModif(const TextProperties::TextFront::Front& given) { return *this != given; }
-        bool NeedModif(const TextProperties::TextFront::FrontID& given) { return CurrentID != given; }
+        bool need_modif(const TextProperties::TextFront::reset_front&) { return true; }
+        bool need_modif(const TextProperties::TextFront::Front& given) { return *this != given; }
+        bool need_modif(const TextProperties::TextFront::FrontID& given) { return CurrentID != given; }
     };
 
     inline bool operator==(const TextProperties::TextFront::Front& lhs, const TextProperties::TextFront::Front& rhs)
@@ -67,19 +67,19 @@ namespace stream::fmt::detail
     }
 
     template <typename T>
-    concept TextPropertiesFrontCanApply = requires(const T& value, TextProperties::TextFront::Front& data)
+    concept text_properties_front_can_apply = requires(const T& value, TextProperties::TextFront::Front& data)
     {
-        data.Apply(value);
+        data.apply(value);
     };
 
     template <typename T>
-    struct TextPropertiesFrontIsApplyType
+    struct TextPropertiesFrontIsapplyType
     {
-        using BaseType              = GetBaseType<T>;
-        static constexpr bool Value = std::is_same_v<BaseType, TextProperties::TextFront::reset_front> || std::is_same_v<BaseType, TextProperties::TextFront::Front> ||
+        using BaseType              = get_base_type<T>;
+        static constexpr bool value = std::is_same_v<BaseType, TextProperties::TextFront::reset_front> || std::is_same_v<BaseType, TextProperties::TextFront::Front> ||
                                       std::is_same_v<BaseType, TextProperties::TextFront::FrontID>;
     };
 
     template <typename T>
-    concept TextPropertiesFrontIsApply = TextPropertiesFrontIsApplyType<T>::Value;
+    concept TextPropertiesFrontIsapply = TextPropertiesFrontIsapplyType<T>::value;
 }

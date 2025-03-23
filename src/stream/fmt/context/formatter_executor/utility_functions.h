@@ -2,219 +2,219 @@
 
 #include "basic_formatter_executor.h"
 
-#include "stream/fmt/buffer/buffer_out_manager/dynamic_buffer_out_manager.h"
-#include "stream/fmt/buffer/buffer_out_manager/given_buffer_out_manager.h"
-#include "stream/fmt/buffer/buffer_out_manager/static_buffer_out_manager.h"
+#include "stream/fmt/buf/streamio_manager/dynamic_streamio_manager.h"
+#include "stream/fmt/buf/streamio_manager/given_streamio_manager.h"
+#include "stream/fmt/buf/streamio_manager/static_streamio_manager.h"
 
-#include "FormatterTextPropertiesExecutor/FormatterANSITextPropertiesExecutor.h"
+#include "formatter_text_properties_executor/formatter_text_properties_executor_ansi.h"
 
 #include <memory>
 
 namespace stream::fmt
 {
     /////---------- Impl with as Format ----------//////
-    namespace Detail
+    namespace detail
     {
         template <typename TChar, typename... Args>
-        requires(IsCharType<TChar>::Value)
-        [[nodiscard]] std::expected<void, FMTResult> FormatInManager(
-            detail::BasicBufferOutManager<TChar>& bufferOutManager,
+        requires(IsCharType<TChar>::value)
+        [[nodiscard]] std::expected<void, FMTResult> format_in_manager(
+            buf::BasicStreamIOManager<TChar>& ostream_manager,
             bool newline,
-            BufferInfoView<TChar> format,
+            buf::StreamView<TChar> format,
             Args&&... args
         )
         {
             using TCharResolved = std::remove_const_t<TChar>;
 
-            detail::FormatterANSITextPropertiesExecutor<TCharResolved> textPropertiesExecutor;
-            detail::FMTBufferOutInfo<TCharResolved> bufferOut = SF_TRY(detail::FMTBufferOutInfo<TCharResolved>::Create(bufferOutManager));
-            Context::BasicFormatterExecutor<TCharResolved> executor(bufferOut, textPropertiesExecutor);
-            SF_TRY(executor.Run(format, std::forward<Args>(args)...));
-            if (newline) SF_TRY(BufferOutManip(bufferOut).Pushback('\n'));
-            return executor.Terminate();
+            detail::FormatterTextPropertiesExecutorANSI<TCharResolved> text_properties_executor;
+            buf::FMTStreamIO<TCharResolved> ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
+            context::BasicFormatterExecutor<TCharResolved> executor(ostream, text_properties_executor);
+            SF_TRY(executor.run(format, std::forward<Args>(args)...));
+            if (newline) SF_TRY(buf::ManipIO(ostream).pushback('\n'));
+            return executor.terminate();
         }
 
         template <typename TChar, typename T>
-        requires(IsCharType<TChar>::Value)
-        [[nodiscard]] std::expected<void, FMTResult> FormatInManager(detail::BasicBufferOutManager<TChar>& bufferOutManager, bool newline, T&& t)
+        requires(IsCharType<TChar>::value)
+        [[nodiscard]] std::expected<void, FMTResult> format_in_manager(buf::BasicStreamIOManager<TChar>& ostream_manager, bool newline, T&& t)
         {
             using TCharResolved = std::remove_const_t<TChar>;
 
-            detail::FormatterANSITextPropertiesExecutor<TCharResolved> textPropertiesExecutor;
-            detail::FMTBufferOutInfo<TCharResolved> bufferOut = SF_TRY(detail::FMTBufferOutInfo<TCharResolved>::Create(bufferOutManager));
-            Context::BasicFormatterExecutor<TCharResolved> executor(bufferOut, textPropertiesExecutor);
-            SF_TRY(executor.WriteType(std::forward<T>(t)));
-            if (newline) SF_TRY(BufferOutManip(bufferOut).Pushback('\n'));
-            return executor.Terminate();
+            detail::FormatterTextPropertiesExecutorANSI<TCharResolved> text_properties_executor;
+            buf::FMTStreamIO<TCharResolved> ostream = SF_TRY(buf::FMTStreamIO<TCharResolved>::create(ostream_manager));
+            context::BasicFormatterExecutor<TCharResolved> executor(ostream, text_properties_executor);
+            SF_TRY(executor.write_type(std::forward<T>(t)));
+            if (newline) SF_TRY(buf::ManipIO(ostream).pushback('\n'));
+            return executor.terminate();
         }
     }
 
     template <typename TChar, typename Format, std::size_t BUFFER_SIZE, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> FormatInChar(TChar (&buffer)[BUFFER_SIZE], Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar (&buffer)[BUFFER_SIZE], Format&& format_input, Args&&... args)
     {
-        detail::GivenBufferOutManager<TChar> bufferOutManager(buffer);
-        return detail::FormatInManager(bufferOutManager, false, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
+        buf::GivenStreamIOManager<TChar> ostream_manager(buffer);
+        return detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> FormatInChar(TChar* const buffer, const std::size_t bufferSize, Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar* const buffer, const std::size_t buffer_size, Format&& format_input, Args&&... args)
     {
-        detail::GivenBufferOutManager<TChar> bufferOutManager(buffer, bufferSize);
-        return detail::FormatInManager(bufferOutManager, false, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...);
+        buf::GivenStreamIOManager<TChar> ostream_manager(buffer, buffer_size);
+        return detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> CFilePrint(FILE* stream, Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, Format&& format_input, Args&&... args)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(256);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
-        std::fwrite(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize(), 1, stream);
+        std::fwrite(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size(), 1, stream);
         std::fflush(stream);
         return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> CFilePrintLn(FILE* stream, Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, Format&& format_input, Args&&... args)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
-        SF_TRY(detail::FormatInManager(bufferOutManager, true, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(256);
+        SF_TRY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
-        std::fwrite(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize(), 1, stream);
+        std::fwrite(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size(), 1, stream);
         std::fflush(stream);
         return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> FilePrint(std::basic_ostream<TChar>& stream, Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(256);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
-        stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());
+        stream.write(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size());
         stream.flush();
         return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> FilePrintLn(std::basic_ostream<TChar>& stream, Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, Format&& format_input, Args&&... args)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
-        SF_TRY(detail::FormatInManager(bufferOutManager, true, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(256);
+        SF_TRY(detail::format_in_manager(ostream_manager, true, buf::StreamView{format_input}, std::forward<Args>(args)...));
 
-        stream.write(bufferOutManager.GetBuffer(), bufferOutManager.GetLastGeneratedDataSize());
+        stream.write(ostream_manager.get_buffer(), ostream_manager.get_last_generated_data_size());
         stream.flush();
         return {};
     }
 
     template <typename TChar, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] std::expected<void, FMTResult> FormatInString(std::basic_string<TChar>& str, Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, Format&& format_input, Args&&... args)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
-        str = bufferOutManager.GetLastGeneratedString();
+        buf::DynamicStreamIOManager<TChar> ostream_manager(256);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        str = ostream_manager.get_last_generated_string_view();
         return {};
     }
 
     template <typename TChar = char, typename Format, typename... Args>
-    requires(detail::IsCharType<TChar>::Value && detail::ConvertibleToBufferInfoView<Format>)
-    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> FormatString(Format&& formatInput, Args&&... args)
+    requires(detail::IsCharType<TChar>::value && buf::convertible_to_buffer_info_view<Format>)
+    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(Format&& format_input, Args&&... args)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(256);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, detail::BufferInfoView{formatInput}, std::forward<Args>(args)...));
-        return bufferOutManager.GetLastGeneratedString();
+        buf::DynamicStreamIOManager<TChar> ostream_manager(256);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, buf::StreamView{format_input}, std::forward<Args>(args)...));
+        return std::basic_string<TChar>{ostream_manager.get_last_generated_string_view()};
     }
 
     /////---------- NO-FORMAT Impl except for string which are formatted to avoid {} ----------//////
 
     template <typename TChar, size_t BUFFER_SIZE, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> FormatInChar(TChar (&buffer)[BUFFER_SIZE], T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar (&buffer)[BUFFER_SIZE], T&& t)
     {
-        detail::GivenBufferOutManager<TChar> bufferOutManager(buffer, BUFFER_SIZE);
-        return detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
+        buf::GivenStreamIOManager<TChar> ostream_manager(buffer, BUFFER_SIZE);
+        return detail::format_in_manager(ostream_manager, false, std::forward<T>(t));
     }
 
     template <typename TChar, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> FormatInChar(TChar* const buffer, const std::size_t bufferSize, T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_char(TChar* const buffer, const std::size_t buffer_size, T&& t)
     {
-        detail::GivenBufferOutManager<TChar> bufferOutManager(buffer, bufferSize);
-        return detail::FormatInManager(bufferOutManager, false, std::forward<T>(t));
+        buf::GivenStreamIOManager<TChar> ostream_manager(buffer, buffer_size);
+        return detail::format_in_manager(ostream_manager, false, std::forward<T>(t));
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> CFilePrint(FILE* stream, T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_print(FILE* stream, T&& t)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, std::forward<T>(t)));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(32);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
 
-        std::fwrite(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()), 1, stream);
+        std::fwrite(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()), 1, stream);
         std::fflush(stream);
         return {};
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> CFilePrintLn(FILE* stream, T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> cfile_println(FILE* stream, T&& t)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
-        SF_TRY(detail::FormatInManager(bufferOutManager, true, std::forward<T>(t)));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(32);
+        SF_TRY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
 
-        std::fwrite(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()), 1, stream);
+        std::fwrite(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()), 1, stream);
         std::fflush(stream);
         return {};
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> FilePrint(std::basic_ostream<TChar>& stream, T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> file_print(std::basic_ostream<TChar>& stream, T&& t)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, std::forward<T>(t)));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(32);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
 
-        stream.write(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()));
+        stream.write(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()));
         stream.flush();
         return {};
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> FilePrintLn(std::basic_ostream<TChar>& stream, T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> file_println(std::basic_ostream<TChar>& stream, T&& t)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
-        SF_TRY(detail::FormatInManager(bufferOutManager, true, std::forward<T>(t)));
+        buf::DynamicStreamIOManager<TChar> ostream_manager(32);
+        SF_TRY(detail::format_in_manager(ostream_manager, true, std::forward<T>(t)));
 
-        stream.write(bufferOutManager.GetBuffer(), static_cast<std::streamsize>(bufferOutManager.GetLastGeneratedDataSize()));
+        stream.write(ostream_manager.get_buffer(), static_cast<std::streamsize>(ostream_manager.get_last_generated_data_size()));
         stream.flush();
         return {};
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] std::expected<void, FMTResult> FormatInString(std::basic_string<TChar>& str, T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] std::expected<void, FMTResult> format_in_string(std::basic_string<TChar>& str, T&& t)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, std::forward<T>(t)));
-        str = bufferOutManager.GetLastGeneratedString();
+        buf::DynamicStreamIOManager<TChar> ostream_manager(32);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
+        str = ostream_manager.get_last_generated_string_view();
         return {};
     }
 
     template <typename TChar = char, typename T>
-    requires(detail::IsCharType<TChar>::Value)
-    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> FormatString(T&& t)
+    requires(detail::IsCharType<TChar>::value)
+    [[nodiscard]] inline std::expected<std::basic_string<TChar>, FMTResult> format_string(T&& t)
     {
-        detail::DynamicBufferOutManager<TChar> bufferOutManager(32);
-        SF_TRY(detail::FormatInManager(bufferOutManager, false, std::forward<T>(t)));
-        return bufferOutManager.GetLastGeneratedString();
+        buf::DynamicStreamIOManager<TChar> ostream_manager(32);
+        SF_TRY(detail::format_in_manager(ostream_manager, false, std::forward<T>(t)));
+        return std::string{ostream_manager.get_last_generated_string_view()};
     }
 }
 
@@ -228,47 +228,47 @@ namespace stream::fmt
             switch(result)
             {
                 case FMTResult::FunctionNotImpl:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("FunctionNotImpl");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("FunctionNotImpl");
                 case FMTResult::Buffer_NonValid:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Buffer_NonValid");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Buffer_NonValid");
                 case FMTResult::Buffer_OutOfBoundAccess:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Buffer_OutOfBoundAccess");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Buffer_OutOfBoundAccess");
                 case FMTResult::Buffer_UnableToReserveMemory:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Buffer_UnableToReserveMemory");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Buffer_UnableToReserveMemory");
                 case FMTResult::Parse_NonValidDigit:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Parse_NonValidDigit");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Parse_NonValidDigit");
                 case FMTResult::Parse_TokenNotExpected:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Parse_TokenNotExpected");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Parse_TokenNotExpected");
                 case FMTResult::ArgsInterface_Unavaible:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("ArgsInterface_Unavaible");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("ArgsInterface_Unavaible");
                 case FMTResult::ArgsInterface_InvalidTypeID:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("ArgsInterface_InvalidTypeID");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("ArgsInterface_InvalidTypeID");
                 case FMTResult::ArgsInterface_InvalidConversion:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("ArgsInterface_InvalidConversion");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("ArgsInterface_InvalidConversion");
                 case FMTResult::ArgsInterface_CantMatchNamedArgs:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("ArgsInterface_CantMatchNamedArgs");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("ArgsInterface_CantMatchNamedArgs");
                 case FMTResult::ArgsInterface_IndexOutOfBounds:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("ArgsInterface_IndexOutOfBounds");
-                case FMTResult::Specifers_Full:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Specifers_Full");
-                case FMTResult::Specifers_Invalid:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Specifers_Invalid");
-                case FMTResult::Specifers_DoesNotExist:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Specifers_DoesNotExist");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("ArgsInterface_IndexOutOfBounds");
+                case FMTResult::Specifiers_Full:
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Specifiers_Full");
+                case FMTResult::Specifiers_Invalid:
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Specifiers_Invalid");
+                case FMTResult::Specifiers_DoesNotExist:
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Specifiers_DoesNotExist");
                 case FMTResult::Context_ParsingFormat:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Context_ParsingFormat");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Context_ParsingFormat");
                 case FMTResult::Context_ArgumentIndexResolution:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Context_ArgumentIndexResolution");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Context_ArgumentIndexResolution");
                 case FMTResult::Context_ArgumentIndexExpected:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Context_ArgumentIndexExpected");
-                case FMTResult::Context_CannotApplyType:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Context_CannotApplyType");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Context_ArgumentIndexExpected");
+                case FMTResult::Context_CannotapplyType:
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Context_CannotapplyType");
                 case FMTResult::GivenArgs_UnableToDeduceSize:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("GivenArgs_UnableToDeduceSize");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("GivenArgs_UnableToDeduceSize");
                 case FMTResult::Manager_StaticMemory:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Manager_StaticMemory");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Manager_StaticMemory");
                 case FMTResult::Manager_AllocationFailed:
-                    return detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("Manager_AllocationFailed");
+                    return buf::WriteManip(executor.ostream).fast_write_string_literal("Manager_AllocationFailed");
             }
         }
     };

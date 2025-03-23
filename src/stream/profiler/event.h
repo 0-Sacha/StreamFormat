@@ -1,7 +1,7 @@
 #pragma once
 
 #include "detail.h"
-#include "EventData.h"
+#include "event_data.h"
 #include "stream/core/prelude.h"
 #include "stream/fmt.h"
 
@@ -11,7 +11,7 @@
 
 // https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     int GetPid();
 
@@ -19,7 +19,7 @@ namespace stream::ProfilerManager
     {
         Unknow = '.',
 
-        DurationBegin = 'B',
+        DurationBegin = 'b',
         DurationEnd   = 'E',
 
         AsyncStart   = 'b',
@@ -30,8 +30,8 @@ namespace stream::ProfilerManager
         FlowStep  = 't',
         FlowEnd   = 'f',
 
-        ObjectCreated   = 'N',
-        ObjectSnapshot  = 'O',
+        Objectcreated   = 'N',
+        Objectsnapshot  = 'O',
         ObjectDestroyed = 'D',
 
         MemoryDumpGlobal  = 'V',
@@ -42,7 +42,7 @@ namespace stream::ProfilerManager
         Counter         = 'C',
         Sample          = 'P',
         MetaData        = 'M',
-        Mark            = 'R',
+        Mark            = 'r',
         ClockSyncEvents = 'c',
         Context         = ','  // '(' ')'
     };
@@ -51,54 +51,54 @@ namespace stream::ProfilerManager
     {
     public:
         EventInfo()
-            : Name("Unknow")
+            : name("Unknow")
             , Category("Unknow")
-            , Type(EventType::Unknow)
+            , type(EventType::Unknow)
             , Id(0)
-            , TimeOfEvent(ProfilerManager::GetMicroseconds())
+            , TimeOfEvent(profiler::get_microseconds())
             , ThreadTimeOfEvent(0)
             , Duration(0)
             , PID(GetPid())
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
-            , Data(nullptr)
+            , data(nullptr)
         {}
 
         EventInfo(const std::string& name, const std::string& category, EventType type, EventData* data = nullptr)
-            : Name(name)
+            : name(name)
             , Category(category)
-            , Type(type)
+            , type(type)
             , Id(0)
-            , TimeOfEvent(ProfilerManager::GetMicroseconds())
+            , TimeOfEvent(profiler::get_microseconds())
             , ThreadTimeOfEvent(0)
             , Duration(0)
             , PID(GetPid())
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
-            , Data(data)
+            , data(data)
         {}
 
         EventInfo(std::string&& name, std::string&& category, EventType type, EventData* data = nullptr)
-            : Name(std::move(name))
+            : name(std::move(name))
             , Category(std::move(category))
-            , Type(type)
+            , type(type)
             , Id(0)
-            , TimeOfEvent(ProfilerManager::GetMicroseconds())
+            , TimeOfEvent(profiler::get_microseconds())
             , ThreadTimeOfEvent(0)
             , Duration(0)
             , PID(GetPid())
             , TID(std::hash<std::thread::id>{}(std::this_thread::get_id()))
-            , Data(data)
+            , data(data)
         {}
 
     public:
-        std::string                Name;
+        std::string                name;
         std::string                Category;
-        EventType                  Type;
+        EventType                  type;
         std::size_t                Id;
         double                     TimeOfEvent, ThreadTimeOfEvent;
         double                     Duration;
         int                        PID;
         std::size_t                TID;
-        std::shared_ptr<EventData> Data;
+        std::shared_ptr<EventData> data;
     };
 
     struct Event
@@ -117,19 +117,19 @@ namespace stream::ProfilerManager
         virtual ~Event() = default;
 
     public:
-        void Trigger() { Info.TimeOfEvent = ProfilerManager::GetMicroseconds(); }
+        void trigger() { info.TimeOfEvent = profiler::get_microseconds(); }
 
     public:
-        EventInfo Info;
+        EventInfo info;
     };
 }
 
 namespace stream::fmt
 {
     template <typename FormatterExecutor>
-    struct FormatterType<stream::ProfilerManager::EventType, FormatterExecutor>
+    struct FormatterType<stream::profiler::EventType, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::ProfilerManager::EventType& t, FormatterExecutor& executor)
-            { return executor.buffer_out.Pushback(static_cast<char>(t)); }
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::profiler::EventType& t, FormatterExecutor& executor)
+            { return executor.ostream.pushback(static_cast<char>(t)); }
     };
 }

@@ -10,18 +10,18 @@ namespace stream::fmt
     public:
         FCIndexArgs(const std::uint8_t idx, const T& t)
             : m_Value(t)
-            , m_Idx(idx)
+            , idx_(idx)
         {}
 
     public:
-        inline bool IsRightIdx(std::uint8_t idx) const { return idx == m_Idx; }
+        inline bool IsRightIdx(std::uint8_t idx) const { return idx == idx_; }
 
     public:
-        inline const T& GetValue() const { return m_Value; }
+        inline const T& get_value() const { return m_Value; }
 
     protected:
         const T&           m_Value;
-        const std::uint8_t m_Idx;
+        const std::uint8_t idx_;
     };
 
     template <typename T, typename FormatterExecutor>
@@ -30,7 +30,7 @@ namespace stream::fmt
         template <typename Char>
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const FCIndexArgs<T, FormatterExecutor>& t, FormatterExecutor& executor)
         {
-            return executor.WriteType(t.GetValue());
+            return executor.write_type(t.get_value());
         }
     };
 }

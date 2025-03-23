@@ -2,83 +2,83 @@
 
 #include "stream/flog.h"
 
-namespace stream::Tester
+namespace stream::tester
 {
     class CopyMoveCheck
     {
     public:
-        static inline flog::BasicLogger Logger;
+        static inline flog::BasicLogger logger;
 
     public:
         CopyMoveCheck(const std::string& name)
-            : m_Name(name)
+            : name_(name)
         {
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
         }
 
         CopyMoveCheck(std::string&& name)
-            : m_Name(std::move(name))
+            : name_(std::move(name))
         {
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Default (move string) Constructor", "TestCopy(std::string&& name)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Default (move string) Constructor", "TestCopy(std::string&& name)");
         }
 
         CopyMoveCheck(CopyMoveCheck& other)
-            : m_Name("Copy of " + other.m_Name)
+            : name_("Copy of " + other.name_)
         {
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Copy Constructor", "TestCopy(TestCopy&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Copy Constructor", "TestCopy(TestCopy&)");
         }
 
         CopyMoveCheck(const CopyMoveCheck& other)
-            : m_Name("Copy of " + other.m_Name)
+            : name_("Copy of " + other.name_)
         {
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Constructor", "TestCopy(const TestCopy&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Copy Constructor", "TestCopy(const TestCopy&)");
         }
 
         CopyMoveCheck(CopyMoveCheck&& other) noexcept
-            : m_Name("Move of " + other.m_Name)
+            : name_("Move of " + other.name_)
         {
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Move Constructor", "TestCopy(TestCopy&&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Move Constructor", "TestCopy(TestCopy&&)");
         }
 
         CopyMoveCheck(const CopyMoveCheck&& other) noexcept
-            : m_Name("Move of " + other.m_Name)
+            : name_("Move of " + other.name_)
         {
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Constructor", "TestCopy(const TestCopy&&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Move Constructor", "TestCopy(const TestCopy&&)");
         }
 
         CopyMoveCheck& operator=(CopyMoveCheck& other)
         {
-            m_Name = "Copy Of " + other.m_Name;
+            name_ = "Copy Of " + other.name_;
 
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Copy Assignment", "TestCopy& operator=(TestCopy&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Copy Assignment", "TestCopy& operator=(TestCopy&)");
             return *this;
         }
 
         CopyMoveCheck& operator=(const CopyMoveCheck& other)
         {
-            m_Name = "Copy Of " + other.m_Name;
+            name_ = "Copy Of " + other.name_;
 
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Copy Assignment", "TestCopy& operator=(const TestCopy&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Copy Assignment", "TestCopy& operator=(const TestCopy&)");
             return *this;
         }
 
         CopyMoveCheck& operator=(CopyMoveCheck&& other) noexcept
         {
-            m_Name = "Move Of " + other.m_Name;
+            name_ = "Move Of " + other.name_;
 
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
             return *this;
         }
 
         CopyMoveCheck& operator=(const CopyMoveCheck&& other) noexcept
         {
-            m_Name = "Move Of " + other.m_Name;
+            name_ = "Move Of " + other.name_;
 
-            Logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", m_Name, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");
+            logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");
             return *this;
         }
 
     private:
-        std::string m_Name;
+        std::string name_;
     };
 }

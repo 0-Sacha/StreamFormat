@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stream/Json.h"
+#include "stream/json.h"
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     class EventData
     {
@@ -10,8 +10,8 @@ namespace stream::ProfilerManager
         virtual ~EventData() = default;
 
     public:
-        virtual void ToJson(JSON::detail::JsonFormatter& formatter) const = 0;
-        virtual void FromJson(JSON::detail::JsonParser& parser)           = 0;
+        virtual void ToJson(json::detail::JsonFormatter& formatter) const = 0;
+        virtual void FromJson(json::detail::JsonParser& parser)           = 0;
     };
 
     class EventDataJsonObject final : public EventData
@@ -20,8 +20,8 @@ namespace stream::ProfilerManager
         ~EventDataJsonObject() override = default;
 
     public:
-        void                   ToJson(JSON::detail::JsonFormatter& formatter) const override { JSON::JsonSerializer<JSON::JsonStructObject>::format(Data, formatter); }
-        void                   FromJson(JSON::detail::JsonParser& parser) override { JSON::JsonSerializer<JSON::JsonStructObject>::parse(Data, parser); }
-        JSON::JsonStructObject Data;
+        void                   ToJson(json::detail::JsonFormatter& formatter) const override { json::JsonSerializer<json::JsonStructObject>::format(data, formatter); }
+        void                   FromJson(json::detail::JsonParser& parser) override { json::JsonSerializer<json::JsonStructObject>::parse(data, parser); }
+        json::JsonStructObject data;
     };
 }

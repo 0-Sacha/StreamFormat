@@ -1,7 +1,7 @@
 #pragma once
 
 #include "formatter_type.h"
-#include "stream/fmt/context/utils/ContextFunctions.h"
+#include "stream/fmt/context/utils/context_functions.h"
 #include "stream/fmt/detail/prelude.h"
 
 #include <algorithm>
@@ -32,14 +32,14 @@ namespace stream::fmt
             , m_Size(size < 0 ? (std::int32_t)value.size() - beginIdx : size)
         {}
 
-        inline const T& GetValue() const { return m_Value; }
+        inline const T& get_value() const { return m_Value; }
 
-        inline std::basic_string_view<CharEnd>   GetStrJoin() const { return m_StrJoin; }
-        inline std::basic_string_view<CharBegin> GetStrBegin() const { return m_StrBegin; }
-        inline std::basic_string_view<CharEnd>   GetStrEnd() const { return m_StrEnd; }
+        inline std::basic_string_view<CharEnd>   get_str_join() const { return m_StrJoin; }
+        inline std::basic_string_view<CharBegin> get_str_begin() const { return m_StrBegin; }
+        inline std::basic_string_view<CharEnd>   get_str_end() const { return m_StrEnd; }
 
-        inline std::int32_t GetBeginIdx() const { return m_BeginIdx; }
-        inline std::int32_t GetSize() const { return m_Size; }
+        inline std::int32_t get_begin_idx() const { return m_BeginIdx; }
+        inline std::int32_t get_size() const { return m_Size; }
 
     private:
         const T& m_Value;
@@ -57,26 +57,26 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const STDEnumerable<T, CharBegin, CharJoin, CharEnd>& enumerable, FormatterExecutor& executor)
         {
-            SF_TRY(executor.buffer_out.WriteIndentStringView(enumerable.GetStrBegin()));
-            SF_TRY(executor.buffer_out.AddIndent(enumerable.GetStrBegin().size()));
+            SF_TRY(executor.ostream.write_indent_string_view(enumerable.get_str_begin()));
+            SF_TRY(executor.ostream.add_indent(enumerable.get_str_begin().size()));
 
             {
                 // TODO: Why ? ...
-                detail::FunctionApplyNextOverride applyNextOverride(executor);
+                detail::FunctionapplyNextOverride apply_next_override(executor);
 
                 bool first = true;
-                std::for_each_n(enumerable.GetValue().cbegin() + enumerable.GetBeginIdx(), enumerable.GetSize(), [&](const auto& element) {
+                std::for_each_n(enumerable.get_value().cbegin() + enumerable.get_begin_idx(), enumerable.get_size(), [&](const auto& element) {
                     if (first)
                         { first = false; }
                     else
-                        { SF_TRY(executor.buffer_out.WriteIndentStringView(enumerable.GetStrJoin())); }
+                        { SF_TRY(executor.ostream.write_indent_string_view(enumerable.get_str_join())); }
 
-                    SF_TRY(executor.WriteType(element));
+                    SF_TRY(executor.write_type(element));
                 });
             }
 
-            executor.buffer_out.RemoveIndent(enumerable.GetStrBegin().size());
-            SF_TRY(executor.buffer_out.WriteIndentStringView(enumerable.GetStrEnd()));
+            executor.ostream.remove_indent(enumerable.get_str_begin().size());
+            SF_TRY(executor.ostream.write_indent_string_view(enumerable.get_str_end()));
         }
     };
 
@@ -90,13 +90,13 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const T& container, FormatterExecutor& executor)
         {
-            STDEnumerable<T> enumerable(container, executor.Data.GetAsText("join", STDEnumerableUtility::DefaultJoin),
-                                        executor.Data.GetAsText("begin", STDEnumerableUtility::DefaultBegin),
-                                        executor.Data.GetAsText("end", STDEnumerableUtility::DefaultEnd),
-                                        executor.Data.GetAsNumber("begin", 0),
-                                        executor.Data.GetAsNumber("size", -1));
+            STDEnumerable<T> enumerable(container, executor.data.get_as_text("join", STDEnumerableUtility::DefaultJoin),
+                                        executor.data.get_as_text("begin", STDEnumerableUtility::DefaultBegin),
+                                        executor.data.get_as_text("end", STDEnumerableUtility::DefaultEnd),
+                                        executor.data.get_as_number("begin", 0),
+                                        executor.data.get_as_number("size", -1));
 
-            return executor.WriteType(enumerable);
+            return executor.write_type(enumerable);
         }
     };
 

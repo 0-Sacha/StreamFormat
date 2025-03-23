@@ -1,7 +1,7 @@
 #pragma once
 
-#include "BasicParserExecutor.h"
-#include "stream/fmt/buffer/FMTBufferReadManip.h"
+#include "basic_parser_executor.h"
+#include "stream/fmt/buf/fmt_read_manip.h"
 
 namespace stream::fmt
 {
@@ -18,37 +18,37 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> parse(bool& t, ParserExecutor& executor)
         {
-            if (!executor.Data.PrefixSuffix)
+            if (!executor.data.prefix_suffix)
             {
-                if (detail::BufferTestAccess(executor.BufferIn).IsEqualTo('t', 'T'))
+                if (buf::TestAccess(executor.istream).is_equal_to('t', 'T'))
                 {
-                    SF_TRY(detail::BufferManip(executor.BufferIn).Forward());
-                    if (detail::BufferTestAccess(executor.BufferIn).IsSame("rue"))
+                    SF_TRY(buf::Manip(executor.istream).forward());
+                    if (buf::TestAccess(executor.istream).is_same("rue"))
                     {
-                        SF_TRY(detail::BufferManip(executor.BufferIn).Forward());
+                        SF_TRY(buf::Manip(executor.istream).forward());
                         t = true;
                     }
                 }
-                else if (detail::BufferTestAccess(executor.BufferIn).IsEqualTo('f', 'F'))
+                else if (buf::TestAccess(executor.istream).is_equal_to('f', 'F'))
                 {
-                    SF_TRY(detail::BufferManip(executor.BufferIn).Forward());
-                    if (detail::BufferTestAccess(executor.BufferIn).IsSame("alse"))
+                    SF_TRY(buf::Manip(executor.istream).forward());
+                    if (buf::TestAccess(executor.istream).is_same("alse"))
                     {
-                        SF_TRY(detail::BufferManip(executor.BufferIn).Forward());
+                        SF_TRY(buf::Manip(executor.istream).forward());
                         t = false;
                     }
                 }
             }
             else
             {
-                if (detail::BufferTestAccess(executor.BufferIn).IsEqualTo('1'))
+                if (buf::TestAccess(executor.istream).is_equal_to('1'))
                 {
-                    SF_TRY(detail::BufferManip(executor.BufferIn).Forward());
+                    SF_TRY(buf::Manip(executor.istream).forward());
                     t = true;
                 }
-                else if (detail::BufferTestAccess(executor.BufferIn).IsEqualTo('0'))
+                else if (buf::TestAccess(executor.istream).is_equal_to('0'))
                 {
-                    SF_TRY(detail::BufferManip(executor.BufferIn).Forward());
+                    SF_TRY(buf::Manip(executor.istream).forward());
                     t = false;
                 }
             }
@@ -57,11 +57,11 @@ namespace stream::fmt
     };
 
     template <typename T, typename ParserExecutor>
-    requires (std::is_integral_v<T> && !std::is_floating_point_v<T> && !detail::IsCharType<T>::Value)
+    requires (std::is_integral_v<T> && !std::is_floating_point_v<T> && !detail::IsCharType<T>::value)
     struct ParserType<T, ParserExecutor>
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor)
-            { return detail::FMTBufferReadManip(executor.BufferIn).ReadIntegerFormatData(t, executor.Data); }
+            { return buf::FMTReadManip(executor.istream).read_integer_format_data(t, executor.data); }
     };
 
     template <typename T, typename ParserExecutor>
@@ -69,7 +69,7 @@ namespace stream::fmt
     struct ParserType<T, ParserExecutor>
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor)
-            { return detail::FMTBufferReadManip(executor.BufferIn).ReadFloatFormatData(t, executor.Data); }
+            { return buf::FMTReadManip(executor.istream).read_float_format_data(t, executor.data); }
     };
 
     //-------------------------------------------------------//

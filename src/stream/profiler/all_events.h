@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Event.h"
+#include "event.h"
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     class DurationEvent : public Event
     {
@@ -18,8 +18,8 @@ namespace stream::ProfilerManager
         ~DurationEvent() override = default;
 
     public:
-        void Start() { Trigger(); }
-        void Stop() { Info.Duration = ProfilerManager::GetMicroseconds() - Info.TimeOfEvent; }
+        void start() { trigger(); }
+        void Stop() { info.Duration = profiler::get_microseconds() - info.TimeOfEvent; }
     };
 
     class SampleEvent : public Event

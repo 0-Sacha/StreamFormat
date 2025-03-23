@@ -1,62 +1,62 @@
-#include "ProfilerEventCreator.h"
-#include "Profiler.h"
+#include "profiler_event_creator.h"
+#include "profiler.h"
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     ScopeProfile::~ScopeProfile()
     {
         Stop();
 
-        double millis = Info.Duration / 1000;
+        double millis = info.Duration / 1000;
         double sec    = millis / 1000;
 
         if (sec > 1.5)
-            m_Profiler.GetLogger().trace("{} : {} seconds", Info.Name, sec);
+            profiler_.get_logger().trace("{} : {} seconds", info.name, sec);
         else if (millis > 5.0)
-            m_Profiler.GetLogger().trace("{} : {} ms", Info.Name, millis);
+            profiler_.get_logger().trace("{} : {} ms", info.name, millis);
         else
-            m_Profiler.GetLogger().trace("{} : {} us", Info.Name, Info.Duration);
+            profiler_.get_logger().trace("{} : {} us", info.name, info.Duration);
 
-        m_Profiler.AddEvent(*this);
+        profiler_.add_event(*this);
     }
 
     ObjectTracker::ObjectTracker(Profiler& profiler, const std::string& name, const std::string& category)
-        : m_Profiler(profiler)
-        , m_Name(name)
-        , m_Category(category)
+        : profiler_(profiler)
+        , name_(name)
+        , category_(category)
     {
-        Event created(m_Name, m_Category, EventType::ObjectCreated);
-        m_Profiler.AddEvent(created);
+        Event created(name_, category_, EventType::Objectcreated);
+        profiler_.add_event(created);
     }
 
     ObjectTracker::ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category)
-        : m_Profiler(profiler)
-        , m_Name(std::move(name))
-        , m_Category(std::move(category))
+        : profiler_(profiler)
+        , name_(std::move(name))
+        , category_(std::move(category))
     {
-        Event created(m_Name, m_Category, EventType::ObjectCreated);
-        created.Info.Id = 10;
-        m_Profiler.AddEvent(created);
+        Event created(name_, category_, EventType::Objectcreated);
+        created.info.Id = 10;
+        profiler_.add_event(created);
     }
 
     ObjectTracker::~ObjectTracker()
     {
-        Event destroyed(m_Name, m_Category, EventType::ObjectDestroyed);
-        destroyed.Info.Id = 10;
-        m_Profiler.AddEvent(destroyed);
+        Event destroyed(name_, category_, EventType::ObjectDestroyed);
+        destroyed.info.Id = 10;
+        profiler_.add_event(destroyed);
     }
 
-    void ObjectTracker::Snapshot()
+    void ObjectTracker::snapshot()
     {
-        Event snapshot(m_Name, m_Category, EventType::ObjectSnapshot);
-        snapshot.Info.Id = 10;
-        m_Profiler.AddEvent(snapshot);
+        Event snapshot(name_, category_, EventType::Objectsnapshot);
+        snapshot.info.Id = 10;
+        profiler_.add_event(snapshot);
     }
 
-    void EventCounter::Snapshot()
+    void EventCounter::snapshot()
     {
-        m_Idx++;
-        Event snapshot(m_Name, m_Category, EventType::Counter);
-        m_Profiler.AddEvent(snapshot);
+        idx_++;
+        Event snapshot(name_, category_, EventType::Counter);
+        profiler_.add_event(snapshot);
     }
 }

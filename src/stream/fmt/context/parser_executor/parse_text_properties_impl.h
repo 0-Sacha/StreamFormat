@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasicParserExecutor.h"
+#include "basic_parser_executor.h"
 
 namespace stream::fmt
 {
@@ -22,16 +22,16 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextColor::reset_color, ParserExecutor& executor)
         {
-            return executor.TextManager.ApplyColorReset();
+            return executor.TextManager.apply_color_reset();
         }
     };
 
     template <typename ParserExecutor>
-    struct ParserType<detail::TextProperties::TextStyle::ResetStyle, ParserExecutor>
+    struct ParserType<detail::TextProperties::TextStyle::reset_style, ParserExecutor>
     {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextStyle::ResetStyle, ParserExecutor& executor)
+        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextStyle::reset_style, ParserExecutor& executor)
         {
-            return executor.TextManager.ApplyStyleReset();
+            return executor.TextManager.apply_style_reset();
         }
     };
 
@@ -40,7 +40,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextFront::reset_front, ParserExecutor& executor)
         {
-            return executor.TextManager.ApplyFrontReset();
+            return executor.TextManager.apply_front_reset();
         }
     };
 
@@ -49,32 +49,32 @@ namespace stream::fmt
     //---------------------------------------//
 
     template <typename T, typename ParserExecutor>
-    requires detail::TextPropertiesColorIsApply<T>
+    requires detail::TextPropertiesColorIsapply<T>
     struct ParserType<T, ParserExecutor>
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor)
         {
-            return executor.TextManager.AskApplyColor(t);
+            return executor.TextManager.ask_apply_color(t);
         }
     };
 
     template <typename T, typename ParserExecutor>
-    requires detail::TextPropertiesStyleIsApply<T>
+    requires detail::TextPropertiesStyleIsapply<T>
     struct ParserType<T, ParserExecutor>
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor)
         {
-            return executor.TextManager.AskApplyStyle(t);
+            return executor.TextManager.ask_apply_style(t);
         }
     };
 
     template <typename T, typename ParserExecutor>
-    requires detail::TextPropertiesFrontIsApply<T>
+    requires detail::TextPropertiesFrontIsapply<T>
     struct ParserType<T, ParserExecutor>
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor)
         {
-            return executor.TextManager.AskApplyFront(t);
+            return executor.TextManager.ask_apply_front(t);
         }
     };
 }

@@ -4,60 +4,60 @@
 #include <unordered_map>
 #include <vector>
 
-#include "JsonSerializer.h"
+#include "json_serializer.h"
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     void JsonParser::Intermediate::parse(detail::JsonParser& parser)
     {
-        fmt::detail::BufferTestAccess access(parser.BufferIn);
-        fmt::detail::BufferTestManip manip(parser.BufferIn);
+        fmt::buf::TestAccess access(parser.istream);
+        fmt::buf::TestManip manip(parser.istream);
 
         manip.IgnoreEveryBlanks();
-        const char* begin = parser.BufferIn.CurrentPos;
+        const char* begin = parser.istream.current_pos;
 
-        if (parser.IsJsonStringBegin())
+        if (parser.is_json_string_begin())
         {
-            manip.SkipOneOf('"').value();
+            manip.skip_one_of('"').value();
             while (true)
             {
                 manip.GoTo('"');
-                if (fmt::detail::BufferTestAccess(parser.BufferIn).PrevIsNotEqualTo('\\'))
+                if (fmt::buf::Access(parser.istream).get_prev_force() != '\\')
                     break;
             }
-            manip.SkipOneOf('"').value();
+            manip.skip_one_of('"').value();
         }
-        else if (parser.IsJsonNumberBegin())
+        else if (parser.is_json_number_begin())
         {
             float k;
             JsonNumberSerializer::ParseFloat(k, parser);
         }
-        else if (parser.IsJsonBooleanBegin())
+        else if (parser.is_json_boolean_begin())
         {
             bool k;
             JsonBooleanSerializer::ParseBool(k, parser);
         }
-        else if (parser.IsJsonStructBegin())
+        else if (parser.is_json_struct_begin())
         {
             JsonStructSerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, std::string&&, JsonParser& jsonParser) {
                 JsonParser::Intermediate intermediate;
                 intermediate.parse(jsonParser);
             });
         }
-        else if (parser.IsJsonArrayBegin())
+        else if (parser.is_json_array_begin())
         {
             JsonArraySerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, JsonParser& jsonParser) {
                 JsonParser::Intermediate intermediate;
                 intermediate.parse(jsonParser);
             });
         }
-        else if (parser.IsJsonNullBegin())
+        else if (parser.is_json_null_begin())
         {
             JsonNullSerializer::ParseNull(parser);
         }
 
-        const char* end = parser.BufferIn.CurrentPos;
-        Data            = std::string_view(begin, end);
+        const char* end = parser.istream.current_pos;
+        data            = std::string_view(begin, end);
     };
 
     void JsonParser::StructIntermediate::parse(detail::JsonParser& parser)

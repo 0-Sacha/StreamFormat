@@ -2,11 +2,11 @@
 
 #ifdef STREAMFORMAT_PROFILING_ENABLE
 
-#define SFP_PROFILE_FUNCTION() stream::ProfilerManager::ScopeProfile profile##__LINE__(stream::ProfilerManager::Profiler::GetInstance(), __FUNCSIG__, "Function")
+#define SFP_PROFILE_FUNCTION() stream::profiler::ScopeProfile profile##__LINE__(stream::profiler::Profiler::get_instance(), __FUNCSIG__, "Function")
 #define SFP_PROFILE_FUNCTION_FMT(...)                                                                                   \
-    stream::ProfilerManager::ScopeProfile profile##__LINE__(stream::ProfilerManager::Profiler::GetInstance(), \
-                                                                 stream::ProfilerManager::fmt::FormatString(__VA_ARGS__), "Function")
-#define SFP_SAVE_DEFAULT_PROFILER() stream::ProfilerManager::ProfilerFactory::ToJson(stream::ProfilerManager::Profiler::GetInstance())
+    stream::profiler::ScopeProfile profile##__LINE__(stream::profiler::Profiler::get_instance(), \
+                                                                 stream::profiler::fmt::format_string(__VA_ARGS__), "Function")
+#define SFP_SAVE_DEFAULT_PROFILER() stream::profiler::ProfilerFactory::ToJson(stream::profiler::Profiler::get_instance())
 
 #else  // STREAMFORMAT_PROFILING_ENABLE
 

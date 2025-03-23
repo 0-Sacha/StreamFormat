@@ -1,11 +1,11 @@
 #include "stream/fmt.h"
-#include "stream/Tester/TestSuite/AllTestSuite.h"
+#include "stream/tester/test_suite/all_test_suite.h"
 
-#include "BaseFMTTests.h"
+#include "base_fmt_tests.h"
 
 SFT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-#define TEST_FMT(fmt_test, expected) SFT_EQ(Escaper(stream::fmt::FormatString(fmt_test, 0).value()), Escaper(expected))
+#define TEST_FMT(fmt_test, expected) SFT_EQ(Escaper(stream::fmt::format_string(fmt_test, 0).value()), Escaper(expected))
 
 static std::string Escaper(const std::string& str)
 {
@@ -32,7 +32,7 @@ SFT_TEST_FUNC(ESCAPER_VALIDATING, BasicTest)
     TEST_ESCAPER("\033k", "\\ek");
 }
 
-SFT_TEST_FUNC(TEXT_PROPERTIES, BasicColor)
+SFT_TEST_FUNC(TEXT_PROPERTIES, basic_color)
 {
     TEST_FMT("123", "123");
 
@@ -83,7 +83,7 @@ class TEST_FMT_ContextOut
 };
 STREAMFORMAT_AUTO_FORMATTER_T(TEST_FMT_ContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
-#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(Escaper(stream::fmt::FormatString(fmt_test, TEST_FMT_ContextOut{}).value()), Escaper(expected))
+#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(Escaper(stream::fmt::format_string(fmt_test, TEST_FMT_ContextOut{}).value()), Escaper(expected))
 
 SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut)
 {

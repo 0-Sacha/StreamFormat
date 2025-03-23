@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LoggerMultiSinks.h"
+#include "logger_multi_sink.h"
 
 namespace stream::flog::detail
 {
@@ -9,14 +9,14 @@ namespace stream::flog::detail
     {
     public:
         using Base = BasicLoggerMultiSinkImpl<Severity, CharType>;
-        using Base::SetName;
-        using Base::GetName;
-        using Base::GetSinks;
-        using Base::m_Name;
-        using Base::m_Sinks;
-        using Base::AddSink;
+        using Base::set_name;
+        using Base::get_name;
+        using Base::get_sinks;
+        using Base::name_;
+        using Base::sinks_;
+        using Base::add_sink;
 
-        using Base::m_StartTime;
+        using Base::start_time_;
 
         using typename Base::SeverityValueType;
 
@@ -32,56 +32,56 @@ namespace stream::flog::detail
         ~BasicLoggerMultiSinkSafeImpl() override = default;
 
     public:
-        void Await(const SeverityValueType& severity)
+        void await(const SeverityValueType& severity)
         {
-            for (auto& sink : m_Sinks)
-                if (sink->NeedToLog(severity)) sink->WaitUnitlFinishedToWrite();
+            for (auto& sink : sinks_)
+                if (sink->need_to_log(severity)) sink->wait_until_finished_to_write();
         }
 
     public:
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, const Format& format, Args&&... args)
         {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
+            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
 
             // FIXME maybe add : name ; indent ???
-            for (auto& sink : m_Sinks)
+            for (auto& sink : sinks_)
             {
-                if (sink->NeedToLog(severity))
+                if (sink->need_to_log(severity))
                 {
-                    fmt::detail::DynamicBufferOutManager<CharType> managerPattern(256);
-                    fmt::detail::DynamicBufferOutManager<CharType> managerFormat(256);
-                    auto formatPatternStr =
-                        SF_TRY(fmt::detail::FormatInManager(managerPattern, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
-                                                           FORMAT_SV("name", FuturConcateNameAndSinkName(m_Name)), FORMAT_SV("data", flog::AddIndentInFormat(format))));
-                    auto formatFormatStr = SF_TRY(fmt::detail::FormatInManager(managerFormat, false, static_cast<std::string_view>(*formatPatternStr), std::forward<Args>(args)...,
-                                                                              FORMAT_SV("sink", sink->GetName()), FORMAT_SV("color", severity)));
-                    SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatFormatStr)));
+                    fmt::buf::DynamicStreamIOManager<CharType> manager_pattern(256);
+                    fmt::buf::DynamicStreamIOManager<CharType> manager_format(256);
+                    auto format_pattern_str =
+                        SF_TRY(fmt::detail::format_in_manager(manager_pattern, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
+                                                           FORMAT_SV("name", FutureConcatNameAndSinkName(name_)), FORMAT_SV("data", flog::AddIndentInFormat(format))));
+                    auto format_format_str = SF_TRY(fmt::detail::format_in_manager(manager_format, false, static_cast<std::string_view>(*format_pattern_str), std::forward<Args>(args)...,
+                                                                              FORMAT_SV("sink", sink->get_name()), FORMAT_SV("color", severity)));
+                    SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*format_format_str)));
                 }
             }
             
-            Await(severity);
+            await(severity);
             return {};
         }
 
         template <typename T>
         [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, T&& t)
         {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - m_StartTime;
+            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
 
-            for (auto& sink : m_Sinks)
+            for (auto& sink : sinks_)
             {
-                if (sink->NeedToLog(severity))
+                if (sink->need_to_log(severity))
                 {
-                    fmt::detail::DynamicBufferOutManager<CharType> manager(256);
-                    auto formatBuffer = SF_TRY(fmt::detail::FormatInManager(manager, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
-                                                                           FORMAT_SV("name", ConcateNameAndSinkName(m_Name, sink->GetName())), FORMAT_SV("data", t)));
+                    fmt::buf::DynamicStreamIOManager<CharType> manager(256);
+                    auto formatBuffer = SF_TRY(fmt::detail::format_in_manager(manager, false, std::string_view(sink->get_pattern(severity)), FORMAT_SV("time", logTime),
+                                                                           FORMAT_SV("name", ConcatNameAndSinkName(name_, sink->get_name())), FORMAT_SV("data", t)));
                     SF_TRY(sink->WriteToSink(static_cast<std::basic_string_view<CharType>>(*formatBuffer)));
                 }
             }
 
-            Await(severity);
+            await(severity);
             return {};
         }
     };

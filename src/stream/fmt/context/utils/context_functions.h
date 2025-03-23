@@ -5,18 +5,18 @@
 namespace stream::fmt::detail
 {
     template <typename FormatterExecutor>
-    struct FunctionApplyNextOverride
+    struct FunctionapplyNextOverride
     {
-        inline explicit FunctionApplyNextOverride(FormatterExecutor& executor)
-            : Executor(executor)
-            , FormatData(executor.Data)
+        inline explicit FunctionapplyNextOverride(FormatterExecutor& executor)
+            : executor(executor)
+            , formatdata(executor.data)
         {
-            Executor.FormatDataApplyNextOverride();
+            executor.formatdata_apply_next_override();
         }
 
-        inline ~FunctionApplyNextOverride() { Executor.Data = FormatData; }
+        inline ~FunctionapplyNextOverride() { executor.data = formatdata; }
 
-        FormatterExecutor& Executor;
-        detail::FormatData<typename FormatterExecutor::TChar> FormatData;
+        FormatterExecutor& executor;
+        detail::FormatData<typename FormatterExecutor::TChar> formatdata;
     };
 }

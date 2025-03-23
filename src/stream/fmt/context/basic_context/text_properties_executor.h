@@ -30,10 +30,10 @@ namespace stream::fmt::detail
 
     public:
         [[nodiscard]] virtual std::expected<void, FMTResult> reset_front()                                              = 0;
-        [[nodiscard]] virtual std::expected<void, FMTResult> ExecuteFront(const TextProperties::TextFront::FrontID& t) = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> execute_front(const TextProperties::TextFront::FrontID& t) = 0;
 
     public:
-        [[nodiscard]] virtual std::expected<void, FMTResult> ResetStyle()                                                                = 0;
+        [[nodiscard]] virtual std::expected<void, FMTResult> reset_style()                                                                = 0;
         [[nodiscard]] virtual std::expected<void, FMTResult> execute_style(const TextProperties::TextStyle::Intensity& t)                 = 0;
         [[nodiscard]] virtual std::expected<void, FMTResult> execute_style(const TextProperties::TextStyle::Italic& t)                    = 0;
         [[nodiscard]] virtual std::expected<void, FMTResult> execute_style(const TextProperties::TextStyle::Underline& t)                 = 0;

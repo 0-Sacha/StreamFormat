@@ -6,6 +6,6 @@
 
 #include "flog/sinks/file_sink.h"
 
-#include "flog/LoggerImpl/XLogger.h"
+#include "flog/frontends/xlogger.h"
 
-#include "flog/LoggerFactory.h"
+#include "flog/logger_factory.h"

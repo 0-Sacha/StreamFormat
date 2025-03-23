@@ -1,32 +1,33 @@
 #pragma once
 
-#include "JsonObjects.h"
-#include "stream/fmt/buffer/buffer_out_manip.h"
+#include "json_objects.h"
+#include "stream/fmt/buf/streamio.h"
+#include "stream/fmt/buf/manip_io.h"
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     class JsonFormatter
     {
     public:
         struct FormatSettings
         {
-            std::size_t  IndentSize       = 4;
-            bool         IndentWithSpaces = true;
-            bool         OneLine          = false;
-            bool         OrderedStruct    = false;
-            std::int32_t FloatPrecision   = 7;
+            std::size_t  indent_size       = 4;
+            bool         indent_with_spaces = true;
+            bool         one_line          = false;
+            bool         ordered_struct    = false;
+            std::int32_t float_precision   = 7;
         };
 
     public:
-        JsonFormatter(stream::fmt::detail::BufferOutInfo<char>& bufferOut)
-            : BufferOut(bufferOut)
-            , Settings()
-            , m_Indent(0)
+        JsonFormatter(stream::fmt::buf::StreamIO<char>& ostream_)
+            : ostream(ostream_)
+            , settings()
+            , indent_(0)
         {}
-        JsonFormatter(stream::fmt::detail::BufferOutInfo<char>& bufferOut, FormatSettings settings)
-            : BufferOut(bufferOut)
-            , Settings(settings)
-            , m_Indent(0)
+        JsonFormatter(stream::fmt::buf::StreamIO<char>& ostream_, FormatSettings settings_)
+            : ostream(ostream_)
+            , settings(settings_)
+            , indent_(0)
         {}
 
     public:
@@ -35,39 +36,39 @@ namespace stream::JSON::detail
 
         struct StructIntermediate;
         struct ArrayIntermediate;
-        StructIntermediate GetStructIntermediate();
-        ArrayIntermediate  GetArrayIntermediate();
+        StructIntermediate get_struct_intermediate();
+        ArrayIntermediate  get_array_intermediate();
 
     public:
-        void Indent()
+        void indent()
         {
-            if (Settings.OneLine) return;
+            if (settings.one_line) return;
 
-            if (Settings.IndentWithSpaces)
-                fmt::detail::BufferOutManip(BufferOut).Pushback(' ', m_Indent * Settings.IndentSize).value();
+            if (settings.indent_with_spaces)
+                fmt::buf::ManipIO(ostream).pushback(' ', indent_ * settings.indent_size).value();
             else
-                fmt::detail::BufferOutManip(BufferOut).Pushback('\t', m_Indent * Settings.IndentSize).value();
+                fmt::buf::ManipIO(ostream).pushback('\t', indent_ * settings.indent_size).value();
         }
 
         void NewLine()
         {
-            if (Settings.OneLine) return;
-            fmt::detail::BufferOutManip(BufferOut).Pushback('\n').value();
-            Indent();
+            if (settings.one_line) return;
+            fmt::buf::ManipIO(ostream).pushback('\n').value();
+            indent();
         }
-        void BeginNewObject() { ++m_Indent; }
-        void EndNewObject() { --m_Indent; }
+        void begin_new_object() { ++indent_; }
+        void end_new_object() { --indent_; }
 
     public:
-        stream::fmt::detail::BufferOutInfo<char>&  BufferOut;
-        FormatSettings Settings;
+        fmt::buf::StreamIO<char>& ostream;
+        FormatSettings settings;
     
     protected:
-        std::size_t    m_Indent;
+        std::size_t indent_;
     };
 }
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     struct JsonFormatter::StructIntermediate
     {
@@ -99,12 +100,12 @@ namespace stream::JSON::detail
         std::uint32_t  Idx;
     };
 
-    inline JsonFormatter::StructIntermediate JsonFormatter::GetStructIntermediate()
+    inline JsonFormatter::StructIntermediate JsonFormatter::get_struct_intermediate()
     {
         return JsonFormatter::StructIntermediate(*this);
     }
 
-    inline JsonFormatter::ArrayIntermediate JsonFormatter::GetArrayIntermediate()
+    inline JsonFormatter::ArrayIntermediate JsonFormatter::get_array_intermediate()
     {
         return JsonFormatter::ArrayIntermediate(*this);
     }

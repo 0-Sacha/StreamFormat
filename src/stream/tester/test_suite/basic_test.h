@@ -1,10 +1,10 @@
 #pragma once
 
-#include "TestSuite.h"
+#include "test_suite.h"
 
 #include "stream/core/prelude.h"
 
-namespace stream::Tester::detail
+namespace stream::tester::detail
 {
     struct TestFunction : public Test
     {
@@ -16,7 +16,7 @@ namespace stream::Tester::detail
             : Test(std::move(name), link, location)
             , Func(func)
         {
-            Link.Tests.insert({Name, this});
+            Link.tests.insert({name, this});
         }
 
         ~TestFunction() override = default;
@@ -55,29 +55,29 @@ namespace stream::Tester::detail
         T expected_as_T = static_cast<T>(expected);
         if (result != expected_as_T)
         {
-            Link.TestLogger.error("{C:red}{} return {} instead of {}", testView, result, expected, FORMAT_SV("test_name", Name)).value();
+            Link.test_logger.error("{C:red}{} return {} instead of {}", testView, result, expected, FORMAT_SV("test_name", name)).value();
             throw TestFailure{};
         }
-        Link.TestLogger.trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", Name)).value();
+        Link.test_logger.trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", name)).value();
     }
     template <typename T>
     void TestFunction::TestNotEq(T result, std::convertible_to<T> auto notExpected, std::string_view testView, [[maybe_unused]] int line)
     {
         if (result == static_cast<T>(notExpected))
         {
-            Link.TestLogger.error("{C:red}{} return {} but that result was prohibited", testView, result, FORMAT_SV("test_name", Name)).value();
+            Link.test_logger.error("{C:red}{} return {} but that result was prohibited", testView, result, FORMAT_SV("test_name", name)).value();
             throw TestFailure{};
         }
-        Link.TestLogger.trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", Name)).value();
+        Link.test_logger.trace("{C:green}{} return {}", testView, result, FORMAT_SV("test_name", name)).value();
     }
     inline void TestFunction::TestAssert(bool assert, std::string_view assertView, [[maybe_unused]] int line)
     {
         if (assert == false)
         {
-            Link.TestLogger.error("{C:red}ASSERT FAILED : {}", assertView, FORMAT_SV("test_name", Name)).value();
+            Link.test_logger.error("{C:red}ASSERT FAILED : {}", assertView, FORMAT_SV("test_name", name)).value();
             throw TestFailure{};
         }
-        Link.TestLogger.trace("{C:green}ASSERT SUCCED : {}", assertView, FORMAT_SV("test_name", Name)).value();
+        Link.test_logger.trace("{C:green}ASSERT SUCCED : {}", assertView, FORMAT_SV("test_name", name)).value();
     }
 
 
@@ -104,7 +104,7 @@ namespace stream::Tester::detail
     {
         if (result.has_value() == false)
         {
-            Link.TestLogger.error("{C:red}{} return an error: {}", testView, result.error(), FORMAT_SV("test_name", Name)).value();
+            Link.test_logger.error("{C:red}{} return an error: {}", testView, result.error(), FORMAT_SV("test_name", name)).value();
             throw TestFailure{};
         }
     }
@@ -113,22 +113,22 @@ namespace stream::Tester::detail
     {
         if (result.has_value() == false)
         {
-            Link.TestLogger.error("{C:red}{} didn't return any value", testView, FORMAT_SV("test_name", Name)).value();
+            Link.test_logger.error("{C:red}{} didn't return any value", testView, FORMAT_SV("test_name", name)).value();
             throw TestFailure{};
         }
     }
 }
 
 #define STREAMFORMAT_TESTINTERNAL_FUNC_DECLARE_EXEC(TestSuiteName, TestName) \
-    void STREAMFORMAT_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(stream::Tester::detail::TestFunction & link);
+    void STREAMFORMAT_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(stream::tester::detail::TestFunction & link);
 #define STREAMFORMAT_TESTINTERNAL_FUNC_CREATE(TestSuiteName, TestName, ...)                                          \
-    volatile stream::Tester::detail::TestFunction STREAMFORMAT_TESTINTERNAL_FUNC_NAME(TestSuiteName, TestName)( \
+    volatile stream::tester::detail::TestFunction STREAMFORMAT_TESTINTERNAL_FUNC_NAME(TestSuiteName, TestName)( \
         #TestName, STREAMFORMAT_TESTINTERNAL_SUITE_NAME(TestSuiteName), STREAMFORMAT_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName), STREAMFORMAT_FMT_FILE_LOCATION())
 
 #define SFT_TEST_FUNC(TestSuiteName, TestName)                          \
     STREAMFORMAT_TESTINTERNAL_FUNC_DECLARE_EXEC(TestSuiteName, TestName) \
     STREAMFORMAT_TESTINTERNAL_FUNC_CREATE(TestSuiteName, TestName);      \
-    void STREAMFORMAT_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(stream::Tester::detail::TestFunction & link)
+    void STREAMFORMAT_TESTINTERNAL_FUNC_EXEC_NAME(TestSuiteName, TestName)(stream::tester::detail::TestFunction & link)
 
 #define SFT_ASSERT(Test)           link.TestAssert(Test, #Test, __LINE__)
 #define SFT_EQ(Test, Expected)     link.TestEq(Test, Expected, #Test, __LINE__)

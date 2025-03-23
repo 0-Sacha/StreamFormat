@@ -1,5 +1,5 @@
 #pragma once
 
-#include "stream/Tester/TestSuite/AllTestSuite.h"
+#include "stream/tester/test_suite/all_test_suite.h"
 
 inline SFT_TEST_SUITE(FMT);

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stream/Json/JsonObjects.h"
-#include "stream/Json/JsonSerializer.h"
+#include "stream/json/json_objects.h"
+#include "stream/json/json_serializer.h"
 
 #include <unordered_map>
 
-namespace stream::JSON
+namespace stream::json
 {
     template <typename K, typename T>
     struct JsonSerializer<std::unordered_map<K, T>>

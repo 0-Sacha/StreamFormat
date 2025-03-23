@@ -90,11 +90,11 @@ namespace stream::fmt::detail
     {
         constexpr BasicColor(TextProperties::TextColor::BasicColorFG fg = TextProperties::TextColor::BasicColorFG::Default,
                              TextProperties::TextColor::BasicColorBG bg = TextProperties::TextColor::BasicColorBG::Default)
-            : Fg(fg)
-            , Bg(bg)
+            : fg(fg)
+            , bg(bg)
         {}
-        TextProperties::TextColor::BasicColorFG Fg;
-        TextProperties::TextColor::BasicColorBG Bg;
+        TextProperties::TextColor::BasicColorFG fg;
+        TextProperties::TextColor::BasicColorBG bg;
     };
 
     struct TextProperties::TextColor::BaseColorCube
@@ -132,7 +132,7 @@ namespace stream::fmt::detail
         static inline constexpr std::uint8_t Default   = 0;
 
     public:
-        enum class Type : std::uint8_t
+        enum class type : std::uint8_t
         {
             Normal,
             Bright,
@@ -141,33 +141,33 @@ namespace stream::fmt::detail
         };
 
     public:
-        std::uint8_t Color;
+        std::uint8_t color;
 
     public:
-        std::uint8_t GetColor() const { return Color; }
-        std::uint8_t GetColorRef() { return Color; }
-        std::uint8_t GetColorRef() const { return Color; }
+        std::uint8_t get_color() const { return color; }
+        std::uint8_t get_color_ref() { return color; }
+        std::uint8_t get_color_ref() const { return color; }
 
     public:
         constexpr BaseColorCube(const std::uint8_t color)
-            : Color(color)
+            : color(color)
         {}
 
         constexpr BaseColorCube()
-            : Color(0)
+            : color(0)
         {}
 
-        Type GetType()
+        type GetType()
         {
-            if (Color >= MinNormalColor && Color <= MaxNormalColor)
-                return Type::Normal;
-            else if (Color >= MinBrightColor && Color <= MaxBrightColor)
-                return Type::Bright;
-            else if (Color >= Min666CubeColor && Color <= Max666CubeColor)
-                return Type::Cube666;
-            else if (Color >= MinGrayscale && Color <= MaxGrayscale)
-                return Type::Grayscale;
-            return Type::Normal;
+            if (color >= MinNormalColor && color <= MaxNormalColor)
+                return type::Normal;
+            else if (color >= MinBrightColor && color <= MaxBrightColor)
+                return type::Bright;
+            else if (color >= Min666CubeColor && color <= Max666CubeColor)
+                return type::Cube666;
+            else if (color >= MinGrayscale && color <= MaxGrayscale)
+                return type::Grayscale;
+            return type::Normal;
         }
 
         static BaseColorCube MakeNormalColor(std::uint8_t value)
@@ -300,37 +300,37 @@ namespace stream::fmt::detail
     struct TextProperties::TextColor::ColorCube
     {
         constexpr ColorCube()
-            : Fg()
-            , Bg()
+            : fg()
+            , bg()
         {}
 
         constexpr ColorCube(const TextProperties::TextColor::ColorCubeFG& fg)
-            : Fg(fg)
-            , Bg()
+            : fg(fg)
+            , bg()
         {}
 
         constexpr ColorCube(const TextProperties::TextColor::ColorCubeFG& fg, const TextProperties::TextColor::ColorCubeBG& bg)
-            : Fg(fg)
-            , Bg(bg)
+            : fg(fg)
+            , bg(bg)
         {}
 
-        TextProperties::TextColor::ColorCubeFG Fg;
-        TextProperties::TextColor::ColorCubeBG Bg;
+        TextProperties::TextColor::ColorCubeFG fg;
+        TextProperties::TextColor::ColorCubeBG bg;
     };
 
     struct TextProperties::TextColor::BaseColor24b
     {
         constexpr BaseColor24b(std::uint8_t r, std::uint8_t g, std::uint8_t b)
-            : R(r)
-            , G(g)
-            , B(b)
+            : r(r)
+            , g(g)
+            , b(b)
         {}
-        std::uint8_t R, G, B;
+        std::uint8_t r, g, b;
     };
 
     inline bool operator==(const TextProperties::TextColor::BaseColor24b& lhs, const TextProperties::TextColor::BaseColor24b& rhs)
     {
-        return lhs.R == rhs.R && lhs.G == rhs.G && lhs.B == rhs.B;
+        return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
     }
 
     // No need of virtual destructor since Color24bFG is purely a renaming of BaseColor24b
@@ -351,19 +351,19 @@ namespace stream::fmt::detail
 
     struct TextProperties::TextColor::Color24b
     {
-        constexpr Color24b(const TextProperties::TextColor::Color24bFG&& fg = TextProperties::TextColor::Color24bFG(),
-                           const TextProperties::TextColor::Color24bBG&& bg = TextProperties::TextColor::Color24bBG())
-            : Fg(fg)
-            , Bg(bg)
+        constexpr Color24b(const TextProperties::TextColor::Color24bFG&& fg_ = TextProperties::TextColor::Color24bFG(),
+                           const TextProperties::TextColor::Color24bBG&& bg_ = TextProperties::TextColor::Color24bBG())
+            : fg(fg_)
+            , bg(bg_)
         {}
 
-        TextProperties::TextColor::Color24bFG Fg;
-        TextProperties::TextColor::Color24bBG Bg;
+        TextProperties::TextColor::Color24bFG fg;
+        TextProperties::TextColor::Color24bBG bg;
     };
 
     inline bool operator==(const TextProperties::TextColor::Color24b& lhs, const TextProperties::TextColor::Color24b& rhs)
     {
-        return lhs.Fg == rhs.Fg && lhs.Bg == rhs.Bg;
+        return lhs.fg == rhs.fg && lhs.bg == rhs.bg;
     }
 
     enum class TextProperties::TextColor::ColorType : std::uint8_t
@@ -376,63 +376,63 @@ namespace stream::fmt::detail
     union TextProperties::TextColor::ColorFGData
     {
         constexpr ColorFGData()
-            : BasicColor{TextProperties::TextColor::BasicColorFG::Default}
+            : basic_color{TextProperties::TextColor::BasicColorFG::Default}
         {}
 
-        TextProperties::TextColor::BasicColorFG BasicColor;
-        TextProperties::TextColor::ColorCubeFG  ColorCube;
-        TextProperties::TextColor::Color24bFG   Color24b;
+        TextProperties::TextColor::BasicColorFG basic_color;
+        TextProperties::TextColor::ColorCubeFG  color_cube;
+        TextProperties::TextColor::Color24bFG   color24b;
     };
 
     union TextProperties::TextColor::ColorBGData
     {
         constexpr ColorBGData()
-            : BasicColor{TextProperties::TextColor::BasicColorBG::Default}
+            : basic_color{TextProperties::TextColor::BasicColorBG::Default}
         {}
 
-        TextProperties::TextColor::BasicColorBG BasicColor;
-        TextProperties::TextColor::ColorCubeBG  ColorCube;
-        TextProperties::TextColor::Color24bBG   Color24b;
+        TextProperties::TextColor::BasicColorBG basic_color;
+        TextProperties::TextColor::ColorCubeBG  color_cube;
+        TextProperties::TextColor::Color24bBG   color24b;
     };
 
     struct TextProperties::TextColor::ColorFG
     {
-        TextProperties::TextColor::ColorFGData Data;
-        TextProperties::TextColor::ColorType   Type{TextProperties::TextColor::ColorType::BasicColor};
+        TextProperties::TextColor::ColorFGData data;
+        TextProperties::TextColor::ColorType   type{TextProperties::TextColor::ColorType::BasicColor};
     };
 
     struct TextProperties::TextColor::ColorBG
     {
-        TextProperties::TextColor::ColorBGData Data;
-        TextProperties::TextColor::ColorType   Type{TextProperties::TextColor::ColorType::BasicColor};
+        TextProperties::TextColor::ColorBGData data;
+        TextProperties::TextColor::ColorType   type{TextProperties::TextColor::ColorType::BasicColor};
     };
 
     inline bool operator==(const TextProperties::TextColor::ColorFG& lhs, const TextProperties::TextColor::ColorFG& rhs)
     {
-        if (lhs.Type != rhs.Type) return false;
-        switch (lhs.Type)
+        if (lhs.type != rhs.type) return false;
+        switch (lhs.type)
         {
             case TextProperties::TextColor::ColorType::BasicColor:
-                return lhs.Data.BasicColor == rhs.Data.BasicColor;
+                return lhs.data.basic_color == rhs.data.basic_color;
             case TextProperties::TextColor::ColorType::ColorCube:
-                return lhs.Data.ColorCube == rhs.Data.ColorCube;
+                return lhs.data.color_cube == rhs.data.color_cube;
             case TextProperties::TextColor::ColorType::Color24b:
-                return lhs.Data.Color24b == rhs.Data.Color24b;
+                return lhs.data.color24b == rhs.data.color24b;
         }
         return false;
     }
 
     inline bool operator==(const TextProperties::TextColor::ColorBG& lhs, const TextProperties::TextColor::ColorBG& rhs)
     {
-        if (lhs.Type != rhs.Type) return false;
-        switch (lhs.Type)
+        if (lhs.type != rhs.type) return false;
+        switch (lhs.type)
         {
             case TextProperties::TextColor::ColorType::BasicColor:
-                return lhs.Data.BasicColor == rhs.Data.BasicColor;
+                return lhs.data.basic_color == rhs.data.basic_color;
             case TextProperties::TextColor::ColorType::ColorCube:
-                return lhs.Data.ColorCube == rhs.Data.ColorCube;
+                return lhs.data.color_cube == rhs.data.color_cube;
             case TextProperties::TextColor::ColorType::Color24b:
-                return lhs.Data.Color24b == rhs.Data.Color24b;
+                return lhs.data.color24b == rhs.data.color24b;
         }
         return false;
     }
@@ -444,102 +444,102 @@ namespace stream::fmt::detail
     {
     public:
         constexpr Color()
-            : Fg()
-            , Bg()
+            : fg()
+            , bg()
         {}
 
     public:
-        TextProperties::TextColor::ColorFG Fg;
-        TextProperties::TextColor::ColorBG Bg;
+        TextProperties::TextColor::ColorFG fg;
+        TextProperties::TextColor::ColorBG bg;
 
     public:
-        void ModifyReset()
+        void modify_reset()
         {
-            Fg = TextProperties::TextColor::ColorFG{};
-            Bg = TextProperties::TextColor::ColorBG{};
+            fg = TextProperties::TextColor::ColorFG{};
+            bg = TextProperties::TextColor::ColorBG{};
         }
 
-        void Apply(const TextProperties::TextColor::Color& given) { *this = given; }
+        void apply(const TextProperties::TextColor::Color& given) { *this = given; }
 
-        void Apply(const TextProperties::TextColor::reset_color&) { ModifyReset(); }
-        void Apply(const TextProperties::TextColor::BasicColorFG& given)
+        void apply(const TextProperties::TextColor::reset_color&) { modify_reset(); }
+        void apply(const TextProperties::TextColor::BasicColorFG& given)
         {
-            Fg.Type            = TextProperties::TextColor::ColorType::BasicColor;
-            Fg.Data.BasicColor = given;
+            fg.type            = TextProperties::TextColor::ColorType::BasicColor;
+            fg.data.basic_color = given;
         }
-        void Apply(const TextProperties::TextColor::BasicColorBG& given)
+        void apply(const TextProperties::TextColor::BasicColorBG& given)
         {
-            Bg.Type            = TextProperties::TextColor::ColorType::BasicColor;
-            Bg.Data.BasicColor = given;
+            bg.type            = TextProperties::TextColor::ColorType::BasicColor;
+            bg.data.basic_color = given;
         }
-        void Apply(const TextProperties::TextColor::BasicColor& given)
+        void apply(const TextProperties::TextColor::BasicColor& given)
         {
-            Apply(given.Fg);
-            Apply(given.Bg);
+            apply(given.fg);
+            apply(given.bg);
         }
-        void Apply(const TextProperties::TextColor::ColorCubeFG& given)
+        void apply(const TextProperties::TextColor::ColorCubeFG& given)
         {
-            Fg.Type           = TextProperties::TextColor::ColorType::ColorCube;
-            Fg.Data.ColorCube = given;
+            fg.type           = TextProperties::TextColor::ColorType::ColorCube;
+            fg.data.color_cube = given;
         }
-        void Apply(const TextProperties::TextColor::ColorCubeBG& given)
+        void apply(const TextProperties::TextColor::ColorCubeBG& given)
         {
-            Bg.Type           = TextProperties::TextColor::ColorType::ColorCube;
-            Bg.Data.ColorCube = given;
+            bg.type           = TextProperties::TextColor::ColorType::ColorCube;
+            bg.data.color_cube = given;
         }
-        void Apply(const TextProperties::TextColor::ColorCube& given)
+        void apply(const TextProperties::TextColor::ColorCube& given)
         {
-            Apply(given.Fg);
-            Apply(given.Bg);
+            apply(given.fg);
+            apply(given.bg);
         }
-        void Apply(const TextProperties::TextColor::Color24bFG& given)
+        void apply(const TextProperties::TextColor::Color24bFG& given)
         {
-            Fg.Type          = TextProperties::TextColor::ColorType::Color24b;
-            Fg.Data.Color24b = given;
+            fg.type          = TextProperties::TextColor::ColorType::Color24b;
+            fg.data.color24b = given;
         }
-        void Apply(const TextProperties::TextColor::Color24bBG& given)
+        void apply(const TextProperties::TextColor::Color24bBG& given)
         {
-            Bg.Type          = TextProperties::TextColor::ColorType::Color24b;
-            Bg.Data.Color24b = given;
+            bg.type          = TextProperties::TextColor::ColorType::Color24b;
+            bg.data.color24b = given;
         }
-        void Apply(const TextProperties::TextColor::Color24b& given)
+        void apply(const TextProperties::TextColor::Color24b& given)
         {
-            Apply(given.Fg);
-            Apply(given.Bg);
+            apply(given.fg);
+            apply(given.bg);
         }
 
     public:
-        bool NeedModif(const TextProperties::TextColor::reset_color&) { return true; }
+        bool need_modif(const TextProperties::TextColor::reset_color&) { return true; }
 
-        bool NeedModif(const TextProperties::TextColor::Color& given) { return *this != given; }
+        bool need_modif(const TextProperties::TextColor::Color& given) { return *this != given; }
 
-        bool NeedModif(const TextProperties::TextColor::BasicColorFG& given) { return Fg.Type != TextProperties::TextColor::ColorType::BasicColor || Fg.Data.BasicColor != given; }
-        bool NeedModif(const TextProperties::TextColor::BasicColorBG& given) { return Bg.Type != TextProperties::TextColor::ColorType::BasicColor || Bg.Data.BasicColor != given; }
-        bool NeedModif(const TextProperties::TextColor::BasicColor& given) { return NeedModif(given.Fg) || NeedModif(given.Bg); }
-        bool NeedModif(const TextProperties::TextColor::ColorCubeFG& given) { return Fg.Type != TextProperties::TextColor::ColorType::ColorCube || Fg.Data.ColorCube != given; }
-        bool NeedModif(const TextProperties::TextColor::ColorCubeBG& given) { return Bg.Type != TextProperties::TextColor::ColorType::ColorCube || Bg.Data.ColorCube != given; }
-        bool NeedModif(const TextProperties::TextColor::ColorCube& given) { return NeedModif(given.Fg) || NeedModif(given.Bg); }
-        bool NeedModif(const TextProperties::TextColor::Color24bFG& given) { return Fg.Type != TextProperties::TextColor::ColorType::Color24b || Fg.Data.Color24b != given; }
-        bool NeedModif(const TextProperties::TextColor::Color24bBG& given) { return Bg.Type != TextProperties::TextColor::ColorType::Color24b || Bg.Data.Color24b != given; }
-        bool NeedModif(const TextProperties::TextColor::Color24b& given) { return NeedModif(given.Fg) || NeedModif(given.Bg); }
+        bool need_modif(const TextProperties::TextColor::BasicColorFG& given) { return fg.type != TextProperties::TextColor::ColorType::BasicColor || fg.data.basic_color != given; }
+        bool need_modif(const TextProperties::TextColor::BasicColorBG& given) { return bg.type != TextProperties::TextColor::ColorType::BasicColor || bg.data.basic_color != given; }
+        bool need_modif(const TextProperties::TextColor::BasicColor& given) { return need_modif(given.fg) || need_modif(given.bg); }
+        bool need_modif(const TextProperties::TextColor::ColorCubeFG& given) { return fg.type != TextProperties::TextColor::ColorType::ColorCube || fg.data.color_cube != given; }
+        bool need_modif(const TextProperties::TextColor::ColorCubeBG& given) { return bg.type != TextProperties::TextColor::ColorType::ColorCube || bg.data.color_cube != given; }
+        bool need_modif(const TextProperties::TextColor::ColorCube& given) { return need_modif(given.fg) || need_modif(given.bg); }
+        bool need_modif(const TextProperties::TextColor::Color24bFG& given) { return fg.type != TextProperties::TextColor::ColorType::Color24b || fg.data.color24b != given; }
+        bool need_modif(const TextProperties::TextColor::Color24bBG& given) { return bg.type != TextProperties::TextColor::ColorType::Color24b || bg.data.color24b != given; }
+        bool need_modif(const TextProperties::TextColor::Color24b& given) { return need_modif(given.fg) || need_modif(given.bg); }
     };
 
     inline bool operator==(const TextProperties::TextColor::Color& lhs, const TextProperties::TextColor::Color& rhs)
     {
-        return lhs.Fg == rhs.Fg && lhs.Bg == rhs.Bg;
+        return lhs.fg == rhs.fg && lhs.bg == rhs.bg;
     }
 
     template <typename T>
-    concept TextPropertiesColorCanApply = requires(const T& value, TextProperties::TextColor::Color& data)
+    concept text_properties_color_can_apply = requires(const T& value, TextProperties::TextColor::Color& data)
     {
-        data.Apply(value);
+        data.apply(value);
     };
 
     template <typename T>
-    struct TextPropertiesColorIsApplyType
+    struct TextPropertiesColorIsapplyType
     {
-        using BaseType              = GetBaseType<T>;
-        static constexpr bool Value = std::is_same_v<BaseType, TextProperties::TextColor::Color> || std::is_same_v<BaseType, TextProperties::TextColor::reset_color> ||
+        using BaseType              = get_base_type<T>;
+        static constexpr bool value = std::is_same_v<BaseType, TextProperties::TextColor::Color> || std::is_same_v<BaseType, TextProperties::TextColor::reset_color> ||
                                       std::is_same_v<BaseType, TextProperties::TextColor::BasicColorFG> || std::is_same_v<BaseType, TextProperties::TextColor::BasicColorBG> ||
                                       std::is_same_v<BaseType, TextProperties::TextColor::BasicColor> || std::is_same_v<BaseType, TextProperties::TextColor::ColorCubeFG> ||
                                       std::is_same_v<BaseType, TextProperties::TextColor::ColorCubeBG> || std::is_same_v<BaseType, TextProperties::TextColor::ColorCube> ||
@@ -548,5 +548,5 @@ namespace stream::fmt::detail
     };
 
     template <typename T>
-    concept TextPropertiesColorIsApply = TextPropertiesColorIsApplyType<T>::Value;
+    concept TextPropertiesColorIsapply = TextPropertiesColorIsapplyType<T>::value;
 }

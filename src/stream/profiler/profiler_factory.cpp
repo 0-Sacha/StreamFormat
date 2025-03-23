@@ -1,20 +1,20 @@
-#include "ProfilerFactory.h"
-#include "ProfilerJsonSerializers.h"
+#include "profiler_factory.h"
+#include "profiler_json_serializers.h"
 
 #include <fstream>
 
-namespace stream::ProfilerManager
+namespace stream::profiler
 {
     void ProfilerFactory::ToJson(Profiler& profiler, std::filesystem::path path)
     {
-        profiler.ProfilerDuration.Stop();
-        profiler.Events[0] = profiler.ProfilerDuration.Info;
+        profiler.profiler_duration.Stop();
+        profiler.events[0] = profiler.profiler_duration.info;
 
-        if (path == "") path = std::string(profiler.Name) + ".json";
+        if (path == "") path = std::string(profiler.name) + ".json";
 
         std::ofstream file(path.string(), std::ios::out);
-        JSON::FormatAsJson<Profiler> formatProfiler(profiler);
-        fmt::FilePrint(file, formatProfiler).value();
+        json::FormatAsJson<Profiler> format_profiler(profiler);
+        fmt::file_print(file, format_profiler).value();
         file.close();
     }
 }

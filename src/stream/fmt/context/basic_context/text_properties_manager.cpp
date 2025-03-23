@@ -2,151 +2,151 @@
 
 namespace stream::fmt::detail
 {
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadColorFG(const TextProperties::TextColor::ColorFG& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_fg(const TextProperties::TextColor::ColorFG& target)
     {
-        if (target.Type != m_CurrentContextProperties.color.Fg.Type)
+        if (target.type != current_context_properties_.color.fg.type)
         {
-            switch (target.Type)
+            switch (target.type)
             {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    return ApplyColor(target.Data.BasicColor);
+                    return apply_color(target.data.basic_color);
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    return ApplyColor(target.Data.ColorCube);
+                    return apply_color(target.data.color_cube);
                 case TextProperties::TextColor::ColorType::Color24b:
-                    return ApplyColor(target.Data.Color24b);
+                    return apply_color(target.data.color24b);
             }
         }
         else
         {
-            switch (target.Type)
+            switch (target.type)
             {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    if (m_CurrentContextProperties.color.Fg.Data.BasicColor != target.Data.BasicColor)
-                        return ApplyColor(target.Data.BasicColor);
+                    if (current_context_properties_.color.fg.data.basic_color != target.data.basic_color)
+                        return apply_color(target.data.basic_color);
                     break;
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    if (m_CurrentContextProperties.color.Fg.Data.ColorCube != target.Data.ColorCube)
-                        return ApplyColor(target.Data.ColorCube);
+                    if (current_context_properties_.color.fg.data.color_cube != target.data.color_cube)
+                        return apply_color(target.data.color_cube);
                     break;
                 case TextProperties::TextColor::ColorType::Color24b:
-                    if (m_CurrentContextProperties.color.Fg.Data.Color24b != target.Data.Color24b)
-                        return ApplyColor(target.Data.Color24b);
+                    if (current_context_properties_.color.fg.data.color24b != target.data.color24b)
+                        return apply_color(target.data.color24b);
                     break;
             }
         }
         return {};
     }
 
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadColorBG(const TextProperties::TextColor::ColorBG& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_color_bg(const TextProperties::TextColor::ColorBG& target)
     {
-        if (target.Type != m_CurrentContextProperties.color.Bg.Type)
+        if (target.type != current_context_properties_.color.bg.type)
         {
-            switch (target.Type)
+            switch (target.type)
             {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    return ApplyColor(target.Data.BasicColor);
+                    return apply_color(target.data.basic_color);
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    return ApplyColor(target.Data.ColorCube);
+                    return apply_color(target.data.color_cube);
                 case TextProperties::TextColor::ColorType::Color24b:
-                    return ApplyColor(target.Data.Color24b);
+                    return apply_color(target.data.color24b);
             }
         }
         else
         {
-            switch (target.Type)
+            switch (target.type)
             {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    if (m_CurrentContextProperties.color.Bg.Data.BasicColor != target.Data.BasicColor)
-                        return ApplyColor(target.Data.BasicColor);
+                    if (current_context_properties_.color.bg.data.basic_color != target.data.basic_color)
+                        return apply_color(target.data.basic_color);
                     break;
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    if (m_CurrentContextProperties.color.Bg.Data.ColorCube != target.Data.ColorCube)
-                        return ApplyColor(target.Data.ColorCube);
+                    if (current_context_properties_.color.bg.data.color_cube != target.data.color_cube)
+                        return apply_color(target.data.color_cube);
                     break;
                 case TextProperties::TextColor::ColorType::Color24b:
-                    if (m_CurrentContextProperties.color.Bg.Data.Color24b != target.Data.Color24b)
-                        return ApplyColor(target.Data.Color24b);
+                    if (current_context_properties_.color.bg.data.color24b != target.data.color24b)
+                        return apply_color(target.data.color24b);
                     break;
             }
         }
         return {};
     }
 
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadStyle(const TextProperties::TextStyle::Style& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_style(const TextProperties::TextStyle::Style& target)
     {
-        if (target.Intensity != m_CurrentContextProperties.style.Intensity)
+        if (target.intensity != current_context_properties_.style.intensity)
         {
-            SF_TRY(ApplyStyle(target.Intensity));
-            m_CurrentContextProperties.style.Intensity = target.Intensity;
+            SF_TRY(apply_style(target.intensity));
+            current_context_properties_.style.intensity = target.intensity;
         }
-        if (target.Italic != m_CurrentContextProperties.style.Italic)
+        if (target.italic != current_context_properties_.style.italic)
         {
-            SF_TRY(ApplyStyle(target.Italic));
-            m_CurrentContextProperties.style.Italic = target.Italic;
+            SF_TRY(apply_style(target.italic));
+            current_context_properties_.style.italic = target.italic;
         }
-        if (target.Blink != m_CurrentContextProperties.style.Blink)
+        if (target.blink != current_context_properties_.style.blink)
         {
-            SF_TRY(ApplyStyle(target.Blink));
-            m_CurrentContextProperties.style.Blink = target.Blink;
+            SF_TRY(apply_style(target.blink));
+            current_context_properties_.style.blink = target.blink;
         }
-        if (target.Inverted != m_CurrentContextProperties.style.Inverted)
+        if (target.inverted != current_context_properties_.style.inverted)
         {
-            SF_TRY(ApplyStyle(target.Inverted));
-            m_CurrentContextProperties.style.Inverted = target.Inverted;
+            SF_TRY(apply_style(target.inverted));
+            current_context_properties_.style.inverted = target.inverted;
         }
-        if (target.Ideogram != m_CurrentContextProperties.style.Ideogram)
+        if (target.ideogram != current_context_properties_.style.ideogram)
         {
-            SF_TRY(ApplyStyle(target.Ideogram));
-            m_CurrentContextProperties.style.Ideogram = target.Ideogram;
+            SF_TRY(apply_style(target.ideogram));
+            current_context_properties_.style.ideogram = target.ideogram;
         }
-        if (target.Script != m_CurrentContextProperties.style.Script)
+        if (target.script != current_context_properties_.style.script)
         {
-            SF_TRY(ApplyStyle(target.Script));
-            m_CurrentContextProperties.style.Script = target.Script;
-        }
-
-        if (target.Underline != m_CurrentContextProperties.style.Underline)
-        {
-            SF_TRY(ApplyStyle(target.Underline));
-            m_CurrentContextProperties.style.Underline = target.Underline;
+            SF_TRY(apply_style(target.script));
+            current_context_properties_.style.script = target.script;
         }
 
-        if (target.UnderlineColor.Type != m_CurrentContextProperties.style.UnderlineColor.Type)
+        if (target.underline != current_context_properties_.style.underline)
         {
-            switch (target.UnderlineColor.Type)
+            SF_TRY(apply_style(target.underline));
+            current_context_properties_.style.underline = target.underline;
+        }
+
+        if (target.underline_color.type != current_context_properties_.style.underline_color.type)
+        {
+            switch (target.underline_color.type)
             {
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Default:
-                    SF_TRY(ApplyStyle(TextProperties::TextStyle::UnderlineColor::ColorCube{TextProperties::TextStyle::UnderlineColor::ColorCube::Default}));
+                    SF_TRY(apply_style(TextProperties::TextStyle::UnderlineColor::ColorCube{TextProperties::TextStyle::UnderlineColor::ColorCube::Default}));
                     break;
                 case TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube:
-                    SF_TRY(ApplyStyle(target.UnderlineColor.Data.ColorCube));
-                    m_CurrentContextProperties.style.UnderlineColor.Data.ColorCube = target.UnderlineColor.Data.ColorCube;
+                    SF_TRY(apply_style(target.underline_color.data.color_cube));
+                    current_context_properties_.style.underline_color.data.color_cube = target.underline_color.data.color_cube;
                     break;
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Color24b:
-                    SF_TRY(ApplyStyle(target.UnderlineColor.Data.Color24b));
-                    m_CurrentContextProperties.style.UnderlineColor.Data.Color24b = target.UnderlineColor.Data.Color24b;
+                    SF_TRY(apply_style(target.underline_color.data.color24b));
+                    current_context_properties_.style.underline_color.data.color24b = target.underline_color.data.color24b;
                     break;
             }
-            m_CurrentContextProperties.style.UnderlineColor.Type = target.UnderlineColor.Type;
+            current_context_properties_.style.underline_color.type = target.underline_color.type;
         }
         else
         {
-            switch (target.UnderlineColor.Type)
+            switch (target.underline_color.type)
             {
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Default:
                     break;
                 case TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube:
-                    if (m_CurrentContextProperties.style.UnderlineColor.Data.ColorCube != target.UnderlineColor.Data.ColorCube)
+                    if (current_context_properties_.style.underline_color.data.color_cube != target.underline_color.data.color_cube)
                     {
-                        SF_TRY(ApplyStyle(target.UnderlineColor.Data.ColorCube));
-                        m_CurrentContextProperties.style.UnderlineColor.Data.ColorCube = target.UnderlineColor.Data.ColorCube;
+                        SF_TRY(apply_style(target.underline_color.data.color_cube));
+                        current_context_properties_.style.underline_color.data.color_cube = target.underline_color.data.color_cube;
                     }
                     break;
                 case TextProperties::TextStyle::UnderlineColor::ColorType::Color24b:
-                    if (m_CurrentContextProperties.style.UnderlineColor.Data.Color24b != target.UnderlineColor.Data.Color24b)
+                    if (current_context_properties_.style.underline_color.data.color24b != target.underline_color.data.color24b)
                     {
-                        SF_TRY(ApplyStyle(target.UnderlineColor.Data.Color24b));
-                        m_CurrentContextProperties.style.UnderlineColor.Data.Color24b = target.UnderlineColor.Data.Color24b;
+                        SF_TRY(apply_style(target.underline_color.data.color24b));
+                        current_context_properties_.style.underline_color.data.color24b = target.underline_color.data.color24b;
                     }
                     break;
             }
@@ -154,13 +154,13 @@ namespace stream::fmt::detail
         return {};
     }
 
-    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesApplyManager::ReloadFront(const TextProperties::TextFront::Front& target)
+    [[nodiscard]] std::expected<void, FMTResult> TextPropertiesapplyManager::reload_front(const TextProperties::TextFront::Front& target)
     {
-        if (m_CurrentContextProperties.front == target)
+        if (current_context_properties_.front == target)
             return {};
 
-        SF_TRY(ApplyFront(target.CurrentID));
-        m_CurrentContextProperties.front = target;
+        SF_TRY(apply_front(target.CurrentID));
+        current_context_properties_.front = target;
         return {};
     }
 }

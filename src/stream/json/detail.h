@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-namespace stream::JSON::detail
+namespace stream::json::detail
 {
     class JsonError : public std::exception
     {
@@ -64,7 +64,7 @@ namespace stream::JSON::detail
     };
 }
 
-namespace stream::JSON
+namespace stream::json
 {
     template <typename T>
     struct JsonObjectSerializer;

@@ -1,18 +1,18 @@
-#include "BaseFMTTests.h"
+#include "base_fmt_tests.h"
 
-#include "stream/fmt/context/ParserExecutor/utility_functions.h"
+#include "stream/fmt/context/parser_executor/utility_functions.h"
 
-#include "stream/fmt/buffer/utils/BufferGlobberManip.h"
+#include "stream/fmt/buf/utils/buffer_globber_manip.h"
 
 SFT_TEST_GROUP(FMT, GLOBBER);
 #define TEST_GLOBBER(data, glob)                                                  \
   {                                                                               \
-    stream::fmt::detail::BufferInfoView<char> p_buffer(data);               \
-    stream::fmt::detail::BufferInfoView<char> p_glob(glob);                 \
-    stream::fmt::detail::Globber<const char>::BufferInExecGlob(p_buffer,    \
+    stream::fmt::buf::StreamView<char> p_buffer(data);               \
+    stream::fmt::buf::StreamView<char> p_glob(glob);                 \
+    stream::fmt::buf::Globber<const char>::buffer_exec_glob(p_buffer,    \
                                                                p_glob).value();   \
     SFT_ASSERT(                                                                   \
-        stream::fmt::detail::BufferAccess(p_buffer).IsEndOfString());       \
+        stream::fmt::buf::Access(p_buffer).is_end_of_string());       \
   }
 
 SFT_TEST_FUNC(GLOBBER, BASIC_WILDCARD){

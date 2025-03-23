@@ -7,7 +7,7 @@ namespace stream::fmt::detail
 {
     struct TextProperties::TextStyle
     {
-        struct ResetStyle
+        struct reset_style
         {
         };
 
@@ -84,7 +84,7 @@ namespace stream::fmt::detail
         struct Color;
     };
 
-    // No need of virtual destructor since Color24b is purely a renaming of BaseColor24b
+    // No need of virtual destructor since color24b is purely a renaming of BaseColor24b
     struct TextProperties::TextStyle::UnderlineColor::Color24b : public TextProperties::TextColor::BaseColor24b
     {
         constexpr Color24b(std::uint8_t r = 0, std::uint8_t g = 0, std::uint8_t b = 0)
@@ -92,7 +92,7 @@ namespace stream::fmt::detail
         {}
     };
 
-    // No need of virtual destructor since ColorCube is purely a renaming of BaseColorCube
+    // No need of virtual destructor since color_cube is purely a renaming of BaseColorCube
     struct TextProperties::TextStyle::UnderlineColor::ColorCube : public TextProperties::TextColor::BaseColorCube
     {
         constexpr ColorCube()
@@ -135,30 +135,30 @@ namespace stream::fmt::detail
     union TextProperties::TextStyle::UnderlineColor::ColorData
     {
         constexpr ColorData()
-            : ColorCube()
+            : color_cube()
         {}
 
-        TextProperties::TextStyle::UnderlineColor::ColorCube ColorCube;
-        TextProperties::TextStyle::UnderlineColor::Color24b  Color24b;
+        TextProperties::TextStyle::UnderlineColor::ColorCube color_cube;
+        TextProperties::TextStyle::UnderlineColor::Color24b  color24b;
     };
 
     struct TextProperties::TextStyle::UnderlineColor::Color
     {
-        TextProperties::TextStyle::UnderlineColor::ColorData Data;
-        TextProperties::TextStyle::UnderlineColor::ColorType Type = TextProperties::TextStyle::UnderlineColor::ColorType::Default;
+        TextProperties::TextStyle::UnderlineColor::ColorData data;
+        TextProperties::TextStyle::UnderlineColor::ColorType type = TextProperties::TextStyle::UnderlineColor::ColorType::Default;
     };
 
     inline bool operator==(const TextProperties::TextStyle::UnderlineColor::Color& lhs, const TextProperties::TextStyle::UnderlineColor::Color& rhs)
     {
-        if (lhs.Type != rhs.Type) return false;
-        switch (lhs.Type)
+        if (lhs.type != rhs.type) return false;
+        switch (lhs.type)
         {
             case TextProperties::TextStyle::UnderlineColor::ColorType::Default:
                 return true;
             case TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube:
-                return lhs.Data.ColorCube == rhs.Data.ColorCube;
+                return lhs.data.color_cube == rhs.data.color_cube;
             case TextProperties::TextStyle::UnderlineColor::ColorType::Color24b:
-                return lhs.Data.Color24b == rhs.Data.Color24b;
+                return lhs.data.color24b == rhs.data.color24b;
         }
         return false;
     }
@@ -170,80 +170,80 @@ namespace stream::fmt::detail
     public:
         constexpr Style() {}
 
-        TextProperties::TextStyle::Intensity Intensity = TextProperties::TextStyle::Intensity::Normal;
-        TextProperties::TextStyle::Italic    Italic    = TextProperties::TextStyle::Italic::Disable;
-        TextProperties::TextStyle::Blink     Blink     = TextProperties::TextStyle::Blink::Disable;
-        TextProperties::TextStyle::Inverted  Inverted  = TextProperties::TextStyle::Inverted::Disable;
-        TextProperties::TextStyle::Ideogram  Ideogram  = TextProperties::TextStyle::Ideogram::AllDisable;
-        TextProperties::TextStyle::Script    Script    = TextProperties::TextStyle::Script::AllDisable;
+        TextProperties::TextStyle::Intensity intensity = TextProperties::TextStyle::Intensity::Normal;
+        TextProperties::TextStyle::Italic    italic    = TextProperties::TextStyle::Italic::Disable;
+        TextProperties::TextStyle::Blink     blink     = TextProperties::TextStyle::Blink::Disable;
+        TextProperties::TextStyle::Inverted  inverted  = TextProperties::TextStyle::Inverted::Disable;
+        TextProperties::TextStyle::Ideogram  ideogram  = TextProperties::TextStyle::Ideogram::AllDisable;
+        TextProperties::TextStyle::Script    script    = TextProperties::TextStyle::Script::AllDisable;
 
-        TextProperties::TextStyle::Underline             Underline = TextProperties::TextStyle::Underline::Disable;
-        TextProperties::TextStyle::UnderlineColor::Color UnderlineColor;
-
-    public:
-        void ModifyReset() { *this = Style{}; }
-
-        void Apply(const TextProperties::TextStyle::ResetStyle&) { ModifyReset(); }
-        void Apply(const TextProperties::TextStyle::Style& given) { *this = given; }
-        void Apply(const TextProperties::TextStyle::Intensity& given) { Intensity = given; }
-        void Apply(const TextProperties::TextStyle::Italic& given) { Italic = given; }
-        void Apply(const TextProperties::TextStyle::Underline& given) { Underline = given; }
-        void Apply(const TextProperties::TextStyle::Blink& given) { Blink = given; }
-        void Apply(const TextProperties::TextStyle::Inverted& given) { Inverted = given; }
-        void Apply(const TextProperties::TextStyle::Ideogram& given) { Ideogram = given; }
-        void Apply(const TextProperties::TextStyle::Script& given) { Script = given; }
-
-        void Apply(const TextProperties::TextStyle::UnderlineColor::Color& given) { UnderlineColor = given; }
-        void Apply(const TextProperties::TextStyle::UnderlineColor::ColorCube& given)
-        {
-            UnderlineColor.Type           = TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube;
-            UnderlineColor.Data.ColorCube = given;
-        }
-        void Apply(const TextProperties::TextStyle::UnderlineColor::Color24b& given)
-        {
-            UnderlineColor.Type          = TextProperties::TextStyle::UnderlineColor::ColorType::Color24b;
-            UnderlineColor.Data.Color24b = given;
-        }
+        TextProperties::TextStyle::Underline             underline = TextProperties::TextStyle::Underline::Disable;
+        TextProperties::TextStyle::UnderlineColor::Color underline_color;
 
     public:
-        bool NeedModif(const TextProperties::TextStyle::ResetStyle&) { return true; }
-        bool NeedModif(const TextProperties::TextStyle::Style& given) { return *this != given; }
-        bool NeedModif(const TextProperties::TextStyle::Intensity& given) { return Intensity != given; }
-        bool NeedModif(const TextProperties::TextStyle::Italic& given) { return Italic != given; }
-        bool NeedModif(const TextProperties::TextStyle::Underline& given) { return Underline != given; }
-        bool NeedModif(const TextProperties::TextStyle::Blink& given) { return Blink != given; }
-        bool NeedModif(const TextProperties::TextStyle::Inverted& given) { return Inverted != given; }
-        bool NeedModif(const TextProperties::TextStyle::Ideogram& given) { return Ideogram != given; }
-        bool NeedModif(const TextProperties::TextStyle::Script& given) { return Script != given; }
+        void modify_reset() { *this = Style{}; }
 
-        bool NeedModif(const TextProperties::TextStyle::UnderlineColor::Color& given) { return UnderlineColor != given; }
-        bool NeedModif(const TextProperties::TextStyle::UnderlineColor::ColorCube& given)
+        void apply(const TextProperties::TextStyle::reset_style&) { modify_reset(); }
+        void apply(const TextProperties::TextStyle::Style& given) { *this = given; }
+        void apply(const TextProperties::TextStyle::Intensity& given) { intensity = given; }
+        void apply(const TextProperties::TextStyle::Italic& given) { italic = given; }
+        void apply(const TextProperties::TextStyle::Underline& given) { underline = given; }
+        void apply(const TextProperties::TextStyle::Blink& given) { blink = given; }
+        void apply(const TextProperties::TextStyle::Inverted& given) { inverted = given; }
+        void apply(const TextProperties::TextStyle::Ideogram& given) { ideogram = given; }
+        void apply(const TextProperties::TextStyle::Script& given) { script = given; }
+
+        void apply(const TextProperties::TextStyle::UnderlineColor::Color& given) { underline_color = given; }
+        void apply(const TextProperties::TextStyle::UnderlineColor::ColorCube& given)
         {
-            return UnderlineColor.Type != TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube || UnderlineColor.Data.ColorCube != given;
+            underline_color.type           = TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube;
+            underline_color.data.color_cube = given;
         }
-        bool NeedModif(const TextProperties::TextStyle::UnderlineColor::Color24b& given)
+        void apply(const TextProperties::TextStyle::UnderlineColor::Color24b& given)
         {
-            return UnderlineColor.Type != TextProperties::TextStyle::UnderlineColor::ColorType::Color24b || UnderlineColor.Data.Color24b != given;
+            underline_color.type          = TextProperties::TextStyle::UnderlineColor::ColorType::Color24b;
+            underline_color.data.color24b = given;
+        }
+
+    public:
+        bool need_modif(const TextProperties::TextStyle::reset_style&) { return true; }
+        bool need_modif(const TextProperties::TextStyle::Style& given) { return *this != given; }
+        bool need_modif(const TextProperties::TextStyle::Intensity& given) { return intensity != given; }
+        bool need_modif(const TextProperties::TextStyle::Italic& given) { return italic != given; }
+        bool need_modif(const TextProperties::TextStyle::Underline& given) { return underline != given; }
+        bool need_modif(const TextProperties::TextStyle::Blink& given) { return blink != given; }
+        bool need_modif(const TextProperties::TextStyle::Inverted& given) { return inverted != given; }
+        bool need_modif(const TextProperties::TextStyle::Ideogram& given) { return ideogram != given; }
+        bool need_modif(const TextProperties::TextStyle::Script& given) { return script != given; }
+
+        bool need_modif(const TextProperties::TextStyle::UnderlineColor::Color& given) { return underline_color != given; }
+        bool need_modif(const TextProperties::TextStyle::UnderlineColor::ColorCube& given)
+        {
+            return underline_color.type != TextProperties::TextStyle::UnderlineColor::ColorType::ColorCube || underline_color.data.color_cube != given;
+        }
+        bool need_modif(const TextProperties::TextStyle::UnderlineColor::Color24b& given)
+        {
+            return underline_color.type != TextProperties::TextStyle::UnderlineColor::ColorType::Color24b || underline_color.data.color24b != given;
         }
     };
 
     inline bool operator==(const TextProperties::TextStyle::Style& lhs, const TextProperties::TextStyle::Style& rhs)
     {
-        return lhs.Intensity == rhs.Intensity && lhs.Italic == rhs.Italic && lhs.Blink == rhs.Blink && lhs.Inverted == rhs.Inverted && lhs.Ideogram == rhs.Ideogram &&
-               lhs.Script == rhs.Script && lhs.Underline == rhs.Underline && lhs.UnderlineColor == rhs.UnderlineColor;
+        return lhs.intensity == rhs.intensity && lhs.italic == rhs.italic && lhs.blink == rhs.blink && lhs.inverted == rhs.inverted && lhs.ideogram == rhs.ideogram &&
+               lhs.script == rhs.script && lhs.underline == rhs.underline && lhs.underline_color == rhs.underline_color;
     }
 
     template <typename T>
-    concept TextPropertiesStyleCanApply = requires(const T& value, TextProperties::TextStyle::Style& data)
+    concept text_properties_style_can_apply = requires(const T& value, TextProperties::TextStyle::Style& data)
     {
-        data.Apply(value);
+        data.apply(value);
     };
 
     template <typename T>
-    struct TextPropertiesStyleIsApplyType
+    struct TextPropertiesStyleIsapplyType
     {
-        using BaseType              = GetBaseType<T>;
-        static constexpr bool Value = std::is_same_v<BaseType, TextProperties::TextStyle::ResetStyle> || std::is_same_v<BaseType, TextProperties::TextStyle::Style> ||
+        using BaseType              = get_base_type<T>;
+        static constexpr bool value = std::is_same_v<BaseType, TextProperties::TextStyle::reset_style> || std::is_same_v<BaseType, TextProperties::TextStyle::Style> ||
                                       std::is_same_v<BaseType, TextProperties::TextStyle::Intensity> || std::is_same_v<BaseType, TextProperties::TextStyle::Italic> ||
                                       std::is_same_v<BaseType, TextProperties::TextStyle::Underline> || std::is_same_v<BaseType, TextProperties::TextStyle::Blink> ||
                                       std::is_same_v<BaseType, TextProperties::TextStyle::Inverted> || std::is_same_v<BaseType, TextProperties::TextStyle::Ideogram> ||
@@ -253,7 +253,7 @@ namespace stream::fmt::detail
     };
 
     template <typename T>
-    concept TextPropertiesStyleIsApply = TextPropertiesStyleIsApplyType<T>::Value;
+    concept TextPropertiesStyleIsapply = TextPropertiesStyleIsapplyType<T>::value;
 }
 
 namespace stream::fmt::detail::OLD

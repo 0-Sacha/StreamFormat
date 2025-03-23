@@ -1,9 +1,9 @@
 
-#include "stream/Tester/TestSuite/AllTestSuite.h"
-#include "stream/flog/DefaultLogger.h"
+#include "stream/tester/test_suite/all_test_suite.h"
+#include "stream/default_logger.h"
 
 int main()
 {
-    stream::Tester::TestSuitesManager::Verbose = false;
-    return stream::Tester::TestSuitesManager::ExecAllTestSuites();
+    stream::tester::TestSuitesManager::verbose = false;
+    return stream::tester::TestSuitesManager::exec_all_test_suites();
 }

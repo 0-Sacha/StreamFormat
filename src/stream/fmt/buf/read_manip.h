@@ -1,33 +1,33 @@
 #pragma once
 
-#include "stream/fmt/buffer/buffer_info.h"
-#include "stream/fmt/buffer/buffer_manip.h"
+#include "stream/fmt/buf/stream.h"
+#include "stream/fmt/buf/manip.h"
 
-namespace stream::fmt::detail
+namespace stream::fmt::buf
 {
     template <typename TChar>
-    class BufferReadManip
+    class ReadManip
     {
     public:
-        constexpr inline BufferReadManip(BufferInfo<TChar>& buffer_) noexcept : buffer(buffer_) {}
+        constexpr inline ReadManip(Stream<TChar>& buffer_) noexcept : buffer(buffer_) {}
     public:
-        BufferInfo<TChar>& buffer;
+        Stream<TChar>& buffer;
     
     public:
         template <typename T>
-        [[nodiscard]] constexpr std::expected<void, FMTResult> FastReadInteger(T& t) noexcept
+        [[nodiscard]] constexpr std::expected<void, FMTResult> fast_read_integer(T& t) noexcept
         {
             bool sign = false;
             if constexpr (std::is_signed_v<T>)
-                { sign = SF_TRY(BufferTestManip(buffer).IsEqualToForward('-')); }
+                { sign = SF_TRY(TestManip(buffer).is_equal_to_forward('-')); }
 
-            if (!BufferTestAccess(buffer).IsADigit())
+            if (!TestAccess(buffer).is_a_digit())
                 { return std::unexpected(FMTResult::Parse_NonValidDigit); }
             
             T value = static_cast<T>(0);
-            while (BufferTestAccess(buffer).IsADigit())
+            while (TestAccess(buffer).is_a_digit())
             {
-                char c = SF_TRY(BufferManip(buffer).GetAndForward());
+                char c = SF_TRY(Manip(buffer).get_and_forward());
                 value = value * static_cast<T>(10) + static_cast<T>(c - static_cast<TChar>('0'));
             }
 
@@ -37,41 +37,42 @@ namespace stream::fmt::detail
 
     public:
         template <typename T>
-        [[nodiscard]] constexpr inline std::expected<void, FMTResult> FastReadFloat(T& t, std::int32_t floatPrecision = -1) noexcept
+        [[nodiscard]] constexpr inline std::expected<void, FMTResult> fast_read_float(T& t, std::int32_t float_precision = -1) noexcept
         {
             T intpart = static_cast<T>(0);
 
-            BufferTestAccess access(buffer);
-            BufferTestManip manip(buffer);
+            TestAccess access(buffer);
+            TestManip manip(buffer);
 
-            bool sign = SF_TRY(manip.IsEqualToForward('-'));
+            bool sign = SF_TRY(manip.is_equal_to_forward('-'));
 
-            if (access.IsADigit())
-                { SF_TRY(FastReadInteger<T>(intpart)); }
-            else if (access.IsEqualTo('.'))
-                { SF_TRY(detail::BufferManip(buffer).Forward()); }
+            if (access.is_a_digit())
+                { SF_TRY(fast_read_integer<T>(intpart)); }
+            else if (access.is_equal_to('.'))
+                { SF_TRY(buf::Manip(buffer).forward()); }
             else
                 { return std::unexpected(FMTResult::Parse_NonValidDigit); }
 
-            if (floatPrecision < 0)
+            if (float_precision < 0)
             {
-                while (access.IsADigit() && BufferAccess(buffer).IsEndOfString() == false)
-                    { BufferManip(buffer).ForceForward(); }
+                while (access.is_a_digit() && Access(buffer).is_end_of_string() == false)
+                    { Manip(buffer).forward_force(); }
             }
             else
             {
-                while (access.IsADigit() && floatPrecision > 0 && BufferAccess(buffer).IsEndOfString() == false)
+                while (access.is_a_digit() && float_precision > 0 && Access(buffer).is_end_of_string() == false)
                 {
-                    BufferManip(buffer).ForceForward();
-                    floatPrecision--;
+                    Manip(buffer).forward_force();
+                    float_precision--;
                 }
             }
-            BufferManip(buffer).ForceBackward();
+            Manip(buffer).backward_force();
 
             T dec = static_cast<T>(0);
-            while (access.IsADigit())
+            while (access.is_a_digit())
             {
-                dec += static_cast<T>(BufferManip(buffer).GetAndForceBackward() - '0');
+                dec += static_cast<T>(buffer.get() - '0');
+                Manip(buffer).backward_force();
                 dec /= 10;
             }
 
@@ -83,14 +84,14 @@ namespace stream::fmt::detail
         template <typename CharPtr>
         [[nodiscard]] std::expected<void, FMTResult> FastReadCharPtr(const CharPtr* str, std::size_t sizeToCopy, bool isZeroEnded = true)
         {
-            if (BufferAccess(buffer).CanMoveForward(sizeToCopy) == false)
+            if (Access(buffer).can_move_forward(sizeToCopy) == false)
             {
-                return BufferReadManip(buffer).FastReadCharPtr(str, BufferAccess(buffer).GetBufferRemainingSize(), isZeroEnded);
+                return ReadManip(buffer).FastReadCharPtr(str, Access(buffer).get_buffer_remaining_size(), isZeroEnded);
             }
 
             // TODO : Opti with bigger types
             while (sizeToCopy-- != 0)
-                { *str++ = SF_TRY(BufferManip(buffer).GetAndForward()); }
+                { *str++ = SF_TRY(Manip(buffer).get_and_forward()); }
             if (isZeroEnded) { *str = 0; }
 
             return {};

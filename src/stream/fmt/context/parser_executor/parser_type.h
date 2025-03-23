@@ -5,7 +5,7 @@
 #define STREAMFORMAT_PARSER_DECLARED
 namespace stream::fmt
 {
-    template <typename T, typename ParserExecutor = Context::BasicParserExecutor<char>>
+    template <typename T, typename ParserExecutor = context::BasicParserExecutor<char>>
     struct ParserType
     {
         static inline bool parse(T&, ParserExecutor&)
@@ -27,9 +27,9 @@ namespace stream::fmt
 
 }
 
-#define STREAMFORMAT_AUTO_PARSER(Type, fmt, ...)                                                                         \
+#define STREAMFORMAT_AUTO_PARSER(type, fmt, ...)                                                                         \
     template <typename ParserExecutor>                                                                                   \
     struct stream::fmt::ParserType<Type, ParserExecutor>                                                            \
     {                                                                                                                   \
-        static bool parse(Type& value, ParserExecutor& executor) { return executor.Run(fmt, __VA_ARGS__); } \
+        static bool parse(Type& value, ParserExecutor& executor) { return executor.run(fmt, __VA_ARGS__); } \
     };

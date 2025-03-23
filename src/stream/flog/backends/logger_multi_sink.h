@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stream/flog/detail/detail.h"
-#include "stream/flog/sinks/LoggerSink.h"
+#include "stream/flog/sinks/logger_sink.h"
 
 namespace stream::flog::detail
 {
@@ -14,37 +14,37 @@ namespace stream::flog::detail
 
     public:
         BasicLoggerMultiSinkImpl()
-            : m_Name("Logger:{sink}")
-            , m_StartTime(std::chrono::high_resolution_clock::now())
+            : name_("logger_:{sink}")
+            , start_time_(std::chrono::high_resolution_clock::now())
         {}
 
         BasicLoggerMultiSinkImpl(std::basic_string<CharType>&& name)
-            : m_Name(std::forward<std::basic_string<CharType>>(name))
-            , m_StartTime(std::chrono::high_resolution_clock::now())
+            : name_(std::forward<std::basic_string<CharType>>(name))
+            , start_time_(std::chrono::high_resolution_clock::now())
         {}
 
         virtual ~BasicLoggerMultiSinkImpl() = default;
 
     public:
-        void SetName(std::basic_string<CharType>&& name) { m_Name = std::forward<std::basic_string<CharType>>(name); }
+        void set_name(std::basic_string<CharType>&& name) { name_ = std::forward<std::basic_string<CharType>>(name); }
 
-        std::basic_string<CharType>&            GetName() { return m_Name; }
-        std::vector<std::shared_ptr<SinkType>>& GetSinks() { return m_Sinks; }
+        std::basic_string<CharType>&            get_name() { return name_; }
+        std::vector<std::shared_ptr<SinkType>>& get_sinks() { return sinks_; }
 
     protected:
-        std::basic_string<CharType>            m_Name;
-        std::vector<std::shared_ptr<SinkType>> m_Sinks;
+        std::basic_string<CharType>            name_;
+        std::vector<std::shared_ptr<SinkType>> sinks_;
 
-        std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTime;
+        std::chrono::time_point<std::chrono::high_resolution_clock> start_time_;
 
     public:
-        void AddSink(std::shared_ptr<SinkType> sink) { m_Sinks.push_back(sink); }
+        void add_sink(std::shared_ptr<SinkType> sink) { sinks_.pushback(sink); }
 
         template <typename T, typename... Args>
         void EmplaceSink(Args&&... args)
         {
             std::shared_ptr<T> sink = std::make_shared<T>(std::forward<Args>(args)...);
-            AddSink(sink);
+            add_sink(sink);
         }
     };
 }

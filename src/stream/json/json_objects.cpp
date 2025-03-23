@@ -1,7 +1,7 @@
-#include "JsonObjects.h"
-#include "serializers/JsonObjectsSerializer.h"
+#include "json_objects.h"
+#include "serializers/json_objects_serializer.h"
 
-namespace stream::JSON
+namespace stream::json
 {
     void JsonStringObject::ParserExecute(detail::JsonParser& parser)
     {

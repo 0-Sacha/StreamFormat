@@ -1,15 +1,15 @@
-#include "TestSuite.h"
+#include "test_suite.h"
 
-#include "stream/ProfilerManager.h"
+#include "stream/profiler.h"
 
-namespace stream::Tester
+namespace stream::tester
 {
-    bool TestSuitesManager::ExecAllTestSuites()
+    bool TestSuitesManager::exec_all_test_suites()
     {
         detail::TestStatusBank status;
 
-        for (auto& [name, testSuite] : TestSuites)
-            status.Add(testSuite->ExecAllTests());
+        for (auto& [name, test_suite] : test_suites)
+            status.Add(test_suite->exec_all_tests());
 
         flog::BasicLogger logger("TestSuite");
         if (status.IsAllOk())
@@ -21,135 +21,134 @@ namespace stream::Tester
     }
 }
 
-namespace stream::Tester::detail
+namespace stream::tester::detail
 {
-    TestStatusBank TestSuite::ExecAllTests()
+    TestStatusBank TestSuite::exec_all_tests()
     {
-        if (Parent == nullptr) Profiler = new ProfilerManager::Profiler("TestSuite_" + Name);
-        InitLogger();
+        if (parent == nullptr) profiler = new profiler::Profiler("TestSuite_" + name);
+        init_logger();
 
-        ProfilerManager::Profiler& profiler = GetProfiler();
-        Logger.info("{C:+black}{}", "BEGIN");
-        ProfilerManager::DurationEvent testSuiteDuration(GetFullName(), "Profile");
-        testSuiteDuration.Start();
-        bool                           firstTestSuite = true;
-        TestStatusBank                 testSuiteStatus;
-        ProfilerManager::DurationEvent testsDuration("Tests", "Profile");
-        testsDuration.Start();
-        for (auto& [name, test] : Tests)
+        logger.info("{C:+black}{}", "BEGIN");
+        profiler::DurationEvent test_suite_duration(get_full_name(), "Profile");
+        test_suite_duration.start();
+        bool                           first_test_suite = true;
+        TestStatusBank                 test_suite_status;
+        profiler::DurationEvent tests_duration("tests", "Profile");
+        tests_duration.start();
+        for (auto& [name, test] : tests)
         {
-            firstTestSuite = false;
-            ProfilerManager::DurationEvent currentTestDuration(test->Name, "Profile");
+            first_test_suite = false;
+            profiler::DurationEvent currentTestDuration(test->name, "Profile");
             TestStatus                     testStatus = TestStatus::Fail;
-            currentTestDuration.Start();
+            currentTestDuration.start();
             if (TestSuitesManager::PerformanceTest.Enable == false)
-                testStatus = test->Run();
+                testStatus = test->run();
             else
             {
                 for (std::uint32_t i = 0; i < TestSuitesManager::PerformanceTest.NbSamples; ++i)
                 {
-                    testStatus = test->Run();
+                    testStatus = test->run();
                     if (testStatus != TestStatus::Ok) break;
                 }
             }
             currentTestDuration.Stop();
             if (testStatus != TestStatus::Ok)
             {}
-            testSuiteStatus.AddTestStatus(testStatus);
-            Logger.debug("{} -> {}", testStatus, name);
-            profiler.AddEvent(currentTestDuration);
+            test_suite_status.AddTestStatus(testStatus);
+            logger.debug("{} -> {}", testStatus, name);
+            profiler->add_event(currentTestDuration);
         }
-        testsDuration.Stop();
+        tests_duration.Stop();
 
-        ProfilerManager::DurationEvent groupsDuration("Groups", "Profile");
-        groupsDuration.Start();
-        for (auto& [name, testSuite] : TestSuitesLinked)
+        profiler::DurationEvent groupsDuration("Groups", "Profile");
+        groupsDuration.start();
+        for (auto& [name, test_suite] : test_suites_linked)
         {
-            if (firstTestSuite)
-                firstTestSuite = false;
+            if (first_test_suite)
+                first_test_suite = false;
             else
                 std::cout << std::endl;
-            testSuiteStatus.Add(testSuite->ExecAllTests());
+            test_suite_status.Add(test_suite->exec_all_tests());
         }
         groupsDuration.Stop();
-        testSuiteDuration.Stop();
-        profiler.AddEvent(testsDuration);
-        profiler.AddEvent(groupsDuration);
-        profiler.AddEvent(testSuiteDuration);
+        test_suite_duration.Stop();
+        profiler->add_event(tests_duration);
+        profiler->add_event(groupsDuration);
+        profiler->add_event(test_suite_duration);
 
-        if (testSuiteStatus.IsAllOk())
-            Logger.info("{C:+black}{}", testSuiteStatus);
+        if (test_suite_status.IsAllOk())
+            logger.info("{C:+black}{}", test_suite_status);
         else
-            Logger.error("{C:+black}{}", testSuiteStatus);
+            logger.error("{C:+black}{}", test_suite_status);
 
-        if (Parent == nullptr)
+        if (parent == nullptr)
         {
-            ProfilerManager::ProfilerFactory::ToJson(*Profiler);
-            delete Profiler;
+            profiler::ProfilerFactory::ToJson(*profiler);
+            delete profiler;
         }
 
-        return testSuiteStatus;
+        return test_suite_status;
     }
 
-    void TestSuite::InitLogger()
+    void TestSuite::init_logger()
     {
-        if (TestSuitesManager::Verbose == false)
+        if (TestSuitesManager::verbose == false)
         {
-            Logger.SetSeverity(flog::LogSeverity::Debug);
-            TestLogger.SetSeverity(flog::LogSeverity::Debug);
+            logger.SetSeverity(flog::LogSeverity::Debug);
+            test_logger.SetSeverity(flog::LogSeverity::Debug);
         }
         else
         {
-            Logger.SetSeverity(flog::LogSeverity::Trace);
-            TestLogger.SetSeverity(flog::LogSeverity::Trace);
+            logger.SetSeverity(flog::LogSeverity::Trace);
+            test_logger.SetSeverity(flog::LogSeverity::Trace);
         }
 
         std::string timePattern = "";
         if (TestSuitesManager::PrintTime) timePattern = "[{T:pattern='%h:%m:%s:%ms'}] ";
 
-        if (Parent == nullptr)
+        if (parent == nullptr)
         {
-            Logger.SetName(Name);
-            Logger.SetRealPattern("{C:+black}" + timePattern + "{name} >> {color}{data}");
-            TestLogger.SetName(Name + ".{test_name}");
-            TestLogger.SetRealPattern("{C:+black}" + timePattern + "{name} >> {color}{data}");
+            logger.set_name(name);
+            logger.SetRealPattern("{C:+black}" + timePattern + "{name} >> {color}{data}");
+            test_logger.set_name(name + ".{test_name}");
+            test_logger.SetRealPattern("{C:+black}" + timePattern + "{name} >> {color}{data}");
         }
         else
         {
-            std::string correctedName = GetCorrectedSizeName();
-            Logger.SetName(correctedName);
-            Logger.SetRealPatternStrmv("{C:+black}" + timePattern + "{name} >> {color}{data}");
-            TestLogger.SetName(correctedName + ".{test_name}");
-            TestLogger.SetRealPatternStrmv("{C:+black}" + timePattern + "{name} >> {color}{data}");
+            std::string correctedName = get_corrected_size_name();
+            logger.set_name(correctedName);
+            logger.SetRealPatternStrmv("{C:+black}" + timePattern + "{name} >> {color}{data}");
+            test_logger.set_name(correctedName + ".{test_name}");
+            test_logger.SetRealPatternStrmv("{C:+black}" + timePattern + "{name} >> {color}{data}");
         }
     }
 
-    std::string TestSuite::GetFullName()
+    std::string TestSuite::get_full_name()
     {
-        if (Parent == nullptr) return Name;
-        return Parent->GetFullName() + "::" + Name;
+        if (parent == nullptr) return name;
+        return parent->get_full_name() + "::" + name;
     }
 
-    std::string TestSuite::GetCorrectedSizeName()
+    std::string TestSuite::get_corrected_size_name()
     {
-        if (Parent == nullptr) return Name;
+        if (parent == nullptr) return name;
         std::size_t biggestName = 0;
-        for (auto& [name, testSuite] : Parent->TestSuitesLinked)
+        for (auto& [name, test_suite] : parent->test_suites_linked)
         {
-            std::size_t tmp = testSuite->Name.size();
+            std::size_t tmp = test_suite->name.size();
             if (tmp > biggestName) biggestName = tmp;
         }
-        std::string res = GetFullName();
-        biggestName -= Name.size();
+        std::string res = get_full_name();
+        biggestName -= name.size();
         res.reserve(res.size() + biggestName);
         for (std::uint32_t i = 0; i < biggestName; ++i)
             res.push_back(' ');
         return res;
     }
 
-    ProfilerManager::Profiler& TestSuite::GetProfiler()
+    profiler::Profiler& TestSuite::get_profiler()
     {
-        if (Parent == nullptr) return *Profiler;
-        return Parent->GetProfiler();
+        if (parent == nullptr) return *profiler;
+        return parent->get_profiler();
     }
 }

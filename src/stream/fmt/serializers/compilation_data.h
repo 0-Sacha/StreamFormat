@@ -7,36 +7,36 @@ namespace stream::fmt::detail
 {
     struct FileLocation
     {
-        FileLocation(std::string_view fileName, int fileLine = 0)
-            : FileName(fileName)
-            , FileLine(fileLine)
+        FileLocation(std::string_view file_name_, int file_line_ = 0)
+            : file_name(file_name_)
+            , file_line(file_line_)
         {}
 
-        std::string_view FileName;  // __FILE__
-        int              FileLine;  // __LINE__
+        std::string_view file_name;  // __FILE__
+        int              file_line;  // __LINE__
     };
 
     struct FunctionProperties
     {
-        FunctionProperties(std::string_view fileName, int fileLine = 0, std::string_view functionName = "", std::string_view functionSignature = "",
-                           std::string_view functionAssemblyName = "")
-            : Location(fileName, fileLine)
-            , FunctionName(functionName)
-            , FunctionSignature(functionSignature)
-            , FunctionAssemblyName(functionAssemblyName)
+        FunctionProperties(std::string_view file_name_, int file_line_ = 0, std::string_view functionName = "", std::string_view function_signature_ = "",
+                           std::string_view function_assembly_name_ = "")
+            : location(file_name_, file_line_)
+            , function_name(functionName)
+            , function_signature(function_signature_)
+            , function_assembly_name(function_assembly_name_)
         {}
 
-        FunctionProperties(FileLocation location, std::string_view functionName = "", std::string_view functionSignature = "", std::string_view functionAssemblyName = "")
-            : Location(location)
-            , FunctionName(functionName)
-            , FunctionSignature(functionSignature)
-            , FunctionAssemblyName(functionAssemblyName)
+        FunctionProperties(FileLocation location, std::string_view functionName = "", std::string_view function_signature_ = "", std::string_view function_assembly_name_ = "")
+            : location(location)
+            , function_name(functionName)
+            , function_signature(function_signature_)
+            , function_assembly_name(function_assembly_name_)
         {}
 
-        FileLocation     Location;
-        std::string_view FunctionName;          // __FUNCTION__
-        std::string_view FunctionSignature;     // __FUNCSIG__ -- __PRETTY_FUNCTION__
-        std::string_view FunctionAssemblyName;  // __FUNCDNAME__
+        FileLocation     location;
+        std::string_view function_name;          // __FUNCTION__
+        std::string_view function_signature;     // __FUNCSIG__ -- __PRETTY_FUNCTION__
+        std::string_view function_assembly_name;  // __FUNCDNAME__
     };
 }
 
@@ -50,9 +50,9 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const detail::FileLocation& t, FormatterExecutor& executor)
         {
-            SF_TRY(executor.WriteType(t.FileName));
-            SF_TRY(executor.buffer_out.Pushback(':'));
-            return executor.WriteType(t.FileLine);
+            SF_TRY(executor.write_type(t.file_name));
+            SF_TRY(executor.ostream.pushback(':'));
+            return executor.write_type(t.file_line);
         }
     };
 
@@ -61,9 +61,9 @@ namespace stream::fmt
     {
         [[nodiscard]] static inline std::expected<void, FMTResult> format(const detail::FunctionProperties& t, FormatterExecutor& executor)
         {
-            SF_TRY(executor.WriteType(t.Location));
-            SF_TRY(executor.buffer_out.WriteCharArray(" @ "));
-            return executor.WriteType(t.FunctionName);
+            SF_TRY(executor.write_type(t.location));
+            SF_TRY(executor.ostream.write_char_array(" @ "));
+            return executor.write_type(t.function_name);
         }
     };
 }

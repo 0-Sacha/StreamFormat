@@ -13,23 +13,23 @@ namespace stream::flog
     public:
         enum class Value : int
         {
-            trace,
-            debug,
+            Trace,
+            Debug,
             Info,
             Warn,
             Error,
             Fatal,
-            DefaultSeverity = trace
+            DefaultSeverity = Trace
         };
 
     public:
-        static constexpr Value trace{Value::Trace};
-        static constexpr Value debug{Value::Debug};
+        static constexpr Value Trace{Value::Trace};
+        static constexpr Value Debug{Value::Debug};
         static constexpr Value Info{Value::Info};
         static constexpr Value Warn{Value::Warn};
         static constexpr Value Error{Value::Error};
         static constexpr Value Fatal{Value::Fatal};
-        static constexpr Value DefaultSeverity = trace;
+        static constexpr Value DefaultSeverity = Trace;
 
     public:
         class PatternOverride
@@ -86,7 +86,7 @@ namespace stream::flog::detail
 
     public:
         template <typename Severity, typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         [[nodiscard]] std::expected<void, fmt::FMTResult> log(Severity status, Format&& format, Args&&... args)
         {
             return Master::template log<Format, Args...>(status, format, std::forward<Args>(args)...);
@@ -99,45 +99,45 @@ namespace stream::flog::detail
         }
 
     public:
-        /////---------- Logger Severity with array as format ----------/////
+        /////---------- logger Severity with array as format ----------/////
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         inline std::expected<void, fmt::FMTResult> trace(Format&& format, Args&&... args)
         {
             return log(LogSeverity::Trace, format, std::forward<Args>(args)...);
         }
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         inline std::expected<void, fmt::FMTResult> debug(Format&& format, Args&&... args)
         {
             return log(LogSeverity::Debug, format, std::forward<Args>(args)...);
         }
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         inline std::expected<void, fmt::FMTResult> info(Format&& format, Args&&... args)
         {
             return log(LogSeverity::Info, format, std::forward<Args>(args)...);
         }
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         inline std::expected<void, fmt::FMTResult> warn(Format&& format, Args&&... args)
         {
             return log(LogSeverity::Warn, format, std::forward<Args>(args)...);
         }
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         inline std::expected<void, fmt::FMTResult> error(Format&& format, Args&&... args)
         {
             return log(LogSeverity::Error, format, std::forward<Args>(args)...);
         }
         template <typename Format = std::string_view, typename... Args>
-        requires fmt::detail::ConvertibleToBufferInfoView<Format>
+        requires fmt::buf::convertible_to_buffer_info_view<Format>
         inline std::expected<void, fmt::FMTResult> fatal(Format&& format, Args&&... args)
         {
             return log(LogSeverity::Fatal, format, std::forward<Args>(args)...);
         }
 
-        /////---------- NO-FORMAT Logger Severity ----------/////
+        /////---------- NO-FORMAT logger Severity ----------/////
         template <typename T>
         inline std::expected<void, fmt::FMTResult> trace(T&& t)
         {
@@ -178,7 +178,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const stream::flog::LogSeverity::Value t, FormatterExecutor& executor)
         {
-            executor.Data.KeepNewStyle = true;
+            executor.data.keep_new_style = true;
             switch (t)
             {
                 case stream::flog::LogSeverity::Trace:

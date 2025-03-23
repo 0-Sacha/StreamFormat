@@ -2,8 +2,8 @@
 
 #include "stream/fmt.h"
 
-#include "stream/fmt/buffer/buffer_manip.h"
-#include "stream/fmt/buffer/buffer_write_manip.h"
+#include "stream/fmt/buf/manip.h"
+#include "stream/fmt/buf/write_manip.h"
 
 namespace stream::flog
 {
@@ -13,13 +13,13 @@ namespace stream::flog
         AddIndentInFormat(const FormatStr& format)
             : format(format)
         {}
-        const FormatStr& Format;
+        const FormatStr& format;
     };
 
     template <typename CharType>
-    struct ConcateNameAndSinkName
+    struct ConcatNameAndSinkName
     {
-        ConcateNameAndSinkName(const std::basic_string<CharType>& loggerName, const std::basic_string<CharType>& sinkName)
+        ConcatNameAndSinkName(const std::basic_string<CharType>& loggerName, const std::basic_string<CharType>& sinkName)
             : LoggerName(loggerName)
             , SinkName(sinkName)
         {}
@@ -28,9 +28,9 @@ namespace stream::flog
     };
 
     template <typename CharType>
-    struct FuturConcateNameAndSinkName
+    struct FutureConcatNameAndSinkName
     {
-        FuturConcateNameAndSinkName(const std::basic_string<CharType>& loggerName)
+        FutureConcatNameAndSinkName(const std::basic_string<CharType>& loggerName)
             : LoggerName(loggerName)
         {}
         const std::basic_string<CharType>& LoggerName;
@@ -44,26 +44,26 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const stream::flog::AddIndentInFormat<FormatStr>& format, FormatterExecutor& executor)
         {
-            SF_TRY(detail::BufferWriteManip(executor.buffer_out).FastWriteStringLitteral("{K:indent}"));
-            return executor.WriteType(format.Format);
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("{K:indent}"));
+            return executor.write_type(format.format);
         }
     };
 
     template <typename FormatterExecutor, typename CharType>
-    struct FormatterType<stream::flog::ConcateNameAndSinkName<CharType>, FormatterExecutor>
+    struct FormatterType<stream::flog::ConcatNameAndSinkName<CharType>, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::flog::ConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::flog::ConcatNameAndSinkName<CharType>& names, FormatterExecutor& executor)
         {
-            return executor.Run(names.LoggerName, FORMAT_SV("sink", names.SinkName));
+            return executor.run(names.LoggerName, FORMAT_SV("sink", names.SinkName));
         }
     };
 
     template <typename FormatterExecutor, typename CharType>
-    struct FormatterType<stream::flog::FuturConcateNameAndSinkName<CharType>, FormatterExecutor>
+    struct FormatterType<stream::flog::FutureConcatNameAndSinkName<CharType>, FormatterExecutor>
     {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::flog::FuturConcateNameAndSinkName<CharType>& names, FormatterExecutor& executor)
+        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::flog::FutureConcatNameAndSinkName<CharType>& names, FormatterExecutor& executor)
         {
-            return executor.Run(names.LoggerName, "sink");
+            return executor.run(names.LoggerName, "sink");
         }
     };
 }
