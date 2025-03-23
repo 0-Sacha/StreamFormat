@@ -52,8 +52,8 @@ namespace stream::fmt::buf
                 std::int32_t nb_digit_ = nb_digit;
                 while (nb_digit_ > 0)
                 {
+                    Manip(buffer).backward_force();
                     buffer.set(i % 10 + '0');
-                    SF_TRY(Manip(buffer).backward(nb_digit));
                     i /= 10;
                     nb_digit_--;
                 }

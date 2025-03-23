@@ -17,7 +17,7 @@ namespace stream::tester
         else
             logger.error("{C:white}RESULT => {C:+black}{}", status);
 
-        return status.ErrorStatus();
+        return status.error_status();
     }
 }
 
@@ -42,7 +42,7 @@ namespace stream::tester::detail
         {
             first_test_suite = false;
             profiler::DurationEvent current_test_duration(test->name, "Profile");
-            TestStatus              test_status = TestStatus::Fail;
+            TestStatus              test_status = TestStatus::fail;
             current_test_duration.start();
             if (TestSuitesManager::performance_test.enable == false)
                 test_status = test->run();
@@ -51,13 +51,13 @@ namespace stream::tester::detail
                 for (std::uint32_t i = 0; i < TestSuitesManager::performance_test.nb_samples; ++i)
                 {
                     test_status = test->run();
-                    if (test_status != TestStatus::Ok) break;
+                    if (test_status != TestStatus::ok) break;
                 }
             }
             current_test_duration.stop();
-            if (test_status != TestStatus::Ok)
+            if (test_status != TestStatus::ok)
             {}
-            test_suite_status.AddTestStatus(test_status);
+            test_suite_status.add_test_status(test_status);
             logger.debug("{} -> {}", test_status, name);
             profiler->add_event(current_test_duration);
         }

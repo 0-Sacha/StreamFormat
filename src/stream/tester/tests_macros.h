@@ -7,9 +7,9 @@
 #define STREAMFORMAT_TEST_WARN(...)  stream::Test::TestCore::get_logger().warn(__VA_ARGS__)
 #define STREAMFORMAT_TEST_ERROR(...) stream::Test::TestCore::get_logger().error(__VA_ARGS__)
 #define STREAMFORMAT_TEST_FATAL(...) stream::Test::TestCore::get_logger().fatal(__VA_ARGS__)
-#define STREAMFORMAT_TEST_OK(...)    stream::Test::TestCore::get_logger().Ok(__VA_ARGS__)
-#define STREAMFORMAT_TEST_FAIL(...)  stream::Test::TestCore::get_logger().Fail(__VA_ARGS__)
-#define STREAMFORMAT_TEST_BASIC(...) stream::Test::TestCore::get_logger().Basic(__VA_ARGS__)
+#define STREAMFORMAT_TEST_OK(...)    stream::Test::TestCore::get_logger().ok(__VA_ARGS__)
+#define STREAMFORMAT_TEST_FAIL(...)  stream::Test::TestCore::get_logger().fail(__VA_ARGS__)
+#define STREAMFORMAT_TEST_BASIC(...) stream::Test::TestCore::get_logger().basic(__VA_ARGS__)
 
 namespace stream::Test
 {

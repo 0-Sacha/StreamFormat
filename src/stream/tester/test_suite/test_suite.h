@@ -18,8 +18,8 @@ namespace stream::tester
 
     enum class TestStatus : int
     {
-        Ok,
-        Fail,
+        ok,
+        fail,
         Crash
     };
 }
@@ -30,65 +30,65 @@ namespace stream::tester::detail
     class Test
     {
     public:
-        Test(std::string&& name, TestSuite& link, const fmt::detail::FileLocation& location)
-            : name(std::move(name))
-            , Link(link)
+        Test(std::string_view name_, TestSuite& link, const fmt::detail::FileLocation& location)
+            : name(name_)
+            , link(link)
             , location(location)
-            , LastStatus(TestStatus::Ok)
+            , last_status(TestStatus::ok)
         {}
 
         virtual ~Test() = default;
 
     protected:
-        virtual TestStatus RunImpl() = 0;
+        virtual TestStatus run_impl() = 0;
 
     public:
         TestStatus run()
         {
             try
             {
-                return LastStatus = RunImpl();
+                return last_status = run_impl();
             }
             catch (const TestFailure&)
             {
-                return LastStatus = TestStatus::Fail;
+                return last_status = TestStatus::fail;
             }
             catch (...)
             {
-                return LastStatus = TestStatus::Crash;
+                return last_status = TestStatus::Crash;
             }
         }
 
     public:
         std::string               name;
-        TestSuite&                Link;
+        TestSuite&                link;
         fmt::detail::FileLocation location;
-        TestStatus                LastStatus;
+        TestStatus                last_status;
     };
 
     struct TestStatusBank
     {
-        void Reset()
+        void reset()
         {
             tests_done  = 0;
             tests_ok    = 0;
             tests_failed  = 0;
-            testsCrash = 0;
+            tests_crash = 0;
         }
 
-        void AddTestStatus(TestStatus status)
+        void add_test_status(TestStatus status)
         {
             tests_done++;
             switch (status)
             {
-                case TestStatus::Ok:
+                case TestStatus::ok:
                     tests_ok++;
                     break;
-                case TestStatus::Fail:
+                case TestStatus::fail:
                     tests_failed++;
                     break;
                 case TestStatus::Crash:
-                    testsCrash++;
+                    tests_crash++;
                     break;
             }
         }
@@ -98,17 +98,17 @@ namespace stream::tester::detail
             tests_done += status.tests_done;
             tests_ok += status.tests_ok;
             tests_failed += status.tests_failed;
-            testsCrash += status.testsCrash;
+            tests_crash += status.tests_crash;
         }
 
-        bool is_all_ok() { return tests_done == tests_ok && testsCrash == 0 && tests_failed == 0; }
+        bool is_all_ok() { return tests_done == tests_ok && tests_crash == 0 && tests_failed == 0; }
 
-        std::uint32_t ErrorStatus() { return tests_done - tests_ok; }
+        std::uint32_t error_status() { return tests_done - tests_ok; }
 
         std::uint32_t tests_done  = 0;
         std::uint32_t tests_ok    = 0;
         std::uint32_t tests_failed  = 0;
-        std::uint32_t testsCrash = 0;
+        std::uint32_t tests_crash = 0;
     };
 
     class TestSuite;
@@ -151,14 +151,14 @@ namespace stream::tester::detail
     class TestSuite
     {
     public:
-        TestSuite(std::string&& name, TestSuiteData extra = TestSuiteData{}, TestSuite* parent = nullptr)
-            : name(std::move(name))
+        TestSuite(std::string_view name_, TestSuiteData extra_ = TestSuiteData{}, TestSuite* parent_ = nullptr)
+            : name(name_)
             , tests()
-            , extra(extra)
+            , extra(extra_)
             , logger()
             , test_logger()
             , profiler(nullptr)
-            , parent(parent)
+            , parent(parent_)
         {
             if (parent == nullptr)
                 TestSuitesManager::test_suites.insert({name, this});
@@ -166,9 +166,9 @@ namespace stream::tester::detail
                 parent->test_suites_linked.insert({name, this});
         }
 
-        std::string                                      name;
-        std::unordered_map<std::string_view, Test*>      tests;
-        std::unordered_map<std::string_view, TestSuite*> test_suites_linked;
+        std::string                                 name;
+        std::unordered_map<std::string, Test*>      tests;
+        std::unordered_map<std::string, TestSuite*> test_suites_linked;
 
         TestSuiteData              extra;
         flog::BasicLogger          logger;
@@ -204,7 +204,7 @@ namespace stream::fmt
     {
         [[nodiscard]] static std::expected<void, FMTResult> format(const stream::tester::detail::Test& t, FormatterExecutor& executor)
         {
-            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.Link.name));
+            SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.link.name));
             SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal("::"));
             SF_TRY(buf::WriteManip(executor.ostream).fast_write_string(t.name));
             return {};
@@ -218,9 +218,9 @@ namespace stream::fmt
         {
             switch (status)
             {
-                case stream::tester::TestStatus::Ok:
+                case stream::tester::TestStatus::ok:
                     return executor.run("[  {C:green}OK{C}  ]");
-                case stream::tester::TestStatus::Fail:
+                case stream::tester::TestStatus::fail:
                     return executor.run("[ {C:red}FAIL{C} ]");
                 case stream::tester::TestStatus::Crash:
                     return executor.run("[{C:magenta}Crash{C} ]");
@@ -250,10 +250,10 @@ namespace stream::fmt
                 { SF_TRY(executor.run("{:C:red}", status_bank.tests_failed)); }
 
             SF_TRY(buf::WriteManip(executor.ostream).fast_write_string_literal(" | TestCrash "));
-            if (status_bank.testsCrash == 0)
-                { SF_TRY(executor.run("{:C:green}", status_bank.testsCrash)); }
+            if (status_bank.tests_crash == 0)
+                { SF_TRY(executor.run("{:C:green}", status_bank.tests_crash)); }
             else
-                { SF_TRY(executor.run("{:C:magenta}", status_bank.testsCrash)); }
+                { SF_TRY(executor.run("{:C:magenta}", status_bank.tests_crash)); }
 
             return {};
         }
