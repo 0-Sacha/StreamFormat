@@ -16,21 +16,26 @@ namespace stream::fmt::buf {
         using Stream<CharType>::buffer_end;
 
         using Stream<CharType>::get;
+        using Stream<CharType>::get_buffer_total_size;
+        using Stream<CharType>::get_buffer_current_size;
+        using Stream<CharType>::get_buffer_remaining_size;
+        using Stream<CharType>::is_out_of_bound;
+        using Stream<CharType>::is_empty;
+        using Stream<CharType>::is_end_of_string;
 
     protected:
-        StreamIO(BasicStreamIOManager<CharType>& ostream_manager) noexcept : Stream<CharType>(), Manager(ostream_manager) {}
+        StreamIO(BasicStreamIOManager<CharType>& ostream_manager) noexcept : Stream<CharType>(), manager(ostream_manager) {}
 
     protected:
-        [[nodiscard]] static std::expected<void, FMTResult> init(StreamIO<CharType>& in) {
-            SF_VERIFY(in.Manager.BeginContext());
-            Manip(in).reload(in.Manager.get_buffer(), in.Manager.get_buffer_size());
-            return {};
+        static void init(StreamIO<CharType>& in) {
+            in.manager.begin_context();
+            Manip(in).reload(in.manager.get_buffer(), in.manager.get_buffer_size());
         }
 
     public:
-        [[nodiscard]] static std::expected<StreamIO<CharType>, FMTResult> create(BasicStreamIOManager<CharType>& ostream_manager) {
+        static StreamIO<CharType> create(BasicStreamIOManager<CharType>& ostream_manager) {
             StreamIO<CharType> res(ostream_manager);
-            SF_VERIFY(init(res));
+            init(res);
             return res;
         }
 
@@ -40,7 +45,7 @@ namespace stream::fmt::buf {
         }
 
     public:
-        BasicStreamIOManager<CharType>& Manager;
+        BasicStreamIOManager<CharType>& manager;
     };
 
     template <typename T>

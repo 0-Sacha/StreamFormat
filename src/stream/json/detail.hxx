@@ -8,35 +8,31 @@
 namespace stream::json::detail {
     class JsonError : public std::exception {
     public:
-        JsonError(std::string&& msg) : m_What(std::move(msg)) {}
-        JsonError(const std::string_view msg) : m_What(msg) {}
+        JsonError(std::string&& msg) : what_(std::move(msg)) {}
+        JsonError(const std::string_view msg) : what_(msg) {}
         const char* what() const noexcept override {
-            return m_What.c_str();
+            return what_.c_str();
         }
 
     protected:
-        std::string m_What;
+        std::string what_;
     };
 
     class JsonIndexingError : public JsonError {
     public:
-        JsonIndexingError(std::string&& msg = "") : JsonError(std::string("JsonIndexingError") + std::move(msg)) {}
-        JsonIndexingError(const std::string& msg) : JsonError(std::string("JsonIndexingError") + msg) {}
+        JsonIndexingError(std::string msg = "") : JsonError(std::string("JsonIndexingError") + std::move(msg)) {}
     };
     class JsonTypeSerializerNotImpl : public JsonError {
     public:
-        JsonTypeSerializerNotImpl(std::string&& msg = "") : JsonError(std::string("JsonTypeSerializerNotImpl") + std::move(msg)) {}
-        JsonTypeSerializerNotImpl(const std::string& msg) : JsonError(std::string("JsonTypeSerializerNotImpl") + msg) {}
+        JsonTypeSerializerNotImpl(std::string msg = "") : JsonError(std::string("JsonTypeSerializerNotImpl") + std::move(msg)) {}
     };
     class JsonGivenTypeError : public JsonError {
     public:
-        JsonGivenTypeError(std::string&& msg = "") : JsonError(std::string("JsonGivenTypeError") + std::move(msg)) {}
-        JsonGivenTypeError(const std::string& msg) : JsonError(std::string("JsonGivenTypeError") + msg) {}
+        JsonGivenTypeError(std::string msg = "") : JsonError(std::string("JsonGivenTypeError") + std::move(msg)) {}
     };
     class JsonCastError : public JsonError {
     public:
-        JsonCastError(std::string&& msg = "") : JsonError(std::string("JsonCastError") + std::move(msg)) {}
-        JsonCastError(const std::string& msg) : JsonError(std::string("JsonCastError") + msg) {}
+        JsonCastError(std::string msg = "") : JsonError(std::string("JsonCastError") + std::move(msg)) {}
     };
 }  // namespace stream::json::detail
 

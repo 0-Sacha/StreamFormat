@@ -9,28 +9,28 @@ namespace stream::fmt {
 
     template <typename ParserExecutor>
     struct ParserType<detail::TextProperties::ResetProperties, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::ResetProperties, ParserExecutor& executor) {
+        static inline void parse(detail::TextProperties::ResetProperties, ParserExecutor& executor) {
             return executor.text_manager.all_properties_reset();
         }
     };
 
     template <typename ParserExecutor>
     struct ParserType<detail::TextProperties::TextColor::reset_color, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextColor::reset_color, ParserExecutor& executor) {
+        static inline void parse(detail::TextProperties::TextColor::reset_color, ParserExecutor& executor) {
             return executor.text_manager.apply_color_reset();
         }
     };
 
     template <typename ParserExecutor>
     struct ParserType<detail::TextProperties::TextStyle::reset_style, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextStyle::reset_style, ParserExecutor& executor) {
+        static inline void parse(detail::TextProperties::TextStyle::reset_style, ParserExecutor& executor) {
             return executor.text_manager.apply_style_reset();
         }
     };
 
     template <typename ParserExecutor>
     struct ParserType<detail::TextProperties::TextFront::ResetFront, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(detail::TextProperties::TextFront::ResetFront, ParserExecutor& executor) {
+        static inline void parse(detail::TextProperties::TextFront::ResetFront, ParserExecutor& executor) {
             return executor.text_manager.apply_front_reset();
         }
     };
@@ -42,7 +42,7 @@ namespace stream::fmt {
     template <typename T, typename ParserExecutor>
         requires detail::text_properties_color_is_apply<T>
     struct ParserType<T, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor) {
+        static inline void parse(T& t, ParserExecutor& executor) {
             return executor.text_manager.ask_apply_color(t);
         }
     };
@@ -50,7 +50,7 @@ namespace stream::fmt {
     template <typename T, typename ParserExecutor>
         requires detail::TextPropertiesStyleIsapply<T>
     struct ParserType<T, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor) {
+        static inline void parse(T& t, ParserExecutor& executor) {
             return executor.text_manager.ask_apply_style(t);
         }
     };
@@ -58,7 +58,7 @@ namespace stream::fmt {
     template <typename T, typename ParserExecutor>
         requires detail::TextPropertiesFrontIsapply<T>
     struct ParserType<T, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor) {
+        static inline void parse(T& t, ParserExecutor& executor) {
             return executor.text_manager.ask_apply_front(t);
         }
     };

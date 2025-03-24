@@ -32,18 +32,18 @@ namespace stream::fmt::detail {
 namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<detail::FileLocation, FormatterExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> format(const detail::FileLocation& t, FormatterExecutor& executor) {
-            SF_VERIFY(executor.write_type(t.file_name));
-            SF_VERIFY(executor.ostream.pushback(':'));
+        static inline void format(const detail::FileLocation& t, FormatterExecutor& executor) {
+            executor.write_type(t.file_name);
+            executor.ostream.pushback(':');
             return executor.write_type(t.file_line);
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<detail::FunctionProperties, FormatterExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> format(const detail::FunctionProperties& t, FormatterExecutor& executor) {
-            SF_VERIFY(executor.write_type(t.location));
-            SF_VERIFY(executor.ostream.write_char_array(" @ "));
+        static inline void format(const detail::FunctionProperties& t, FormatterExecutor& executor) {
+            executor.write_type(t.location);
+            executor.ostream.write_char_array(" @ ");
             return executor.write_type(t.function_name);
         }
     };

@@ -13,101 +13,91 @@ namespace stream::flog::detail {
         using SeverityValueType = typename Severity::Value;
 
     public:
-        BasicLoggerImpl() : name_("logger_"), m_Severity(Severity::Value::DefaultSeverity), m_Stream(std::cout), start_time_(std::chrono::high_resolution_clock::now()) {
-            ResetPattern();
+        BasicLoggerImpl() : name_("logger_"), severity_(Severity::Value::DefaultSeverity), stream_(std::cout), start_time_(std::chrono::high_resolution_clock::now()) {
+            reset_pattern();
         }
 
         explicit BasicLoggerImpl(const std::string_view& name, typename Severity::Value severity = Severity::Value::DefaultSeverity, std::ostream& stream = std::cout)
             : name_(name),
-              m_Severity(severity),
-              m_Stream(stream),
-              preFormatStreamIOManager(64),
-              fullFormatStreamIOManager(64),
+              severity_(severity),
+              stream_(stream),
+              pre_format_stream_io_manager_(64),
+              full_format_stream_io_manager_(64),
               start_time_(std::chrono::high_resolution_clock::now()) {
-            ResetPattern();
+            reset_pattern();
         }
         explicit BasicLoggerImpl(const std::string_view& name, const std::string_view& format, typename Severity::Value severity = Severity::Value::DefaultSeverity,
                                  std::ostream& stream = std::cout)
             : name_(name),
-              m_Severity(severity),
-              m_Stream(stream),
-              preFormatStreamIOManager(64),
-              fullFormatStreamIOManager(64),
+              severity_(severity),
+              stream_(stream),
+              pre_format_stream_io_manager_(64),
+              full_format_stream_io_manager_(64),
               start_time_(std::chrono::high_resolution_clock::now()) {
-            SetPattern(format);
+            set_pattern(format);
         }
 
         virtual ~BasicLoggerImpl() = default;
 
     public:
         void set_severity(const SeverityValueType& severity) {
-            m_Severity = severity;
+            severity_ = severity;
         }
-        void set_name(const std::string& name) {
-            name_ = name;
-        }
-        void set_name(std::string&& name) {
+        void set_name(std::string name) {
             name_ = std::move(name);
         }
-        void SetRealPattern(std::string_view pattern) {
-            m_Pattern = pattern;
+        void set_real_pattern(std::string pattern) {
+            pattern_ = std::move(pattern);
         }
-        void set_real_pattern_strmv(std::string&& pattern) {
-            m_Pattern = std::move(pattern);
+        void set_pattern(std::string_view pattern) {
+            pattern_ = "{color}";
+            pattern_ += pattern;
         }
-        void SetPattern(std::string_view pattern) {
-            m_Pattern = "{color}";
-            m_Pattern += pattern;
-        }
-        void ResetPattern() {
-            SetPattern("[{time:pattern='%h:%m:%s:%ms'}] {name} >> {data}");
+        void reset_pattern() {
+            set_pattern("[{logtime:pattern='default'}] {name} >> {data}");
         }
 
     private:
         std::string                            name_;
-        SeverityValueType                      m_Severity;
-        std::ostream&                          m_Stream;
-        std::string                            m_Pattern;
-        fmt::buf::DynamicStreamIOManager<char> preFormatStreamIOManager;
-        fmt::buf::DynamicStreamIOManager<char> fullFormatStreamIOManager;
+        SeverityValueType                      severity_;
+        std::ostream&                          stream_;
+        std::string                            pattern_;
+        fmt::buf::DynamicStreamIOManager<char> pre_format_stream_io_manager_;
+        fmt::buf::DynamicStreamIOManager<char> full_format_stream_io_manager_;
 
         std::chrono::time_point<std::chrono::high_resolution_clock> start_time_;
 
     public:
         void NewLine() {
-            m_Stream.write("\n", 1);
+            stream_.write("\n", 1);
         }
 
         template <typename Format = std::string_view, typename... Args>
             requires fmt::buf::convertible_to_buffer_info_view<Format>
-        [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, Format&& format, Args&&... args) {
-            if (severity < m_Severity) return {};
+        void log(const SeverityValueType& severity, Format&& format, Args&&... args) {
+            if (severity < severity_) return;
 
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
+            std::chrono::nanoseconds log_time = std::chrono::high_resolution_clock::now() - start_time_;
 
-            SF_VERIFY(fmt::detail::format_in_manager(preFormatStreamIOManager, false, fmt::buf::StreamView<char>(m_Pattern), FORMAT_SV("time", logTime), FORMAT_SV("name", name_),
-                                                     FORMAT_SV("data", flog::AddIndentInFormat(format))));
+            fmt::detail::format_in_manager(pre_format_stream_io_manager_, false, fmt::buf::StreamView<char>(pattern_), FORMAT_SV("logtime", log_time), FORMAT_SV("name", name_),
+                                           FORMAT_SV("data", flog::AddIndentInFormat(format)));
 
-            SF_VERIFY(fmt::detail::format_in_manager(fullFormatStreamIOManager, true, preFormatStreamIOManager.get_last_generated_buffer_info_view(), std::forward<Args>(args)...,
-                                                     FORMAT_SV("color", severity)));
-            m_Stream.write(fullFormatStreamIOManager.get_buffer(), static_cast<std::streamsize>(fullFormatStreamIOManager.get_last_generated_data_size()));
-            m_Stream.flush();
-
-            return {};
+            fmt::detail::format_in_manager(full_format_stream_io_manager_, true, pre_format_stream_io_manager_.get_last_generated_buffer_info_view(), std::forward<Args>(args)...,
+                                           FORMAT_SV("color", severity));
+            stream_.write(full_format_stream_io_manager_.get_buffer(), static_cast<std::streamsize>(full_format_stream_io_manager_.get_last_generated_data_size()));
+            stream_.flush();
         }
 
         template <typename T>
-        [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, T&& t) {
-            if (severity < m_Severity) return {};
+        void log(const SeverityValueType& severity, T&& t) {
+            if (severity < severity_) return;
 
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
+            std::chrono::nanoseconds log_time = std::chrono::high_resolution_clock::now() - start_time_;
 
-            SF_VERIFY(fmt::detail::format_in_manager(fullFormatStreamIOManager, true, fmt::buf::StreamView<char>(m_Pattern), FORMAT_SV("data", t), FORMAT_SV("color", severity),
-                                                     FORMAT_SV("time", logTime), FORMAT_SV("name", name_)));
-            m_Stream.write(fullFormatStreamIOManager.get_buffer(), static_cast<std::streamsize>(fullFormatStreamIOManager.get_last_generated_data_size()));
-            m_Stream.flush();
-
-            return {};
+            fmt::detail::format_in_manager(full_format_stream_io_manager_, true, fmt::buf::StreamView<char>(pattern_), FORMAT_SV("data", t), FORMAT_SV("color", severity),
+                                           FORMAT_SV("logtime", log_time), FORMAT_SV("name", name_));
+            stream_.write(full_format_stream_io_manager_.get_buffer(), static_cast<std::streamsize>(full_format_stream_io_manager_.get_last_generated_data_size()));
+            stream_.flush();
         }
     };
 }  // namespace stream::flog::detail

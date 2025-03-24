@@ -29,29 +29,6 @@
 #define STREAMFORMAT_DEBUGBREAK()
 #endif
 
-// https://github.com/SerenityOS/serenity/blob/50642f85ac547a3caee353affcb08872cac49456/AK/Try.h
 #include <system_error>
-#include <expected>
+#include <exception>
 #include <optional>
-
-namespace stream::detail {
-    template <typename T>
-    T forward_error(T t) {
-        return std::forward<T>(t);
-    }
-}  // namespace stream::detail
-
-#define SF_TRY(exp)                                                                    \
-    ({                                                                                 \
-        auto __expected = exp;                                                         \
-        if (not __expected) [[unlikely]]                                               \
-            return std::unexpected(stream::detail::forward_error(__expected.error())); \
-        __expected.value();                                                            \
-    });
-
-#define SF_VERIFY(exp)                                                                 \
-    {                                                                                  \
-        auto __expected = exp;                                                         \
-        if (not __expected) [[unlikely]]                                               \
-            return std::unexpected(stream::detail::forward_error(__expected.error())); \
-    }

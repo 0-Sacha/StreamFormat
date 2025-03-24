@@ -116,7 +116,7 @@ namespace stream::profiler {
 namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<stream::profiler::EventType, FormatterExecutor> {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const stream::profiler::EventType& t, FormatterExecutor& executor) {
+        static void format(const stream::profiler::EventType& t, FormatterExecutor& executor) {
             return executor.ostream.pushback(static_cast<char>(t));
         }
     };

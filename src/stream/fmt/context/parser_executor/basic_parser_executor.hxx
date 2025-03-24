@@ -25,7 +25,7 @@ namespace stream::fmt::context {
         BasicParserExecutor(buf::StreamView<TChar>& istream, detail::ITextPropertiesExecutor& text_properties_executor);
         ~BasicParserExecutor() override = default;
 
-        [[nodiscard]] std::expected<void, FMTResult> terminate();
+        void terminate();
 
     public:
         buf::StreamView<TChar>& istream;
@@ -34,27 +34,22 @@ namespace stream::fmt::context {
         using context_executor<CharType>::text_manager;
 
     protected:
-        [[nodiscard]] std::expected<void, FMTResult> exec_raw_string(std::basic_string_view<TChar> sv) override {
-            SF_VERIFY(buf::TestManip(istream).is_same_forward(sv.data(), sv.size()));
-            return {};
+        void exec_raw_string(std::basic_string_view<TChar> sv) override {
+            buf::TestManip(istream).is_same_forward(sv.data(), sv.size());
         }
-        [[nodiscard]] std::expected<void, FMTResult> exec_settings() override {
-            return {};
-        };
+        void exec_settings() override {};
 
     public:
         template <typename... Args>
-        [[nodiscard]] std::expected<void, FMTResult> run_(buf::StreamView<TChar> format, Args&&... args);
+        void run_(buf::StreamView<TChar> format, Args&&... args);
         template <typename Format, typename... Args>
-        [[nodiscard]] std::expected<void, FMTResult> run(Format&& format, Args&&... args);
+        void run(Format&& format, Args&&... args);
 
     public:
         template <typename Type, typename... Rest>
-        [[nodiscard]] inline std::expected<void, FMTResult> read_type(Type& type, Rest&... rest) {
-            auto&& parseErr = ParserType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::parse(type, *this);
-            SF_VERIFY(parseErr);
-            if constexpr (sizeof...(rest) > 0) SF_VERIFY(read_type(std::forward<Rest>(rest)...));
-            return {};
+        void read_type(Type& type, Rest&... rest) {
+            ParserType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::parse(type, *this);
+            if constexpr (sizeof...(rest) > 0) read_type(std::forward<Rest>(rest)...);
         }
     };
 }  // namespace stream::fmt::context
@@ -67,24 +62,22 @@ namespace stream::fmt::context {
     }
 
     template <typename TChar>
-    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::terminate() {
-        return {};
-    }
+    void BasicParserExecutor<TChar>::terminate() {}
 
     template <typename TChar>
     template <typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::run_(buf::StreamView<TChar> format, Args&&... args) {
+    void BasicParserExecutor<TChar>::run_(buf::StreamView<TChar> format, Args&&... args) {
         auto args_interface = detail::ParserArgsInterface<TChar, BasicParserExecutor<TChar>, Args...>(*this, std::forward<Args>(args)...);
 
         detail::TextProperties::Properties saveTextProperties = text_manager.save();
         context::BasicContext<TChar>       context(*this, format, args_interface);
-        SF_VERIFY(context.run());
+        context.run();
         return text_manager.reload(saveTextProperties);
     }
 
     template <typename TChar>
     template <typename Format, typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> BasicParserExecutor<TChar>::run(Format&& format_input, Args&&... args) {
+    void BasicParserExecutor<TChar>::run(Format&& format_input, Args&&... args) {
         return run_(buf::StreamView{format_input}, std::forward<Args>(args)...);
     }
 }  // namespace stream::fmt::context

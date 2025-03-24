@@ -25,7 +25,7 @@ namespace stream::json {
 namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<json::JsonObject, FormatterExecutor> {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const json::JsonObject& object, FormatterExecutor& executor) {
+        static void format(const json::JsonObject& object, FormatterExecutor& executor) {
             return executor.write_type(json::FormatAsJson<json::JsonObject>(object));
         }
     };
@@ -65,7 +65,7 @@ namespace stream::json {
         if (file.is_open() == false) throw std::runtime_error("unable to open file");
 
         fmt::buf::DynamicStreamIOManager<char> StreamIOManager(256);
-        fmt::buf::StreamIO<char>               ostream = fmt::buf::StreamIO<char>::create(StreamIOManager).value();
+        fmt::buf::StreamIO<char>               ostream = fmt::buf::StreamIO<char>::create(StreamIOManager);
         detail::JsonFormatter                  formatter(ostream, settings);
         JsonSerializer<T>::format(json, formatter);
 

@@ -15,12 +15,12 @@ namespace stream::json::detail {
         const char* const begin = parser.istream.current_pos;
 
         if (parser.is_json_string_begin()) {
-            manip.skip_one_of('"').value();
+            manip.skip_one_of('"');
             while (true) {
                 manip.GoTo('"');
                 if (fmt::buf::Access(parser.istream).get_prev_force() != '\\') break;
             }
-            manip.skip_one_of('"').value();
+            manip.skip_one_of('"');
         } else if (parser.is_json_number_begin()) {
             float k;
             JsonNumberSerializer::ParseFloat(k, parser);

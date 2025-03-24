@@ -3,7 +3,7 @@
 
 # stream
 
-stream is a C++23 String Formatter, like [&lt;fmt&gt;](https://github.com/fmtlib/fmt)
+stream is a C++20 String Formatter, like [&lt;fmt&gt;](https://github.com/fmtlib/fmt)
 Using this formatter, it define others functionalities:
 - Logger like [spdlog](https://github.com/gabime/spdlog)
 - Json Serializer

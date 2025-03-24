@@ -13,13 +13,11 @@ namespace stream::fmt::buf {
         BasicStreamIOManager& operator=(BasicStreamIOManager&) = delete;
 
     protected:
-        [[nodiscard]] virtual std::expected<void, FMTResult> begin_context_impl() {
-            return {};
-        }
+        virtual void begin_context_impl() {}
         virtual void compute_generated_size_impl(const std::size_t /* totalGeneratedLength */) {}
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> BeginContext() {
+        void begin_context() {
             return begin_context_impl();
         }
         void compute_generated_size(std::size_t totalGeneratedLength) {
@@ -33,17 +31,17 @@ namespace stream::fmt::buf {
         virtual std::size_t     get_buffer_size() const = 0;
 
     public:
-        [[nodiscard]] virtual std::expected<void, FMTResult> add_size(const std::size_t count) = 0;
+        virtual bool add_size(const std::size_t count) = 0;
 
     public:
         StreamView<CharType> get_last_generated_buffer_info_view() const {
-            return StreamView<CharType>(get_buffer(), m_LastGeneratedDataSize);
+            return StreamView<CharType>(get_buffer(), last_generated_data_size_);
         }
         operator StreamView<CharType>() const {
             return get_last_generated_buffer_info_view();
         }
         std::basic_string_view<CharType> get_last_generated_string_view() const {
-            return std::basic_string_view<CharType>(get_buffer(), m_LastGeneratedDataSize);
+            return std::basic_string_view<CharType>(get_buffer(), last_generated_data_size_);
         }
         operator std::basic_string_view<CharType>() const {
             return get_last_generated_string_view();
@@ -51,15 +49,15 @@ namespace stream::fmt::buf {
 
     public:
         std::size_t get_last_generated_data_size() const {
-            return m_LastGeneratedDataSize;
+            return last_generated_data_size_;
         }
 
     private:
         void set_last_generated_data_size(const std::size_t size) {
-            m_LastGeneratedDataSize = size;
+            last_generated_data_size_ = size;
         }
 
     protected:
-        std::size_t m_LastGeneratedDataSize{0};
+        std::size_t last_generated_data_size_{0};
     };
 }  // namespace stream::fmt::buf

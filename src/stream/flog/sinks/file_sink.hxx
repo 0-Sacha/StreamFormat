@@ -16,26 +16,26 @@ namespace stream::flog::Sinks {
         using typename Base::PatternType;
 
     public:
-        BasicConsoleSink(std::basic_ostream<CharType>& stream, NameType&& name) : Base(std::forward<NameType>(name)), m_Stream(stream) {}
+        BasicConsoleSink(std::basic_ostream<CharType>& stream, NameType&& name) : Base(std::forward<NameType>(name)), stream_(stream) {}
 
-        BasicConsoleSink(std::basic_ostream<CharType>& stream, NameType&& name, detail::AsyncSink isAsync) : Base(std::forward<NameType>(name), isAsync), m_Stream(stream) {}
+        BasicConsoleSink(std::basic_ostream<CharType>& stream, NameType&& name, detail::AsyncSink isAsync) : Base(std::forward<NameType>(name), isAsync), stream_(stream) {}
 
         ~BasicConsoleSink() override = default;
 
     public:
         std::basic_ostream<CharType>& GetStream() {
-            return m_Stream;
+            return stream_;
         }
 
     protected:
         void WriteImpl(const BufferType& bufferToPrint) override {
-            m_Stream.write(bufferToPrint.data(), bufferToPrint.size());
-            m_Stream.write("\n", 1);
-            m_Stream.flush();
+            stream_.write(bufferToPrint.data(), bufferToPrint.size());
+            stream_.write("\n", 1);
+            stream_.flush();
         }
 
     private:
-        std::basic_ostream<CharType>& m_Stream;
+        std::basic_ostream<CharType>& stream_;
     };
 
     template <typename Severity, typename CharType>
@@ -48,23 +48,23 @@ namespace stream::flog::Sinks {
 
     public:
         BasicFileSink(const std::filesystem::path& filePath, NameType&& name, detail::AsyncSink isAsync)
-            : Base(std::forward<NameType>(name), isAsync), m_Stream(filePath, std::ios::out) {}
+            : Base(std::forward<NameType>(name), isAsync), stream_(filePath, std::ios::out) {}
 
         ~BasicFileSink() override = default;
 
     public:
         std::basic_ostream<CharType>& GetStream() {
-            return m_Stream;
+            return stream_;
         }
 
     protected:
         void WriteImpl(const BufferType& bufferToPrint) override {
-            m_Stream.write(bufferToPrint.data(), bufferToPrint.size());
-            m_Stream.write("\n", 1);
-            m_Stream.flush();
+            stream_.write(bufferToPrint.data(), bufferToPrint.size());
+            stream_.write("\n", 1);
+            stream_.flush();
         }
 
     private:
-        std::basic_ofstream<CharType> m_Stream;
+        std::basic_ofstream<CharType> stream_;
     };
 }  // namespace stream::flog::Sinks

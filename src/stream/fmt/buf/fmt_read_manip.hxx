@@ -17,65 +17,63 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> read_integer(T& i, detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void read_integer(T& i, detail::ShiftInfo shift = detail::ShiftInfo{}) {
             ShiftReadManip shift_manip(buffer);
             buf::TestManip manip(buffer);
 
-            SF_VERIFY(shift_manip.ignore_shift_begin_space(shift));
+            shift_manip.ignore_shift_begin_space(shift);
 
             bool sign = false;
             if constexpr (std::is_signed_v<T>) {
-                sign = SF_TRY(manip.is_equal_to_forward('-'));
-                if (sign) --shift.size;
+                sign = manip.is_equal_to_forward('-');
+                if (manip.is_equal_to_forward('-')) --shift.size;
             }
 
             TestAccess(buffer).is_a_digit();
 
             T res = (T)0;
             while (TestAccess(buffer).is_a_digit()) {
-                char c = SF_TRY(Manip(buffer).get_and_forward());
-                res    = res * 10 + (c - '0');
+                res = res * 10 + (Manip(buffer).get_and_forward() - '0');
                 --shift.size;
             }
 
-            SF_VERIFY(shift_manip.ignore_shift_end(shift));
+            shift_manip.ignore_shift_end(shift);
 
             i = sign ? -res : res;
-            return {};
         }
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> read_float(T& t, std::int32_t float_precision = -1, detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void read_float(T& t, std::int32_t float_precision = -1, detail::ShiftInfo shift = detail::ShiftInfo{}) {
             ShiftReadManip  shift_manip(buffer);
             buf::TestAccess access(buffer);
             buf::TestManip  manip(buffer);
 
-            SF_VERIFY(shift_manip.ignore_shift_begin_space(shift));
+            shift_manip.ignore_shift_begin_space(shift);
 
-            bool sign = SF_TRY(manip.is_equal_to_forward('-'));
+            bool sign = manip.is_equal_to_forward('-');
             if (sign) --shift.size;
 
             T intpart = static_cast<T>(0);
             if (access.is_a_digit()) {
                 while (access.is_a_digit()) {
                     intpart = intpart * 10 + (buffer.get() - '0');
-                    SF_VERIFY(Manip(buffer).forward());
+                    Manip(buffer).forward();
                     --shift.size;
                 }
             } else if (access.is_equal_to('.')) {
-                SF_VERIFY(buf::Manip(buffer).forward());
+                buf::Manip(buffer).forward();
             } else {
-                return std::unexpected(FMTResult::Parse_NonValidDigit);
+                throw std::runtime_error("fmt error: Parse_NonValidDigit");
             }
 
             if (float_precision <= 0)
-                while (access.is_a_digit() && access.is_end_of_string() == false) {
+                while (access.is_a_digit() && buffer.is_end_of_string() == false) {
                     Manip(buffer).forward_force();
                     --shift.size;
                 }
             else {
-                while (Access(buffer).is_a_digit() && float_precision > 0 && Access(buffer).is_end_of_string() == false) {
+                while (Access(buffer).is_a_digit() && float_precision > 0 && buffer.is_end_of_string() == false) {
                     Manip(buffer).forward_force();
                     float_precision--;
                     --shift.size;
@@ -90,16 +88,15 @@ namespace stream::fmt::buf {
                 dec /= 10;
             }
 
-            SF_VERIFY(shift_manip.ignore_shift_end(shift));
+            shift_manip.ignore_shift_end(shift);
 
             t = sign ? -intpart - dec : intpart + dec;
-            return {};
         }
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> read_integer_h(T& i, std::uint8_t digitSize, std::uint8_t (&digit_lut)(TChar), TChar base_prefix = '\0',
-                                                                    detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void read_integer_h(T& i, std::uint8_t digitSize, std::optional<std::uint8_t> (&digit_lut)(TChar), TChar base_prefix = '\0',
+                            detail::ShiftInfo shift = detail::ShiftInfo{}) {
             ShiftReadManip  shift_manip(buffer);
             buf::TestAccess access(buffer);
             buf::TestManip  manip(buffer);
@@ -107,54 +104,55 @@ namespace stream::fmt::buf {
             shift.size -= sizeof(T) * 8;
             if (base_prefix != '\0') shift.size -= 2;
 
-            SF_VERIFY(shift_manip.ignore_shift_begin_space(shift));
+            shift_manip.ignore_shift_begin_space(shift);
 
             if (base_prefix != '\0') {
-                SF_VERIFY(manip.skip_one_of('0'));
-                SF_VERIFY(manip.skip_one_of(base_prefix));
+                manip.skip_one_of('0');
+                manip.skip_one_of(base_prefix);
             }
 
-            T res = (T)0;
-            while (digit_lut(buffer.get()) != std::numeric_limits<std::uint8_t>::max()) {
+            T                           res         = (T)0;
+            std::optional<std::uint8_t> get_current = digit_lut(buffer.get());
+            while (get_current.has_value()) {
                 res = res << digitSize;
-                res += digit_lut(buffer.get());
+                res += get_current.value();
+                get_current = digit_lut(buffer.get());
                 Manip(buffer).forward_force();
             }
 
-            SF_VERIFY(shift_manip.ignore_shift_end(shift));
+            shift_manip.ignore_shift_end(shift);
 
             i = res;
-            return {};
         }
 
     protected:
-        static constexpr std::uint8_t digit_lut_bin(TChar in) {
+        static constexpr std::optional<std::uint8_t> digit_lut_bin(TChar in) {
             if (in == '0') return 0;
             if (in == '1') return 1;
-            return std::numeric_limits<std::uint8_t>::max();
+            return std::nullopt;
         }
-        static constexpr std::uint8_t digit_lut_oct(TChar in) {
+        static constexpr std::optional<std::uint8_t> digit_lut_oct(TChar in) {
             if (in >= '0' && in <= '7') return in - '0';
-            return std::numeric_limits<std::uint8_t>::max();
+            return std::nullopt;
         }
-        static constexpr std::uint8_t digit_lut_dec(TChar in) {
+        static constexpr std::optional<std::uint8_t> digit_lut_dec(TChar in) {
             if (in >= '0' && in <= '9') return in - '0';
-            return std::numeric_limits<std::uint8_t>::max();
+            return std::nullopt;
         }
-        static constexpr std::uint8_t digit_lut_hexupper(TChar in) {
+        static constexpr std::optional<std::uint8_t> digit_lut_hexupper(TChar in) {
             if (in >= '0' && in <= '9') return in - '0';
             if (in >= 'A' && in <= 'F') return in - 'A';
-            return std::numeric_limits<std::uint8_t>::max();
+            return std::nullopt;
         }
-        static constexpr std::uint8_t digit_lut_hexlower(TChar in) {
+        static constexpr std::optional<std::uint8_t> digit_lut_hexlower(TChar in) {
             if (in >= '0' && in <= '9') return in - '0';
             if (in >= 'a' && in <= 'f') return in - 'a';
-            return std::numeric_limits<std::uint8_t>::max();
+            return std::nullopt;
         }
 
     public:
         template <typename T, typename FormatDataCharType>
-        [[nodiscard]] std::expected<void, FMTResult> read_integer_format_data(T& i, const detail::FormatData<FormatDataCharType>& formatdata) {
+        void read_integer_format_data(T& i, const detail::FormatData<FormatDataCharType>& formatdata) {
             if (formatdata.has_spec) {
                 switch (formatdata.integer_print) {
                     case detail::IntegerPrintBase::Dec:
@@ -177,7 +175,7 @@ namespace stream::fmt::buf {
             return ReadManip(buffer).fast_read_integer(i);
         }
         template <typename T, typename FormatDataCharType>
-        [[nodiscard]] std::expected<void, FMTResult> read_float_format_data(T& i, const detail::FormatData<FormatDataCharType>& formatdata) {
+        void read_float_format_data(T& i, const detail::FormatData<FormatDataCharType>& formatdata) {
             if (formatdata.has_spec) {
                 if (formatdata.ShiftType == detail::ShiftInfo::ShiftType::Nothing)
                     return ReadManip(buffer).fast_read_float(i, formatdata.float_precision);
@@ -189,19 +187,18 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharStr>
-        [[nodiscard]] std::expected<void, FMTResult> read_char_ptr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite,
-                                                                   detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void read_char_ptr(const CharStr* str, std::size_t sizeContainer, std::size_t sizeToWrite, detail::ShiftInfo shift = detail::ShiftInfo{}) {
             // FIXME
             // TODO
-            return std::unexpected(FMTResult::FunctionNotImpl);
+            throw std::runtime_error("fmt error: FunctionNotImpl");
         }
 
         template <typename CharStr, std::size_t SIZE>
-        [[nodiscard]] inline std::expected<void, FMTResult> read_char_array(const CharStr (&str)[SIZE], detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void read_char_array(const CharStr (&str)[SIZE], detail::ShiftInfo shift = detail::ShiftInfo{}) {
             return read_char_ptr(str, SIZE, 0, shift);
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> read_char_bound(const CharStr* begin, const CharStr* end, detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void read_char_bound(const CharStr* begin, const CharStr* end, detail::ShiftInfo shift = detail::ShiftInfo{}) {
             return read_char_ptr(begin, end - begin, 0, shift);
         }
     };

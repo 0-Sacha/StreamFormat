@@ -5,7 +5,7 @@
 
 namespace stream::fmt {
     //----------------------------------------------//
-    //----------------- Forwarders -----------------//
+    //----------------- forwarders -----------------//
     //----------------------------------------------//
 
     //-----------------------------------------------//
@@ -14,38 +14,37 @@ namespace stream::fmt {
 
     template <typename ParserExecutor>
     struct ParserType<bool, ParserExecutor> {
-        [[nodiscard]] static std::expected<void, FMTResult> parse(bool& t, ParserExecutor& executor) {
+        static void parse(bool& t, ParserExecutor& executor) {
             if (!executor.data.prefix_suffix) {
                 if (buf::TestAccess(executor.istream).is_equal_to('t', 'T')) {
-                    SF_VERIFY(buf::Manip(executor.istream).forward());
+                    buf::Manip(executor.istream).forward();
                     if (buf::TestAccess(executor.istream).is_same("rue")) {
-                        SF_VERIFY(buf::Manip(executor.istream).forward(3));
+                        buf::Manip(executor.istream).forward(3);
                         t = true;
                     }
                 } else if (buf::TestAccess(executor.istream).is_equal_to('f', 'F')) {
-                    SF_VERIFY(buf::Manip(executor.istream).forward());
+                    buf::Manip(executor.istream).forward();
                     if (buf::TestAccess(executor.istream).is_same("alse")) {
-                        SF_VERIFY(buf::Manip(executor.istream).forward(4));
+                        buf::Manip(executor.istream).forward(4);
                         t = false;
                     }
                 }
             } else {
                 if (buf::TestAccess(executor.istream).is_equal_to('1')) {
-                    SF_VERIFY(buf::Manip(executor.istream).forward());
+                    buf::Manip(executor.istream).forward();
                     t = true;
                 } else if (buf::TestAccess(executor.istream).is_equal_to('0')) {
-                    SF_VERIFY(buf::Manip(executor.istream).forward());
+                    buf::Manip(executor.istream).forward();
                     t = false;
                 }
             }
-            return {};
         }
     };
 
     template <typename T, typename ParserExecutor>
         requires(std::is_integral_v<T> && !std::is_floating_point_v<T> && !detail::IsCharType<T>::value)
     struct ParserType<T, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor) {
+        static inline void parse(T& t, ParserExecutor& executor) {
             return buf::FMTReadManip(executor.istream).read_integer_format_data(t, executor.data);
         }
     };
@@ -53,7 +52,7 @@ namespace stream::fmt {
     template <typename T, typename ParserExecutor>
         requires std::is_floating_point_v<T>
     struct ParserType<T, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T& t, ParserExecutor& executor) {
+        static inline void parse(T& t, ParserExecutor& executor) {
             return buf::FMTReadManip(executor.istream).read_float_format_data(t, executor.data);
         }
     };
@@ -64,28 +63,28 @@ namespace stream::fmt {
 
     template <typename ParserExecutor>
     struct ParserType<void*, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(void*&, ParserExecutor&) {
+        static inline void parse(void*&, ParserExecutor&) {
             // FIXME
             // TODO
-            return std::unexpected(FMTResult::FunctionNotImpl);
+            throw std::runtime_error("fmt error: FunctionNotImpl");
         }
     };
 
     template <typename T, typename ParserExecutor>
     struct ParserType<T*, ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T*&, ParserExecutor&) {
+        static inline void parse(T*&, ParserExecutor&) {
             // FIXME
             // TODO
-            return std::unexpected(FMTResult::FunctionNotImpl);
+            throw std::runtime_error("fmt error: FunctionNotImpl");
         }
     };
 
     template <typename T, std::size_t SIZE, typename ParserExecutor>
     struct ParserType<T[SIZE], ParserExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> parse(T (&)[SIZE], ParserExecutor&) {
+        static inline void parse(T (&)[SIZE], ParserExecutor&) {
             // FIXME
             // TODO
-            return std::unexpected(FMTResult::FunctionNotImpl);
+            throw std::runtime_error("fmt error: FunctionNotImpl");
         }
     };
 }  // namespace stream::fmt

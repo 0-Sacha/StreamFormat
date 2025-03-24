@@ -29,16 +29,16 @@ namespace stream::json {
 
     public:
         JsonObject() {}
-        JsonObject(ObjectType type) : m_Type(type) {}
+        JsonObject(ObjectType type) : type_(type) {}
 
         virtual ~JsonObject() = default;
 
     private:
-        ObjectType m_Type = ObjectType::Undefined;
+        ObjectType type_ = ObjectType::Undefined;
 
     public:
-        ObjectType GetType() {
-            return m_Type;
+        ObjectType get_type() {
+            return type_;
         }
 
         JsonObject& operator[](const std::size_t index) {
@@ -58,34 +58,33 @@ namespace stream::json {
     public:
         template <typename T>
             requires std::is_base_of_v<JsonObject, T>
-        T& As() {
+        T& as() {
             T* t = dynamic_cast<T*>(this);
             if (t == nullptr) throw detail::JsonCastError{};
             return *t;
         }
-
         template <typename T>
             requires std::is_base_of_v<JsonObject, T>
-        const T& As() const {
+        const T& as() const {
             const T* t = dynamic_cast<const T*>(this);
             if (t == nullptr) throw detail::JsonCastError{};
             return *t;
         }
 
         template <typename T>
-        T Read() {
+        T read() {
             T value;
-            JsonObjectSerializer<T>::ReadObject(value, *this);
+            JsonObjectSerializer<T>::read_object(value, *this);
             return value;
         }
 
         template <typename T>
-        void Write(const T& t) {
-            JsonObjectSerializer<T>::WriteObject(t, *this);
+        void write(const T& t) {
+            JsonObjectSerializer<T>::write_object(t, *this);
         }
 
-        std::string ToString() {
-            return fmt::format_string(*this).value();
+        std::string to_string() {
+            return fmt::format_string(*this);
         }
 
     public:

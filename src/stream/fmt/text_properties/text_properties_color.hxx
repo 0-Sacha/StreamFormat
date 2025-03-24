@@ -51,8 +51,8 @@ namespace stream::fmt::detail {
 
         Default = 39,
 
-        BaseStep  = Black,
-        BaseBStep = BrightBlack
+        BaseStep       = Black,
+        BaseBrightStep = BrightBlack
     };
 
     enum class TextProperties::TextColor::BasicColorBG : std::uint8_t {
@@ -76,8 +76,8 @@ namespace stream::fmt::detail {
 
         Default = 49,
 
-        BaseStep  = Black,
-        BaseBStep = BrightBlack,
+        BaseStep       = Black,
+        BaseBrightStep = BrightBlack,
     };
 
     struct TextProperties::TextColor::BasicColor {
@@ -117,9 +117,9 @@ namespace stream::fmt::detail {
         static inline constexpr std::uint8_t MinGrayscale    = 232;  // grayscale from black to white in 24 step
         static inline constexpr std::uint8_t MaxGrayscale    = 255;
 
-        static inline constexpr std::uint8_t BaseStep  = MinNormalColor;
-        static inline constexpr std::uint8_t BaseBStep = MinBrightColor;
-        static inline constexpr std::uint8_t Default   = 0;
+        static inline constexpr std::uint8_t BaseStep       = MinNormalColor;
+        static inline constexpr std::uint8_t BaseBrightStep = MinBrightColor;
+        static inline constexpr std::uint8_t Default        = 0;
 
     public:
         enum class type : std::uint8_t {
@@ -148,7 +148,7 @@ namespace stream::fmt::detail {
 
         constexpr BaseColorCube() : color(0) {}
 
-        type GetType() {
+        type get_type() {
             if (color >= MinNormalColor && color <= MaxNormalColor)
                 return type::Normal;
             else if (color >= MinBrightColor && color <= MaxBrightColor)

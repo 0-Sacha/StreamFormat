@@ -23,12 +23,12 @@ namespace stream::fmt::buf {
 
     public:
         template <std::size_t SIZE>
-        [[nodiscard]] std::expected<std::size_t, FMTResult> get_word_from_list(const std::basic_string_view<TConstChar> (&data)[SIZE]) {
+        std::optional<std::size_t> get_word_from_list(const std::basic_string_view<TConstChar> (&data)[SIZE]) {
             for (std::size_t idx = 0; idx < SIZE; ++idx) {
-                bool found = SF_TRY(TestManip(buffer).is_same_forward(data[idx]));
+                bool found = TestManip(buffer).is_same_forward(data[idx]);
                 if (found) return idx;
             }
-            return std::unexpected(FMTResult::Specifiers_Invalid);
+            return std::nullopt;
         }
 
         // TODO: use static map ?
@@ -36,83 +36,79 @@ namespace stream::fmt::buf {
         using DictPairs = std::pair<std::basic_string_view<TConstChar>, T>;
 
         template <typename T, std::size_t SIZE>
-        [[nodiscard]] std::expected<T, FMTResult> get_word_from_dict_pairs(const DictPairs<T> (&data)[SIZE]) {
+        T get_word_from_dict_pairs(const DictPairs<T> (&data)[SIZE]) {
             for (std::size_t idx = 0; idx < SIZE; ++idx) {
-                bool found = SF_TRY(TestManip(buffer).is_same_forward(data[idx].first));
+                bool found = TestManip(buffer).is_same_forward(data[idx].first);
                 if (found) return data[idx].second;
             }
-            return std::unexpected(FMTResult::Specifiers_Invalid);
+            throw std::runtime_error("fmt error: Specifiers_Invalid");
         }
     };
 
     namespace utils {
         template <typename CharIn, typename CharOut>
-        [[nodiscard]] static std::expected<void, FMTResult> parse_escaped_quoted_string(buf::Stream<CharIn>& buffer, buf::StreamIO<CharOut>& stringOut) {
-            SF_VERIFY(buf::TestManip(buffer).skip_one_of('"'));
-            while (buf::Access(buffer).is_end_of_string() == false) {
-                auto view = SF_TRY(buf::TestManip(buffer).view_until('"', '\\'));
-                SF_VERIFY(buf::WriteManip(stringOut).fast_write_string(view));
+        static void parse_escaped_quoted_string(buf::Stream<CharIn>& buffer, buf::StreamIO<CharOut>& stringOut) {
+            buf::TestManip(buffer).skip_one_of('"');
+            while (buffer.is_end_of_string() == false) {
+                auto view = buf::TestManip(buffer).view_until('"', '\\');
+                buf::WriteManip(stringOut).fast_write_string(view);
 
                 if (buf::TestAccess(buffer).is_equal_to('"')) {
                     break;
                 }
 
-                SF_VERIFY(buf::TestManip(buffer).skip_one_of('\\'));
+                buf::TestManip(buffer).skip_one_of('\\');
                 switch (buffer.get()) {
                     // TODO : Do all others escape char
                     case '"':
-                        SF_VERIFY(buf::ManipIO(stringOut).pushback('"'));
+                        buf::ManipIO(stringOut).pushback('"');
                         break;
                     case 't':
-                        SF_VERIFY(buf::ManipIO(stringOut).pushback('\t'));
+                        buf::ManipIO(stringOut).pushback('\t');
                         break;
                     case 'r':
-                        SF_VERIFY(buf::ManipIO(stringOut).pushback('\r'));
+                        buf::ManipIO(stringOut).pushback('\r');
                         break;
                     case 'n':
-                        SF_VERIFY(buf::ManipIO(stringOut).pushback('\n'));
+                        buf::ManipIO(stringOut).pushback('\n');
                         break;
                     default:
                         break;
                 }
             }
-            SF_VERIFY(buf::TestManip(buffer).skip_one_of('"'));
-
-            return {};
+            buf::TestManip(buffer).skip_one_of('"');
         }
 
         template <typename CharIn, typename CharOut>
-        [[nodiscard]] static std::expected<void, FMTResult> format_escaped_quoted_string(buf::StreamIO<CharOut>& buffer, buf::Stream<CharIn>& string_in) {
-            SF_VERIFY(buf::ManipIO(buffer).pushback('"'));
-            while (buf::Access(string_in).is_end_of_string() == false) {
-                auto view = SF_TRY(buf::TestManip(string_in).view_until('\\'));
-                SF_VERIFY(buf::WriteManip(buffer).fast_write_string(view));
+        static void format_escaped_quoted_string(buf::StreamIO<CharOut>& buffer, buf::Stream<CharIn>& string_in) {
+            buf::ManipIO(buffer).pushback('"');
+            while (string_in.is_end_of_string() == false) {
+                auto view = buf::TestManip(string_in).view_until('\\');
+                buf::WriteManip(buffer).fast_write_string(view);
 
-                if (buf::Access(string_in).is_end_of_string()) break;
+                if (string_in.is_end_of_string()) break;
 
                 // TODO
-                SF_VERIFY(buf::TestManip(string_in).skip_one_of('\\'));
+                buf::TestManip(string_in).skip_one_of('\\');
                 switch (string_in.get()) {
                     // TODO : Do all others escape char
                     case '"':
-                        SF_VERIFY(buf::ManipIO(buffer).pushback('"'));
+                        buf::ManipIO(buffer).pushback('"');
                         break;
                     case 't':
-                        SF_VERIFY(buf::ManipIO(buffer).pushback('\t'));
+                        buf::ManipIO(buffer).pushback('\t');
                         break;
                     case 'r':
-                        SF_VERIFY(buf::ManipIO(buffer).pushback('\r'));
+                        buf::ManipIO(buffer).pushback('\r');
                         break;
                     case 'n':
-                        SF_VERIFY(buf::ManipIO(buffer).pushback('\n'));
+                        buf::ManipIO(buffer).pushback('\n');
                         break;
                     default:
                         break;
                 }
             }
-            SF_VERIFY(buf::ManipIO(buffer).pushback('"'));
-
-            return {};
+            buf::ManipIO(buffer).pushback('"');
         }
     };  // namespace utils
 }  // namespace stream::fmt::buf

@@ -41,8 +41,11 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharToTest>
-        constexpr bool is_same(const CharToTest* str, std::size_t size) const noexcept {
-            if (size > Access(buffer).get_buffer_remaining_size()) {
+        constexpr bool is_same(const CharToTest* str, std::size_t size, bool exact = false) const noexcept {
+            if (exact == true && size != buffer.get_buffer_remaining_size()) {
+                return false;
+            }
+            if (size > buffer.get_buffer_remaining_size()) {
                 return false;
             }
 
@@ -58,8 +61,8 @@ namespace stream::fmt::buf {
             return is_same;
         }
         template <typename CharToTest>
-        constexpr inline bool is_same(std::basic_string_view<CharToTest> sv) const noexcept {
-            return is_same(sv.data(), sv.size());
+        constexpr inline bool is_same(std::basic_string_view<CharToTest> sv, bool exact = false) const noexcept {
+            return is_same(sv.data(), sv.size(), false);
         }
     };
 
@@ -80,17 +83,17 @@ namespace stream::fmt::buf {
 
     public:
         template <typename... CharToTest>
-        [[nodiscard]] constexpr inline std::expected<bool, FMTResult> is_equal_to_forward(const CharToTest... ele) noexcept {
+        constexpr inline bool is_equal_to_forward(const CharToTest... ele) noexcept {
             if (access().is_equal_to(ele...)) {
-                SF_VERIFY(Manip(buffer).forward());
+                Manip(buffer).forward();
                 return true;
             }
             return false;
         }
         template <typename... CharToTest>
-        [[nodiscard]] constexpr inline std::expected<bool, FMTResult> is_not_equal_forward(const CharToTest... ele) noexcept {
+        constexpr inline bool is_not_equal_forward(const CharToTest... ele) noexcept {
             if (access().is_not_equal_to(ele...)) {
-                SF_VERIFY(Manip(buffer).forward());
+                Manip(buffer).forward();
                 return true;
             }
             return false;
@@ -98,17 +101,17 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharToTest>
-        [[nodiscard]] constexpr std::expected<bool, FMTResult> is_same_forward(const CharToTest* str, std::size_t size) noexcept {
+        constexpr bool is_same_forward(const CharToTest* str, std::size_t size) noexcept {
             if (access().is_same(str, size)) {
-                SF_VERIFY(Manip(buffer).forward(size));
+                Manip(buffer).forward(size);
                 return true;
             }
             return false;
         }
         template <typename CharToTest>
-        [[nodiscard]] constexpr inline std::expected<bool, FMTResult> is_same_forward(std::basic_string_view<CharToTest> sv) noexcept {
+        constexpr inline bool is_same_forward(std::basic_string_view<CharToTest> sv) noexcept {
             if (access().is_same(sv)) {
-                SF_VERIFY(Manip(buffer).forward(sv.size()));
+                Manip(buffer).forward(sv.size());
                 return true;
             }
             return false;
@@ -116,12 +119,11 @@ namespace stream::fmt::buf {
 
     public:
         template <typename... CharToTest>
-        [[nodiscard]] inline std::expected<void, FMTResult> skip_one_of(const CharToTest... ele) noexcept {
+        void skip_one_of(const CharToTest... ele) noexcept {
             if (access().is_equal_to(ele...)) {
-                SF_VERIFY(Manip(buffer).forward());
-                return {};
+                Manip(buffer).forward();
             }
-            return std::unexpected(FMTResult::Parse_TokenNotExpected);
+            throw std::runtime_error("fmt error: Parse_TokenNotExpected");
         }
 
         template <typename... CharToTest>
@@ -139,10 +141,10 @@ namespace stream::fmt::buf {
         }
 
     public:
-        [[nodiscard]] inline void IgnoreOneSpace() noexcept {
+        void IgnoreOneSpace() noexcept {
             return ignore_one_of(' ', '\t');
         }
-        [[nodiscard]] inline void IgnoreOneBlank() noexcept {
+        void IgnoreOneBlank() noexcept {
             return ignore_one_of(' ', '\t', '\n', '\r', '\v');
         }
 
@@ -160,26 +162,23 @@ namespace stream::fmt::buf {
                 Manip(buffer).forward_force();
         }
         template <typename... CharToTest>
-        [[nodiscard]] inline std::expected<void, FMTResult> go_to_forward(const CharToTest... ele) noexcept {
+        void go_to_forward(const CharToTest... ele) noexcept {
             GoTo(ele...);
             return Manip(buffer).forward();
         }
 
     public:
         template <typename Func>
-        [[nodiscard]] std::expected<std::basic_string_view<TConstChar>, FMTResult> ViewExec(Func&& func) {
+        std::basic_string_view<TConstChar> view_exec(Func&& func) {
             TChar* begin = buffer.current_pos;
-            SF_VERIFY(func());
+            func();
             TChar* end = buffer.current_pos;
             return std::basic_string_view<TConstChar>(begin, end - begin);
         }
 
         template <typename... CharToTest>
-        [[nodiscard]] inline std::expected<std::basic_string_view<TConstChar>, FMTResult> view_until(CharToTest&&... c) {
-            return ViewExec([&] -> std::expected<void, FMTResult> {
-                TestManip(buffer).GoTo(std::forward<CharToTest>(c)...);
-                return {};
-            });
+        inline std::basic_string_view<TConstChar> view_until(CharToTest&&... c) {
+            return view_exec([&] -> void { TestManip(buffer).GoTo(std::forward<CharToTest>(c)...); });
         }
     };
 }  // namespace stream::fmt::buf

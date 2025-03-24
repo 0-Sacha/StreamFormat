@@ -10,7 +10,7 @@ namespace stream::fmt::buf {
     template <typename CharType>
     class DynamicStreamIOManager : public BasicStreamIOManager<CharType> {
     public:
-        DynamicStreamIOManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE) : buffer_size_(beginSize) {}
+        DynamicStreamIOManager(std::size_t begin_size = DEFAULT_BEGIN_SIZE) : buffer_size_(begin_size) {}
 
         ~DynamicStreamIOManager() override                         = default;
         DynamicStreamIOManager(DynamicStreamIOManager&)            = delete;
@@ -34,19 +34,18 @@ namespace stream::fmt::buf {
         }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> begin_context_impl() final {
-            if (buffer_ != nullptr) return {};
+        void begin_context_impl() final {
+            if (buffer_ != nullptr) return;
 
             CharType* alloc = new CharType[buffer_size_];
-            if (alloc == nullptr) return std::unexpected(FMTResult::Manager_AllocationFailed);
+            if (alloc == nullptr) throw std::runtime_error("fmt error: Manager_AllocationFailed");
             buffer_.reset(alloc);
-            return {};
         }
 
-        [[nodiscard]] std::expected<void, FMTResult> add_size(const std::size_t count) override {
+        bool add_size(const std::size_t count) override {
             return resize(count + buffer_size_);
         }
-        [[nodiscard]] std::expected<void, FMTResult> resize(const std::size_t target_buffer_size);
+        bool resize(const std::size_t target_buffer_size);
 
     protected:
         std::unique_ptr<CharType[]> buffer_      = nullptr;
@@ -74,7 +73,7 @@ namespace stream::fmt::buf {
         static constexpr float MEAN_CALCFACT_LAST = 1;
 
     public:
-        ShrinkDynamicStreamIOManager(std::size_t beginSize = DEFAULT_BEGIN_SIZE) : Base(beginSize), m_MeanGeneratedSize(beginSize) {}
+        ShrinkDynamicStreamIOManager(std::size_t begin_size = DEFAULT_BEGIN_SIZE) : Base(begin_size), mean_generated_size_(begin_size) {}
         ~ShrinkDynamicStreamIOManager() override                               = default;
         ShrinkDynamicStreamIOManager(ShrinkDynamicStreamIOManager&)            = delete;
         ShrinkDynamicStreamIOManager& operator=(ShrinkDynamicStreamIOManager&) = delete;
@@ -82,21 +81,21 @@ namespace stream::fmt::buf {
     protected:
         void compute_generated_size_impl(std::size_t totalGeneratedLength) override {
             // WTF
-            m_MeanGeneratedSize = (m_MeanGeneratedSize * MEAN_CALCFACT_OLD + totalGeneratedLength * MEAN_CALCFACT_LAST) / (MEAN_CALCFACT_OLD + MEAN_CALCFACT_LAST);
+            mean_generated_size_ = (mean_generated_size_ * MEAN_CALCFACT_OLD + totalGeneratedLength * MEAN_CALCFACT_LAST) / (MEAN_CALCFACT_OLD + MEAN_CALCFACT_LAST);
         }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> shrink_if_needed() {
-            if (buffer_size_ > static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_OVERFLOW)) return resize(static_cast<std::size_t>(m_MeanGeneratedSize * MEAN_SIZE_RESIZE));
-            return {};
+        void shrink_if_needed() {
+            if (buffer_size_ > static_cast<std::size_t>(mean_generated_size_ * MEAN_SIZE_OVERFLOW))
+                return resize(static_cast<std::size_t>(mean_generated_size_ * MEAN_SIZE_RESIZE));
         }
 
     private:
-        std::size_t m_MeanGeneratedSize = 0;
+        std::size_t mean_generated_size_ = 0;
     };
 
     template <typename CharType>
-    [[nodiscard]] std::expected<void, FMTResult> DynamicStreamIOManager<CharType>::resize(const std::size_t target_buffer_size) {
+    bool DynamicStreamIOManager<CharType>::resize(const std::size_t target_buffer_size) {
         std::size_t new_buffer_size = target_buffer_size;
 
         if (buffer_size_ < target_buffer_size) {
@@ -105,16 +104,15 @@ namespace stream::fmt::buf {
                 new_buffer_size *= GROW_UP_BUFFER_SIZE;
         }
 
-        CharType* newBuffer = new CharType[new_buffer_size];
-        if (newBuffer == nullptr) return std::unexpected(FMTResult::Manager_AllocationFailed);
+        CharType* new_buffer = new CharType[new_buffer_size];
+        if (new_buffer == nullptr) return false;
 
-        std::memcpy(newBuffer, buffer_.get(), std::min(new_buffer_size, buffer_size_));
+        std::memcpy(new_buffer, buffer_.get(), std::min(new_buffer_size, buffer_size_));
 
         if constexpr (DEBUG_RESIZE) std::cout << "resize from " << buffer_size_ << " to " << new_buffer_size << std::endl;
 
-        buffer_.reset(newBuffer);
+        buffer_.reset(new_buffer);
         buffer_size_ = new_buffer_size;
-
-        return {};
+        return true;
     }
 }  // namespace stream::fmt::buf

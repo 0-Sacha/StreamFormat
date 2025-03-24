@@ -17,27 +17,26 @@ namespace stream::fmt::buf {
 
     public:
         void compute_generated_size() noexcept {
-            buffer.Manager.compute_generated_size(Access(buffer).get_buffer_current_size());
+            buffer.manager.compute_generated_size(buffer.get_buffer_current_size());
         }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> add_size(const std::size_t count) noexcept {
-            std::size_t currentSize = Access(buffer).get_buffer_current_size();
-            SF_VERIFY(buffer.Manager.add_size(count))
-            Manip(buffer).reload(buffer.Manager.get_buffer(), buffer.Manager.get_buffer_size());
-            buffer.current_pos = buffer.Manager.get_buffer() + currentSize;
-            return {};
+        bool add_size(const std::size_t count) noexcept {
+            std::size_t currentSize = buffer.get_buffer_current_size();
+            if (buffer.manager.add_size(count) == false) return false;
+            Manip(buffer).reload(buffer.manager.get_buffer(), buffer.manager.get_buffer_size());
+            buffer.current_pos = buffer.manager.get_buffer() + currentSize;
+            return true;
         }
 
-        [[nodiscard]] inline std::expected<void, FMTResult> reserve(const std::size_t count = 1) noexcept {
-            if (buffer.current_pos + count <= buffer.buffer_end) return {};
-            return add_size(static_cast<std::size_t>(count));
+        inline bool reserve(const std::size_t count = 1) noexcept {
+            if (buffer.current_pos + count <= buffer.buffer_end) return true;
+            return add_size(count);
         }
 
-        [[nodiscard]] inline std::expected<void, FMTResult> forward(const std::size_t count = 1) noexcept {
-            SF_VERIFY(reserve(count));
+        void forward(const std::size_t count = 1) noexcept {
+            if (reserve(count) == false) throw std::bad_alloc();
             buffer.current_pos += count;
-            return {};
         }
 
     public:
@@ -45,21 +44,19 @@ namespace stream::fmt::buf {
             *buffer.current_pos = c;
         }
 
-        [[nodiscard]] inline std::expected<void, FMTResult> pushback(const TChar c) noexcept {
-            SF_VERIFY(reserve(1));
+        void pushback(const TChar c) noexcept {
+            if (reserve(1) == false) throw std::bad_alloc();
             *buffer.current_pos++ = c;
-            return {};
         }
         inline void pushback_force(const TChar c) noexcept {
             *buffer.current_pos++ = c;
         }
 
     public:
-        [[nodiscard]] inline std::expected<void, FMTResult> pushback(const TChar c, auto count) noexcept {
-            SF_VERIFY(reserve(count))
+        void pushback(const TChar c, auto count) noexcept {
+            if (reserve(count) == false) throw std::bad_alloc();
             while (count-- > 0)
                 pushback_force(c);
-            return {};
         }
 
     private:
@@ -71,10 +68,9 @@ namespace stream::fmt::buf {
 
     public:
         template <typename... CharToPush>
-        [[nodiscard]] inline std::expected<void, FMTResult> pushback_seq(const CharToPush... ele) noexcept {
-            SF_VERIFY(reserve(sizeof...(ele)))
+        void pushback_seq(const CharToPush... ele) noexcept {
+            if (reserve(sizeof...(ele)) == false) throw std::bad_alloc();
             pushback_seq_impl(ele...);
-            return {};
         }
     };
 }  // namespace stream::fmt::buf

@@ -51,52 +51,50 @@ namespace stream::fmt::buf {
     public:
         template <typename T>
             requires std::is_integral_v<T>
-        [[nodiscard]] constexpr std::expected<void, FMTResult> fast_write_integer(T i) {
+        constexpr void fast_write_integer(T i) {
             ManipIO manip(buffer);
 
             if (i == 0) {
-                SF_VERIFY(manip.pushback('0'));
-                return {};
+                manip.pushback('0');
+                return;
             }
 
             if constexpr (std::is_signed_v<T>) {
                 if (i < 0) {
-                    SF_VERIFY(manip.pushback('-'));
+                    manip.pushback('-');
                     i = -i;
                 }
             }
 
             std::int32_t nb_digit = WriteUtils::get_number_of_digit_dec(i);
-            SF_VERIFY(manip.forward(nb_digit));
+            manip.forward(nb_digit);
             while (i > 0) {
                 Manip(buffer).backward_force();
                 ManipIO(buffer).set(i % 10 + '0');
                 i /= 10;
             }
-            SF_VERIFY(manip.forward(nb_digit));
-
-            return {};
+            manip.forward(nb_digit);
         }
 
     public:
         template <typename T>
             requires std::is_floating_point_v<T>
-        [[nodiscard]] constexpr std::expected<void, FMTResult> fast_write_float(T i, std::int32_t float_precision = 2) {
+        constexpr void fast_write_float(T i, std::int32_t float_precision = 2) {
             ManipIO manip(buffer);
 
             if (i == 0) {
-                SF_VERIFY(manip.pushback('0'));
-                return {};
+                manip.pushback('0');
+                return;
             }
             if (i < 0) {
-                SF_VERIFY(manip.pushback('-'));
+                manip.pushback('-');
                 i = -i;
             }
 
             T k                   = std::trunc(i);
             i                     = i - k;
             std::int32_t nb_digit = WriteUtils::get_number_of_digit_dec(k);
-            SF_VERIFY(manip.forward(nb_digit));
+            manip.forward(nb_digit);
             std::int32_t nb_digit_ = nb_digit;
             while (nb_digit_ > 0) {
                 Manip(buffer).backward_force();
@@ -104,40 +102,35 @@ namespace stream::fmt::buf {
                 k /= 10;
                 nb_digit_--;
             }
-            SF_VERIFY(manip.forward(nb_digit));
-            SF_VERIFY(manip.pushback('.'));
+            manip.forward(nb_digit);
+            manip.pushback('.');
 
             while (float_precision-- >= 0) {
                 TChar intPart = static_cast<TChar>(std::trunc(i *= 10));
-                SF_VERIFY(manip.pushback(intPart + '0'));
+                manip.pushback(intPart + '0');
                 i -= intPart;
             }
-
-            return {};
         }
 
     public:
         template <typename CharInput>
-        [[nodiscard]] constexpr std::expected<void, FMTResult> fast_write_char_array(const CharInput* str, std::size_t size) {
-            if (size == 0) return {};
+        constexpr void fast_write_char_array(const CharInput* str, std::size_t size) {
+            if (size == 0) return;
 
-            auto reserve = ManipIO(buffer).reserve(size);
-            if (reserve.has_value() == false) return fast_write_char_array(str, Access(buffer).get_buffer_remaining_size());
+            if (ManipIO(buffer).reserve(size) == false) return fast_write_char_array(str, buffer.get_buffer_remaining_size());
 
             std::copy_n(str, size, buffer.current_pos);
             buffer.current_pos += size;
-
-            return {};
         }
         template <typename CharInput>
-        [[nodiscard]] inline constexpr std::expected<void, FMTResult> fast_write_string(std::basic_string_view<CharInput> sv) {
+        inline constexpr void fast_write_string(std::basic_string_view<CharInput> sv) {
             return fast_write_char_array(sv.data(), sv.size());
         }
-        [[nodiscard]] inline std::expected<void, FMTResult> fast_write_string(std::basic_string_view<TChar> sv) {
+        void fast_write_string(std::basic_string_view<TChar> sv) {
             return fast_write_char_array(sv.data(), sv.size());
         }
         template <typename CharInput, std::size_t SIZE>
-        [[nodiscard]] inline std::expected<void, FMTResult> fast_write_string_literal(CharInput (&str)[SIZE]) {
+        void fast_write_string_literal(CharInput (&str)[SIZE]) {
             std::size_t size = SIZE;
             while (str[size - 1] == 0) {
                 --size;
@@ -147,29 +140,28 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharInput>
-        [[nodiscard]] inline std::expected<void, FMTResult> basic_write_type(std::basic_string_view<CharInput> str) {
+        void basic_write_type(std::basic_string_view<CharInput> str) {
             return fast_write_string(str);
         }
         template <typename CharInput, std::size_t SIZE>
-        [[nodiscard]] inline std::expected<void, FMTResult> basic_write_type(CharInput (&str)[SIZE]) {
+        void basic_write_type(CharInput (&str)[SIZE]) {
             return fast_write_string_literal(str);
         }
         template <typename T>
             requires std::is_integral_v<T>
-        [[nodiscard]] inline std::expected<void, FMTResult> basic_write_type(T t) {
+        void basic_write_type(T t) {
             return fast_write_integer(t);
         }
         template <typename T>
             requires std::is_floating_point_v<T>
-        [[nodiscard]] inline std::expected<void, FMTResult> basic_write_type(T t) {
+        void basic_write_type(T t) {
             return fast_write_float(t);
         }
 
         template <typename Type, typename... Rest>
-        [[nodiscard]] inline std::expected<void, FMTResult> basic_write_type(Type&& type, Rest&&... rest) {
-            SF_VERIFY(basic_write_type(type));
-            if constexpr (sizeof...(rest) > 0) SF_VERIFY(basic_write_type(std::forward<Rest>(rest)...));
-            return {};
+        void basic_write_type(Type&& type, Rest&&... rest) {
+            basic_write_type(type);
+            if constexpr (sizeof...(rest) > 0) basic_write_type(std::forward<Rest>(rest)...);
         }
     };
 }  // namespace stream::fmt::buf

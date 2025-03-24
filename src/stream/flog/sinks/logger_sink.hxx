@@ -21,25 +21,24 @@ namespace stream::flog::detail {
         using SeverityValueType = typename Severity::Value;
 
     public:
-        BasicLoggerSink(NameType&& name) : name(std::forward<NameType>(name)), IsAsync(AsyncSink::Sync) {}
-
-        BasicLoggerSink(NameType&& name, AsyncSink isAsync) : name(std::forward<NameType>(name)), IsAsync(isAsync) {}
+        BasicLoggerSink(NameType name) : name(std::move(name)), is_async(AsyncSink::Sync) {}
+        BasicLoggerSink(NameType name, AsyncSink isAsync) : name(std::move(name)), is_async(isAsync) {}
 
         virtual ~BasicLoggerSink() = default;
 
     public:
         NameType                           name    = "";
-        PatternType                        Pattern = "[{time:pattern='%h:%m:%s:%ms'}] {name} >> {data}";
-        SeverityValueType                  SinkSeverity{SeverityValueType::DefaultSeverity};
-        typename Severity::PatternOverride SeverityPatternOverride;
-        AsyncSink                          IsAsync;
+        PatternType                        pattern = "[{logtime:pattern='default'}] {name} >> {data}";
+        SeverityValueType                  sink_severity{SeverityValueType::DefaultSeverity};
+        typename Severity::PatternOverride severity_pattern_override;
+        AsyncSink                          is_async;
 
     protected:
-        std::future<void> m_AsyncWaiter;
+        std::future<void> async_waiter_;
 
     public:
         bool need_to_log(const SeverityValueType& severity) {
-            return severity >= SinkSeverity;
+            return severity >= sink_severity;
         }
         void WriteToSink(const SeverityValueType& severity, const BufferType& bufferToPrint) {
             if (need_to_log(severity)) WriteToSink(bufferToPrint);
@@ -47,8 +46,8 @@ namespace stream::flog::detail {
 
     public:
         PatternTransferType get_pattern(const typename Severity::Value& severity) const {
-            PatternTransferType customPattern = SeverityPatternOverride.get_pattern(severity);
-            if (customPattern.data() == nullptr || customPattern.size() == 0) return Pattern;
+            PatternTransferType customPattern = severity_pattern_override.get_pattern(severity);
+            if (customPattern.data() == nullptr || customPattern.size() == 0) return pattern;
             return customPattern;
         }
 
@@ -60,11 +59,11 @@ namespace stream::flog::detail {
             WriteImpl(bufferToPrint);
         }
         void WriteToSinkAsync(const BufferType& bufferToPrint) {
-            m_AsyncWaiter = std::async(std::launch::async, &BasicLoggerSink<Severity, CharType>::WriteToSinkSync, this, bufferToPrint);
+            async_waiter_ = std::async(std::launch::async, &BasicLoggerSink<Severity, CharType>::WriteToSinkSync, this, bufferToPrint);
         }
 
         void WriteToSink(const BufferType& bufferToPrint) {
-            if (IsAsync == AsyncSink::Sync)
+            if (is_async == AsyncSink::Sync)
                 WriteToSinkSync(bufferToPrint);
             else
                 WriteToSinkAsync(bufferToPrint);
@@ -72,32 +71,26 @@ namespace stream::flog::detail {
 
     public:
         void wait_until_finished_to_write() {
-            if (IsAsync == AsyncSink::Async) return m_AsyncWaiter.get();
+            if (is_async == AsyncSink::Async) return async_waiter_.get();
         }
 
-        [[nodiscard]] std::expected<void, fmt::FMTResult> FormatAndWriteToSinkSync(PatternTransferType pattern, const std::chrono::nanoseconds& logTime, const NameType& loggerName,
-                                                                                   const BufferType& format_buffer) {
+        void FormatAndWriteToSinkSync(PatternTransferType pattern, const std::chrono::nanoseconds& log_time, const NameType& logger_name, const BufferType& format_buffer) {
             fmt::buf::DynamicStreamIOManager<CharType> manager(256);
 
-            auto format_pattern_str = fmt::detail::format_in_manager(manager, false, pattern, FORMAT_SV("time", logTime),
-                                                                     FORMAT_SV("name", ConcatNameAndSinkName(loggerName, name)), FORMAT_SV("data", format_buffer));
-            if (format_pattern_str.has_value() == false) return format_pattern_str.error();
-            BufferType buffer(*format_pattern_str.value());
+            auto       format_pattern_str = fmt::detail::format_in_manager(manager, false, pattern, FORMAT_SV("logtime", log_time),
+                                                                           FORMAT_SV("name", ConcatNameAndSinkName(logger_name, name)), FORMAT_SV("data", format_buffer));
+            BufferType buffer(*format_pattern_str);
             WriteToSinkSync(buffer);
-            return {};
         }
 
-        [[nodiscard]] std::expected<void, fmt::FMTResult> FormatAndWriteToSinkAsync(PatternTransferType pattern, const std::chrono::nanoseconds& logTime,
-                                                                                    const NameType& loggerName, const BufferType& format_buffer) {
+        void FormatAndWriteToSinkAsync(PatternTransferType pattern, const std::chrono::nanoseconds& log_time, const NameType& logger_name, const BufferType& format_buffer) {
             // TODO
-            m_AsyncWaiter = std::async(std::launch::async, &BasicLoggerSink<Severity, CharType>::FormatAndWriteToSinkSync, this, pattern, logTime, loggerName, format_buffer);
-            return {};
+            async_waiter_ = std::async(std::launch::async, &BasicLoggerSink<Severity, CharType>::FormatAndWriteToSinkSync, this, pattern, log_time, logger_name, format_buffer);
         }
 
-        [[nodiscard]] std::expected<void, fmt::FMTResult> format_and_write_to_sink(PatternTransferType pattern, const std::chrono::nanoseconds& logTime, const NameType& loggerName,
-                                                                                   const BufferType& format_buffer) {
-            if (IsAsync == AsyncSink::Sync) return FormatAndWriteToSinkSync(pattern, logTime, loggerName, format_buffer);
-            return FormatAndWriteToSinkAsync(pattern, logTime, loggerName, format_buffer);
+        void format_and_write_to_sink(PatternTransferType pattern, const std::chrono::nanoseconds& log_time, const NameType& logger_name, const BufferType& format_buffer) {
+            if (is_async == AsyncSink::Sync) return FormatAndWriteToSinkSync(pattern, log_time, logger_name, format_buffer);
+            return FormatAndWriteToSinkAsync(pattern, log_time, logger_name, format_buffer);
         }
     };
 }  // namespace stream::flog::detail

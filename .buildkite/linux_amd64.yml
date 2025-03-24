@@ -4,8 +4,8 @@ agents:
 steps:
   - label: ":bazel: Build and Test on gcc (W asan)"
     commands:
-      - CC=gcc-14 bazelisk build --features=asan //tests:units
-      - CC=gcc-14 bazelisk test --features=asan //tests:units
+      - CC=gcc bazelisk build --features=asan //tests:units
+      - CC=gcc bazelisk test --features=asan //tests:units
 
   - label: ":bazel: Build and Test on Clang (W asan)"
     commands:

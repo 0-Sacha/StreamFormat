@@ -7,7 +7,7 @@
 // NOLINTBEGIN(readability-magic-numbers)
 SFT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
-#define TEST_FMT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, 0).value()), escaper(expected))
+#define TEST_FMT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, 0)), escaper(expected))
 
 static std::string escaper(const std::string& str) {
     std::string res;
@@ -77,7 +77,7 @@ SFT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor) {
 class TestFmtContextOut {};
 STREAMFORMAT_AUTO_FORMATTER_T(TestFmtContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
-#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, TestFmtContextOut{}).value()), escaper(expected))
+#define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, TestFmtContextOut{})), escaper(expected))
 
 SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut) {
     TEST_FMT_CONTEXT("{}", "\033[31m TEST_FMT_ContextOut 0 \033[39m");

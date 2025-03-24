@@ -12,17 +12,6 @@ namespace stream::fmt::buf {
         const Stream<TChar>& buffer;
 
     public:
-        constexpr inline std::size_t get_buffer_total_size() const noexcept {
-            return static_cast<std::size_t>(buffer.buffer_end - buffer.buffer);
-        }
-        constexpr inline std::size_t get_buffer_current_size() const noexcept {
-            return static_cast<std::size_t>(buffer.current_pos - buffer.buffer);
-        }
-        constexpr inline std::size_t get_buffer_remaining_size() const noexcept {
-            return static_cast<std::size_t>(buffer.buffer_end - buffer.current_pos);
-        }
-
-    public:
         constexpr inline bool can_move_forward(const std::size_t count = 1) const noexcept {
             return buffer.current_pos + count <= buffer.buffer_end;
         }
@@ -30,22 +19,12 @@ namespace stream::fmt::buf {
             return buffer.current_pos - count >= buffer.buffer;
         }
 
-        constexpr inline bool is_out_of_bound() const noexcept {
-            return buffer.current_pos < buffer.buffer || buffer.current_pos >= buffer.buffer_end;
-        }
-        constexpr inline bool is_empty() const noexcept {
-            return buffer.current_pos >= buffer.buffer_end;
-        }
-        constexpr inline bool is_end_of_string() const noexcept {
-            return is_empty() || buffer.get() == 0;
-        }
-
-        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> get_next(const std::size_t count = 1) const {
-            if (Access(buffer).can_move_forward(count) == false) return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+        constexpr inline std::remove_cv_t<TChar> get_next(const std::size_t count = 1) const {
+            if (Access(buffer).can_move_forward(count) == false) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             return Manip(buffer).get_next_force(count);
         }
-        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> get_prev(const std::size_t count = 1) const {
-            if (Access(buffer).can_move_backward(count) == false) return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+        constexpr inline std::remove_cv_t<TChar> get_prev(const std::size_t count = 1) const {
+            if (Access(buffer).can_move_backward(count) == false) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             return Manip(buffer).get_prev_force(count);
         }
         constexpr inline TChar get_next_force(const std::size_t count = 1) const noexcept {
@@ -70,6 +49,11 @@ namespace stream::fmt::buf {
             buffer.current_pos = buffer_;
             buffer.buffer_end  = buffer_ + size_;
         }
+        constexpr inline void reload(std::basic_string_view<TChar> sv) noexcept {
+            buffer.buffer      = sv.data();
+            buffer.current_pos = sv.data();
+            buffer.buffer_end  = sv.data() + sv.size();
+        }
 
         constexpr inline void reload(Stream<TChar>& buffer_) noexcept {
             buffer.buffer      = buffer_.buffer;
@@ -85,27 +69,25 @@ namespace stream::fmt::buf {
         constexpr inline void forward_force(const std::size_t count = 1) noexcept {
             buffer.current_pos += count;
         }
-        [[nodiscard]] constexpr inline std::expected<void, FMTResult> forward(const std::size_t count = 1) noexcept {
-            if (!access().can_move_forward(count)) return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+        constexpr inline void forward(const std::size_t count = 1) noexcept {
+            if (!access().can_move_forward(count)) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             buffer.current_pos += count;
-            return {};
         }
 
         constexpr inline void backward_force(const std::size_t count = 1) noexcept {
             buffer.current_pos -= count;
         }
-        [[nodiscard]] constexpr inline std::expected<void, FMTResult> backward(const std::size_t count = 1) noexcept {
-            if (!access().can_move_backward(count)) return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+        constexpr inline void backward(const std::size_t count = 1) noexcept {
+            if (!access().can_move_backward(count)) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             buffer.current_pos -= count;
-            return {};
         }
 
-        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> get_and_forward() {
-            if (Access(buffer).can_move_forward(1) == false) return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+        constexpr inline std::remove_cv_t<TChar> get_and_forward() {
+            if (Access(buffer).can_move_forward(1) == false) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             return *buffer.current_pos++;
         }
-        [[nodiscard]] constexpr inline std::expected<std::remove_cv_t<TChar>, FMTResult> get_and_backward() {
-            if (Access(buffer).can_move_backward(1) == false) return std::unexpected(FMTResult::Buffer_OutOfBoundAccess);
+        constexpr inline std::remove_cv_t<TChar> get_and_backward() {
+            if (Access(buffer).can_move_backward(1) == false) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             return *buffer.current_pos--;
         }
     };

@@ -16,50 +16,49 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        [[nodiscard]] constexpr std::expected<void, FMTResult> fast_read_integer(T& t) noexcept {
+        constexpr void fast_read_integer(T& t) noexcept {
             bool sign = false;
             if constexpr (std::is_signed_v<T>) {
-                sign = SF_TRY(TestManip(buffer).is_equal_to_forward('-'));
+                sign = TestManip(buffer).is_equal_to_forward('-');
             }
 
             if (!TestAccess(buffer).is_a_digit()) {
-                return std::unexpected(FMTResult::Parse_NonValidDigit);
+                throw std::runtime_error("fmt error: Parse_NonValidDigit");
             }
 
             T value = static_cast<T>(0);
             while (TestAccess(buffer).is_a_digit()) {
                 value = value * static_cast<T>(10) + static_cast<T>(buffer.get() - static_cast<TChar>('0'));
-                SF_VERIFY(Manip(buffer).forward());
+                Manip(buffer).forward();
             }
 
             t = sign ? -value : value;
-            return {};
         }
 
     public:
         template <typename T>
-        [[nodiscard]] constexpr inline std::expected<void, FMTResult> fast_read_float(T& t, std::int32_t float_precision = -1) noexcept {
+        constexpr inline void fast_read_float(T& t, std::int32_t float_precision = -1) noexcept {
             T intpart = static_cast<T>(0);
 
             TestAccess access(buffer);
             TestManip  manip(buffer);
 
-            bool sign = SF_TRY(manip.is_equal_to_forward('-'));
+            bool sign = manip.is_equal_to_forward('-');
 
             if (access.is_a_digit()) {
-                SF_VERIFY(fast_read_integer<T>(intpart));
+                fast_read_integer<T>(intpart);
             } else if (access.is_equal_to('.')) {
-                SF_VERIFY(buf::Manip(buffer).forward());
+                buf::Manip(buffer).forward();
             } else {
-                return std::unexpected(FMTResult::Parse_NonValidDigit);
+                throw std::runtime_error("fmt error: Parse_NonValidDigit");
             }
 
             if (float_precision < 0) {
-                while (access.is_a_digit() && Access(buffer).is_end_of_string() == false) {
+                while (access.is_a_digit() && buffer.is_end_of_string() == false) {
                     Manip(buffer).forward_force();
                 }
             } else {
-                while (access.is_a_digit() && float_precision > 0 && Access(buffer).is_end_of_string() == false) {
+                while (access.is_a_digit() && float_precision > 0 && buffer.is_end_of_string() == false) {
                     Manip(buffer).forward_force();
                     float_precision--;
                 }
@@ -74,14 +73,13 @@ namespace stream::fmt::buf {
             }
 
             t = sign ? -intpart - dec : intpart + dec;
-            return {};
         }
 
     public:
         template <typename CharPtr>
-        [[nodiscard]] std::expected<void, FMTResult> fast_read_char_ptr(const CharPtr* str, std::size_t size_to_copy, bool is_zero_ended = true) {
+        void fast_read_char_ptr(const CharPtr* str, std::size_t size_to_copy, bool is_zero_ended = true) {
             if (Access(buffer).can_move_forward(size_to_copy) == false) {
-                return ReadManip(buffer).fast_read_char_ptr(str, Access(buffer).get_buffer_remaining_size(), is_zero_ended);
+                return ReadManip(buffer).fast_read_char_ptr(str, buffer.get_buffer_remaining_size(), is_zero_ended);
             }
 
             std::copy_n(str, size_to_copy, buffer.current_pos);
@@ -90,15 +88,13 @@ namespace stream::fmt::buf {
             if (is_zero_ended) {
                 *str = 0;
             }
-
-            return {};
         }
         template <typename CharStr, std::size_t SIZE>
-        [[nodiscard]] inline std::expected<void, FMTResult> fast_read_char_array(const CharStr (&str)[SIZE], bool is_zero_ended = true) {
+        void fast_read_char_array(const CharStr (&str)[SIZE], bool is_zero_ended = true) {
             return fast_read_char_ptr(str, SIZE);
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> fast_read_char_bound(const CharStr* begin, const CharStr* end, bool is_zero_ended = true) {
+        void fast_read_char_bound(const CharStr* begin, const CharStr* end, bool is_zero_ended = true) {
             return fast_read_char_ptr(begin, end - begin - (is_zero_ended ? 1 : 0), is_zero_ended);
         }
     };

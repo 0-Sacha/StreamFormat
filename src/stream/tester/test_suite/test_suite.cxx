@@ -96,19 +96,19 @@ namespace stream::tester::detail {
         }
 
         std::string time_pattern;
-        if (TestSuitesManager::print_time) time_pattern = "[{T:pattern='%h:%m:%s:%ms'}] ";
+        if (TestSuitesManager::print_time) time_pattern = "[{logtime:pattern='default'}] ";
 
         if (parent == nullptr) {
             logger.set_name(name);
-            logger.SetRealPattern("{C:+black}" + time_pattern + "{name} >> {color}{data}");
+            logger.set_real_pattern("{C:+black}" + time_pattern + "{name} >> {color}{data}");
             test_logger.set_name(name + ".{test_name}");
-            test_logger.SetRealPattern("{C:+black}" + time_pattern + "{name} >> {color}{data}");
+            test_logger.set_real_pattern("{C:+black}" + time_pattern + "{name} >> {color}{data}");
         } else {
             std::string const corrected_name = get_corrected_size_name();
             logger.set_name(corrected_name);
-            logger.set_real_pattern_strmv("{C:+black}" + time_pattern + "{name} >> {color}{data}");
+            logger.set_real_pattern("{C:+black}" + time_pattern + "{name} >> {color}{data}");
             test_logger.set_name(corrected_name + ".{test_name}");
-            test_logger.set_real_pattern_strmv("{C:+black}" + time_pattern + "{name} >> {color}{data}");
+            test_logger.set_real_pattern("{C:+black}" + time_pattern + "{name} >> {color}{data}");
         }
     }
 

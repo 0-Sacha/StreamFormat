@@ -13,40 +13,40 @@ namespace stream::fmt::buf {
         };
 
     private:
-        [[nodiscard]] static std::expected<const TChar*, FMTResult> buffer_exec_glob_(Stream<TChar>& istream, Stream<TChar>& glob) {
-            if (Access(glob).is_end_of_string()) {
+        static const TChar* buffer_exec_glob_(Stream<TChar>& istream, Stream<TChar>& glob) {
+            if (glob.is_end_of_string()) {
                 return istream.current_pos;
             }
 
-            if (Access(istream).is_end_of_string()) {
+            if (istream.is_end_of_string()) {
                 return nullptr;
             }
 
             if (TestAccess(glob).is_equal_to('?')) {
-                SF_VERIFY(Manip(glob).forward());
-                SF_VERIFY(Manip(istream).forward());
+                Manip(glob).forward();
+                Manip(istream).forward();
                 return buffer_exec_glob_(istream, glob);
             } else if (TestAccess(glob).is_equal_to('*')) {
-                SF_VERIFY(Manip(glob).forward());
-                const TChar* further = SF_TRY(buffer_exec_glob_(istream, glob));
+                Manip(glob).forward();
+                const TChar* further = buffer_exec_glob_(istream, glob);
                 while (Access(istream).can_move_forward()) {
-                    SF_VERIFY(Manip(istream).forward());
-                    const TChar* last = SF_TRY(buffer_exec_glob_(istream, glob));
+                    Manip(istream).forward();
+                    const TChar* last = buffer_exec_glob_(istream, glob);
                     if (last > further || further == nullptr) further = last;
                 }
                 return further;
             } else if (TestAccess(glob).is_equal_to('[')) {
-                SF_VERIFY(Manip(istream).forward());
+                Manip(istream).forward();
                 const TChar* begin = glob.current_pos;
-                SF_VERIFY(TestManip(glob).go_to_forward(']'));
+                TestManip(glob).go_to_forward(']');
                 const TChar* end = glob.current_pos;
 
                 StreamView<TChar> charSet(begin, end - begin);
 
                 bool  is_inverted = TestAccess(glob).is_equal_to('!');
                 TChar toMatch     = istream.get();
-                SF_VERIFY(Manip(glob).forward());
-                SF_VERIFY(Manip(istream).forward());
+                Manip(glob).forward();
+                Manip(istream).forward();
                 bool found = false;
 
                 while (found == false && Access(charSet).can_move_forward()) {
@@ -75,19 +75,17 @@ namespace stream::fmt::buf {
             }
 
             if (istream.get() == glob.get()) {
-                SF_VERIFY(Manip(glob).forward());
-                SF_VERIFY(Manip(istream).forward());
+                Manip(glob).forward();
+                Manip(istream).forward();
                 return buffer_exec_glob_(istream, glob);
             }
             return nullptr;
         }
 
     public:
-        [[nodiscard]] static std::expected<void, FMTResult> buffer_exec_glob(Stream<TChar>& istream, Stream<TChar>& glob,
-                                                                             [[maybe_unused]] PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest) {
-            const TChar* furtherPointMatched = SF_TRY(buffer_exec_glob_(istream, glob));
+        static void buffer_exec_glob(Stream<TChar>& istream, Stream<TChar>& glob, [[maybe_unused]] PatternMatchType patternMatchtype = PatternMatchType::MatchBiggest) {
+            const TChar* furtherPointMatched = buffer_exec_glob_(istream, glob);
             if (furtherPointMatched != nullptr) istream.current_pos = furtherPointMatched;
-            return {};
         }
     };
 
@@ -100,7 +98,7 @@ namespace stream::fmt::buf {
         Stream<TChar>& buffer;
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> fast_read_char_ptrGlobber(std::basic_string_view<TChar> globPattern, TChar* str, std::size_t size_to_copy) {
+        void fast_read_char_ptrGlobber(std::basic_string_view<TChar> globPattern, TChar* str, std::size_t size_to_copy) {
             Stream<TChar> globber(globPattern);
             const TChar*  begin = buffer.current_pos;
             Globber<TChar>::buffer_exec_glob(*this, globber);
@@ -110,8 +108,8 @@ namespace stream::fmt::buf {
             return ReadManip(subContext).fast_read_char_ptr(str, size_to_copy);
         }
 
-        [[nodiscard]] std::expected<void, FMTResult> fast_read_char_ptrRegex(std::basic_string_view<TChar> regexPattern, TChar* str, std::size_t size_to_copy) {
-            return std::unexpected(FMTResult::FunctionNotImpl);
+        void fast_read_char_ptrRegex(std::basic_string_view<TChar> regexPattern, TChar* str, std::size_t size_to_copy) {
+            throw std::runtime_error("fmt error: FunctionNotImpl");
         }
     };
 }  // namespace stream::fmt::buf

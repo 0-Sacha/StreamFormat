@@ -87,10 +87,6 @@ namespace stream::fmt::detail {
         };
 
     public:
-        static inline constexpr std::uint8_t NotFound() {
-            return (std::numeric_limits<std::uint8_t>::max)();
-        }
-
         FormatSpecifier<TChar>* get(std::basic_string_view<TChar> name, const Constraint& constraint = Constraint{}) {
             STREAMFORMAT_ASSERT(specifier_count <= SIZE);
             for (std::uint8_t i = 0; i < specifier_count; ++i)
@@ -130,13 +126,12 @@ namespace stream::fmt::detail {
         }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> pushback(const FormatSpecifier<TChar>& specifier) {
-            if (specifier_count >= SIZE) return std::unexpected(FMTResult::Specifiers_Full);
+        void pushback(const FormatSpecifier<TChar>& specifier) {
+            if (specifier_count >= SIZE) throw std::runtime_error("fmt error: Specifiers_Full");
             specifiers[specifier_count++] = specifier;
-            return {};
         }
 
-        [[nodiscard]] std::expected<void, FMTResult> concat(const FormatSpecifier<TChar>& specifier) {
+        void concat(const FormatSpecifier<TChar>& specifier) {
             FormatSpecifier<TChar>* local = get(specifier.name);
             if (local == nullptr) return pushback(specifier);
 
@@ -148,7 +143,6 @@ namespace stream::fmt::detail {
                 local->has_number = true;
                 local->as_number  = specifier.as_number;
             }
-            return {};
         }
     };
 

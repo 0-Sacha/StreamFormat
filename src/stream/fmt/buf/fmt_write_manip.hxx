@@ -19,7 +19,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> write_integer(T i, detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void write_integer(T i, detail::ShiftInfo shift = detail::ShiftInfo{}) {
             char old_after = shift.print.after;
             if (shift.print.after >= '0' && shift.print.after <= '9') shift.print.after = ' ';
 
@@ -33,20 +33,20 @@ namespace stream::fmt::buf {
             }
 
             if (!shift.print.before_is_a_digit()) {
-                SF_VERIFY(ShiftWriteManip(buffer).write_shift_begin(shift));
+                ShiftWriteManip(buffer).write_shift_begin(shift);
             }
             if (i < 0) {
-                SF_VERIFY(ManipIO(buffer).pushback('-'));
+                ManipIO(buffer).pushback('-');
                 i = -i;
             }
             if (shift.print.before_is_a_digit()) {
-                SF_VERIFY(ShiftWriteManip(buffer).write_shift_right_all(shift));
+                ShiftWriteManip(buffer).write_shift_right_all(shift);
             }
 
             if (i == 0) {
-                SF_VERIFY(ManipIO(buffer).pushback('0'));
+                ManipIO(buffer).pushback('0');
             } else {
-                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
+                ManipIO(buffer).forward(nb_digit);
                 std::int32_t nb_digit_ = nb_digit;
                 while (nb_digit_ > 0) {
                     Manip(buffer).backward_force();
@@ -54,18 +54,17 @@ namespace stream::fmt::buf {
                     i /= 10;
                     nb_digit_--;
                 }
-                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
+                ManipIO(buffer).forward(nb_digit);
             }
 
-            SF_VERIFY(ShiftWriteManip(buffer).write_shift_end(shift));
+            ShiftWriteManip(buffer).write_shift_end(shift);
 
             shift.print.after = old_after;
-            return {};
         }
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> write_float(T i, std::int32_t float_precision = 2, detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void write_float(T i, std::int32_t float_precision = 2, detail::ShiftInfo shift = detail::ShiftInfo{}) {
             char old_before = shift.print.before;
             if (shift.print.before >= '0' && shift.print.before <= '9') shift.print.before = ' ';
 
@@ -79,21 +78,21 @@ namespace stream::fmt::buf {
             }
 
             if (!shift.print.before_is_a_digit()) {
-                SF_VERIFY(ShiftWriteManip(buffer).write_shift_begin(shift));
+                ShiftWriteManip(buffer).write_shift_begin(shift);
             }
             if (i < 0) {
-                SF_VERIFY(ManipIO(buffer).pushback('-'));
+                ManipIO(buffer).pushback('-');
                 i = -i;
             }
             if (shift.print.before_is_a_digit()) {
-                SF_VERIFY(ShiftWriteManip(buffer).write_shift_right_all(shift));
+                ShiftWriteManip(buffer).write_shift_right_all(shift);
             }
 
             T k = std::trunc(i);
             if (k == 0) {
-                SF_VERIFY(ManipIO(buffer).pushback('0'));
+                ManipIO(buffer).pushback('0');
             } else {
-                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
+                ManipIO(buffer).forward(nb_digit);
                 std::int32_t nb_digit_ = nb_digit;
                 while (nb_digit_ > 0) {
                     Manip(buffer).backward_force();
@@ -101,27 +100,25 @@ namespace stream::fmt::buf {
                     k /= 10;
                     nb_digit_--;
                 }
-                SF_VERIFY(ManipIO(buffer).forward(nb_digit));
+                ManipIO(buffer).forward(nb_digit);
             }
 
-            SF_VERIFY(ManipIO(buffer).pushback('.'));
+            ManipIO(buffer).pushback('.');
             i -= k;
             while (float_precision-- != 0) {
                 T decimal = std::trunc(i *= 10);
-                SF_VERIFY(ManipIO(buffer).pushback((char)decimal + '0'));
+                ManipIO(buffer).pushback((char)decimal + '0');
                 i -= decimal;
             }
 
-            SF_VERIFY(ShiftWriteManip(buffer).write_shift_end(shift));
+            ShiftWriteManip(buffer).write_shift_end(shift);
 
             shift.print.before = old_before;
-            return {};
         }
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> write_integer_h(T i, std::uint8_t digitSize, const TChar* const lut, TChar base_prefix = '\0',
-                                                                     detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void write_integer_h(T i, std::uint8_t digitSize, const TChar* const lut, TChar base_prefix = '\0', detail::ShiftInfo shift = detail::ShiftInfo{}) {
             ManipIO manip(buffer);
 
             std::int32_t digit_count = sizeof(T) * 8;
@@ -138,24 +135,23 @@ namespace stream::fmt::buf {
             }
 
             if (base_prefix != '\0') {
-                SF_VERIFY(ManipIO(buffer).pushback('0'));
-                SF_VERIFY(ManipIO(buffer).pushback(base_prefix));
+                ManipIO(buffer).pushback('0');
+                ManipIO(buffer).pushback(base_prefix);
             }
 
-            SF_VERIFY(manip.forward(digit_count));
+            manip.forward(digit_count);
             std::int32_t k = digit_count + 1;
             while (--k != 0) {
                 Manip(buffer).backward_force();
                 buffer.set(lut[i & (0b1 << digitSize)]);
                 i = i >> digitSize;
             }
-            SF_VERIFY(manip.forward(digit_count));
-            return {};
+            manip.forward(digit_count);
         }
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> write_integer_format_data(T i, const detail::FormatData<TChar>& formatdata) {
+        void write_integer_format_data(T i, const detail::FormatData<TChar>& formatdata) {
             if (formatdata.has_spec) {
                 switch (formatdata.integer_print) {
                     case detail::IntegerPrintBase::Dec:
@@ -178,7 +174,7 @@ namespace stream::fmt::buf {
             return WriteManip(buffer).fast_write_integer(i);
         }
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> write_float_formatdata(T i, const detail::FormatData<TChar>& formatdata) {
+        void write_float_formatdata(T i, const detail::FormatData<TChar>& formatdata) {
             if (formatdata.has_spec) {
                 if (formatdata.shift.type != detail::ShiftInfo::ShiftType::Nothing) return write_float(i, formatdata.float_precision, formatdata.shift);
             }
@@ -188,7 +184,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> write_indent_char_ptr(const CharStr* str, std::size_t size) {
+        void write_indent_char_ptr(const CharStr* str, std::size_t size) {
             while (size > 0) {
                 const CharStr* const begin = str;
                 while (size > 0 && *str != '\n') {
@@ -196,50 +192,48 @@ namespace stream::fmt::buf {
                 }
                 const CharStr* const end = str;
 
-                SF_VERIFY(WriteManip(buffer).fast_write_char_array(begin, end - begin));
+                WriteManip(buffer).fast_write_char_array(begin, end - begin);
 
                 if (size > 0 && *str == '\n') {
-                    SF_VERIFY(FMTManipIO(buffer).new_line_indent());
+                    FMTManipIO(buffer).new_line_indent();
                     ++str;
                     --size;
                 }
             }
-            return {};
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> write_indent_char_bound(const CharStr* begin, const CharStr* end) {
+        void write_indent_char_bound(const CharStr* begin, const CharStr* end) {
             return write_indent_char_ptr(begin, end - begin);
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> write_indent_string(std::basic_string_view<CharStr> str) {
+        void write_indent_string(std::basic_string_view<CharStr> str) {
             return write_indent_char_ptr(str.data(), str.size());
         }
 
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> write_char_ptr(const CharStr* str, std::size_t size, detail::ShiftInfo& shift) {
+        void write_char_ptr(const CharStr* str, std::size_t size, detail::ShiftInfo& shift) {
             if (shift.size <= 0) return WriteManip(buffer).fast_write_char_array(str, size);
 
-            SF_VERIFY(ManipIO(buffer).reserve(std::max(static_cast<std::size_t>(shift.size), size)));
+            if (ManipIO(buffer).reserve(std::max(static_cast<std::size_t>(shift.size), size)) == false) throw std::bad_alloc();
 
             if (static_cast<std::size_t>(shift.size) > size) {
                 shift.size -= static_cast<std::int32_t>(size);
 
-                SF_VERIFY(ShiftWriteManip(buffer).write_shift_begin(shift));
+                ShiftWriteManip(buffer).write_shift_begin(shift);
 
-                SF_VERIFY(WriteManip(buffer).fast_write_char_array(str, size));
+                WriteManip(buffer).fast_write_char_array(str, size);
 
-                SF_VERIFY(ShiftWriteManip(buffer).write_shift_end(shift));
+                ShiftWriteManip(buffer).write_shift_end(shift);
             } else {
-                SF_VERIFY(WriteManip(buffer).fast_write_char_array(str, size));
+                WriteManip(buffer).fast_write_char_array(str, size);
             }
-            return {};
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> write_char_bound(const CharStr* begin, const CharStr* end, detail::ShiftInfo& shift) {
+        void write_char_bound(const CharStr* begin, const CharStr* end, detail::ShiftInfo& shift) {
             return write_char_ptr(begin, end - begin, shift);
         }
         template <typename CharStr>
-        [[nodiscard]] inline std::expected<void, FMTResult> write_string(std::basic_string_view<CharStr> str, detail::ShiftInfo& shift) {
+        void write_string(std::basic_string_view<CharStr> str, detail::ShiftInfo& shift) {
             return write_char_ptr(str.data(), str.size(), shift);
         }
     };

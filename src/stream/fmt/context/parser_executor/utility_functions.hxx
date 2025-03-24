@@ -9,14 +9,14 @@
 
 namespace stream::fmt {
     template <typename Buffer, typename Format, typename... Args>
-    [[nodiscard]] std::expected<void, FMTResult> parse(Buffer&& buffer_input, Format&& format_input, Args&&... args) {
+    void parse(Buffer&& buffer_input, Format&& format_input, Args&&... args) {
         buf::StreamView buffer{buffer_input};
         buf::StreamView format{format_input};
         using TChar = typename decltype(format)::TChar;
 
         detail::ParserNOTextPropertiesExecutor<std::remove_const_t<TChar>> text_properties_executor;
         context::BasicParserExecutor<std::remove_const_t<TChar>>           executor(buffer, text_properties_executor);
-        SF_VERIFY(executor.run(format, std::forward<Args>(args)...));
+        executor.run(format, std::forward<Args>(args)...);
         return executor.terminate();
     }
 }  // namespace stream::fmt

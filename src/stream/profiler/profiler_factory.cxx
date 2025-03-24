@@ -12,7 +12,7 @@ namespace stream::profiler {
 
         std::ofstream                      file(path.string(), std::ios::out);
         json::FormatAsJson<Profiler> const format_profiler(profiler);
-        fmt::file_print(file, format_profiler).value();
+        fmt::file_print(file, format_profiler);
         file.close();
     }
 }  // namespace stream::profiler

@@ -15,22 +15,28 @@ namespace stream::fmt::buf {
         using StreamIO<CharType>::buffer_end;
 
         using StreamIO<CharType>::get;
+        using StreamIO<CharType>::get_buffer_total_size;
+        using StreamIO<CharType>::get_buffer_current_size;
+        using StreamIO<CharType>::get_buffer_remaining_size;
+        using StreamIO<CharType>::is_out_of_bound;
+        using StreamIO<CharType>::is_empty;
+        using StreamIO<CharType>::is_end_of_string;
 
-        using StreamIO<CharType>::Manager;
+        using StreamIO<CharType>::manager;
 
     protected:
         FMTStreamIO(BasicStreamIOManager<CharType>& ostream_manager) noexcept : StreamIO<CharType>(ostream_manager) {}
 
     public:
-        [[nodiscard]] static std::expected<FMTStreamIO<CharType>, FMTResult> create(BasicStreamIOManager<CharType>& ostream_manager) {
+        static FMTStreamIO<CharType> create(BasicStreamIOManager<CharType>& ostream_manager) {
             FMTStreamIO<CharType> res(ostream_manager);
-            SF_VERIFY(StreamIO<CharType>::init(res));
+            StreamIO<CharType>::init(res);
             return res;
         }
 
     public:
-        std::size_t NoStride = 0;
-        std::size_t indent   = 0;
+        std::size_t no_stride = 0;
+        std::size_t indent    = 0;
     };
 
     template <typename TChar>
@@ -43,7 +49,7 @@ namespace stream::fmt::buf {
 
     public:
         constexpr inline void add_no_stride(const std::size_t no_stride) noexcept {
-            buffer.NoStride += no_stride;
+            buffer.no_stride += no_stride;
         }
 
         constexpr inline void add_indent(const std::size_t indent) noexcept {
@@ -53,21 +59,20 @@ namespace stream::fmt::buf {
             buffer.indent -= indent;
         }
         constexpr inline void set_indent() noexcept {
-            buffer.indent = Manip(buffer).get_buffer_current_size() - buffer.NoStride;
+            buffer.indent = buffer.get_buffer_current_size() - buffer.no_stride;
         }
 
     public:
-        [[nodiscard]] constexpr inline std::expected<void, FMTResult> new_line_indent() {
-            SF_VERIFY(ManipIO(buffer).pushback('\n'));
+        constexpr inline void new_line_indent() {
+            ManipIO(buffer).pushback('\n');
             return ManipIO(buffer).pushback(' ', buffer.indent);
         }
 
-        [[nodiscard]] constexpr inline std::expected<void, FMTResult> pushback_check_indent(const TChar c) {
-            SF_VERIFY(ManipIO(buffer).pushback(c));
+        constexpr inline void pushback_check_indent(const TChar c) {
+            ManipIO(buffer).pushback(c);
             if (c == '\n') {
                 return ManipIO(buffer).pushback(' ', buffer.indent);
             }
-            return {};
         }
     };
 
@@ -85,7 +90,7 @@ namespace stream::fmt::buf {
             TestManip(buffer).GoTo(ele..., '}');
         }
         template <typename... CharToTest>
-        [[nodiscard]] inline std::expected<void, FMTResult> param_go_to_forward(const CharToTest... ele) {
+        void param_go_to_forward(const CharToTest... ele) {
             return TestManip(buffer).go_to_forward(ele..., '}');
         }
 
@@ -98,15 +103,14 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharToTest>
-        [[nodiscard]] std::expected<bool, FMTResult> next_is_named_args(const std::basic_string_view<CharToTest>& sv) {
+        bool next_is_named_args(const std::basic_string_view<CharToTest>& sv) {
             TestAccess access(buffer);
             TestManip  manip(buffer);
 
             TChar* const oldpos = buffer.current_pos;
 
             auto is_same = manip.is_same_forward(sv);
-            if (is_same.has_value() == false) return std::unexpected(is_same.error());
-            if (is_same.value() && (access.is_equal_to(':') || access.is_equal_to('}'))) {
+            if (is_same && (access.is_equal_to(':') || access.is_equal_to('}'))) {
                 return true;
             }
             buffer.current_pos = oldpos;

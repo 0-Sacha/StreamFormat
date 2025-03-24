@@ -28,8 +28,8 @@ namespace stream::fmt::buf {
         }
 
     public:
-        [[nodiscard]] std::expected<void, FMTResult> add_size(const std::size_t /* count */) override {
-            return std::unexpected(FMTResult::Manager_StaticMemory);
+        bool add_size(const std::size_t /* count */) override {
+            return false;
         }
 
     private:

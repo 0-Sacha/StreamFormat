@@ -30,7 +30,7 @@ namespace stream::fmt {
 
     template <typename T, typename CharName, typename FormatterExecutor>
     struct FormatterType<StringViewNamedArgs<T, CharName>, FormatterExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> format(const StringViewNamedArgs<T, CharName>& t, FormatterExecutor& executor) {
+        static inline void format(const StringViewNamedArgs<T, CharName>& t, FormatterExecutor& executor) {
             return executor.write_type(t.get_value());
         }
     };
@@ -39,9 +39,7 @@ namespace stream::fmt {
     template <typename T, typename CharName = char>
     struct StringNamedArgs {
     public:
-        StringNamedArgs(const std::string& str, const T& t) : name_(str), value(t) {}
-
-        StringNamedArgs(std::string&& str, const T& t) : name_(std::move(str)), value(t) {}
+        StringNamedArgs(std::string str, const T& t) : name_(std::move(str)), value(t) {}
 
     public:
         T& get_value() {
@@ -61,7 +59,7 @@ namespace stream::fmt {
 
     template <typename T, typename CharName, typename FormatterExecutor>
     struct FormatterType<StringNamedArgs<T, CharName>, FormatterExecutor> {
-        [[nodiscard]] static inline std::expected<void, FMTResult> format(const StringNamedArgs<T, CharName>& t, FormatterExecutor& executor) {
+        static inline void format(const StringNamedArgs<T, CharName>& t, FormatterExecutor& executor) {
             return executor.write_type(t.get_value());
         }
     };

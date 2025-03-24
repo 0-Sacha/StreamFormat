@@ -8,7 +8,7 @@
 namespace stream::fmt {
     template <typename T, typename FormatterExecutor>
     struct FormatterType<std::list<T>, FormatterExecutor> {
-        [[nodiscard]] static std::expected<void, FMTResult> format(const std::list<T>& t, FormatterExecutor& executor) {
+        static void format(const std::list<T>& t, FormatterExecutor& executor) {
             return FormatterType<ForwardAsSTDEnumerable<std::list<T>>, FormatterExecutor>::format(t, executor);
         }
     };

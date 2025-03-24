@@ -6,10 +6,10 @@
 namespace stream::fmt::detail {
     template <typename TChar>
     struct NoStrideFunction {
-        inline explicit NoStrideFunction(buf::FMTStreamIO<TChar>& buffer_) : buffer(buffer_), size_buffer(buf::Access(buffer_).get_buffer_current_size()) {}
+        inline explicit NoStrideFunction(buf::FMTStreamIO<TChar>& buffer_) : buffer(buffer_), size_buffer(buffer_.get_buffer_current_size()) {}
 
         ~NoStrideFunction() {
-            buf::FMTManipIO(buffer).add_no_stride(buf::Access(buffer).get_buffer_current_size() - size_buffer);
+            buf::FMTManipIO(buffer).add_no_stride(buffer.get_buffer_current_size() - size_buffer);
         }
 
         buf::FMTStreamIO<TChar>& buffer;

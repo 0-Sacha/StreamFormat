@@ -14,14 +14,34 @@ namespace stream::fmt::buf {
         TChar* buffer_end;  // Not included
 
     public:
+        Stream() noexcept : buffer(nullptr), current_pos(nullptr), buffer_end(nullptr) {}
+        Stream(TChar* const buffer_, const std::size_t size_) noexcept : buffer(buffer_), current_pos(buffer_), buffer_end(buffer_ + size_) {}
+
+    public:
         constexpr inline TChar get() const {
             return *current_pos;
         }
 
     public:
-        Stream() noexcept : buffer(nullptr), current_pos(nullptr), buffer_end(nullptr) {}
+        constexpr inline std::size_t get_buffer_total_size() const noexcept {
+            return static_cast<std::size_t>(buffer_end - buffer);
+        }
+        constexpr inline std::size_t get_buffer_current_size() const noexcept {
+            return static_cast<std::size_t>(current_pos - buffer);
+        }
+        constexpr inline std::size_t get_buffer_remaining_size() const noexcept {
+            return static_cast<std::size_t>(buffer_end - current_pos);
+        }
 
-        Stream(TChar* const buffer_, const std::size_t size_) noexcept : buffer(buffer_), current_pos(buffer_), buffer_end(buffer_ + size_) {}
+        constexpr inline bool is_out_of_bound() const noexcept {
+            return current_pos < buffer || current_pos >= buffer_end;
+        }
+        constexpr inline bool is_empty() const noexcept {
+            return current_pos >= buffer_end;
+        }
+        constexpr inline bool is_end_of_string() const noexcept {
+            return is_empty() || get() == 0;
+        }
     };
 
     template <typename CharType>
@@ -34,6 +54,12 @@ namespace stream::fmt::buf {
         using Stream<const CharType>::buffer_end;
 
         using Stream<const CharType>::get;
+        using Stream<const CharType>::get_buffer_total_size;
+        using Stream<const CharType>::get_buffer_current_size;
+        using Stream<const CharType>::get_buffer_remaining_size;
+        using Stream<const CharType>::is_out_of_bound;
+        using Stream<const CharType>::is_empty;
+        using Stream<const CharType>::is_end_of_string;
 
     public:
         StreamView() noexcept : Stream<const CharType>() {}

@@ -32,27 +32,26 @@ namespace stream::fmt::detail {
         virtual size_t size() = 0;
 
     public:
-        [[nodiscard]] virtual std::expected<PointerID, FMTResult>                              get_pointerid_at(std::int32_t idx)                             = 0;
-        [[nodiscard]] virtual std::expected<void, FMTResult>                                   run_type_at(std::int32_t idx)                                  = 0;
-        [[nodiscard]] virtual std::expected<std::int32_t, FMTResult>                           get_index_of_current_named_arg(buf::StreamView<TChar>& format) = 0;
-        [[nodiscard]] virtual std::expected<typename std::basic_string_view<TChar>, FMTResult> get_string_at(std::int32_t idx)                                = 0;
-        [[nodiscard]] virtual std::expected<std::int64_t, FMTResult>                           get_int_at(std::int32_t idx)                                   = 0;
+        virtual PointerID                              get_pointerid_at(std::int32_t idx)                             = 0;
+        virtual void                                   run_type_at(std::int32_t idx)                                  = 0;
+        virtual std::optional<std::int32_t>            get_index_of_current_named_arg(buf::StreamView<TChar>& format) = 0;
+        virtual typename std::basic_string_view<TChar> get_string_at(std::int32_t idx)                                = 0;
+        virtual std::int64_t                           get_int_at(std::int32_t idx)                                   = 0;
 
     public:
         template <typename T>
-        [[nodiscard]] std::expected<const T*, FMTResult> get_type_at(std::int32_t idx) {
-            PointerID ptr = SF_TRY(get_pointerid_at(idx));
+        const T* get_type_at(std::int32_t idx) {
+            PointerID ptr = get_pointerid_at(idx);
             if (ptr.type_info != typeid(T)) {
-                return std::unexpected(FMTResult::ArgsInterface_InvalidTypeID);
+                throw std::runtime_error("fmt error: ArgsInterface_InvalidTypeID");
             }
             return reinterpret_cast<const T*>(ptr.ptr);
         }
 
         template <typename T>
-        [[nodiscard]] std::expected<void, FMTResult> run_func_from_type_at(std::int32_t idx, std::function<std::expected<void, FMTResult>(const T&)> func) {
-            const T* value = SF_TRY(get_type_at<T>(idx));
-            SF_VERIFY(func(*value));
-            return {};
+        void run_func_from_type_at(std::int32_t idx, std::function<void(const T&)> func) {
+            const T* value = get_type_at<T>(idx);
+            func(*value);
         }
     };
 
@@ -68,20 +67,21 @@ namespace stream::fmt::detail {
         }
 
     public:
-        [[nodiscard]] std::expected<PointerID, FMTResult> get_pointerid_at(std::int32_t) override {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        PointerID get_pointerid_at(std::int32_t) override {
+            throw std::runtime_error("fmt error: ArgsInterface_Unavailble");
         }
-        [[nodiscard]] std::expected<PointerID, FMTResult> run_type_at(std::int32_t) override {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        PointerID run_type_at(std::int32_t) override {
+            throw std::runtime_error("fmt error: ArgsInterface_Unavailble");
         }
-        [[nodiscard]] std::expected<std::int32_t, FMTResult> get_index_of_current_named_arg(buf::StreamView<TChar>&) override {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        std::optional<std::int32_t> get_index_of_current_named_arg(buf::StreamView<TChar>&) override {
+            throw std::runtime_error("fmt error: ArgsInterface_Unavailble");
+            return std::nullopt;
         }
-        [[nodiscard]] std::expected<std::basic_string_view<TChar>, FMTResult> get_string_at(std::int32_t) override {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        std::basic_string_view<TChar> get_string_at(std::int32_t) override {
+            throw std::runtime_error("fmt error: ArgsInterface_Unavailble");
         }
-        [[nodiscard]] std::expected<std::int64_t, FMTResult> get_int_at(std::int32_t) override {
-            return std::unexpected(FMTResult::ArgsInterface_Unavaible);
+        std::int64_t get_int_at(std::int32_t) override {
+            throw std::runtime_error("fmt error: ArgsInterface_Unavailble");
         }
     };
 }  // namespace stream::fmt::detail

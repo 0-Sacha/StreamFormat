@@ -33,14 +33,14 @@ namespace stream::json::detail {
             if (settings.one_line) return;
 
             if (settings.indent_with_spaces)
-                fmt::buf::ManipIO(ostream).pushback(' ', indent_ * settings.indent_size).value();
+                fmt::buf::ManipIO(ostream).pushback(' ', indent_ * settings.indent_size);
             else
-                fmt::buf::ManipIO(ostream).pushback('\t', indent_ * settings.indent_size).value();
+                fmt::buf::ManipIO(ostream).pushback('\t', indent_ * settings.indent_size);
         }
 
         void NewLine() {
             if (settings.one_line) return;
-            fmt::buf::ManipIO(ostream).pushback('\n').value();
+            fmt::buf::ManipIO(ostream).pushback('\n');
             indent();
         }
         void begin_new_object() {

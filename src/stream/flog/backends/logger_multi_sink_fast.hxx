@@ -34,38 +34,33 @@ namespace stream::flog::detail {
     public:
         template <typename Format = std::string_view, typename... Args>
             requires fmt::buf::convertible_to_buffer_info_view<Format>
-        [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, const Format& format, Args&&... args) {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
+        void log(const SeverityValueType& severity, const Format& format, Args&&... args) {
+            std::chrono::nanoseconds log_time = std::chrono::high_resolution_clock::now() - start_time_;
 
             fmt::buf::DynamicStreamIOManager<CharType> manager(256);
 
             auto format_buffer = fmt::detail::format_in_manager(manager, false, format, std::forward<Args>(args)...);
-            if (format_buffer.has_value() == false) return std::unexpected(format_buffer.error());
             for (auto& sink : sinks_)
                 if (sink->need_to_log(severity)) {
-                    SF_VERIFY(sink->format_and_write_to_sink(sink->get_pattern(severity), logTime, name_, static_cast<std::basic_string_view<CharType>>(*format_buffer.value())));
+                    sink->format_and_write_to_sink(sink->get_pattern(severity), log_time, name_, static_cast<std::basic_string_view<CharType>>(*format_buffer));
                 }
 
             await(severity);
-            return {};
         }
 
         template <typename T>
-        [[nodiscard]] std::expected<void, fmt::FMTResult> log(const SeverityValueType& severity, T&& t) {
-            std::chrono::nanoseconds logTime = std::chrono::high_resolution_clock::now() - start_time_;
+        void log(const SeverityValueType& severity, T&& t) {
+            std::chrono::nanoseconds log_time = std::chrono::high_resolution_clock::now() - start_time_;
 
             fmt::buf::DynamicStreamIOManager<CharType> manager(256);
 
             auto format_buffer = fmt::detail::format_in_manager(manager, false, std::forward<T>(t));
-            if (format_buffer.has_value() == false) return std::unexpected(format_buffer.error());
             for (auto& sink : sinks_)
                 if (sink->need_to_log(severity)) {
-                    SF_VERIFY(sink->format_and_write_to_sink(sink->get_pattern(severity), logTime, name_, static_cast<std::basic_string_view<CharType>>(*format_buffer.value())));
+                    sink->format_and_write_to_sink(sink->get_pattern(severity), log_time, name_, static_cast<std::basic_string_view<CharType>>(*format_buffer));
                 }
 
             await(severity);
-
-            return {};
         }
     };
 }  // namespace stream::flog::detail
