@@ -134,7 +134,7 @@ namespace stream::fmt::buf {
             while (str[size - 1] == 0) {
                 --size;
             }
-            return fast_write_sv(std::basic_string_view(str, size));
+            return fast_write_sv(std::basic_string_view<TChar>(str, size));
         }
 
     public:

@@ -29,7 +29,7 @@ namespace stream::fmt {
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_stringstream<Char>, FormatterExecutor> {
         static inline void format(const std::basic_stringstream<Char>& t, FormatterExecutor& executor) {
-            return buf::WriteManip(executor.ostream).fast_write_sv(std::basic_string_view(t.str(), t.size()));
+            return buf::WriteManip(executor.ostream).fast_write_sv(std::basic_string_view<typename FormatterExecutor::TChar>(t.str(), t.size()));
         }
     };
 

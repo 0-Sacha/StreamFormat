@@ -35,7 +35,7 @@ namespace stream::fmt::detail {
         void format_span(const std::span<T, Extend> container, FormatterExecutor& executor) {
             std::size_t  begin_idx     = (std::size_t)executor.data.specifiers.get_as_number("begin", 0);
             std::size_t  end           = executor.data.specifiers.get_as_number("end", container.size());
-            std::int32_t size_to_print = executor.data.specifiers.get_as_number("size", std::int32_t{end} - std::int32_t{begin_idx});
+            std::int32_t size_to_print = executor.data.specifiers.get_as_number("size", static_cast<std::int32_t>(end) - static_cast<std::int32_t>(begin_idx));
 
             buf::FMTWriteManip(executor.ostream).write_indent_sv(executor.data.specifiers.get_as_text("begin", ContainersUtility<char>::default_begin));
             std::basic_string_view<typename FormatterExecutor::TChar> join = executor.data.specifiers.get_as_text("join", ContainersUtility<char>::default_join);
@@ -44,7 +44,7 @@ namespace stream::fmt::detail {
                 detail::FunctionapplyNextOverride apply_next_override(executor);
 
                 bool first = true;
-                std::for_each_n(container.begin() + begin_idx, std::size_t{size_to_print}, [&](const auto& element) {
+                std::for_each_n(container.begin() + begin_idx, static_cast<std::size_t>(size_to_print), [&](const auto& element) {
                     if (first) {
                         first = false;
                     } else {
@@ -62,7 +62,7 @@ namespace stream::fmt::detail {
         void format_string_view(const std::basic_string_view<TChar> container, FormatterExecutor& executor) {
             std::size_t  begin_idx     = (std::size_t)executor.data.specifiers.get_as_number("begin", 0);
             std::size_t  end           = executor.data.specifiers.get_as_number("end", container.size());
-            std::int32_t size_to_print = executor.data.specifiers.get_as_number("size", std::int32_t{end} - std::int32_t{begin_idx});
+            std::int32_t size_to_print = executor.data.specifiers.get_as_number("size", static_cast<std::int32_t>(end) - static_cast<std::int32_t>(begin_idx));
 
             if (executor.data.specifiers.has("span")) {
                 return format_span(std::span(container), executor);
@@ -75,11 +75,11 @@ namespace stream::fmt::detail {
             if (size_to_print > 0) {
                 // TODO: current indent ignore shift
                 if (executor.data.specifiers.has("indent")) {
-                    return buf::FMTWriteManip(executor.ostream).write_indent_sv(std::basic_string_view(container.begin() + begin_idx, size_to_print));
+                    return buf::FMTWriteManip(executor.ostream).write_indent_sv(container.substr(begin_idx, static_cast<std::size_t>(size_to_print)));
                 } else if (executor.data.has_spec == false) {
-                    buf::WriteManip(executor.ostream).fast_write_sv(std::basic_string_view(container.begin() + begin_idx, size_to_print));
+                    buf::WriteManip(executor.ostream).fast_write_sv(container.substr(begin_idx, static_cast<std::size_t>(size_to_print)));
                 } else {
-                    buf::FMTWriteManip(executor.ostream).write_sv(std::basic_string_view(container.begin() + begin_idx, size_to_print), executor.data.shift);
+                    buf::FMTWriteManip(executor.ostream).write_sv(container.substr(begin_idx, static_cast<std::size_t>(size_to_print)), executor.data.shift);
                 }
             }
 

@@ -90,7 +90,7 @@ namespace stream::fmt {
             }
 
             if constexpr (detail::IsCharType<T>::value) {
-                detail::forwarders::format_string_view(std::basic_string_view(t), executor);
+                detail::forwarders::format_string_view(std::basic_string_view<typename FormatterExecutor::TChar>(t), executor);
             } else {
                 detail::forwarders::format_span(std::span(t), executor);
             }
@@ -104,7 +104,7 @@ namespace stream::fmt {
                 std::size_t size = SIZE;
                 while (t[size - 1] == '\0')
                     --size;
-                return detail::forwarders::format_string_view(std::basic_string_view(t, size), executor);
+                return detail::forwarders::format_string_view(std::basic_string_view<typename FormatterExecutor::TChar>(t, size), executor);
             } else {
                 return detail::forwarders::format_span(std::span(t, SIZE), executor);
             }

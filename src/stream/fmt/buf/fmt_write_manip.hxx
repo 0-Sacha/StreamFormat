@@ -192,16 +192,15 @@ namespace stream::fmt::buf {
         }
 
     public:
-        template <typename CharStr>
-        void write_indent_char_ptr(const CharStr* str, std::size_t size) {
+        void write_indent_char_ptr(const TChar* str, std::size_t size) {
             while (size > 0) {
-                const CharStr* const begin = str;
+                const TChar* const begin = str;
                 while (size > 0 && *str != '\n') {
                     ++str, --size;
                 }
-                const CharStr* const end = str;
+                const TChar* const end = str;
 
-                WriteManip(buffer).fast_write_sv(std::basic_string_view(begin, end));
+                WriteManip(buffer).fast_write_sv(std::basic_string_view<TChar>(begin, end));
 
                 if (size > 0 && *str == '\n') {
                     FMTManipIO(buffer).new_line_indent();
