@@ -71,7 +71,7 @@ namespace stream::fmt::context {
         void parse_format_data_base();
         void parse_format_data_special();
         void parse_format_data_special_shift_type(const detail::ShiftInfo::ShiftType type);
-        void parse_format_dataCustom();
+        void parse_format_data_custom();
         void parse_format_data();
 
         void parse_variable(std::int32_t format_idx);

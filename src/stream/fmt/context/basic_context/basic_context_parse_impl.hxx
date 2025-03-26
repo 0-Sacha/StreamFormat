@@ -16,15 +16,10 @@ namespace stream::fmt::context {
         buf::TestAccess access(fmtstream);
         buf::TestManip  manip(fmtstream);
 
+        manip.is_equal_to_forward(':');
         manip.ignore_every_spaces();
-        buf::FMTParamsManip(fmtstream).param_go_to('{', '=', ':');
-        manip.ignore_every_spaces();
-        manip.ignore_one_of('=', ':');
-        manip.ignore_every_spaces();
-        buf::FMTParamsManip(fmtstream).param_go_to('{');
 
         const TChar* begin = fmtstream.current_pos;
-        manip.skip_one_of('{');
         int scopes = 0;
         while (buf::FMTParamsManip(fmtstream).is_end_of_parameter() == false || scopes > 0) {
             manip.GoTo('\'', '}', '{');
@@ -39,7 +34,6 @@ namespace stream::fmt::context {
                 scopes--;
             }
         }
-        manip.skip_one_of('}');
         const TChar* end = fmtstream.current_pos;
         return std::basic_string_view<TChar>(begin, end - begin);
     }
@@ -64,7 +58,7 @@ namespace stream::fmt::context {
             executor.data.keep_new_style = true;
         }
 
-        else if (access.is_equal_to('N')) {
+        else if (access.is_equal_to(':')) {
             buf::Manip(fmtstream).forward();
             executor.data.next_override = parse_next_override_format_data();
         }
@@ -148,7 +142,7 @@ namespace stream::fmt::context {
     }
 
     template <typename TChar>
-    void BasicContext<TChar>::parse_format_dataCustom() {
+    void BasicContext<TChar>::parse_format_data_custom() {
         buf::TestAccess access(fmtstream);
         buf::TestManip  manip(fmtstream);
 
@@ -186,12 +180,12 @@ namespace stream::fmt::context {
         while (fmtstream.is_end_of_string() == false && buf::FMTParamsManip(fmtstream).is_end_of_parameter() == false) {
             manip.ignore_every_spaces();
 
-            if (access.is_upper_case()) {
+            if (access.is_upper_case() || access.is_equal_to(':')) {
                 parse_format_data_base();
             } else if (!access.is_lower_case()) {
                 parse_format_data_special();
             } else {
-                parse_format_dataCustom();
+                parse_format_data_custom();
             }
 
             buf::FMTParamsManip(fmtstream).param_go_to(',');
