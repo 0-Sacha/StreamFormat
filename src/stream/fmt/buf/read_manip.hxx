@@ -16,7 +16,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        constexpr void fast_read_integer(T& t) noexcept {
+        constexpr void fast_read_integer(T& t) {
             bool sign = false;
             if constexpr (std::is_signed_v<T>) {
                 sign = TestManip(buffer).is_equal_to_forward('-');
@@ -37,7 +37,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        constexpr inline void fast_read_float(T& t, std::int32_t float_precision = -1) noexcept {
+        constexpr inline void fast_read_float(T& t, std::int32_t float_precision = -1) {
             T intpart = static_cast<T>(0);
 
             TestAccess access(buffer);

@@ -152,7 +152,7 @@ namespace stream::fmt::context {
         buf::TestAccess access(fmtstream);
         buf::TestManip  manip(fmtstream);
 
-        std::basic_string_view<TChar> name = manip.view_exec([&] -> void { buf::FMTParamsManip(fmtstream).param_go_to(' ', '=', '\'', '{', ','); });
+        std::basic_string_view<TChar> name = manip.view_exec([&] { buf::FMTParamsManip(fmtstream).param_go_to(' ', '=', '\'', '{', ','); });
         buf::FMTParamsManip(fmtstream).param_go_to('=', '\'', '{', ',');
         manip.ignore_one_of('=');
         manip.ignore_every_spaces();

@@ -34,7 +34,7 @@ namespace stream::fmt::buf {
             return add_size(count);
         }
 
-        void forward(const std::size_t count = 1) noexcept {
+        void forward(const std::size_t count = 1) {
             if (reserve(count) == false) throw std::bad_alloc();
             buffer.current_pos += count;
         }
@@ -44,7 +44,7 @@ namespace stream::fmt::buf {
             *buffer.current_pos = c;
         }
 
-        void pushback(const TChar c) noexcept {
+        void pushback(const TChar c) {
             if (reserve(1) == false) throw std::bad_alloc();
             *buffer.current_pos++ = c;
         }
@@ -53,7 +53,7 @@ namespace stream::fmt::buf {
         }
 
     public:
-        void pushback(const TChar c, auto count) noexcept {
+        void pushback(const TChar c, auto count) {
             if (reserve(count) == false) throw std::bad_alloc();
             while (count-- > 0)
                 pushback_force(c);
@@ -68,7 +68,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename... CharToPush>
-        void pushback_seq(const CharToPush... ele) noexcept {
+        void pushback_seq(const CharToPush... ele) {
             if (reserve(sizeof...(ele)) == false) throw std::bad_alloc();
             pushback_seq_impl(ele...);
         }

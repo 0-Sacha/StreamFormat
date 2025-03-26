@@ -7,6 +7,7 @@
 
 #include <type_traits>
 #include <cmath>
+#include <algorithm>
 
 namespace stream::fmt::buf {
     class WriteUtils {

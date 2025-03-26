@@ -4,23 +4,44 @@ namespace stream::fmt::detail {
     void TextPropertiesapplyManager::reload_color_fg(const TextProperties::TextColor::ColorFG& target) {
         if (target.type != current_context_properties_.color.fg.type) {
             switch (target.type) {
-                case TextProperties::TextColor::ColorType::BasicColor:
-                    return apply_color(target.data.basic_color);
-                case TextProperties::TextColor::ColorType::ColorCube:
-                    return apply_color(target.data.color_cube);
-                case TextProperties::TextColor::ColorType::Color24b:
-                    return apply_color(target.data.color24b);
+                case TextProperties::TextColor::ColorType::BasicColor: {
+                    apply_color(target.data.basic_color);
+                    return;
+                }
+                case TextProperties::TextColor::ColorType::ColorCube: {
+                    apply_color(target.data.color_cube);
+                    return;
+                }
+                case TextProperties::TextColor::ColorType::Color24b: {
+                    apply_color(target.data.color24b);
+                    return;
+                }
             }
         } else {
             switch (target.type) {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    if (current_context_properties_.color.fg.data.basic_color != target.data.basic_color) return apply_color(target.data.basic_color);
+                    if (current_context_properties_.color.fg.data.basic_color != target.data.basic_color) {
+                        {
+                            apply_color(target.data.basic_color);
+                        }
+                        return;
+                    }
                     break;
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    if (current_context_properties_.color.fg.data.color_cube != target.data.color_cube) return apply_color(target.data.color_cube);
+                    if (current_context_properties_.color.fg.data.color_cube != target.data.color_cube) {
+                        {
+                            apply_color(target.data.color_cube);
+                        }
+                        return;
+                    }
                     break;
                 case TextProperties::TextColor::ColorType::Color24b:
-                    if (current_context_properties_.color.fg.data.color24b != target.data.color24b) return apply_color(target.data.color24b);
+                    if (current_context_properties_.color.fg.data.color24b != target.data.color24b) {
+                        {
+                            apply_color(target.data.color24b);
+                        }
+                        return;
+                    }
                     break;
             }
         }
@@ -29,23 +50,44 @@ namespace stream::fmt::detail {
     void TextPropertiesapplyManager::reload_color_bg(const TextProperties::TextColor::ColorBG& target) {
         if (target.type != current_context_properties_.color.bg.type) {
             switch (target.type) {
-                case TextProperties::TextColor::ColorType::BasicColor:
-                    return apply_color(target.data.basic_color);
-                case TextProperties::TextColor::ColorType::ColorCube:
-                    return apply_color(target.data.color_cube);
-                case TextProperties::TextColor::ColorType::Color24b:
-                    return apply_color(target.data.color24b);
+                case TextProperties::TextColor::ColorType::BasicColor: {
+                    apply_color(target.data.basic_color);
+                    return;
+                }
+                case TextProperties::TextColor::ColorType::ColorCube: {
+                    apply_color(target.data.color_cube);
+                    return;
+                }
+                case TextProperties::TextColor::ColorType::Color24b: {
+                    apply_color(target.data.color24b);
+                    return;
+                }
             }
         } else {
             switch (target.type) {
                 case TextProperties::TextColor::ColorType::BasicColor:
-                    if (current_context_properties_.color.bg.data.basic_color != target.data.basic_color) return apply_color(target.data.basic_color);
+                    if (current_context_properties_.color.bg.data.basic_color != target.data.basic_color) {
+                        {
+                            apply_color(target.data.basic_color);
+                        }
+                        return;
+                    }
                     break;
                 case TextProperties::TextColor::ColorType::ColorCube:
-                    if (current_context_properties_.color.bg.data.color_cube != target.data.color_cube) return apply_color(target.data.color_cube);
+                    if (current_context_properties_.color.bg.data.color_cube != target.data.color_cube) {
+                        {
+                            apply_color(target.data.color_cube);
+                        }
+                        return;
+                    }
                     break;
                 case TextProperties::TextColor::ColorType::Color24b:
-                    if (current_context_properties_.color.bg.data.color24b != target.data.color24b) return apply_color(target.data.color24b);
+                    if (current_context_properties_.color.bg.data.color24b != target.data.color24b) {
+                        {
+                            apply_color(target.data.color24b);
+                        }
+                        return;
+                    }
                     break;
             }
         }
@@ -120,7 +162,9 @@ namespace stream::fmt::detail {
     // NOLINTEND(readability-function-cognitive-complexity)
 
     void TextPropertiesapplyManager::reload_front(const TextProperties::TextFront::Front& target) {
-        if (current_context_properties_.front == target) return;
+        if (current_context_properties_.front == target) {
+            return;
+        }
 
         apply_front(target.current_id);
         current_context_properties_.front = target;

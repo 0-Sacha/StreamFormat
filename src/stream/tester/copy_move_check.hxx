@@ -24,11 +24,11 @@ namespace stream::tester {
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Copy Constructor", "TestCopy(const TestCopy&)");
         }
 
-        CopyMoveCheck(CopyMoveCheck&& other) noexcept : name_("Move of " + other.name_) {
+        CopyMoveCheck(CopyMoveCheck&& other) : name_("Move of " + other.name_) {
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Move Constructor", "TestCopy(TestCopy&&)");
         }
 
-        CopyMoveCheck(const CopyMoveCheck&& other) noexcept : name_("Move of " + other.name_) {
+        CopyMoveCheck(const CopyMoveCheck&& other) : name_("Move of " + other.name_) {
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Move Constructor", "TestCopy(const TestCopy&&)");
         }
 
@@ -46,14 +46,14 @@ namespace stream::tester {
             return *this;
         }
 
-        CopyMoveCheck& operator=(CopyMoveCheck&& other) noexcept {
+        CopyMoveCheck& operator=(CopyMoveCheck&& other) {
             name_ = "Move Of " + other.name_;
 
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Move Assignment", "TestCopy& operator=(TestCopy&&)");
             return *this;
         }
 
-        CopyMoveCheck& operator=(const CopyMoveCheck&& other) noexcept {
+        CopyMoveCheck& operator=(const CopyMoveCheck&& other) {
             name_ = "Move Of " + other.name_;
 
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Const Move Assignment", "TestCopy& operator=(const TestCopy&&)");

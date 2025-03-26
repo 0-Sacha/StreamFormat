@@ -12,52 +12,52 @@ namespace stream::fmt::detail {
     template <typename TChar>
     void detail::TextPropertiesManager<TChar>::apply_color_on_index(context::BasicContext<TChar>& context, std::int32_t index) {
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::Color>(
-            index, [this](const detail::TextProperties::TextColor::Color& data) -> void { this->reload_color(data); });
+            index, [this](const detail::TextProperties::TextColor::Color& data) { this->reload_color(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::BasicColorFG>(
-            index, [this](const detail::TextProperties::TextColor::BasicColorFG& data) -> void { this->ask_apply_color(data); });
+            index, [this](const detail::TextProperties::TextColor::BasicColorFG& data) { this->ask_apply_color(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::BasicColorBG>(
-            index, [this](const detail::TextProperties::TextColor::BasicColorBG& data) -> void { this->ask_apply_color(data); });
+            index, [this](const detail::TextProperties::TextColor::BasicColorBG& data) { this->ask_apply_color(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::ColorCubeFG>(
-            index, [this](const detail::TextProperties::TextColor::ColorCubeFG& data) -> void { this->ask_apply_color(data); });
+            index, [this](const detail::TextProperties::TextColor::ColorCubeFG& data) { this->ask_apply_color(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::ColorCubeBG>(
-            index, [this](const detail::TextProperties::TextColor::ColorCubeBG& data) -> void { this->ask_apply_color(data); });
+            index, [this](const detail::TextProperties::TextColor::ColorCubeBG& data) { this->ask_apply_color(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::Color24bFG>(
-            index, [this](const detail::TextProperties::TextColor::Color24bFG& data) -> void { this->ask_apply_color(data); });
+            index, [this](const detail::TextProperties::TextColor::Color24bFG& data) { this->ask_apply_color(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextColor::Color24bBG>(
-            index, [this](const detail::TextProperties::TextColor::Color24bBG& data) -> void { this->ask_apply_color(data); });
+            index, [this](const detail::TextProperties::TextColor::Color24bBG& data) { this->ask_apply_color(data); });
     }
 
     template <typename TChar>
     void detail::TextPropertiesManager<TChar>::apply_front_on_index(context::BasicContext<TChar>& context, std::int32_t index) {
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextFront::Front>(
-            index, [this](const detail::TextProperties::TextFront::Front& data) -> void { this->reload_front(data); });
+            index, [this](const detail::TextProperties::TextFront::Front& data) { this->reload_front(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextFront::FrontID>(
-            index, [this](const detail::TextProperties::TextFront::FrontID& data) -> void { this->ask_apply_front(data); });
+            index, [this](const detail::TextProperties::TextFront::FrontID& data) { this->ask_apply_front(data); });
     }
 
     template <typename TChar>
     void detail::TextPropertiesManager<TChar>::apply_style_on_index(context::BasicContext<TChar>& context, std::int32_t index) {
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Style>(
-            index, [this](const detail::TextProperties::TextStyle::Style& data) -> void { return this->reload_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Style& data) { return this->reload_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Intensity>(
-            index, [this](const detail::TextProperties::TextStyle::Intensity& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Intensity& data) { return this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Italic>(
-            index, [this](const detail::TextProperties::TextStyle::Italic& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Italic& data) { return this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Underline>(
-            index, [this](const detail::TextProperties::TextStyle::Underline& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Underline& data) { return this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Blink>(
-            index, [this](const detail::TextProperties::TextStyle::Blink& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Blink& data) { return this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Inverted>(
-            index, [this](const detail::TextProperties::TextStyle::Inverted& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Inverted& data) { return this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Ideogram>(
-            index, [this](const detail::TextProperties::TextStyle::Ideogram& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Ideogram& data) { return this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::Script>(
-            index, [this](const detail::TextProperties::TextStyle::Script& data) -> void { return this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::Script& data) { return this->ask_apply_style(data); });
 
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::UnderlineColor::ColorCube>(
-            index, [this](const detail::TextProperties::TextStyle::UnderlineColor::ColorCube& data) -> void { this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::UnderlineColor::ColorCube& data) { this->ask_apply_style(data); });
         context.args_interface.template run_func_from_type_at<detail::TextProperties::TextStyle::UnderlineColor::Color24b>(
-            index, [this](const detail::TextProperties::TextStyle::UnderlineColor::Color24b& data) -> void { this->ask_apply_style(data); });
+            index, [this](const detail::TextProperties::TextStyle::UnderlineColor::Color24b& data) { this->ask_apply_style(data); });
     }
 
     template <typename TChar>

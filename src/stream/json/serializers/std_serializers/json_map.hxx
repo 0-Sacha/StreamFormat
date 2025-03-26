@@ -20,8 +20,9 @@ namespace stream::json {
         static void format(const std::map<K, T>& t, detail::JsonFormatter& formatter) {
             JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
-            for (const auto& [name, object] : t)
+            for (const auto& [name, object] : t) {
                 JsonStructSerializer::FormatObject(name, object, idx++, formatter);
+            }
             JsonStructSerializer::FormatEnd(formatter);
         }
     };
@@ -41,8 +42,9 @@ namespace stream::json {
         static void format(const std::multimap<K, T>& t, detail::JsonFormatter& formatter) {
             JsonStructSerializer::FormatBegin(formatter);
             std::size_t idx = 0;
-            for (const auto& [name, object] : t)
+            for (const auto& [name, object] : t) {
                 JsonStructSerializer::FormatObject(name, object, idx++, formatter);
+            }
             JsonStructSerializer::FormatEnd(formatter);
         }
     };

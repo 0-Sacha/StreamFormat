@@ -5,17 +5,18 @@ namespace stream::profiler {
     ScopeProfile::~ScopeProfile() {
         stop();
 
-        std::chrono::microseconds       us      = std::chrono::duration_cast<std::chrono::microseconds>(info.duration);
-        std::chrono::milliseconds const millis  = std::chrono::duration_cast<std::chrono::milliseconds>(info.duration);
-        std::chrono::seconds const      seconds = std::chrono::duration_cast<std::chrono::seconds>(info.duration);
+        const std::chrono::microseconds us      = std::chrono::duration_cast<std::chrono::microseconds>(info.duration);
+        const std::chrono::milliseconds millis  = std::chrono::duration_cast<std::chrono::milliseconds>(info.duration);
+        const std::chrono::seconds      seconds = std::chrono::duration_cast<std::chrono::seconds>(info.duration);
 
         // NOLINTBEGIN(readability-magic-numbers)
-        if (seconds.count() > 1.5)
+        if (seconds.count() > 1.5) {
             profiler_.get_logger().trace("{} : {} seconds", info.name, seconds.count());
-        else if (millis.count() > 5.0)
+        } else if (millis.count() > 5.0) {
             profiler_.get_logger().trace("{} : {} ms", info.name, millis.count());
-        else
+        } else {
             profiler_.get_logger().trace("{} : {} us", info.name, us.count());
+        }
         // NOLINTEND(readability-magic-numbers)
 
         profiler_.add_event(*this);

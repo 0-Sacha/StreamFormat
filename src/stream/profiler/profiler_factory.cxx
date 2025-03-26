@@ -8,7 +8,9 @@ namespace stream::profiler {
         profiler.profiler_duration.stop();
         profiler.events[0] = profiler.profiler_duration.info;
 
-        if (path == "") path = std::string(profiler.name) + ".json";
+        if (path == "") {
+            path = std::string(profiler.name) + ".json";
+        }
 
         std::ofstream                      file(path.string(), std::ios::out);
         json::FormatAsJson<Profiler> const format_profiler(profiler);

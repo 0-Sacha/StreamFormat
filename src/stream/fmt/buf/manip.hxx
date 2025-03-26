@@ -69,7 +69,7 @@ namespace stream::fmt::buf {
         constexpr inline void forward_force(const std::size_t count = 1) noexcept {
             buffer.current_pos += count;
         }
-        constexpr inline void forward(const std::size_t count = 1) noexcept {
+        constexpr inline void forward(const std::size_t count = 1) {
             if (!access().can_move_forward(count)) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             buffer.current_pos += count;
         }
@@ -77,7 +77,7 @@ namespace stream::fmt::buf {
         constexpr inline void backward_force(const std::size_t count = 1) noexcept {
             buffer.current_pos -= count;
         }
-        constexpr inline void backward(const std::size_t count = 1) noexcept {
+        constexpr inline void backward(const std::size_t count = 1) {
             if (!access().can_move_backward(count)) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
             buffer.current_pos -= count;
         }

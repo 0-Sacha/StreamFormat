@@ -18,7 +18,9 @@ namespace stream::json::detail {
             manip.skip_one_of('"');
             while (true) {
                 manip.GoTo('"');
-                if (fmt::buf::Access(parser.istream).get_prev_force() != '\\') break;
+                if (fmt::buf::Access(parser.istream).get_prev_force() != '\\') {
+                    break;
+                }
             }
             manip.skip_one_of('"');
         } else if (parser.is_json_number_begin()) {

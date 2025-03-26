@@ -76,7 +76,7 @@ namespace stream::fmt::detail {
             buf::Manip(pattern).reload("%2h:%2m:%2s:%3ms");
         }
 
-        auto view = buf::TestManip(pattern).view_exec([&] -> void { buf::FMTParamsManip(pattern).param_go_to('%', '#', '/'); });
+        auto view = buf::TestManip(pattern).view_exec([&] { buf::FMTParamsManip(pattern).param_go_to('%', '#', '/'); });
         buf::WriteManip(buffer).fast_write_string(view);
 
         while (!pattern.is_end_of_string()) {
@@ -91,7 +91,7 @@ namespace stream::fmt::detail {
             buf::Manip(pattern).forward();
             write_sub_time_(value, pattern, buffer, mode);
 
-            auto view = buf::TestManip(pattern).view_exec([&] -> void { buf::FMTParamsManip(pattern).param_go_to('%', '#', '/'); });
+            auto view = buf::TestManip(pattern).view_exec([&] { buf::FMTParamsManip(pattern).param_go_to('%', '#', '/'); });
             buf::WriteManip(buffer).fast_write_string(view);
         }
     }

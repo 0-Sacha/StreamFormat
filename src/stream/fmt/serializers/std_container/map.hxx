@@ -4,7 +4,7 @@
 #include "stream/fmt/context/formatter_executor/formatter_type.hxx"
 #include "stream/fmt/context/formatter_executor/std_enumerable.hxx"
 
-#include "tuple.h"
+#include "tuple.hxx"
 
 namespace stream::fmt {
     template <typename T1, typename T2, typename FormatterExecutor>

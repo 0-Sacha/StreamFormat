@@ -83,7 +83,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename... CharToTest>
-        constexpr inline bool is_equal_to_forward(const CharToTest... ele) noexcept {
+        constexpr inline bool is_equal_to_forward(const CharToTest... ele) {
             if (access().is_equal_to(ele...)) {
                 Manip(buffer).forward();
                 return true;
@@ -91,7 +91,7 @@ namespace stream::fmt::buf {
             return false;
         }
         template <typename... CharToTest>
-        constexpr inline bool is_not_equal_forward(const CharToTest... ele) noexcept {
+        constexpr inline bool is_not_equal_forward(const CharToTest... ele) {
             if (access().is_not_equal_to(ele...)) {
                 Manip(buffer).forward();
                 return true;
@@ -101,7 +101,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename CharToTest>
-        constexpr bool is_same_forward(const CharToTest* str, std::size_t size) noexcept {
+        constexpr bool is_same_forward(const CharToTest* str, std::size_t size) {
             if (access().is_same(str, size)) {
                 Manip(buffer).forward(size);
                 return true;
@@ -109,7 +109,7 @@ namespace stream::fmt::buf {
             return false;
         }
         template <typename CharToTest>
-        constexpr inline bool is_same_forward(std::basic_string_view<CharToTest> sv) noexcept {
+        constexpr inline bool is_same_forward(std::basic_string_view<CharToTest> sv) {
             if (access().is_same(sv)) {
                 Manip(buffer).forward(sv.size());
                 return true;
@@ -119,7 +119,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename... CharToTest>
-        void skip_one_of(const CharToTest... ele) noexcept {
+        void skip_one_of(const CharToTest... ele) {
             if (access().is_equal_to(ele...)) {
                 Manip(buffer).forward();
             }
@@ -127,31 +127,31 @@ namespace stream::fmt::buf {
         }
 
         template <typename... CharToTest>
-        inline void ignore_one_of(const CharToTest... ele) noexcept {
+        inline void ignore_one_of(const CharToTest... ele) {
             if (access().is_equal_to(ele...) && Access(buffer).can_move_forward()) {
                 Manip(buffer).forward_force();
             }
         }
 
         template <typename... CharToTest>
-        inline void ignore_every(const CharToTest... ele) noexcept {
+        inline void ignore_every(const CharToTest... ele) {
             while (access().is_equal_to(ele...) && Access(buffer).can_move_forward()) {
                 Manip(buffer).forward_force();
             }
         }
 
     public:
-        void IgnoreOneSpace() noexcept {
+        void IgnoreOneSpace() {
             return ignore_one_of(' ', '\t');
         }
-        void IgnoreOneBlank() noexcept {
+        void IgnoreOneBlank() {
             return ignore_one_of(' ', '\t', '\n', '\r', '\v');
         }
 
-        inline void ignore_every_spaces() noexcept {
+        inline void ignore_every_spaces() {
             ignore_every(' ', '\t');
         }
-        inline void IgnoreEveryBlanks() noexcept {
+        inline void IgnoreEveryBlanks() {
             ignore_every(' ', '\t', '\n', '\r', '\v');
         }
 
@@ -162,7 +162,7 @@ namespace stream::fmt::buf {
                 Manip(buffer).forward_force();
         }
         template <typename... CharToTest>
-        void go_to_forward(const CharToTest... ele) noexcept {
+        void go_to_forward(const CharToTest... ele) {
             GoTo(ele...);
             return Manip(buffer).forward();
         }
@@ -178,7 +178,7 @@ namespace stream::fmt::buf {
 
         template <typename... CharToTest>
         inline std::basic_string_view<TConstChar> view_until(CharToTest&&... c) {
-            return view_exec([&] -> void { TestManip(buffer).GoTo(std::forward<CharToTest>(c)...); });
+            return view_exec([&] { TestManip(buffer).GoTo(std::forward<CharToTest>(c)...); });
         }
     };
 }  // namespace stream::fmt::buf
