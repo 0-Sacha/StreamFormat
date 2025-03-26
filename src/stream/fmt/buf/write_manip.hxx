@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <cmath>
 #include <algorithm>
+#include <string>
 
 namespace stream::fmt::buf {
     class WriteUtils {
@@ -114,39 +115,35 @@ namespace stream::fmt::buf {
         }
 
     public:
-        template <typename CharInput>
-        constexpr void fast_write_char_array(const CharInput* str, std::size_t size) {
-            if (size == 0) return;
+        constexpr void fast_write_sv(const std::basic_string_view<TChar> sv) {
+            if (sv.size() == 0) {
+                return;
+            }
 
-            if (ManipIO(buffer).reserve(size) == false) return fast_write_char_array(str, buffer.get_buffer_remaining_size());
+            if (ManipIO(buffer).reserve(sv.size()) == false) {
+                return fast_write_sv(sv.substr(0, buffer.get_buffer_remaining_size()));
+            }
 
-            std::copy_n(str, size, buffer.current_pos);
-            buffer.current_pos += size;
+            std::copy(sv.begin(), sv.end(), buffer.current_pos);
+            buffer.current_pos += sv.size();
         }
-        template <typename CharInput>
-        inline constexpr void fast_write_string(std::basic_string_view<CharInput> sv) {
-            return fast_write_char_array(sv.data(), sv.size());
-        }
-        void fast_write_string(std::basic_string_view<TChar> sv) {
-            return fast_write_char_array(sv.data(), sv.size());
-        }
-        template <typename CharInput, std::size_t SIZE>
-        void fast_write_string_literal(CharInput (&str)[SIZE]) {
+
+        template <std::size_t SIZE>
+        void fast_write_literal(const TChar (&str)[SIZE]) {
             std::size_t size = SIZE;
             while (str[size - 1] == 0) {
                 --size;
             }
-            return fast_write_char_array(str, size);
+            return fast_write_sv(std::basic_string_view(str, size));
         }
 
     public:
-        template <typename CharInput>
-        void basic_write_type(std::basic_string_view<CharInput> str) {
-            return fast_write_string(str);
+        void basic_write_type(const std::basic_string_view<TChar> str) {
+            return fast_write_sv(str);
         }
-        template <typename CharInput, std::size_t SIZE>
-        void basic_write_type(CharInput (&str)[SIZE]) {
-            return fast_write_string_literal(str);
+        template <std::size_t SIZE>
+        void basic_write_type(const TChar (&str)[SIZE]) {
+            return fast_write_literal(str);
         }
         template <typename T>
             requires std::is_integral_v<T>

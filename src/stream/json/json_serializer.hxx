@@ -31,8 +31,8 @@ namespace stream::json {
         }
 
         static inline void format(const T&, detail::JsonFormatter& formatter) {
-            fmt::buf::WriteManip(formatter.ostream).fast_write_string(std::string_view("Unknown JsonFormatter for type : "));
-            fmt::buf::WriteManip(formatter.ostream).fast_write_string(std::string_view(typeid(T).name()));
+            fmt::buf::WriteManip(formatter.ostream).fast_write_sv(std::string_view("Unknown JsonFormatter for type : "));
+            fmt::buf::WriteManip(formatter.ostream).fast_write_sv(std::string_view(typeid(T).name()));
 
 #ifdef UNKOWN_TYPE_MESSAGE
             fmt::file_print(std::cerr, "{C:red}JsonSerializer::Format<{}> not impl", typeid(T).name());
@@ -139,9 +139,9 @@ namespace stream::json {
 
         static inline void FormatBool(const bool& t, detail::JsonFormatter& formatter) {
             if (t)
-                fmt::buf::WriteManip(formatter.ostream).fast_write_char_array("true", 5);
+                fmt::buf::WriteManip(formatter.ostream).fast_write_literal("true");
             else
-                fmt::buf::WriteManip(formatter.ostream).fast_write_char_array("false", 5);
+                fmt::buf::WriteManip(formatter.ostream).fast_write_literal("false");
         }
     };
 
@@ -264,7 +264,7 @@ namespace stream::json {
         }
 
         static inline void FormatNull(detail::JsonFormatter& formatter) {
-            fmt::buf::WriteManip(formatter.ostream).fast_write_char_array("null", 4);
+            fmt::buf::WriteManip(formatter.ostream).fast_write_literal("null");
         }
     };
 }  // namespace stream::json

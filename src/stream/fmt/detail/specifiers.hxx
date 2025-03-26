@@ -38,8 +38,8 @@ namespace stream::fmt::detail {
             constexpr ShiftPrint(char before, char after) : before(before), after(after) {}
 
         public:
-            char before;
-            char after;
+            char before = ' ';
+            char after  = ' ';
 
         public:
             constexpr bool before_is_a_digit() const {

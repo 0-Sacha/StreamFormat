@@ -8,9 +8,9 @@
 #include "formatter_type.hxx"
 #include "index_args.hxx"
 #include "named_args.hxx"
-#include "std_enumerable.hxx"
 
 #include "formatter_args.hxx"
+#include "forwarders.hxx"
 
 namespace stream::fmt::context {
     enum class EndOfStringCharMode {
@@ -19,7 +19,7 @@ namespace stream::fmt::context {
     };
 
     template <typename CharType>
-    class BasicFormatterExecutor : public context_executor<CharType> {
+    class BasicFormatterExecutor : public ContextExecutor<CharType> {
     public:
         using TChar = CharType;
 
@@ -31,17 +31,17 @@ namespace stream::fmt::context {
         ~BasicFormatterExecutor() override = default;
 
         void terminate();
-
+        
     public:
         buf::FMTStreamIO<TChar>& ostream;
         EndOfStringCharMode      end_of_string_char = EndOfStringCharMode::Optional;
 
-        using context_executor<CharType>::data;
-        using context_executor<CharType>::text_manager;
+        using ContextExecutor<CharType>::data;
+        using ContextExecutor<CharType>::text_manager;
 
     protected:
         void exec_raw_string(std::basic_string_view<TChar> sv) override {
-            return buf::WriteManip(ostream).fast_write_string(sv);
+            return buf::WriteManip(ostream).fast_write_sv(sv);
         }
         void exec_settings() override;
 
@@ -52,9 +52,14 @@ namespace stream::fmt::context {
         void run(Format&& format, Args&&... args);
 
     public:
+        template <typename Type>
+        void write_type(Type&& type)
+        {
+            FormatterType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::format(std::forward<Type>(type), *this);
+        }
         template <typename Type, typename... Rest>
         void write_type(Type&& type, Rest&&... rest) {
-            FormatterType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::format(std::forward<Type>(type), *this);
+            write_type(std::forward<Type>(type));
             if constexpr (sizeof...(rest) > 0) {
                 write_type(std::forward<Rest>(rest)...);
             }
@@ -65,7 +70,7 @@ namespace stream::fmt::context {
 namespace stream::fmt::context {
     template <typename TChar>
     BasicFormatterExecutor<TChar>::BasicFormatterExecutor(buf::FMTStreamIO<TChar>& ostream_, detail::ITextPropertiesExecutor& text_properties_executor_)
-        : context_executor<TChar>(text_properties_executor_), ostream(ostream_) {
+        : ContextExecutor<TChar>(text_properties_executor_), ostream(ostream_) {
         text_properties_executor_.link_to_executor(this);
     }
 
@@ -108,5 +113,5 @@ namespace stream::fmt::context {
     }
 }  // namespace stream::fmt::context
 
-#include "format_basics_impl.hxx"
+#include "format_basics.hxx"
 #include "format_text_properties_impl.hxx"

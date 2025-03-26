@@ -77,7 +77,7 @@ namespace stream::fmt::detail {
         }
 
         auto view = buf::TestManip(pattern).view_exec([&] { buf::FMTParamsManip(pattern).param_go_to('%', '#', '/'); });
-        buf::WriteManip(buffer).fast_write_string(view);
+        buf::WriteManip(buffer).fast_write_sv(view);
 
         while (!pattern.is_end_of_string()) {
             TimePrintMode mode;
@@ -92,7 +92,7 @@ namespace stream::fmt::detail {
             write_sub_time_(value, pattern, buffer, mode);
 
             auto view = buf::TestManip(pattern).view_exec([&] { buf::FMTParamsManip(pattern).param_go_to('%', '#', '/'); });
-            buf::WriteManip(buffer).fast_write_string(view);
+            buf::WriteManip(buffer).fast_write_sv(view);
         }
     }
 }  // namespace stream::fmt::detail

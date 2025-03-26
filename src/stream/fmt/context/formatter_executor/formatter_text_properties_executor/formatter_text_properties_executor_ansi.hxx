@@ -15,13 +15,13 @@ namespace stream::fmt::detail {
     public:
         void all_properties_reset() override {
             NoStrideFunction no_stride(*buffer);
-            return buf::WriteManip(*buffer).fast_write_string_literal("\033[0m");
+            return buf::WriteManip(*buffer).fast_write_literal("\033[0m");
         }
 
     public:
         void reset_color() override {
             NoStrideFunction no_stride(*buffer);
-            return buf::WriteManip(*buffer).fast_write_string_literal("\033[39;49m");
+            return buf::WriteManip(*buffer).fast_write_literal("\033[39;49m");
         }
 
         void execute_color(const TextProperties::TextColor::BasicColorFG& t) {
@@ -75,7 +75,7 @@ namespace stream::fmt::detail {
         void reset_style() override {
             // TODO
             NoStrideFunction no_stride(*buffer);
-            return buf::WriteManip(*buffer).fast_write_string_literal("\033[0m");
+            return buf::WriteManip(*buffer).fast_write_literal("\033[0m");
         }
         void execute_style(const detail::TextProperties::TextStyle::Intensity& t) override {
             NoStrideFunction no_stride(*buffer);

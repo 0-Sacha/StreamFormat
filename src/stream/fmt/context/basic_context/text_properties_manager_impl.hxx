@@ -61,25 +61,25 @@ namespace stream::fmt::detail {
     }
 
     template <typename TChar>
-    void detail::TextPropertiesManager<TChar>::parse_color(context::BasicContext<TChar>& context) {
-        if (buf::TestAccess(context.fmtstream).is_equal_to(':')) {
-            buf::Manip(context.fmtstream).forward();
-            buf::TestManip(context.fmtstream).ignore_every_spaces();
-            if (buf::TestAccess(context.fmtstream).is_equal_to('{')) {
-                buf::Manip(context.fmtstream).forward();
-                std::optional<std::int32_t> idx = context.get_format_index();
+    void detail::TextPropertiesManager<TChar>::parse_color(context::BasicContext<TChar>& context, buf::StreamView<TChar>& stream) {
+        if (buf::TestAccess(stream).is_equal_to(':')) {
+            buf::Manip(stream).forward();
+            buf::TestManip(stream).ignore_every_spaces();
+            if (buf::TestAccess(stream).is_equal_to('{')) {
+                buf::Manip(stream).forward();
+                std::optional<std::int32_t> idx = get_format_index(context.executor, stream);
                 if (idx.has_value() == false) {
                 }
                 apply_color_on_index(context, idx.value());
-                buf::TestManip(context.fmtstream).skip_one_of('}');
+                buf::TestManip(stream).skip_one_of('}');
             } else {
-                std::optional<std::size_t> color_fg = get_color_code(context.fmtstream, static_cast<std::size_t>(TextProperties::TextColor::BasicColorFG::BaseStep),
+                std::optional<std::size_t> color_fg = get_color_code(stream, static_cast<std::size_t>(TextProperties::TextColor::BasicColorFG::BaseStep),
                                                                      static_cast<std::size_t>(TextProperties::TextColor::BasicColorFG::BaseBrightStep));
-                buf::FMTParamsManip(context.fmtstream).param_go_to('-', ',');
-                if (buf::TestAccess(context.fmtstream).is_equal_to('-')) {
-                    buf::Manip(context.fmtstream).forward();
-                    buf::TestManip(context.fmtstream).ignore_every_spaces();
-                    std::optional<std::size_t> color_bg = get_color_code(context.fmtstream, static_cast<std::size_t>(TextProperties::TextColor::BasicColorBG::BaseStep),
+                buf::FMTParamsManip(stream).param_go_to('-', ',');
+                if (buf::TestAccess(stream).is_equal_to('-')) {
+                    buf::Manip(stream).forward();
+                    buf::TestManip(stream).ignore_every_spaces();
+                    std::optional<std::size_t> color_bg = get_color_code(stream, static_cast<std::size_t>(TextProperties::TextColor::BasicColorBG::BaseStep),
                                                                          static_cast<std::size_t>(TextProperties::TextColor::BasicColorBG::BaseBrightStep));
                     if (color_bg.has_value() && color_fg.has_value()) {
                         return ask_apply_color(detail::TextProperties::TextColor::BasicColor{static_cast<TextProperties::TextColor::BasicColorFG>(color_fg.value()),
@@ -101,25 +101,25 @@ namespace stream::fmt::detail {
     }
 
     template <typename TChar>
-    void detail::TextPropertiesManager<TChar>::parse_style(context::BasicContext<TChar>& context) {
-        if (buf::TestAccess(context.fmtstream).is_equal_to(':')) {
-            buf::Manip(context.fmtstream).forward();
-            if (!buf::TestAccess(context.fmtstream).is_equal_to('}', ',')) {
+    void detail::TextPropertiesManager<TChar>::parse_style(context::BasicContext<TChar>& context, buf::StreamView<TChar>& stream) {
+        if (buf::TestAccess(stream).is_equal_to(':')) {
+            buf::Manip(stream).forward();
+            if (!buf::TestAccess(stream).is_equal_to('}', ',')) {
                 bool loop = true;
                 while (loop) {
-                    buf::TestManip(context.fmtstream).ignore_every_spaces();
-                    if (buf::TestAccess(context.fmtstream).is_equal_to('{')) {
-                        buf::Manip(context.fmtstream).forward();
-                        std::optional<std::int32_t> idx = context.get_format_index();
+                    buf::TestManip(stream).ignore_every_spaces();
+                    if (buf::TestAccess(stream).is_equal_to('{')) {
+                        buf::Manip(stream).forward();
+                        std::optional<std::int32_t> idx = get_format_index(context.executor, stream);
                         apply_style_on_index(context, idx.value());
-                        buf::TestManip(context.fmtstream).skip_one_of('}');
+                        buf::TestManip(stream).skip_one_of('}');
                     } else {
-                        parse_style_named(context.fmtstream);
+                        parse_style_named(stream);
                     }
-                    buf::FMTParamsManip(context.fmtstream).param_go_to('|', ',');
-                    loop = buf::TestAccess(context.fmtstream).is_equal_to('|');
-                    buf::Manip(context.fmtstream).forward();
-                    buf::TestManip(context.fmtstream).ignore_every_spaces();
+                    buf::FMTParamsManip(stream).param_go_to('|', ',');
+                    loop = buf::TestAccess(stream).is_equal_to('|');
+                    buf::Manip(stream).forward();
+                    buf::TestManip(stream).ignore_every_spaces();
                 }
             } else {
                 return reload_default_style();
@@ -209,14 +209,14 @@ namespace stream::fmt::detail {
     }
 
     template <typename TChar>
-    void detail::TextPropertiesManager<TChar>::parse_front(context::BasicContext<TChar>& context) {
+    void detail::TextPropertiesManager<TChar>::parse_front(context::BasicContext<TChar>& context, buf::StreamView<TChar>& stream) {
         static constexpr std::string_view frontCode[] = {"default", "front0", "front1", "front2", "front3", "front4", "front5", "front6", "front7", "front8", "front9"};
 
-        if (buf::TestAccess(context.fmtstream).is_equal_to(':')) {
-            buf::Manip(context.fmtstream).forward();
-            buf::TestManip(context.fmtstream).ignore_every_spaces();
+        if (buf::TestAccess(stream).is_equal_to(':')) {
+            buf::Manip(stream).forward();
+            buf::TestManip(stream).ignore_every_spaces();
 
-            std::optional<std::size_t> front_id = buf::UtilsManip(context.fmtstream).get_word_from_list(frontCode);
+            std::optional<std::size_t> front_id = buf::UtilsManip(stream).get_word_from_list(frontCode);
 
             if (front_id.has_value()) {
                 apply_front(static_cast<detail::TextProperties::TextFront::FrontID>(front_id.value()));

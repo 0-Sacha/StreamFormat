@@ -172,9 +172,9 @@ namespace stream::fmt::detail {
         void apply_front_on_index(context::BasicContext<TChar>& context, std::int32_t index);
 
     public:
-        void parse_color(context::BasicContext<TChar>& context);
-        void parse_style(context::BasicContext<TChar>& context);
-        void parse_front(context::BasicContext<TChar>& context);
+        void parse_color(context::BasicContext<TChar>& context, buf::StreamView<TChar>& stream);
+        void parse_style(context::BasicContext<TChar>& context, buf::StreamView<TChar>& stream);
+        void parse_front(context::BasicContext<TChar>& context, buf::StreamView<TChar>& stream);
 
     private:
         std::optional<std::size_t>                           get_color_code(buf::StreamView<TChar>& format, std::size_t base, std::size_t brightbase);

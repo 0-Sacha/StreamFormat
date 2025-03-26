@@ -118,18 +118,21 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        void write_integer_h(T i, std::uint8_t digitSize, const TChar* const lut, TChar base_prefix = '\0', detail::ShiftInfo shift = detail::ShiftInfo{}) {
+        void write_integer_h(T i, std::uint8_t digitsize, const TChar* const lut, TChar base_prefix = '\0', detail::ShiftInfo shift = detail::ShiftInfo{}) {
             ManipIO manip(buffer);
 
-            std::int32_t digit_count = sizeof(T) * 8;
-            {
+            std::int32_t digit_count = sizeof(T) * (8 / digitsize);
+            std::uint8_t mask = (1 << digitsize) - 1;
+            
+            if (i != 0) {
                 // Remove leading 0
-                std::int32_t last_pos_with_data = 0;
-                std::int32_t k                  = digit_count + 1;
-                T            cpyI               = i;
+                std::int32_t last_pos_with_data = digit_count;
+                std::int32_t k                  = digit_count;
+                T            cpy_i               = i;
                 while (--k != 0) {
-                    if ((cpyI & (0b1 << digitSize)) != 0) last_pos_with_data = k;
-                    cpyI = cpyI >> digitSize;
+                    if ((cpy_i & mask) != 0)
+                        { last_pos_with_data = k; }
+                    cpy_i = cpy_i >> digitsize;
                 }
                 digit_count -= last_pos_with_data;
             }
@@ -139,12 +142,18 @@ namespace stream::fmt::buf {
                 ManipIO(buffer).pushback(base_prefix);
             }
 
+            if (i == 0)
+            {
+                ManipIO(buffer).pushback('0');
+                return;
+            }
+
             manip.forward(digit_count);
             std::int32_t k = digit_count + 1;
             while (--k != 0) {
                 Manip(buffer).backward_force();
-                buffer.set(lut[i & (0b1 << digitSize)]);
-                i = i >> digitSize;
+                buffer.set(lut[i & mask]);
+                i = i >> digitsize;
             }
             manip.forward(digit_count);
         }
@@ -192,7 +201,7 @@ namespace stream::fmt::buf {
                 }
                 const CharStr* const end = str;
 
-                WriteManip(buffer).fast_write_char_array(begin, end - begin);
+                WriteManip(buffer).fast_write_sv(std::basic_string_view(begin, end));
 
                 if (size > 0 && *str == '\n') {
                     FMTManipIO(buffer).new_line_indent();
@@ -201,40 +210,30 @@ namespace stream::fmt::buf {
                 }
             }
         }
-        template <typename CharStr>
-        void write_indent_char_bound(const CharStr* begin, const CharStr* end) {
-            return write_indent_char_ptr(begin, end - begin);
-        }
-        template <typename CharStr>
-        void write_indent_string(std::basic_string_view<CharStr> str) {
-            return write_indent_char_ptr(str.data(), str.size());
+        void write_indent_sv(std::basic_string_view<TChar> sv) {
+            return write_indent_char_ptr(sv.data(), sv.size());
         }
 
-        template <typename CharStr>
-        void write_char_ptr(const CharStr* str, std::size_t size, detail::ShiftInfo& shift) {
-            if (shift.size <= 0) return WriteManip(buffer).fast_write_char_array(str, size);
+        void write_sv(std::basic_string_view<TChar> sv, detail::ShiftInfo& shift) {
+            if (shift.size <= 0) {
+                return WriteManip(buffer).fast_write_sv(sv);
+            }
 
-            if (ManipIO(buffer).reserve(std::max(static_cast<std::size_t>(shift.size), size)) == false) throw std::bad_alloc();
+            if (ManipIO(buffer).reserve(std::max(static_cast<std::size_t>(shift.size), sv.size())) == false) {
+                throw std::bad_alloc();
+            }
 
-            if (static_cast<std::size_t>(shift.size) > size) {
-                shift.size -= static_cast<std::int32_t>(size);
+            if (static_cast<std::size_t>(shift.size) > sv.size()) {
+                shift.size -= static_cast<std::int32_t>(sv.size());
 
                 ShiftWriteManip(buffer).write_shift_begin(shift);
 
-                WriteManip(buffer).fast_write_char_array(str, size);
+                WriteManip(buffer).fast_write_sv(sv);
 
                 ShiftWriteManip(buffer).write_shift_end(shift);
             } else {
-                WriteManip(buffer).fast_write_char_array(str, size);
+                WriteManip(buffer).fast_write_sv(sv);
             }
-        }
-        template <typename CharStr>
-        void write_char_bound(const CharStr* begin, const CharStr* end, detail::ShiftInfo& shift) {
-            return write_char_ptr(begin, end - begin, shift);
-        }
-        template <typename CharStr>
-        void write_string(std::basic_string_view<CharStr> str, detail::ShiftInfo& shift) {
-            return write_char_ptr(str.data(), str.size(), shift);
         }
     };
 }  // namespace stream::fmt::buf

@@ -13,7 +13,7 @@ namespace stream::fmt::context {
     class BasicContext;
 
     template <typename TChar>
-    class context_executor;
+    class ContextExecutor;
 }  // namespace stream::fmt::context
 
 namespace stream::fmt::detail {

@@ -15,21 +15,21 @@ namespace stream::fmt {
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_string<Char>, FormatterExecutor> {
         static inline void format(const std::basic_string<Char>& t, FormatterExecutor& executor) {
-            return buf::WriteManip(executor.ostream).fast_write_string(t);
+            return buf::WriteManip(executor.ostream).fast_write_sv(t);
         }
     };
 
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_string_view<Char>, FormatterExecutor> {
         static inline void format(std::basic_string_view<Char> t, FormatterExecutor& executor) {
-            return buf::WriteManip(executor.ostream).fast_write_string(t);
+            return buf::WriteManip(executor.ostream).fast_write_sv(t);
         }
     };
 
     template <typename FormatterExecutor, typename Char>
     struct FormatterType<std::basic_stringstream<Char>, FormatterExecutor> {
         static inline void format(const std::basic_stringstream<Char>& t, FormatterExecutor& executor) {
-            return buf::WriteManip(executor.ostream).fast_write_char_array(t.str(), t.size());
+            return buf::WriteManip(executor.ostream).fast_write_sv(std::basic_string_view(t.str(), t.size()));
         }
     };
 

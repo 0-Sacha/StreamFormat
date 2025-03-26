@@ -162,16 +162,16 @@ namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<stream::tester::detail::TestSuite, FormatterExecutor> {
         static void format(const stream::tester::detail::TestSuite& t, FormatterExecutor& executor) {
-            return executor.ostream.fast_write_string(t.name);
+            return executor.ostream.fast_write_sv(t.name);
         }
     };
 
     template <typename FormatterExecutor>
     struct FormatterType<stream::tester::detail::Test, FormatterExecutor> {
         static void format(const stream::tester::detail::Test& t, FormatterExecutor& executor) {
-            buf::WriteManip(executor.ostream).fast_write_string(t.link.name);
-            buf::WriteManip(executor.ostream).fast_write_string_literal("::");
-            buf::WriteManip(executor.ostream).fast_write_string(t.name);
+            buf::WriteManip(executor.ostream).fast_write_sv(t.link.name);
+            buf::WriteManip(executor.ostream).fast_write_literal("::");
+            buf::WriteManip(executor.ostream).fast_write_sv(t.name);
         }
     };
 
@@ -180,11 +180,11 @@ namespace stream::fmt {
         static void format(const stream::tester::TestStatus& status, FormatterExecutor& executor) {
             switch (status) {
                 case stream::tester::TestStatus::ok:
-                    return executor.run("[  {C:green}OK{C}  ]");
+                    return executor.run("[ {:C:green,^5} ]", "OK");
                 case stream::tester::TestStatus::fail:
-                    return executor.run("[ {C:red}FAIL{C} ]");
+                    return executor.run("[ {:C:red,^5} ]", "FAIL");
                 case stream::tester::TestStatus::Crash:
-                    return executor.run("[{C:magenta}Crash{C} ]");
+                    return executor.run("[ {:C:magenta,^5} ]", "CRASH");
             }
         }
     };
@@ -192,24 +192,24 @@ namespace stream::fmt {
     template <typename FormatterExecutor>
     struct FormatterType<stream::tester::detail::TestStatusBank, FormatterExecutor> {
         static void format(const stream::tester::detail::TestStatusBank& status_bank, FormatterExecutor& executor) {
-            buf::WriteManip(executor.ostream).fast_write_string_literal("tests_done ");
+            buf::WriteManip(executor.ostream).fast_write_literal("tests_done ");
             executor.run("{:C:white}", status_bank.tests_done);
 
-            buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsOK ");
+            buf::WriteManip(executor.ostream).fast_write_literal(" | testsOK ");
             if (status_bank.tests_ok == status_bank.tests_done) {
                 executor.run("{:C:green}", status_bank.tests_ok);
             } else {
                 executor.run("{:C:yellow}", status_bank.tests_ok);
             }
 
-            buf::WriteManip(executor.ostream).fast_write_string_literal(" | testsFAIL ");
+            buf::WriteManip(executor.ostream).fast_write_literal(" | testsFAIL ");
             if (status_bank.tests_failed == 0) {
                 executor.run("{:C:green}", status_bank.tests_failed);
             } else {
                 executor.run("{:C:red}", status_bank.tests_failed);
             }
 
-            buf::WriteManip(executor.ostream).fast_write_string_literal(" | TestCrash ");
+            buf::WriteManip(executor.ostream).fast_write_literal(" | TestCrash ");
             if (status_bank.tests_crash == 0) {
                 executor.run("{:C:green}", status_bank.tests_crash);
             } else {

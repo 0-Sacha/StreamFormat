@@ -36,12 +36,7 @@ namespace stream::fmt {
     struct FormatterType<std::tuple<T...>, FormatterExecutor> {
         static void format(const std::tuple<T...>& t, FormatterExecutor& executor) {
             executor.ostream.pushback('<');
-            std::apply([&context_executor, &err](auto&&... args) {
-                auto&& res = tuple_detail::tuple_format_rec(context_executor, args...);
-                if (not res) {
-                    err = res.error();
-                }
-            }, t);
+            std::apply([&executor](auto&&... args) { auto&& res = tuple_detail::tuple_format_rec(executor, args...); }, t);
             executor.ostream.pushback('>');
         }
     };

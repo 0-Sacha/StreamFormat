@@ -21,11 +21,11 @@ namespace stream::fmt::buf {
 
         constexpr inline std::remove_cv_t<TChar> get_next(const std::size_t count = 1) const {
             if (Access(buffer).can_move_forward(count) == false) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
-            return Manip(buffer).get_next_force(count);
+            return get_next_force(count);
         }
         constexpr inline std::remove_cv_t<TChar> get_prev(const std::size_t count = 1) const {
             if (Access(buffer).can_move_backward(count) == false) throw std::runtime_error("fmt error: Buffer_OutOfBoundAccess");
-            return Manip(buffer).get_prev_force(count);
+            return get_prev_force(count);
         }
         constexpr inline TChar get_next_force(const std::size_t count = 1) const noexcept {
             return *(buffer.current_pos + count);

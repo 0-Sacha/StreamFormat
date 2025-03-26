@@ -51,7 +51,7 @@ namespace stream::fmt::buf {
             buf::TestManip(buffer).skip_one_of('"');
             while (buffer.is_end_of_string() == false) {
                 auto view = buf::TestManip(buffer).view_until('"', '\\');
-                buf::WriteManip(stringOut).fast_write_string(view);
+                buf::WriteManip(stringOut).fast_write_sv(view);
 
                 if (buf::TestAccess(buffer).is_equal_to('"')) {
                     break;
@@ -84,7 +84,7 @@ namespace stream::fmt::buf {
             buf::ManipIO(buffer).pushback('"');
             while (string_in.is_end_of_string() == false) {
                 auto view = buf::TestManip(string_in).view_until('\\');
-                buf::WriteManip(buffer).fast_write_string(view);
+                buf::WriteManip(buffer).fast_write_sv(view);
 
                 if (string_in.is_end_of_string()) break;
 

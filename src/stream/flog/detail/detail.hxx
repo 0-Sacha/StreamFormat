@@ -30,7 +30,7 @@ namespace stream::fmt {
     template <typename FormatterExecutor, typename FormatStr>
     struct FormatterType<stream::flog::AddIndentInFormat<FormatStr>, FormatterExecutor> {
         static void format(const stream::flog::AddIndentInFormat<FormatStr>& format, FormatterExecutor& executor) {
-            buf::WriteManip(executor.ostream).fast_write_string_literal("{K:indent}");
+            buf::WriteManip(executor.ostream).fast_write_literal("{K:indent}");
             return executor.write_type(format.format);
         }
     };

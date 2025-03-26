@@ -95,7 +95,7 @@ namespace stream::fmt::buf {
 
     public:
         template <typename T>
-        void read_integer_h(T& i, std::uint8_t digitSize, std::optional<std::uint8_t> (&digit_lut)(TChar), TChar base_prefix = '\0',
+        void read_integer_h(T& i, std::uint8_t digitsize, std::optional<std::uint8_t> (&digit_lut)(TChar), TChar base_prefix = '\0',
                             detail::ShiftInfo shift = detail::ShiftInfo{}) {
             ShiftReadManip  shift_manip(buffer);
             buf::TestAccess access(buffer);
@@ -114,7 +114,7 @@ namespace stream::fmt::buf {
             T                           res         = (T)0;
             std::optional<std::uint8_t> get_current = digit_lut(buffer.get());
             while (get_current.has_value()) {
-                res = res << digitSize;
+                res = res << digitsize;
                 res += get_current.value();
                 get_current = digit_lut(buffer.get());
                 Manip(buffer).forward_force();

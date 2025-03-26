@@ -14,7 +14,7 @@
 
 namespace stream::fmt::context {
     template <typename CharType>
-    class BasicParserExecutor : public context_executor<CharType> {
+    class BasicParserExecutor : public ContextExecutor<CharType> {
     public:
         using TChar = CharType;
 
@@ -30,8 +30,8 @@ namespace stream::fmt::context {
     public:
         buf::StreamView<TChar>& istream;
 
-        using context_executor<CharType>::data;
-        using context_executor<CharType>::text_manager;
+        using ContextExecutor<CharType>::data;
+        using ContextExecutor<CharType>::text_manager;
 
     protected:
         void exec_raw_string(std::basic_string_view<TChar> sv) override {
@@ -57,7 +57,7 @@ namespace stream::fmt::context {
 namespace stream::fmt::context {
     template <typename TChar>
     BasicParserExecutor<TChar>::BasicParserExecutor(buf::StreamView<TChar>& istream_, detail::ITextPropertiesExecutor& text_properties_executor_)
-        : context_executor<TChar>(text_properties_executor_), istream{istream_} {
+        : ContextExecutor<TChar>(text_properties_executor_), istream{istream_} {
         text_properties_executor_.link_to_executor(this);
     }
 
