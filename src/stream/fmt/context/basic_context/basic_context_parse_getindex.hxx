@@ -57,7 +57,7 @@ namespace stream::fmt::context {
             }
             return std::nullopt;
         }
-    }
+    }  // namespace
 
     template <typename Executor>
     std::optional<std::int32_t> get_format_index(Executor& executor, buf::StreamView<typename Executor::TChar>& stream) {
@@ -81,8 +81,8 @@ namespace stream::fmt::context {
 
         // VI : { which is a idx to an argument
         if (access.is_equal_to('{')) {
-            const typename Executor::TChar*                oldPos = stream.current_pos;
-            std::optional<std::int32_t> res    = get_format_index_sub_index(executor, stream);
+            const typename Executor::TChar* oldPos = stream.current_pos;
+            std::optional<std::int32_t>     res    = get_format_index_sub_index(executor, stream);
             if (res.has_value() == false) {
                 stream.current_pos = oldPos;
                 return std::nullopt;
@@ -104,10 +104,11 @@ namespace stream::fmt::context {
         // SubIndex
         buf::TestManip(stream).skip_one_of('{');
         std::optional<std::int32_t> format_idx = get_format_index(executor, stream);
-        if constexpr (std::is_convertible_v<T, int64_t>)
-            { return executor.get_context().args_interface.get_int_at(format_idx.value()); }
-        else if constexpr (std::is_convertible_v<T, std::basic_string_view<typename Executor::TChar>>)
-            { return executor.get_context().args_interface.get_string_at(format_idx.value()); }
+        if constexpr (std::is_convertible_v<T, int64_t>) {
+            return executor.get_context().args_interface.get_int_at(format_idx.value());
+        } else if constexpr (std::is_convertible_v<T, std::basic_string_view<typename Executor::TChar>>) {
+            return executor.get_context().args_interface.get_string_at(format_idx.value());
+        }
 
         throw std::runtime_error("fmt error: Context_ArgumentIndexExpected");
     }

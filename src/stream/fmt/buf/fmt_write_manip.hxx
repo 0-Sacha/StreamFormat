@@ -122,16 +122,17 @@ namespace stream::fmt::buf {
             ManipIO manip(buffer);
 
             std::int32_t digit_count = sizeof(T) * (8 / digitsize);
-            std::uint8_t mask = (1 << digitsize) - 1;
-            
+            std::uint8_t mask        = (1 << digitsize) - 1;
+
             if (i != 0) {
                 // Remove leading 0
                 std::int32_t last_pos_with_data = digit_count;
                 std::int32_t k                  = digit_count;
-                T            cpy_i               = i;
+                T            cpy_i              = i;
                 while (--k != 0) {
-                    if ((cpy_i & mask) != 0)
-                        { last_pos_with_data = k; }
+                    if ((cpy_i & mask) != 0) {
+                        last_pos_with_data = k;
+                    }
                     cpy_i = cpy_i >> digitsize;
                 }
                 digit_count -= last_pos_with_data;
@@ -142,8 +143,7 @@ namespace stream::fmt::buf {
                 ManipIO(buffer).pushback(base_prefix);
             }
 
-            if (i == 0)
-            {
+            if (i == 0) {
                 ManipIO(buffer).pushback('0');
                 return;
             }

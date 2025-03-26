@@ -31,7 +31,9 @@ namespace stream::fmt::context {
         virtual void exec_settings()                                = 0;
         virtual void exec_raw_string(std::basic_string_view<TChar>) = 0;
 
-        BasicContext<TChar>& get_context() { return *reinterpret_cast<BasicContext<TChar>*>(context); }
+        BasicContext<TChar>& get_context() {
+            return *reinterpret_cast<BasicContext<TChar>*>(context);
+        }
 
     public:
         detail::FormatData<TChar>            data;
@@ -72,13 +74,12 @@ namespace stream::fmt::context {
     template <typename TChar>
     BasicContext<TChar>::BasicContext(ContextExecutor<TChar>& executor, buf::StreamView<TChar> format, detail::BasicArgsInterface<TChar>& args_interface)
         : executor(executor), fmtstream{format}, args_interface{args_interface}, values_index{0} {
-            old_context_attached = executor.context;
-            executor.context = this;
-        }
+        old_context_attached = executor.context;
+        executor.context     = this;
+    }
 
     template <typename TChar>
-    BasicContext<TChar>::~BasicContext()
-    {
+    BasicContext<TChar>::~BasicContext() {
         executor.context = old_context_attached;
     }
 

@@ -26,7 +26,7 @@ namespace stream::fmt::detail {
             executor.data = formatdata;
         }
 
-        FormatterExecutor&                                    executor;
+        FormatterExecutor&                            executor;
         FormatData<typename FormatterExecutor::TChar> formatdata;
     };
 
@@ -87,5 +87,5 @@ namespace stream::fmt::detail {
                 buf::ManipIO(executor.ostream).pushback('\"');
             }
         }
-    }  // namespace detail::forwarders
-}
+    }  // namespace forwarders
+}  // namespace stream::fmt::detail

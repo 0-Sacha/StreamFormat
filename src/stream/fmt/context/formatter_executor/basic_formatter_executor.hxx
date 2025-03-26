@@ -31,7 +31,7 @@ namespace stream::fmt::context {
         ~BasicFormatterExecutor() override = default;
 
         void terminate();
-        
+
     public:
         buf::FMTStreamIO<TChar>& ostream;
         EndOfStringCharMode      end_of_string_char = EndOfStringCharMode::Optional;
@@ -53,8 +53,7 @@ namespace stream::fmt::context {
 
     public:
         template <typename Type>
-        void write_type(Type&& type)
-        {
+        void write_type(Type&& type) {
             FormatterType<typename detail::FormatTypeForwardAs<detail::get_base_type<Type>>::type, M_Type>::format(std::forward<Type>(type), *this);
         }
         template <typename Type, typename... Rest>

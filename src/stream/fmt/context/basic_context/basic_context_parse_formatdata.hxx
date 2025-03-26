@@ -13,8 +13,9 @@
 
 namespace stream::fmt::detail {
     namespace {
-    template <typename Executor>
-    std::basic_string_view<typename Executor::TChar> parse_next_override_format_data(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
+        template <typename Executor>
+        std::basic_string_view<typename Executor::TChar> parse_next_override_format_data(Executor& executor, buf::StreamView<typename Executor::TChar>& stream,
+                                                                                         detail::FormatData<typename Executor::TChar>& data) {
             buf::TestAccess access(stream);
             buf::TestManip  manip(stream);
 
@@ -22,7 +23,7 @@ namespace stream::fmt::detail {
             manip.ignore_every_spaces();
 
             const typename Executor::TChar* begin  = stream.current_pos;
-            int          scopes = 0;
+            int                             scopes = 0;
             while (buf::FMTParamsManip(stream).is_end_of_parameter() == false || scopes > 0) {
                 manip.GoTo('\'', '}', '{');
                 if (access.is_equal_to('\'')) {
@@ -40,8 +41,8 @@ namespace stream::fmt::detail {
             return std::basic_string_view<typename Executor::TChar>(begin, end - begin);
         }
 
-    template <typename Executor>
-    void parse_format_data_base(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
+        template <typename Executor>
+        void parse_format_data_base(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
             buf::TestAccess access(stream);
 
             if (access.is_equal_to('C')) {
@@ -61,8 +62,9 @@ namespace stream::fmt::detail {
             }
         }
 
-    template <typename Executor>
-    void parse_format_data_special_shift_type(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data, const detail::ShiftInfo::ShiftType type) {
+        template <typename Executor>
+        void parse_format_data_special_shift_type(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data,
+                                                  const detail::ShiftInfo::ShiftType type) {
             data.shift.type = type;
             data.shift.size = format_read_parameter(executor, stream, -1);
             if (buf::TestAccess(stream).is_equal_to(':')) {
@@ -78,8 +80,8 @@ namespace stream::fmt::detail {
             }
         }
 
-    template <typename Executor>
-    bool parse_format_data_special(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
+        template <typename Executor>
+        bool parse_format_data_special(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
             buf::TestAccess access(stream);
             buf::TestManip  manip(stream);
 
@@ -115,9 +117,9 @@ namespace stream::fmt::detail {
             }
 
             bool is_integer_spec = access.is_equal_to('d', 'b', 'b', 'o', 'O', 'x', 'X');
-            is_integer_spec = is_integer_spec && (stream.get_buffer_remaining_size() == 1 || (buf::Access(stream).get_next() > 'z' && buf::Access(stream).get_next() < 'a'));
+            is_integer_spec      = is_integer_spec && (stream.get_buffer_remaining_size() == 1 || (buf::Access(stream).get_next() > 'z' && buf::Access(stream).get_next() < 'a'));
             if (is_integer_spec) {
-                local_spec = true;
+                local_spec         = true;
                 data.integer_print = static_cast<detail::IntegerPrintBase>(stream.get());
                 buf::Manip(stream).forward();
             }
@@ -155,8 +157,8 @@ namespace stream::fmt::detail {
             return local_spec;
         }
 
-    template <typename Executor>
-    void parse_format_data_custom(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
+        template <typename Executor>
+        void parse_format_data_custom(Executor& executor, buf::StreamView<typename Executor::TChar>& stream, detail::FormatData<typename Executor::TChar>& data) {
             buf::TestAccess access(stream);
             buf::TestManip  manip(stream);
 
@@ -184,7 +186,7 @@ namespace stream::fmt::detail {
                 data.specifiers.concat(detail::FormatSpecifier{name});
             }
         }
-    }
+    }  // namespace
 
     template <typename Executor>
     detail::FormatData<typename Executor::TChar> parse_format_data(Executor& executor, buf::StreamView<typename Executor::TChar>& stream) {
@@ -209,4 +211,4 @@ namespace stream::fmt::detail {
 
         return data;
     }
-}  // namespace stream::fmt::context
+}  // namespace stream::fmt::detail
