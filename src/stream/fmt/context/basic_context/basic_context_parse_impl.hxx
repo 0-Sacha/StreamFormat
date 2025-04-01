@@ -20,7 +20,7 @@ namespace stream::fmt::context {
 
         if (buf::TestAccess(fmtstream).is_equal_to(':', '{')) {
             buf::Manip(fmtstream).forward();
-            executor.data = ::stream::fmt::detail::parse_format_data(executor, fmtstream);
+            executor.data = detail::parse_format_data(executor, fmtstream);
         }
 
         args_interface.run_type_at(format_idx);
