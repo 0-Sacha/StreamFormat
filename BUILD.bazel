@@ -3,27 +3,16 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 cc_library(
-    name = "StreamFormat",
-    srcs = glob([ "src/**/*.h", "src/**/*.cpp" ]),
-    hdrs = glob([ "src/**/*.h" ]),
+    name = "stream",
+    srcs = glob([ "src/**/*.cxx" ]),
+    hdrs = glob([ "src/**/*.hxx" ]),
     includes = [ "src/" ],
     copts = select({
-        "@rules_cc//cc/compiler:msvc-cl": ["/std:c++20"],
+        "@rules_cc//cc/compiler:msvc-cl": ["/std:c++latest"],
         "//conditions:default": ["-std=c++20"],
     }),
     strip_include_prefix = "src",
-    include_prefix = "StreamFormat",
+    include_prefix = "stream",
     linkstatic = True,
-    visibility = ["//visibility:public"],
-)
-
-cc_test(
-    name = "StreamFormatTests",
-    srcs = glob([ "Tests/**/*.h", "Tests/**/*.cpp" ]),
-    copts = select({
-        "@rules_cc//cc/compiler:msvc-cl": ["/std:c++20"],
-        "//conditions:default": ["-std=c++20"],
-    }),
-    deps = [ ":StreamFormat" ],
     visibility = ["//visibility:public"],
 )

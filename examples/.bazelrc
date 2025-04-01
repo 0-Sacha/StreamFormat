@@ -1,0 +1,10 @@
+# Common
+common --enable_platform_specific_config
+common --incompatible_strict_action_env
+common --show_timestamps
+common --verbose_failures
+test --test_output=errors
+
+# Winlibs
+common:winlibs-gcc --extra_toolchains=@winlibs//:gcc-toolchain
+common:winlibs-clang --extra_toolchains=@winlibs//:clang-toolchain

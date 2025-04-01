@@ -1,0 +1,65 @@
+#pragma once
+
+#include "basic_parser_executor.hxx"
+
+namespace stream::fmt {
+    //------------------------------------------//
+    //----------------- Resets -----------------//
+    //------------------------------------------//
+
+    template <typename ParserExecutor>
+    struct ParserType<detail::TextProperties::ResetProperties, ParserExecutor> {
+        static inline void parse(detail::TextProperties::ResetProperties, ParserExecutor& executor) {
+            return executor.text_manager.all_properties_reset();
+        }
+    };
+
+    template <typename ParserExecutor>
+    struct ParserType<detail::TextProperties::TextColor::reset_color, ParserExecutor> {
+        static inline void parse(detail::TextProperties::TextColor::reset_color, ParserExecutor& executor) {
+            return executor.text_manager.apply_color_reset();
+        }
+    };
+
+    template <typename ParserExecutor>
+    struct ParserType<detail::TextProperties::TextStyle::reset_style, ParserExecutor> {
+        static inline void parse(detail::TextProperties::TextStyle::reset_style, ParserExecutor& executor) {
+            return executor.text_manager.apply_style_reset();
+        }
+    };
+
+    template <typename ParserExecutor>
+    struct ParserType<detail::TextProperties::TextFront::ResetFront, ParserExecutor> {
+        static inline void parse(detail::TextProperties::TextFront::ResetFront, ParserExecutor& executor) {
+            return executor.text_manager.apply_front_reset();
+        }
+    };
+
+    //---------------------------------------//
+    //----------------- Ask -----------------//
+    //---------------------------------------//
+
+    template <typename T, typename ParserExecutor>
+        requires detail::text_properties_color_is_apply<T>
+    struct ParserType<T, ParserExecutor> {
+        static inline void parse(T& t, ParserExecutor& executor) {
+            return executor.text_manager.ask_apply_color(t);
+        }
+    };
+
+    template <typename T, typename ParserExecutor>
+        requires detail::TextPropertiesStyleIsapply<T>
+    struct ParserType<T, ParserExecutor> {
+        static inline void parse(T& t, ParserExecutor& executor) {
+            return executor.text_manager.ask_apply_style(t);
+        }
+    };
+
+    template <typename T, typename ParserExecutor>
+        requires detail::TextPropertiesFrontIsapply<T>
+    struct ParserType<T, ParserExecutor> {
+        static inline void parse(T& t, ParserExecutor& executor) {
+            return executor.text_manager.ask_apply_front(t);
+        }
+    };
+}  // namespace stream::fmt
