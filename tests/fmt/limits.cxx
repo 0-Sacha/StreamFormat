@@ -20,7 +20,7 @@ SFT_TEST_GROUP(FMT, LIMITS);
     SFT_TEST_FUNC(LIMITS, LowBufferSize##k) {              \
         char buffer[k] = {0};                              \
         stream::fmt::format_in_char(buffer, "0123456789"); \
-        for (int i = 0; i < (k); ++i)                        \
+        for (int i = 0; i < (k); ++i)                      \
             SFT_EQ(buffer[i] - '0', i);                    \
     }
 
@@ -58,7 +58,7 @@ SFT_TEST_FUNC(LIMITS, PlainLowBufferSize1) {
         stream::fmt::buf::StreamView<char>           format(fmt_buffer, k);                                             \
         stream::fmt::buf::GivenStreamIOManager<char> manager(buffer, k);                                                \
         stream::fmt::detail::format_in_manager(manager, false, format);                                                 \
-        for (int i = 0; i < (k); ++i)                                                                                     \
+        for (int i = 0; i < (k); ++i)                                                                                   \
             SFT_EQ(buffer[i] - '0', i);                                                                                 \
     }
 

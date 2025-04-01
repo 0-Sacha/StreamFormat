@@ -23,7 +23,7 @@ namespace {
             res.push_back('e');
         }
         return res;
-}
+    }
 }  // namespace
 
 SFT_TEST_GROUP(TEXT_PROPERTIES, ESCAPER_VALIDATING);

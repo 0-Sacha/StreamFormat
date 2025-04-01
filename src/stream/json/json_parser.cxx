@@ -32,7 +32,8 @@ namespace stream::json::detail {
             bool k = false;
             JsonBooleanSerializer::ParseBool(k, parser);
         } else if (parser.is_json_struct_begin()) {
-            JsonStructSerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, [[maybe_unused]] std::string&& str, JsonParser& json_parser) {
+            JsonStructSerializer::LoadAllSubObjects<JsonParser::Intermediate>(
+                *this, parser, [](JsonParser::Intermediate&, std::size_t, [[maybe_unused]] std::string&& str, JsonParser& json_parser) {
                 JsonParser::Intermediate intermediate;
                 intermediate.parse(json_parser);
             });

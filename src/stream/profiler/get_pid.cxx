@@ -14,7 +14,7 @@
 namespace stream::profiler {
     int get_pid() {
 #ifdef STREAMFORMAT_PLATFORM_LINUX
-        #define return getpid();
+#define return getpid();
 #endif
 
 #ifdef STREAMFORMAT_PLATFORM_WINDOWS

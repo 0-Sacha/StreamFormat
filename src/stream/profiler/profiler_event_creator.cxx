@@ -2,15 +2,14 @@
 #include "profiler.hxx"
 
 namespace stream::profiler {
-    // TODO(sacha): 
-        // NOLINTBEGIN(bugprone-exception-escape)
+    // TODO(sacha):
+    // NOLINTBEGIN(bugprone-exception-escape)
     ScopeProfile::~ScopeProfile() {
         terminate();
     }
     // NOLINTEND(bugprone-exception-escape)
 
-    void ScopeProfile::terminate()
-    {
+    void ScopeProfile::terminate() {
         stop();
 
         const std::chrono::microseconds us      = std::chrono::duration_cast<std::chrono::microseconds>(info.duration);
@@ -39,7 +38,7 @@ namespace stream::profiler {
     }
 
     // NOLINTBEGIN(readability-magic-numbers)
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
+    // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
     ObjectTracker::ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category) : profiler_(profiler), name_(std::move(name)), category_(std::move(category)) {
         Event created(name_, category_, EventType::Objectcreated);
         created.info.id = 10;
@@ -58,7 +57,7 @@ namespace stream::profiler {
         profiler_.add_event(snapshot);
     }
     // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
-// NOLINTEND(readability-magic-numbers)
+    // NOLINTEND(readability-magic-numbers)
 
     void EventCounter::snapshot() {
         idx_++;
