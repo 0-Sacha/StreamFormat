@@ -1,7 +1,5 @@
 #pragma once
 
-#include "basic_context.hxx"
-
 #include "stream/fmt/buf/manip.hxx"
 #include "stream/fmt/buf/test_manip.hxx"
 #include "stream/fmt/buf/write_manip.hxx"
