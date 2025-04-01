@@ -9,10 +9,12 @@
 #include <process.h>
 #endif
 
+// NOLINTBEGIN(misc-use-internal-linkage)
+
 namespace stream::profiler {
     int get_pid() {
 #ifdef STREAMFORMAT_PLATFORM_LINUX
-        return getpid();
+        #define return getpid();
 #endif
 
 #ifdef STREAMFORMAT_PLATFORM_WINDOWS
@@ -21,3 +23,5 @@ namespace stream::profiler {
         return 0;
     }
 }  // namespace stream::profiler
+
+// NOLINTEND(misc-use-internal-linkage)

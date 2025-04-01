@@ -1,7 +1,5 @@
 #pragma once
 
-#include "text_properties_manager.hxx"
-
 #include "stream/fmt/buf/manip.hxx"
 #include "stream/fmt/buf/manip_io.hxx"
 #include "stream/fmt/buf/test_manip.hxx"

@@ -10,7 +10,7 @@ namespace stream::fmt::tuple_detail {
 
     template <std::uint32_t N, typename... Args>
     constexpr NthTypeOf<N, Args...>& get(Args&&... args) {
-        std::tuple<Args...> tuple(args...);
+        std::tuple<Args...> tuple(std::forward<Args>(args)...);
         return std::get<N>(tuple);
     }
 
@@ -27,7 +27,7 @@ namespace stream::fmt::tuple_detail {
         executor.write_type(t);
         executor.ostream.pushback(',');
         executor.ostream.pushback(' ');
-        return tuple_format_rec(executor, args...);
+        return tuple_format_rec(executor, std::forward<Args>(args)...);
     }
 }  // namespace stream::fmt::tuple_detail
 

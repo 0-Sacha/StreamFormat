@@ -3,16 +3,17 @@
 #include "stream/flog.hxx"
 
 namespace stream::tester {
+    // NOLINTBEGIN
     class CopyMoveCheck {
     public:
         static inline flog::BasicLogger logger;
 
     public:
-        CopyMoveCheck(const std::string& name) : name_(name) {
+        explicit CopyMoveCheck(const std::string& name) : name_(name) {
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Default (copy string) Constructor", "TestCopy(const std::string& name)");
         }
 
-        CopyMoveCheck(std::string&& name) : name_(std::move(name)) {
+        explicit CopyMoveCheck(std::string&& name) : name_(std::move(name)) {
             logger.info("CopyMoveCheck {} : {:C:red} ( {:C:red} )", name_, "Default (move string) Constructor", "TestCopy(std::string&& name)");
         }
 
@@ -63,4 +64,5 @@ namespace stream::tester {
     private:
         std::string name_;
     };
+    // NOLINTEND
 }  // namespace stream::tester

@@ -1,5 +1,7 @@
 #include "detail.hxx"
 
+#include <cmath>
+
 #include <string_view>
 #include <unordered_map>
 #include <vector>
@@ -24,13 +26,13 @@ namespace stream::json::detail {
             }
             manip.skip_one_of('"');
         } else if (parser.is_json_number_begin()) {
-            float k;
+            float k = NAN;
             JsonNumberSerializer::ParseFloat(k, parser);
         } else if (parser.is_json_boolean_begin()) {
-            bool k;
+            bool k = false;
             JsonBooleanSerializer::ParseBool(k, parser);
         } else if (parser.is_json_struct_begin()) {
-            JsonStructSerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, std::string&&, JsonParser& json_parser) {
+            JsonStructSerializer::LoadAllSubObjects<JsonParser::Intermediate>(*this, parser, [](JsonParser::Intermediate&, std::size_t, [[maybe_unused]] std::string&& str, JsonParser& json_parser) {
                 JsonParser::Intermediate intermediate;
                 intermediate.parse(json_parser);
             });
@@ -52,7 +54,7 @@ namespace stream::json::detail {
                                                                                 [](JsonParser::StructIntermediate& t, std::size_t, std::string&& name, JsonParser& json_parser) {
             JsonParser::Intermediate intermediate;
             intermediate.parse(json_parser);
-            t.Objects.insert({std::move(name), std::move(intermediate)});
+            t.Objects.insert({std::move(name), intermediate});
         });
     };
 
@@ -60,7 +62,7 @@ namespace stream::json::detail {
         JsonArraySerializer::LoadAllSubObjects<JsonParser::ArrayIntermediate>(*this, parser, [](JsonParser::ArrayIntermediate& t, std::size_t, JsonParser& json_parser) {
             JsonParser::Intermediate intermediate;
             intermediate.parse(json_parser);
-            t.Objects.emplace_back(std::move(intermediate));
+            t.Objects.emplace_back(intermediate);
         });
     };
 }  // namespace stream::json::detail

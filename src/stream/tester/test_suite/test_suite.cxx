@@ -26,7 +26,9 @@ namespace stream::tester {
 namespace stream::tester::detail {
     TestStatusBank TestSuite::exec_all_tests() {
         if (parent == nullptr) {
+            // NOLINTBEGIN(cppcoreguidelines-owning-memory)
             profiler = new profiler::Profiler("TestSuite_" + name);
+            // NOLINTEND(cppcoreguidelines-owning-memory)
         } else {
             profiler = &get_profiler();
         }

@@ -34,14 +34,14 @@ namespace stream::test {
 
 // Check if equal with file printed
 #define STREAMFORMAT_TEST_EQ(x, y)                         \
-    if (x == y)                                            \
+    if ((x) == (y))                                            \
         STREAMFORMAT_TEST_OK("{C:green}{} == {}", #x, #y); \
     else                                                   \
         STREAMFORMAT_TEST_FAIL("{C:red}{} == {}", #x, #y)
 
 // Check if not equal with file printed
 #define STREAMFORMAT_TEST_NEQ(x, y)                        \
-    if (x != y)                                            \
+    if ((x) != (y))                                            \
         STREAMFORMAT_TEST_OK("{C:green}{} != {}", #x, #y); \
     else                                                   \
         STREAMFORMAT_TEST_FAIL("{C:red}{} != {}", #x, #y)
@@ -49,7 +49,7 @@ namespace stream::test {
 #define STREAMFORMAT_TEST_FN(fn, resExpected)                                                   \
     {                                                                                           \
         auto res = fn;                                                                          \
-        if (res == resExpected)                                                                 \
+        if (res == (resExpected))                                                                 \
             STREAMFORMAT_TEST_OK("{C:green}{} return {}", #fn, res);                            \
         else                                                                                    \
             STREAMFORMAT_TEST_FAIL("{C:red}{} return {} instead of {}", #fn, res, resExpected); \

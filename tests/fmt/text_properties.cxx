@@ -5,23 +5,26 @@
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
 SFT_TEST_GROUP(FMT, TEXT_PROPERTIES);
 
 #define TEST_FMT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, 0)), escaper(expected))
 
-static std::string escaper(const std::string& str) {
-    std::string res;
-    for (char const c : str) {
-        if (c != '\033') {
-            res.push_back(c);
-            continue;
-        }
+namespace {
+    std::string escaper(const std::string& str) {
+        std::string res;
+        for (char const c : str) {
+            if (c != '\033') {
+                res.push_back(c);
+                continue;
+            }
 
-        res.push_back('\\');
-        res.push_back('e');
-    }
-    return res;
+            res.push_back('\\');
+            res.push_back('e');
+        }
+        return res;
 }
+}  // namespace
 
 SFT_TEST_GROUP(TEXT_PROPERTIES, ESCAPER_VALIDATING);
 #define TEST_ESCAPER(str, str_res) SFT_EQ(escaper(str), str_res)
@@ -84,10 +87,11 @@ SFT_TEST_FUNC(TEXT_PROPERTIES, ContextOut) {
 
     TEST_FMT_CONTEXT("{} 123 ", "\033[31m TEST_FMT_ContextOut 0 \033[39m 123 ");
 
-    // TODO : check before doing a detail::TextPropertiesExecution, should only have one \033[31m
+    // TODO(sacha): check before doing a detail::TextPropertiesExecution, should only have one \033[31m
     TEST_FMT_CONTEXT("{C:red}{} 123 ", "\033[31m TEST_FMT_ContextOut 0  123 \033[39m");
 
     TEST_FMT_CONTEXT("{C:+red}{} 123 ", "\033[91m\033[31m TEST_FMT_ContextOut 0 \033[91m 123 \033[39m");
 }
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
 // NOLINTEND(readability-magic-numbers)
 // NOLINTEND(misc-const-correctness)

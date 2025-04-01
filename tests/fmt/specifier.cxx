@@ -5,6 +5,11 @@
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays)
+// NOLINTBEGIN(hicpp-avoid-c-arrays)
+// NOLINTBEGIN(modernize-avoid-c-arrays)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-pro-bounds-constant-array-index)
 SFT_TEST_GROUP(FMT, SPECIFIER);
 
 #define TEST_FMT_ARRAY_SPECIFIERS(fmt_test, test_data, expected) SFT_EQ(stream::fmt::format_string(fmt_test, test_data), expected)
@@ -46,5 +51,10 @@ SFT_TEST_FUNC(SPECIFIER, BEGIN_END_NESTED_SPECS) {
 
     TEST_FMT_ARRAY_SPECIFIERS("{:join=' | ', begin='[', end=']', begin=3, size=5, :#x}", data, "[0x3 | 0x4 | 0x5 | 0x6 | 0x7]");
 }
+// NOLINTEND(cppcoreguidelines-pro-bounds-constant-array-index)
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
+// NOLINTEND(modernize-avoid-c-arrays)
+// NOLINTEND(hicpp-avoid-c-arrays)
+// NOLINTEND(cppcoreguidelines-avoid-c-arrays)
 // NOLINTEND(readability-magic-numbers)
 // NOLINTEND(misc-const-correctness)

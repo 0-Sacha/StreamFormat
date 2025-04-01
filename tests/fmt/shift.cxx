@@ -5,6 +5,7 @@
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
 SFT_TEST_GROUP(FMT, SHIFT);
 
 #define TEST_FMT(fmt_test, expected, ...) SFT_EQ(stream::fmt::format_string(fmt_test, __VA_ARGS__), expected)
@@ -301,5 +302,6 @@ SFT_TEST_FUNC(POINTER, CenterLeft) {
     TEST_FMT("|{:^<11:<|>, size=4}|", "|<<<test>>>>|", test_with_size);
     TEST_FMT("|{:^<11:>|<, size=4}|", "|>>>test<<<<|", test_with_size);
 }
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
 // NOLINTEND(readability-magic-numbers)
 // NOLINTEND(misc-const-correctness)

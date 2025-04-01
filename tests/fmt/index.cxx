@@ -5,6 +5,7 @@
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
 /*
 SFT_TEST_GROUP(FMT, INDEX);
 
@@ -12,5 +13,6 @@ SFT_TEST_FUNC(INDEX, ReIndexing)
 {
 }
 */
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
 // NOLINTEND(readability-magic-numbers)
 // NOLINTEND(misc-const-correctness)

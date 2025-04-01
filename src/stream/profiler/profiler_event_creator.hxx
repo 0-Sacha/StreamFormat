@@ -17,6 +17,9 @@ namespace stream::profiler {
 
         ~ScopeProfile() override;
 
+    public:
+        void terminate();
+
     private:
         Profiler& profiler_;
     };

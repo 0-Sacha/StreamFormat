@@ -14,7 +14,7 @@
 
 namespace stream::profiler {
     int get_pid();
-
+    
     enum class EventType : char {
         Unknow = '.',
 

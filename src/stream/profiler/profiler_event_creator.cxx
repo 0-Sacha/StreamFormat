@@ -2,7 +2,15 @@
 #include "profiler.hxx"
 
 namespace stream::profiler {
+    // TODO(sacha): 
+        // NOLINTBEGIN(bugprone-exception-escape)
     ScopeProfile::~ScopeProfile() {
+        terminate();
+    }
+    // NOLINTEND(bugprone-exception-escape)
+
+    void ScopeProfile::terminate()
+    {
         stop();
 
         const std::chrono::microseconds us      = std::chrono::duration_cast<std::chrono::microseconds>(info.duration);
@@ -10,17 +18,20 @@ namespace stream::profiler {
         const std::chrono::seconds      seconds = std::chrono::duration_cast<std::chrono::seconds>(info.duration);
 
         // NOLINTBEGIN(readability-magic-numbers)
-        if (seconds.count() > 1.5) {
+        // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
+        if (seconds.count() > 2) {
             profiler_.get_logger().trace("{} : {} seconds", info.name, seconds.count());
-        } else if (millis.count() > 5.0) {
+        } else if (millis.count() > 5) {
             profiler_.get_logger().trace("{} : {} ms", info.name, millis.count());
         } else {
             profiler_.get_logger().trace("{} : {} us", info.name, us.count());
         }
+        // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
         // NOLINTEND(readability-magic-numbers)
 
         profiler_.add_event(*this);
     }
+
 
     ObjectTracker::ObjectTracker(Profiler& profiler, const std::string& name, const std::string& category) : profiler_(profiler), name_(name), category_(category) {
         Event const created(name_, category_, EventType::Objectcreated);
@@ -28,6 +39,7 @@ namespace stream::profiler {
     }
 
     // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
     ObjectTracker::ObjectTracker(Profiler& profiler, std::string&& name, std::string&& category) : profiler_(profiler), name_(std::move(name)), category_(std::move(category)) {
         Event created(name_, category_, EventType::Objectcreated);
         created.info.id = 10;
@@ -45,7 +57,8 @@ namespace stream::profiler {
         snapshot.info.id = 10;
         profiler_.add_event(snapshot);
     }
-    // NOLINTEND(readability-magic-numbers)
+    // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
+// NOLINTEND(readability-magic-numbers)
 
     void EventCounter::snapshot() {
         idx_++;

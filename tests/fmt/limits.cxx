@@ -5,13 +5,22 @@
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays)
+// NOLINTBEGIN(hicpp-avoid-c-arrays)
+// NOLINTBEGIN(modernize-avoid-c-arrays)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-pro-bounds-constant-array-index)
+
+// NOLINTBEGIN(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+// NOLINTBEGIN(hicpp-no-array-decay)
+
 SFT_TEST_GROUP(FMT, LIMITS);
 
 #define SFT_TEST_FUNC_LowBufferSize(k)                     \
     SFT_TEST_FUNC(LIMITS, LowBufferSize##k) {              \
         char buffer[k] = {0};                              \
         stream::fmt::format_in_char(buffer, "0123456789"); \
-        for (int i = 0; i < k; ++i)                        \
+        for (int i = 0; i < (k); ++i)                        \
             SFT_EQ(buffer[i] - '0', i);                    \
     }
 
@@ -49,7 +58,7 @@ SFT_TEST_FUNC(LIMITS, PlainLowBufferSize1) {
         stream::fmt::buf::StreamView<char>           format(fmt_buffer, k);                                             \
         stream::fmt::buf::GivenStreamIOManager<char> manager(buffer, k);                                                \
         stream::fmt::detail::format_in_manager(manager, false, format);                                                 \
-        for (int i = 0; i < k; ++i)                                                                                     \
+        for (int i = 0; i < (k); ++i)                                                                                     \
             SFT_EQ(buffer[i] - '0', i);                                                                                 \
     }
 
@@ -108,5 +117,13 @@ SFT_TEST_FUNC(LIMITS, LowBufferSizeArray5Number9) {
         SFT_EQ(buffer[k] - '0', 9 - k);
     }
 }
+// NOLINTEND(hicpp-no-array-decay)
+// NOLINTEND(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+
+// NOLINTEND(cppcoreguidelines-pro-bounds-constant-array-index)
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
+// NOLINTEND(modernize-avoid-c-arrays)
+// NOLINTEND(hicpp-avoid-c-arrays)
+// NOLINTEND(cppcoreguidelines-avoid-c-arrays)
 // NOLINTEND(readability-magic-numbers)
 // NOLINTEND(misc-const-correctness)

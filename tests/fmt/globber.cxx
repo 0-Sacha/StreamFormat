@@ -6,6 +6,7 @@
 
 // NOLINTBEGIN(misc-const-correctness)
 // NOLINTBEGIN(readability-magic-numbers)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
 SFT_TEST_GROUP(FMT, GLOBBER);
 #define TEST_GLOBBER(data, glob)                                                   \
     {                                                                              \
@@ -67,5 +68,6 @@ SFT_TEST_FUNC(PARSE_GLOBBER, PG_BASIC_WILDCARD) {
         // SFT_EQ(std::string(test), std::string("test"));
     }
 }
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
 // NOLINTEND(readability-magic-numbers)
 // NOLINTEND(misc-const-correctness)
