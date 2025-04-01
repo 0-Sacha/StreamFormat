@@ -16,7 +16,7 @@ jobs:
       run: sudo apt install clang-format
     - name: Version
       run: clang-format --version
-    - run: ./conf/linter/clang-format.sh
+    - run: ./conf/script/clang-format.sh
 
   clang-tidy:
     runs-on: ubuntu-latest
