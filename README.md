@@ -1,9 +1,12 @@
-[![Build status](https://badge.buildkite.com/c74bfd00e5543dcb5645acecbfd9d1fc3a0487bc5de13db0b9.svg)](https://buildkite.com/sacha/streamformat)
-[![stream](https://github.com/0-Sacha/stream/actions/workflows/stream.yml/badge.svg)](https://github.com/0-Sacha/stream/actions/workflows/stream.yml)
+[![Buildkite](https://badge.buildkite.com/c74bfd00e5543dcb5645acecbfd9d1fc3a0487bc5de13db0b9.svg)](https://buildkite.com/sacha/streamformat)
 
-# stream
+[![](https://github.com/0-Sacha/streamformat/actions/workflows/linter.yml/badge.svg)](https://github.com/0-Sacha/streamformat/actions/workflows/linter.yml)
+[![](https://github.com/0-Sacha/streamformat/actions/workflows/tests_linux.yml/badge.svg)](https://github.com/0-Sacha/streamformat/actions/workflows/tests_linux.yml)
+[![](https://github.com/0-Sacha/streamformat/actions/workflows/tests_windows.yml/badge.svg)](https://github.com/0-Sacha/streamformat/actions/workflows/tests_windows.yml)
 
-stream is a C++20 String Formatter, like [&lt;fmt&gt;](https://github.com/fmtlib/fmt)
+# StreamFormat
+
+StreamFormat is a C++20 String Formatter, like [&lt;fmt&gt;](https://github.com/fmtlib/fmt)
 Using this formatter, it define others functionalities:
 - Logger like [spdlog](https://github.com/gabime/spdlog)
 - Json Serializer
@@ -24,10 +27,18 @@ For now, at least, you have the [Examples](Examples/README.md) (and maybe the Te
 git clone git@github.com:0-Sacha/stream.git
 ```
 
-## Using the Lib
-It can be used using [Bazel](https://bazel.build/).
-A `cc_library` rule has been created: `@stream//:stream`.
-You need to add the module `streamformat` to your dependencies.
+## Integration
+### [Bazel](https://bazel.build/)
+`MODULE.bazel`
+```python
+git_override(module_name="streamformat", remote="https://github.com/0-Sacha/streamformat.git")
+bazel_dep(name = "streamformat")
+```
+
+`BUILD.bazel`: In your `cc_binary` / `cc_library`
+```python
+deps = [ "@streamformat//:stream" ],
+```
 
 ## Examples
-You can check the [Examples](Examples/README.md) to see what you can do with this.
+You can check the [examples](examples/README.md) to see what you can do with this.
