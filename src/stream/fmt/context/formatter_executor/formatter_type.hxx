@@ -20,18 +20,10 @@ namespace stream::fmt {
     };
 }  // namespace stream::fmt
 
-#define STREAMFORMAT_AUTO_FORMATTER(Type, formatstr, ...)              \
-    template <typename FormatterExecutor>                              \
-    struct stream::fmt::FormatterType<Type, FormatterExecutor> {       \
-        static void format(const Type&, FormatterExecutor& executor) { \
-            return executor.run(formatstr, __VA_ARGS__);               \
-        }                                                              \
-    };
-
-#define STREAMFORMAT_AUTO_FORMATTER_T(Type, formatstr, ...)            \
-    template <typename FormatterExecutor>                              \
-    struct stream::fmt::FormatterType<Type, FormatterExecutor> {       \
-        static void format(const Type&, FormatterExecutor& executor) { \
-            return executor.run(formatstr, __VA_ARGS__);               \
-        }                                                              \
+#define STREAMFORMAT_AUTO_FORMATTER(Type, formatstr, ...)                    \
+    template <typename FormatterExecutor>                                    \
+    struct stream::fmt::FormatterType<Type, FormatterExecutor> {             \
+        static void format(const Type& value, FormatterExecutor& executor) { \
+            return executor.run(formatstr, __VA_ARGS__);                     \
+        }                                                                    \
     };

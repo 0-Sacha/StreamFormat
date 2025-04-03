@@ -78,7 +78,7 @@ SFT_TEST_FUNC(TEXT_PROPERTIES, DoubleBasicColor) {
 }
 
 class TestFmtContextOut {};
-STREAMFORMAT_AUTO_FORMATTER_T(TestFmtContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
+STREAMFORMAT_AUTO_FORMATTER(TestFmtContextOut, "{C:red} TEST_FMT_ContextOut {} ", 0);
 
 #define TEST_FMT_CONTEXT(fmt_test, expected) SFT_EQ(escaper(stream::fmt::format_string(fmt_test, TestFmtContextOut{})), escaper(expected))
 
